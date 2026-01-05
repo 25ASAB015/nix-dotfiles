@@ -70,22 +70,13 @@
   # SHELL - Configuración del shell y prompt
   # ════════════════════════════════════════════════════════════════════════════
   
-  # Fish Shell - Shell moderno e interactivo
+  # Fish Shell - Shell moderno con plugins
+  # Incluye: carapace, autopair, done, bass, plugin-git, sudope, fifc, grc, puffer
   # Documentación: https://fishshell.com/docs/current/
   modules.terminal.shell.fish = {
     enable = true;
     editor = "nvim";           # Editor por defecto (EDITOR y VISUAL)
-    viMode = true;             # Keybindings estilo Vi
     nixosHost = "hydenix";     # Host para comandos nixos-rebuild
-    # extraConfig = ''         # Configuración adicional
-    #   set -gx MY_VAR "value"
-    # '';
-    # extraAliases = {         # Aliases personalizados
-    #   myalias = "echo 'Hola'";
-    # };
-    # extraFunctions = {       # Funciones adicionales
-    #   myfunc = "echo $argv";
-    # };
   };
 
   # Starship - Prompt para Fish (separado de zsh)
@@ -94,14 +85,5 @@
   modules.terminal.shell.starship = {
     enable = true;
     enableFishIntegration = true;
-  };
-
-  # Carapace - Autocompletado inteligente multi-shell
-  # Documentación: https://rsteube.github.io/carapace/
-  modules.terminal.shell.carapace = {
-    enable = true;
-    enableFishIntegration = true;
-    bridges = [ "fish" "zsh" "bash" ];  # Heredar completados de estos shells
-    # enableInshellisense = false;      # AI completions (experimental)
   };
 }
