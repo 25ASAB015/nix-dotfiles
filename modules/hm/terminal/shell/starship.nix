@@ -110,19 +110,19 @@ in
         scan_timeout = 5;
         command_timeout = 500;
 
-        # Formato del prompt: minimalista pero informativo
-        format = ''
-          $status$username$hostname$directory$git_branch$git_status$cmd_duration$nix_shell
-          $character'';
+        # Formato del prompt en DOS líneas:
+        # Línea 1: │ directorio git_branch git_status
+        # Línea 2: │ (cursor aquí)
+        format = "$status$username$hostname$directory$git_branch$git_status$cmd_duration$nix_shell\n$character";
 
         # ════════════════════════════════════════════════════════════════════
-        # Status del último comando
+        # Status del último comando (línea 1, al inicio)
         # ════════════════════════════════════════════════════════════════════
         status = {
           disabled = false;
           format = "[$symbol](bold $style) ";
           symbol = "│";
-          success_symbol = cfg.style.successSymbol;
+          success_symbol = "[│](bold white) ";
           style = "red";
           map_symbol = false;
           recognize_signal_code = false;
@@ -134,9 +134,9 @@ in
         # ════════════════════════════════════════════════════════════════════
         character = {
           format = "$symbol";
-          success_symbol = cfg.style.successSymbol;
-          error_symbol = cfg.style.errorSymbol;
-          vicmd_symbol = cfg.style.viCmdSymbol;
+          success_symbol = "[│](bold white) ";
+          error_symbol = "[│](bold red) ";
+          vicmd_symbol = "[│](bold green) ";
         };
 
         # ════════════════════════════════════════════════════════════════════
