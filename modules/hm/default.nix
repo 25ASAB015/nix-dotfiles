@@ -105,6 +105,20 @@
     ripgrep = true;                 # grep ultrarrápido (rg)
   };
 
+  # Skim - Fuzzy finder escrito en Rust (alternativa a fzf)
+  # Uso: sk, Ctrl+T (archivos), Ctrl+R (historial), Alt+C (directorios)
+  # Documentación: https://github.com/lotabout/skim
+  modules.terminal.software.skim = {
+    enable = true;
+    enableFishIntegration = true;   # Keybindings en Fish
+    defaultCommand = "rg --files --hidden";
+    # Preview de directorios con eza
+    changeDirWidgetOptions = [
+      "--preview 'eza --icons --git --color always -T -L 3 {} | head -200'"
+      "--exact"
+    ];
+  };
+
   # Bat - cat con syntax highlighting
   # Uso: bat archivo.txt, bat -p (sin decoración), bat --list-themes
   # Documentación: https://github.com/sharkdp/bat

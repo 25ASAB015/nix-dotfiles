@@ -13,6 +13,7 @@
     ./git.nix      # Git con configuración avanzada
     ./lazygit.nix  # TUI para Git
     ./opencode     # OpenCode - Terminal AI Assistant (Claude, Gemini, etc.)
+    ./skim.nix     # Skim - Fuzzy finder escrito en Rust (alternativa a fzf)
     ./yazi         # File manager moderno (carpeta con subconfiguraciones)
     ./zoxide.nix   # Navegación inteligente de directorios
   ];
