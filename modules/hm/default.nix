@@ -75,6 +75,19 @@
     enableZshIntegration = false;   # No afectar zsh/Hydenix
   };
 
+  # Yazi - File manager moderno para terminal
+  # Uso: ejecutar `yazi` o `y` (con fish) para navegar archivos
+  # Controles: hjkl para navegar, Enter para abrir, q para salir
+  # Documentación: https://yazi-rs.github.io/docs/
+  modules.terminal.software.yazi = {
+    enable = true;
+    enableFishIntegration = true;   # Habilita comando `y` en Fish
+    showHidden = false;             # true para mostrar archivos ocultos
+    sortDirFirst = true;            # Directorios antes que archivos
+    layout = [ 1 4 3 ];             # Proporciones [izq medio der]
+    darkFlavor = "noctalia";        # Tema oscuro
+  };
+
   # ════════════════════════════════════════════════════════════════════════════
   # SHELL - Configuración del shell y prompt
   # ════════════════════════════════════════════════════════════════════════════
