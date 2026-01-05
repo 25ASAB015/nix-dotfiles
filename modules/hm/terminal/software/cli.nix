@@ -186,6 +186,16 @@ in
         enable = true;
         enableFishIntegration = cfg.enableFishIntegration && config.programs.fish.enable;
       };
+
+      # ════════════════════════════════════════════════════════════════════════
+      # NIX-YOUR-SHELL - Usa tu shell preferido en nix develop/shell
+      # Cuando ejecutas `nix develop` o `nix-shell`, por defecto usa bash.
+      # Con esto, automáticamente usará Fish (o tu shell configurado).
+      # ════════════════════════════════════════════════════════════════════════
+      nix-your-shell = {
+        enable = true;
+        enableFishIntegration = cfg.enableFishIntegration && config.programs.fish.enable;
+      };
     };
   };
 }
