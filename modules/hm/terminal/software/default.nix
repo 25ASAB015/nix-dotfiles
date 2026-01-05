@@ -8,9 +8,9 @@
     ./gh.nix       # GitHub CLI
     ./git.nix      # Git con configuración avanzada
     ./lazygit.nix  # TUI para Git
+    ./zoxide.nix   # Navegación inteligente de directorios
     # Futuros módulos:
     # ./bat.nix
     # ./fzf.nix
-    # ./zoxide.nix
   ];
 }
