@@ -160,6 +160,46 @@
   };
 
   # ════════════════════════════════════════════════════════════════════════════
+  # EMULADORES DE TERMINAL
+  # ════════════════════════════════════════════════════════════════════════════
+
+  # Foot - Terminal ligera para Wayland
+  # Uso: foot, foot -e comando
+  # Muy ligera y rápida, ideal para uso diario
+  # Documentación: https://codeberg.org/dnkl/foot
+  modules.terminal.emulators.foot = {
+    enable = true;
+    font = "JetBrainsMono Nerd Font:size=11";
+    padding = "10x10";
+    cursorStyle = "beam";
+    scrollbackLines = 10000;
+    alpha = 0.95;              # Transparencia (1.0 = opaco)
+    enableSixel = true;        # Soporte para imágenes en terminal
+    # Colores Catppuccin Mocha (por defecto)
+    # Puedes cambiarlos a tu gusto
+  };
+
+  # Ghostty - Terminal moderna con GPU rendering
+  # Uso: ghostty, Ctrl+Shift+V (split), Alt+N (tab)
+  # Muy rápida con soporte de splits y tabs nativos
+  # Documentación: https://ghostty.org/docs
+  modules.terminal.emulators.ghostty = {
+    enable = true;
+    font = "JetBrainsMono Nerd Font";
+    fontSize = 12;
+    fontFeatures = "calt,liga";  # Ligatures
+    cursorStyle = "bar";
+    cursorBlink = true;
+    paddingX = 10;
+    paddingY = 6;
+    scrollbackLimit = 10000;
+    windowDecoration = false;    # Sin bordes de ventana
+    enableFishIntegration = true;
+    theme = "catppuccin-mocha";  # Temas: dracula, nord, gruvbox-dark, one-dark
+    # Si prefieres colores personalizados, usa theme = null y define colors
+  };
+
+  # ════════════════════════════════════════════════════════════════════════════
   # SHELL - Configuración del shell y prompt
   # ════════════════════════════════════════════════════════════════════════════
   
