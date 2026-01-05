@@ -12,6 +12,7 @@
     ./gh.nix       # GitHub CLI
     ./git.nix      # Git con configuración avanzada
     ./lazygit.nix  # TUI para Git
+    ./opencode     # OpenCode - Terminal AI Assistant (Claude, Gemini, etc.)
     ./yazi         # File manager moderno (carpeta con subconfiguraciones)
     ./zoxide.nix   # Navegación inteligente de directorios
   ];

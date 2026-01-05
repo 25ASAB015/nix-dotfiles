@@ -17,6 +17,16 @@
       url = "github:linuxmobile/mynixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    # ══════════════════════════════════════════════════════════════════════════
+    # OPENCODE - Terminal AI Assistant
+    # Herramienta de línea de comandos para interactuar con modelos de IA
+    # Documentación: https://github.com/anomalyco/opencode
+    # ══════════════════════════════════════════════════════════════════════════
+    opencode = {
+      url = "github:anomalyco/opencode";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

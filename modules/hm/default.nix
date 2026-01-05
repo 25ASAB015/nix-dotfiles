@@ -125,6 +125,40 @@
     createAliases = true;       # Crear btop/htop como aliases
   };
 
+  # OpenCode - Terminal AI Assistant (Claude, Gemini, GPT, etc.)
+  # Uso: opencode "pregunta" o simplemente opencode para modo interactivo
+  # Incluye: Skills especializados, integración con LSP, formatters
+  # Plugin antigravity: acceso gratuito a modelos premium
+  # Documentación: https://github.com/anomalyco/opencode
+  modules.terminal.software.opencode = {
+    enable = true;
+    smallModel = "google/gemma-3n-e4b-it:free";  # Modelo pequeño gratuito
+    autoupdate = false;                           # Desactivar updates automáticos
+    share = "disabled";                           # No compartir datos de uso
+    enabledProviders = ["openrouter" "google"];   # Proveedores habilitados
+    # MCP Servers (Model Context Protocol) para extender capacidades
+    mcp = {
+      gh_grep = {
+        type = "remote";
+        url = "https://mcp.grep.app/";
+        enabled = true;
+        timeout = 10000;
+      };
+      deepwiki = {
+        type = "remote";
+        url = "https://mcp.deepwiki.com/mcp";
+        enabled = true;
+        timeout = 10000;
+      };
+      context7 = {
+        type = "remote";
+        url = "https://mcp.context7.com/mcp";
+        enabled = true;
+        timeout = 10000;
+      };
+    };
+  };
+
   # ════════════════════════════════════════════════════════════════════════════
   # SHELL - Configuración del shell y prompt
   # ════════════════════════════════════════════════════════════════════════════
