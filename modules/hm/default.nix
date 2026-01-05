@@ -91,6 +91,7 @@
   # CLI Tools - Colección de herramientas modernas de terminal
   # Incluye: eza (ls), fzf (fuzzy), ripgrep (grep), dust (du), duf (df), fd (find)
   # TUI Apps: discordo (Discord), reddit-tui, scope-tui (audio visualizer)
+  # Mynixpkgs: bmm, dawn, dfft, lightview, nekot, omm, orchat, prs
   # Documentación: ver cada herramienta individual
   modules.terminal.software.cli = {
     enable = true;
@@ -98,6 +99,7 @@
     archives = true;                # zip, unzip, unrar
     systemUtils = true;             # dust, duf, fd, jq, glow, gtt, zfxtop, inshellisense
     tuiApps = true;                 # discordo, reddit-tui, scope-tui
+    mynixpkgsApps = true;           # bmm, dawn, dfft, lightview, nekot, omm, orchat, prs
     eza = true;                     # ls moderno con iconos
     fzf = true;                     # Buscador fuzzy (Ctrl+T)
     ripgrep = true;                 # grep ultrarrápido (rg)

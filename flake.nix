@@ -8,6 +8,15 @@
     };
     hydenix.url = "github:richen604/hydenix";
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
+    
+    # ══════════════════════════════════════════════════════════════════════════
+    # PAQUETES EXTRA - Repositorio personal de linuxmobile
+    # Incluye herramientas CLI/TUI que no están en nixpkgs oficial
+    # ══════════════════════════════════════════════════════════════════════════
+    mynixpkgs = {
+      url = "github:linuxmobile/mynixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

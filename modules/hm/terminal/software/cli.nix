@@ -1,15 +1,25 @@
 # CLI Tools - Herramientas de línea de comandos
 # Integrado desde Kaku: https://github.com/linuxmobile/kaku
 # Colección de utilidades CLI modernas y productivas
+#
+# Algunos paquetes provienen de:
+# - nixpkgs: Repositorio oficial de NixOS
+# - mynixpkgs: github:linuxmobile/mynixpkgs (herramientas extra)
 {
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
 let
   cfg = config.modules.terminal.software.cli;
+  
+  # Paquetes de mynixpkgs (repositorio personal de linuxmobile)
+  # Solo disponibles si el input existe en el flake
+  mynixpkgs = inputs.mynixpkgs.packages.${pkgs.system} or {};
+  hasMynixpkgs = inputs ? mynixpkgs;
 in
 {
   options.modules.terminal.software.cli = {
@@ -41,6 +51,13 @@ in
       type = lib.types.bool;
       default = true;
       description = "Incluir aplicaciones TUI (discordo, reddit-tui, etc.)";
+    };
+
+    # Habilitar paquetes de mynixpkgs (linuxmobile)
+    mynixpkgsApps = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Incluir herramientas de github:linuxmobile/mynixpkgs";
     };
 
     # Habilitar eza (reemplazo moderno de ls)
@@ -103,12 +120,36 @@ in
       ])
 
       # ════════════════════════════════════════════════════════════════════════
-      # TUI APPS - Aplicaciones de interfaz de texto
+      # TUI APPS - Aplicaciones de interfaz de texto (nixpkgs)
       # ════════════════════════════════════════════════════════════════════════
       ++ (lib.optionals cfg.tuiApps [
-        discordo    # Cliente Discord TUI
-        reddit-tui  # Cliente Reddit TUI
-        scope-tui   # Visualizador de audio en terminal
+        discordo    # Cliente Discord TUI - chatea en Discord desde la terminal
+        reddit-tui  # Cliente Reddit TUI - navega Reddit sin salir de la terminal
+        scope-tui   # Visualizador de audio - muestra espectro de audio en terminal
+      ])
+
+      # ════════════════════════════════════════════════════════════════════════
+      # MYNIXPKGS - Paquetes de github:linuxmobile/mynixpkgs
+      # Herramientas que no están en nixpkgs oficial o versiones más recientes
+      # ════════════════════════════════════════════════════════════════════════
+      ++ (lib.optionals (cfg.mynixpkgsApps && hasMynixpkgs) [
+        # ── Productividad ──────────────────────────────────────────────────────
+        mynixpkgs.bmm        # Bookmark Manager - accede a tus marcadores rápidamente
+        mynixpkgs.omm        # Task Manager CLI - gestiona tareas con atajos de teclado
+        mynixpkgs.prs        # PR Status - monitorea Pull Requests desde la terminal
+        
+        # ── Editores y Documentación ───────────────────────────────────────────
+        mynixpkgs.dawn       # Editor Markdown - minimalista con live preview en terminal
+        
+        # ── AI y LLMs ──────────────────────────────────────────────────────────
+        mynixpkgs.nekot      # Cliente LLM - interactúa con LLMs locales y cloud
+        mynixpkgs.orchat     # Chat LLM - cliente para OpenRouter, OpenAI, Ollama
+        
+        # ── Desarrollo ─────────────────────────────────────────────────────────
+        mynixpkgs.dfft       # Diff Tool - monitorea cambios de archivos por agentes AI
+        
+        # ── Multimedia ─────────────────────────────────────────────────────────
+        mynixpkgs.lightview  # Image Viewer - visor de imágenes ultrarrápido y minimal
       ]);
 
     programs = {
