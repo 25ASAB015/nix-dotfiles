@@ -34,15 +34,15 @@
   # IMPORTANTE: hydenix.hm.git.enable = false arriba
   modules.terminal.software.git = {
     enable = true;
-    userName = "ludus";              # Tu nombre para commits
-    userEmail = "";                   # Tu email (configúralo!)
-    editor = "nvim";                  # Editor para commits
-    delta.enable = true;              # Diffs bonitos con syntax highlighting
-    delta.sideBySide = true;          # Vista lado a lado
-    lfs.enable = true;                # Git LFS para archivos grandes
-    # GPG signing (opcional):
-    # gpg.enable = true;
-    # gpg.signingKey = "TU_KEY_ID";
+    userName = "Roberto Flores";         # Tu nombre para commits
+    userEmail = "25asab015@ujmd.edu.sv"; # Tu email
+    editor = "nvim";                     # Editor para commits
+    delta.enable = true;                 # Diffs bonitos con syntax highlighting
+    delta.sideBySide = true;             # Vista lado a lado
+    lfs.enable = true;                   # Git LFS para archivos grandes
+    # GPG signing
+    gpg.enable = true;
+    gpg.signingKey = "A2EFB4449AD569C6";
   };
 
   # GitHub CLI - Herramienta oficial de GitHub para terminal
@@ -50,7 +50,7 @@
   modules.terminal.software.gh = {
     enable = true;
     editor = "nano";        # Cambia a tu editor preferido: "nvim", "hx", "code"
-    username = "ludus";     # Tu usuario de GitHub
+    username = "25asab015";     # Tu usuario de GitHub
     gitProtocol = "https";  # o "ssh" si tienes configurado SSH keys
     # browser = "firefox";  # Descomenta para usar un navegador específico
   };
