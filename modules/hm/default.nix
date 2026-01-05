@@ -88,6 +88,19 @@
     darkFlavor = "noctalia";        # Tema oscuro
   };
 
+  # CLI Tools - Colección de herramientas modernas de terminal
+  # Incluye: eza (ls), fzf (fuzzy), ripgrep (grep), dust (du), duf (df), fd (find)
+  # Documentación: ver cada herramienta individual
+  modules.terminal.software.cli = {
+    enable = true;
+    enableFishIntegration = true;   # Integración con Fish
+    archives = true;                # zip, unzip, unrar
+    systemUtils = true;             # dust, duf, fd, jq, glow, etc.
+    eza = true;                     # ls moderno con iconos
+    fzf = true;                     # Buscador fuzzy (Ctrl+T)
+    ripgrep = true;                 # grep ultrarrápido (rg)
+  };
+
   # ════════════════════════════════════════════════════════════════════════════
   # SHELL - Configuración del shell y prompt
   # ════════════════════════════════════════════════════════════════════════════

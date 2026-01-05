@@ -6,13 +6,11 @@
 {
   imports = [
     ./atuin.nix    # Historial de shell mejorado
+    ./cli.nix      # Colección de herramientas CLI (eza, fzf, ripgrep, etc.)
     ./gh.nix       # GitHub CLI
     ./git.nix      # Git con configuración avanzada
     ./lazygit.nix  # TUI para Git
     ./yazi         # File manager moderno (carpeta con subconfiguraciones)
     ./zoxide.nix   # Navegación inteligente de directorios
-    # Futuros módulos:
-    # ./bat.nix
-    # ./fzf.nix
   ];
 }
