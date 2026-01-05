@@ -1,11 +1,10 @@
-# Starship - Prompt minimalista, rápido e inteligente
+# Starship - Prompt minimalista, rápido e inteligente (para Fish)
 # Integrado desde Kaku: https://github.com/linuxmobile/kaku
 # Documentación: https://starship.rs/
 #
-# Este prompt está optimizado para:
-# - Velocidad (sin bloat)
-# - Información útil (git, nix-shell, errores)
-# - Estética minimalista
+# IMPORTANTE: Esta configuración es EXCLUSIVA para Fish shell.
+# No afecta la configuración de Starship de zsh/Hydenix.
+# Usa un archivo separado: ~/.config/starship/fish.toml
 {
   config,
   lib,
@@ -16,11 +15,12 @@
 let
   cfg = config.modules.terminal.shell.starship;
   toTOML = (pkgs.formats.toml {}).generate;
-  configFile = "starship/starship.toml";
+  # Archivo SEPARADO para no conflictuar con Hydenix/zsh
+  configFile = "starship/fish.toml";
 in
 {
   options.modules.terminal.shell.starship = {
-    enable = lib.mkEnableOption "Starship prompt";
+    enable = lib.mkEnableOption "Starship prompt para Fish (separado de zsh)";
 
     # ════════════════════════════════════════════════════════════════════════
     # Integración con Fish
@@ -94,19 +94,18 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.starship ];
+    # NO instalamos starship aquí - ya lo provee Hydenix
+    # home.packages = [ pkgs.starship ];
 
-    # Variables de entorno para Starship
-    home.sessionVariables = {
-      STARSHIP_CONFIG = "${config.xdg.configHome}/${configFile}";
-      STARSHIP_LOG = "error";
-    };
+    # NO usamos home.sessionVariables - afectaría zsh
+    # La variable STARSHIP_CONFIG se configura SOLO en fish/conf.d/starship.fish
 
     xdg.configFile = {
       # ══════════════════════════════════════════════════════════════════════
-      # Configuración principal de Starship
+      # Configuración de Starship EXCLUSIVA para Fish
+      # Archivo separado: ~/.config/starship/fish.toml
       # ══════════════════════════════════════════════════════════════════════
-      "${configFile}".source = toTOML "starship.toml" {
+      "${configFile}".source = toTOML "fish.toml" {
         add_newline = true;
         scan_timeout = 5;
         command_timeout = 500;
@@ -244,14 +243,19 @@ in
       };
 
       # ══════════════════════════════════════════════════════════════════════
-      # Integración con Fish
+      # Integración con Fish (usa config separada de zsh)
       # ══════════════════════════════════════════════════════════════════════
       "fish/conf.d/starship.fish" = lib.mkIf cfg.enableFishIntegration {
         text = ''
+          # Usar configuración de Starship EXCLUSIVA para Fish
+          # Esto NO afecta la configuración de zsh/Hydenix
+          set -gx STARSHIP_CONFIG "${config.xdg.configHome}/${configFile}"
+          set -gx STARSHIP_LOG "error"
           starship init fish | source
         '';
       };
 
+      # Completions de Starship para Fish
       "fish/completions/starship.fish" = lib.mkIf cfg.enableFishIntegration {
         source = "${pkgs.starship}/share/fish/vendor_completions.d/starship.fish";
       };
