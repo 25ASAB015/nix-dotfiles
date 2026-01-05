@@ -66,6 +66,15 @@
     # theme.inactiveBorderColor = [ "gray" ];
   };
 
+  # Atuin - Historial de shell mejorado con búsqueda fuzzy
+  # Uso: Ctrl+R para buscar en historial
+  # Documentación: https://docs.atuin.sh/
+  modules.terminal.software.atuin = {
+    enable = true;
+    enableFishIntegration = true;   # Solo para Fish
+    enableZshIntegration = false;   # No afectar zsh/Hydenix
+  };
+
   # ════════════════════════════════════════════════════════════════════════════
   # SHELL - Configuración del shell y prompt
   # ════════════════════════════════════════════════════════════════════════════

@@ -5,6 +5,7 @@
 
 {
   imports = [
+    ./atuin.nix    # Historial de shell mejorado
     ./gh.nix       # GitHub CLI
     ./git.nix      # Git con configuración avanzada
     ./lazygit.nix  # TUI para Git
