@@ -5,10 +5,10 @@
 
 {
   imports = [
-    ./gh.nix  # GitHub CLI
-    # Aquí irán futuros módulos de software:
+    ./gh.nix       # GitHub CLI
+    ./lazygit.nix  # TUI para Git
+    # Futuros módulos:
     # ./git.nix
-    # ./lazygit.nix
     # ./bat.nix
     # ./fzf.nix
     # ./zoxide.nix

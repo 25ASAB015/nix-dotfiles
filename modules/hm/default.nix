@@ -36,4 +36,15 @@
     gitProtocol = "https";  # o "ssh" si tienes configurado SSH keys
     # browser = "firefox";  # Descomenta para usar un navegador específico
   };
+
+  # Lazygit - Interfaz TUI para Git
+  # Uso: ejecutar `lazygit` en cualquier repositorio
+  modules.terminal.software.lazygit = {
+    enable = true;
+    signOffCommits = true;    # Agregar firma a commits
+    nerdFontsVersion = "3";   # Versión de Nerd Fonts para iconos
+    # Personalizar colores:
+    # theme.activeBorderColor = [ "cyan" "bold" ];
+    # theme.inactiveBorderColor = [ "gray" ];
+  };
 }
