@@ -17,7 +17,6 @@ let
   
   # Rutas de configuración XDG
   configFile = "gh/config.yml";
-  hostsFile = "gh/hosts.yml";
 in
 {
   # Opciones configurables del módulo
@@ -79,12 +78,5 @@ in
       http_unix_socket = "";
       browser = cfg.browser;
     };
-
-    # Archivo de hosts (conexiones a GitHub)
-    xdg.configFile."${hostsFile}".text = lib.mkIf (cfg.username != "") ''
-      github.com:
-        git_protocol: ${cfg.gitProtocol}
-        user: ${cfg.username}
-    '';
   };
 }
