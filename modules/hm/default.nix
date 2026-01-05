@@ -23,10 +23,28 @@
   hydenix.hm.enable = true;
   # Visit https://github.com/richen604/hydenix/blob/main/docs/options.md for more options
 
+  # Desactivar git de Hydenix para usar nuestra configuración personalizada
+  hydenix.hm.git.enable = false;
+
   # ════════════════════════════════════════════════════════════════════════════
   # MÓDULOS PERSONALIZADOS - Habilitados desde Kaku
   # ════════════════════════════════════════════════════════════════════════════
   
+  # Git - Control de versiones con configuración avanzada
+  # IMPORTANTE: hydenix.hm.git.enable = false arriba
+  modules.terminal.software.git = {
+    enable = true;
+    userName = "ludus";              # Tu nombre para commits
+    userEmail = "";                   # Tu email (configúralo!)
+    editor = "nvim";                  # Editor para commits
+    delta.enable = true;              # Diffs bonitos con syntax highlighting
+    delta.sideBySide = true;          # Vista lado a lado
+    lfs.enable = true;                # Git LFS para archivos grandes
+    # GPG signing (opcional):
+    # gpg.enable = true;
+    # gpg.signingKey = "TU_KEY_ID";
+  };
+
   # GitHub CLI - Herramienta oficial de GitHub para terminal
   # Documentación: https://cli.github.com/manual/
   modules.terminal.software.gh = {

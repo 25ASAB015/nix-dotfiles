@@ -6,9 +6,9 @@
 {
   imports = [
     ./gh.nix       # GitHub CLI
+    ./git.nix      # Git con configuración avanzada
     ./lazygit.nix  # TUI para Git
     # Futuros módulos:
-    # ./git.nix
     # ./bat.nix
     # ./fzf.nix
     # ./zoxide.nix
