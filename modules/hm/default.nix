@@ -88,17 +88,12 @@
     # };
   };
 
-  # Starship - Prompt minimalista y rápido
-  # Documentación: https://starship.rs/
+  # Starship - Prompt para Fish (separado de zsh)
+  # Usa archivo ~/.config/starship/fish.toml
+  # NO afecta el prompt de zsh/Hydenix
   modules.terminal.shell.starship = {
     enable = true;
-    enableFishIntegration = true;   # Integración automática con Fish
-    minCmdDuration = 2000;          # Mostrar duración si > 2s
-    directoryTruncation = 1;        # Solo mostrar directorio actual
-    # Personalizar estilos:
-    # style.directoryColor = "cyan";
-    # style.gitBranchColor = "green";
-    # style.gitStatusColor = "yellow";
+    enableFishIntegration = true;
   };
 
   # Carapace - Autocompletado inteligente multi-shell
