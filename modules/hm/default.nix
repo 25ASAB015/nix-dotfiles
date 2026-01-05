@@ -105,6 +105,26 @@
     ripgrep = true;                 # grep ultrarrápido (rg)
   };
 
+  # Bat - cat con syntax highlighting
+  # Uso: bat archivo.txt, bat -p (sin decoración), bat --list-themes
+  # Documentación: https://github.com/sharkdp/bat
+  modules.terminal.software.bat = {
+    enable = true;
+    theme = "base16";           # Tema de colores
+    style = "plain";            # Estilo: plain, full, auto, changes
+    useAsManPager = true;       # Coloriza man pages
+  };
+
+  # Bottom - Monitor de sistema moderno (reemplazo de htop/btop)
+  # Uso: btm, btop (alias), htop (alias modo básico)
+  # Documentación: https://clementtsang.github.io/bottom/
+  modules.terminal.software.bottom = {
+    enable = true;
+    enableGpu = true;           # Monitorear GPU
+    groupProcesses = true;      # Agrupar procesos con mismo nombre
+    createAliases = true;       # Crear btop/htop como aliases
+  };
+
   # ════════════════════════════════════════════════════════════════════════════
   # SHELL - Configuración del shell y prompt
   # ════════════════════════════════════════════════════════════════════════════

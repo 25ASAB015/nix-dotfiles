@@ -6,6 +6,8 @@
 {
   imports = [
     ./atuin.nix    # Historial de shell mejorado
+    ./bat.nix      # cat con syntax highlighting
+    ./bottom.nix   # Monitor de sistema (reemplazo de htop/btop)
     ./cli.nix      # Colección de herramientas CLI (eza, fzf, ripgrep, etc.)
     ./gh.nix       # GitHub CLI
     ./git.nix      # Git con configuración avanzada
