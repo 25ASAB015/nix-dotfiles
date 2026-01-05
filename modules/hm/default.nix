@@ -65,4 +65,48 @@
     # theme.activeBorderColor = [ "cyan" "bold" ];
     # theme.inactiveBorderColor = [ "gray" ];
   };
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # SHELL - Configuración del shell y prompt
+  # ════════════════════════════════════════════════════════════════════════════
+  
+  # Fish Shell - Shell moderno e interactivo
+  # Documentación: https://fishshell.com/docs/current/
+  modules.terminal.shell.fish = {
+    enable = true;
+    editor = "nvim";           # Editor por defecto (EDITOR y VISUAL)
+    viMode = true;             # Keybindings estilo Vi
+    nixosHost = "hydenix";     # Host para comandos nixos-rebuild
+    # extraConfig = ''         # Configuración adicional
+    #   set -gx MY_VAR "value"
+    # '';
+    # extraAliases = {         # Aliases personalizados
+    #   myalias = "echo 'Hola'";
+    # };
+    # extraFunctions = {       # Funciones adicionales
+    #   myfunc = "echo $argv";
+    # };
+  };
+
+  # Starship - Prompt minimalista y rápido
+  # Documentación: https://starship.rs/
+  modules.terminal.shell.starship = {
+    enable = true;
+    enableFishIntegration = true;   # Integración automática con Fish
+    minCmdDuration = 2000;          # Mostrar duración si > 2s
+    directoryTruncation = 1;        # Solo mostrar directorio actual
+    # Personalizar estilos:
+    # style.directoryColor = "cyan";
+    # style.gitBranchColor = "green";
+    # style.gitStatusColor = "yellow";
+  };
+
+  # Carapace - Autocompletado inteligente multi-shell
+  # Documentación: https://rsteube.github.io/carapace/
+  modules.terminal.shell.carapace = {
+    enable = true;
+    enableFishIntegration = true;
+    bridges = [ "fish" "zsh" "bash" ];  # Heredar completados de estos shells
+    # enableInshellisense = false;      # AI completions (experimental)
+  };
 }

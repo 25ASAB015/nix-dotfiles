@@ -6,8 +6,8 @@
 {
   imports = [
     ./software  # Herramientas CLI (gh, git, lazygit, etc.)
+    ./shell     # Shells (fish, starship, carapace)
     # Futuros módulos:
     # ./emulators  # Emuladores de terminal (kitty, foot, etc.)
-    # ./shell      # Configuraciones de shell (fish, zsh, nushell)
   ];
 }
