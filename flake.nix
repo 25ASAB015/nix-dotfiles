@@ -28,9 +28,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Navegador Zen personalizado (para módulos de browsers)
-    zen-browser = {
-      url = "github:linuxmobile/zen-browser-flake";
+    # Navegador Zen (flake comunitario)
+    zen-browser-flake = {
+      url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
