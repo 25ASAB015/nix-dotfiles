@@ -1,15 +1,15 @@
 { ... }:
 
 {
-  imports = [
-     # Módulos personalizados - Estructura inspirada en Kaku
-     ./terminal  # Terminal: software CLI, emuladores, shell
-     ./software/browsers  # Navegadores: helium, zen, firefox (modular)
-     # Futuros módulos a integrar:
-     # ./editors    # Editores: helix, zed, neovim
-     # ./packages   # Paquetes: GTK, browsers, media
-     # ./services   # Servicios: wayland, system
-  ];
+  imports =
+    [
+      # Módulos personalizados - Estructura inspirada en Kaku
+      ./terminal  # Terminal: software CLI, emuladores, shell
+      # Futuros módulos a integrar:
+      # ./editors    # Editores: helix, zed, neovim
+      # ./packages   # Paquetes: GTK, browsers, media
+      # ./services   # Servicios: wayland, system
+    ] ++ import ./software/browsers;
 
   # home-manager options go here
   home.packages = [
