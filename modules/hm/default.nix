@@ -5,7 +5,7 @@
     [
       # Módulos personalizados - Estructura inspirada en Kaku
       ./terminal  # Terminal: software CLI, emuladores, shell
-      ./terminal/software/essentials  # Herramientas esenciales (gh, git)
+      ./terminal/software/essentials.nix  # Herramientas esenciales (gh, git)
       # Futuros módulos a integrar:
       # ./editors    # Editores: helix, zed, neovim
       # ./packages   # Paquetes: GTK, browsers, media
