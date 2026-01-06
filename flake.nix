@@ -27,6 +27,12 @@
       url = "github:anomalyco/opencode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Navegador Zen personalizado (para módulos de browsers)
+    zen-browser = {
+      url = "github:linuxmobile/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
