@@ -2,12 +2,14 @@
 
 {
   imports = [
-    # ./example.nix - add your modules here
+    ./packages.nix              # System-level packages (VLC, etc.)
+    ./ai-tools-unrestricted.nix # Sin restricciones para Cursor, VSCode, Antigravity, OpenCode
+    # Future modular system configurations:
+    # ./audio.nix       # Audio configuration (pipewire, pulseaudio)
+    # ./boot.nix        # Boot loader configuration
+    # ./networking.nix  # Network configuration
+    # ./security.nix    # Security settings (firewall, etc.)
   ];
 
-  environment.systemPackages = [
-    pkgs.vlc
-    # pkgs.vscode - hydenix's vscode version
-    # pkgs.userPkgs.vscode - your personal nixpkgs version
-  ];
+  # Additional system-wide configuration can go here
 }
