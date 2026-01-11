@@ -117,14 +117,14 @@
   # ENVIRONMENT - Variables para herramientas AI
   # ══════════════════════════════════════════════════════════════════════════
   environment.sessionVariables = {
-    # Permitir ejecución de binarios no-NixOS
-    NIX_LD = "${pkgs.stdenv.cc.libc}/lib/ld-linux-x86-64.so.2";
-    NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
+    # Permitir ejecución de binarios no-NixOS (usa mkDefault para no conflictuar con nix-ld)
+    NIX_LD = lib.mkDefault "${pkgs.stdenv.cc.libc}/lib/ld-linux-x86-64.so.2";
+    NIX_LD_LIBRARY_PATH = lib.mkDefault (lib.makeLibraryPath [
       pkgs.stdenv.cc.cc
       pkgs.zlib
       pkgs.openssl
       pkgs.curl
-    ];
+    ]);
     
     # Sin restricciones de sandboxing
     SANDBOX = "false";
@@ -174,8 +174,8 @@
       };
     };
     
-    # Bash completion para mejorar experiencia CLI
-    bash.enableCompletion = true;
+    # Bash completion
+    bash.completion.enable = true;
     
     # ZSH con autosuggestions
     zsh = {
