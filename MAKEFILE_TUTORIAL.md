@@ -119,6 +119,60 @@ Tu Makefile está organizado en secciones lógicas:
 
 ---
 
+## 📚 Sistema de Ayuda en Tres Niveles
+
+Tu Makefile tiene un **sistema de ayuda híbrido** con tres niveles para diferentes necesidades:
+
+### Nivel 1: `make help` - Referencia Rápida
+**¿Qué comandos existen?**
+- Lista completa de 83+ comandos
+- Descripción de una línea
+- Para escaneo rápido
+
+```bash
+make help
+```
+
+### Nivel 2: `make help-examples` - Ejemplos Prácticos ⭐ NUEVO
+**¿Cómo uso este comando?**
+- Comandos con ejemplos concretos
+- Sintaxis con parámetros
+- Múltiples ejemplos por comando
+- Para aprender la sintaxis correcta
+
+```bash
+make help-examples
+```
+
+### Nivel 3: `make help-advanced` - Workflows Completos
+**¿Cómo combino comandos?**
+- Workflows para casos de uso comunes
+- Secuencias de comandos
+- Mejores prácticas
+- Para flujos de trabajo profesionales
+
+```bash
+make help-advanced
+```
+
+### 💡 Recomendación de Uso
+
+```bash
+# ¿Olvidaste qué comandos hay?
+make help
+
+# ¿No sabes cómo usar un comando con parámetros?
+make help-examples
+
+# ¿Quieres aprender workflows profesionales?
+make help-advanced
+
+# ¿Necesitas documentación completa?
+make tutorial   # (este archivo)
+```
+
+---
+
 ## Comandos por Categoría
 
 ### 🔨 Building and Switching
@@ -134,7 +188,51 @@ make help
 make
 ```
 
-**Cuándo usarlo:** Siempre que olvides un comando.
+**Qué muestra:**
+- Lista completa de 83+ comandos
+- Descripción breve de cada uno
+- Organizado por sección
+- Vista rápida de referencia
+
+**Cuándo usarlo:** Referencia rápida para ver qué comandos existen.
+
+---
+
+#### `make help-examples` ⭐ NUEVO
+Muestra comandos con ejemplos de uso, especialmente útil para comandos que requieren parámetros.
+
+```bash
+make help-examples
+```
+
+**Qué muestra:**
+```
+═══ 🔍 Search & Discovery ═══
+search PKG=<name>
+  → make search PKG=firefox
+  → make search PKG=neovim
+
+search-installed PKG=<name>
+  → make search-installed PKG=kitty
+
+═══ 📦 Updates ═══
+update-input INPUT=<name>
+  → make update-input INPUT=hydenix
+  → make update-input INPUT=nixpkgs
+
+═══ 🛠️ Templates ═══
+new-host HOST=<name>
+  → make new-host HOST=mylaptop
+  → make new-host HOST=server
+```
+
+**Perfecto para:**
+- Comandos que requieren parámetros (PKG, INPUT, HOST, etc)
+- Ver ejemplos concretos de uso
+- Aprender la sintaxis correcta
+- Nuevos usuarios del sistema
+
+**Cuándo usarlo:** Cuando necesitas saber **cómo usar** un comando específico.
 
 ---
 
@@ -1210,15 +1308,27 @@ echo "## $(date +%Y-%m-%d) - Configuración inicial kitty" >> CHANGELOG.md
 ### Comandos de Referencia Rápida
 
 ```bash
-make                   # Ver todos los comandos
+# Sistema de Ayuda
+make help              # Lista de todos los comandos
+make help-examples     # Comandos con ejemplos de uso ⭐
+make help-advanced     # Workflows completos
+make tutorial          # Esta guía completa
+
+# Uso Diario
 make switch            # Aplicar cambios
 make test              # Probar sin aplicar
 make rollback          # Deshacer último cambio
+
+# Información
+make status            # Estado del sistema
+make health            # Health check
+make version           # Versiones
+
+# Mantenimiento
 make update            # Actualizar paquetes
 make clean             # Limpiar espacio
 make backup            # Guardar backup
-make info              # Ver estado del sistema
-make debug             # Debugging detallado
+make optimize          # Optimizar store
 ```
 
 ---
@@ -2087,14 +2197,31 @@ Todas las mejoras planificadas han sido implementadas exitosamente:
 - ✅ **FASE 3:** 14 ampliaciones seleccionadas
 - ✅ **Build Analysis:** 3 comandos (why-depends, build-trace, closure-size)
 - ✅ **Quick Fixes:** 2 comandos (fix-permissions, fix-store)
+- ✅ **Help System:** Sistema de ayuda híbrido en 3 niveles ⭐ NUEVO
 
-**Total implementado: 32 mejoras**
+**Total implementado: 32+ mejoras**
+
+---
+
+## 🎯 Sistema de Ayuda Híbrido (Tres Niveles)
+
+Tu Makefile ahora incluye un **sistema de ayuda profesional** con tres niveles:
+
+1. **`make help`** - Referencia rápida de todos los comandos
+2. **`make help-examples`** ⭐ - Ejemplos de uso con parámetros
+3. **`make help-advanced`** - Workflows y mejores prácticas
+
+Esto te permite encontrar información de diferentes formas según tu necesidad:
+- **¿Qué hay disponible?** → `make help`
+- **¿Cómo lo uso?** → `make help-examples`
+- **¿Cómo combino comandos?** → `make help-advanced`
 
 ---
 
 *Última actualización: 2026-01-11*  
-*Versión: 4.0 - IMPLEMENTACIÓN COMPLETA*  
-*Total de comandos: 75+*  
+*Versión: 5.0 - Sistema de Ayuda Híbrido Implementado*  
+*Total de comandos: 83+*  
+*Sistema de ayuda: 3 niveles (help, help-examples, help-advanced)*  
 *Fases completadas: 100% (FASE 1, 2, 3 + extras)*  
 *Mantenedor: ludus*
 
