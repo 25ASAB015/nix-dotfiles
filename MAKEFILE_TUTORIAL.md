@@ -1261,7 +1261,233 @@ Si tienes preguntas, revisa:
 
 ---
 
+## 🆕 Nuevos Comandos Agregados (2026-01-11)
+
+### Comandos Multi-Host
+
+#### `make list-hosts`
+Lista todas las configuraciones de hosts disponibles (hydenix, laptop, vm).
+
+```bash
+make list-hosts
+# Muestra qué hosts están configurados y cuál es el actual
+```
+
+**Usar con otros comandos:**
+```bash
+make switch HOSTNAME=laptop  # Deploy a laptop
+make test HOSTNAME=vm        # Probar config de VM
+```
+
+---
+
+### Comandos de Validación
+
+#### `make validate`
+Valida la configuración antes de aplicarla (chequeos de sintaxis y evaluación).
+
+```bash
+make validate
+# 1/3 Checking flake syntax... ✓
+# 2/3 Checking configuration evaluation... ✓
+# 3/3 Checking for common issues... ⊘
+```
+
+#### `make safe-switch`
+Combo: valida y luego hace switch (la opción más segura).
+
+```bash
+make safe-switch
+# Valida primero, solo hace switch si todo está bien
+```
+
+#### `make health`
+Chequeo de salud del sistema completo (flake, store, disco, servicios, git).
+
+```bash
+make health
+# Revisa 7 aspectos del sistema
+```
+
+---
+
+### Comandos de Información
+
+#### `make generation-sizes`
+Muestra el tamaño en disco de cada generación del sistema.
+
+```bash
+make generation-sizes
+# Útil para ver qué generaciones ocupan más espacio
+```
+
+#### `make diff-generations`
+Compara la generación actual con la anterior (qué cambió).
+
+```bash
+make diff-generations
+# Muestra paquetes añadidos/eliminados/actualizados
+```
+
+#### `make diff-gen GEN1=N GEN2=M`
+Compara dos generaciones específicas.
+
+```bash
+make diff-gen GEN1=20 GEN2=25
+# Compara generación 20 vs 25
+```
+
+#### `make update-info`
+Muestra información sobre los inputs actuales del flake.
+
+```bash
+make update-info
+# Ve las versiones actuales de nixpkgs, hydenix, etc
+```
+
+#### `make diff-update`
+Muestra cambios en flake.lock después de un update.
+
+```bash
+make update
+make diff-update
+# Ve qué cambió exactamente
+```
+
+---
+
+### Comandos de Actualización
+
+#### `make update-input INPUT=nombre`
+Actualiza solo un input específico del flake.
+
+```bash
+make update-input INPUT=hydenix
+# Actualiza solo hydenix, no nixpkgs ni otros
+```
+
+**Inputs disponibles:**
+- nixpkgs
+- hydenix
+- nixos-hardware
+- mynixpkgs
+- opencode
+- zen-browser-flake
+
+---
+
+### Comandos de Búsqueda
+
+#### `make search PKG=nombre`
+Busca paquetes en nixpkgs.
+
+```bash
+make search PKG=firefox
+# Busca firefox en todos los paquetes disponibles
+```
+
+#### `make search-installed PKG=nombre`
+Busca en paquetes ya instalados en tu sistema.
+
+```bash
+make search-installed PKG=kitty
+# Verifica si kitty está instalado
+```
+
+---
+
+### Comandos de Ayuda
+
+#### `make help-advanced`
+Muestra ayuda avanzada con workflows completos y ejemplos.
+
+```bash
+make help-advanced
+# Guía de workflows: desarrollo diario, updates seguros, mantenimiento, etc
+```
+
+---
+
+### Comando de Performance
+
+#### `make benchmark`
+Mide el tiempo que tarda un rebuild (solo build, no switch).
+
+```bash
+make benchmark
+# Total time: 120s (2m 0s)
+```
+
+---
+
+### Correcciones Implementadas
+
+Los siguientes comandos fueron corregidos en esta actualización:
+
+1. **`make deep-clean`** - Ahora pide confirmación correctamente
+2. **`make format`** - Detecta qué formatter tienes instalado (nixpkgs-fmt o alejandra)
+3. **`make lint`** - Detecta si statix está instalado y da instrucciones claras
+4. **`make vm`** - Corregido para usar `nix build .#vm` (coincide con flake.nix)
+5. **`make hardware-scan`** - Genera archivo en `hosts/$(HOSTNAME)/` en lugar del root
+
+---
+
+### Status Mejorado
+
+El comando `make status` ahora muestra información mucho más detallada y organizada:
+
+```bash
+make status
+# ╔══════════════════════════════════════╗
+# ║      SYSTEM STATUS OVERVIEW          ║
+# ╚══════════════════════════════════════╝
+# 
+# 📍 Configuration
+# ├─ Host: hydenix
+# ├─ Flake: /home/ludus/dotfiles
+# └─ NixOS: 24.11
+#
+# 📦 Git Status
+# ├─ Branch: feature/reorganize-structure
+# ├─ Status: Uncommitted changes
+# │  M Makefile
+# └─ Last 3 commits: ...
+#
+# 💾 System Info
+# ├─ Store size: 45G
+# ├─ Current gen: 26
+# ├─ Total gens: 26
+# └─ Disk usage: 35% used
+```
+
+---
+
+### 💡 Flujos de Trabajo Nuevos
+
+**Flujo de Validación Segura:**
+```bash
+make validate       # Chequea sintaxis y config
+make test           # Prueba temporalmente  
+make safe-switch    # Valida y aplica
+```
+
+**Flujo de Health Check:**
+```bash
+make health         # Ver estado general
+make generation-sizes  # Ver uso de espacio
+make clean-week     # Limpiar si es necesario
+```
+
+**Flujo Multi-Host:**
+```bash
+make list-hosts     # Ver hosts disponibles
+make validate HOSTNAME=laptop  # Validar config de laptop
+make switch HOSTNAME=laptop    # Aplicar a laptop
+```
+
+---
+
 *Última actualización: 2026-01-11*
-*Versión: 1.0*
+*Versión: 2.0 - Con mejoras FASE 1 y FASE 2 implementadas*
 *Mantenedor: ludus*
 

@@ -8,8 +8,9 @@
 
 # Configuration
 FLAKE_DIR := .
-HOSTNAME := hydenix
+HOSTNAME ?= hydenix
 BACKUP_DIR := ~/nixos-backups
+AVAILABLE_HOSTS := hydenix laptop vm
 
 # Colors for pretty output
 RED := \033[0;31m
@@ -23,7 +24,43 @@ NC := \033[0m # No Color
 help: ## Show this help message
 	@printf "$(CYAN)NixOS Management Commands\n$(NC)"
 	@printf "==========================\n"
-	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z_-]+:.*##/ { printf "$(GREEN)%-15s$(NC) %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z_-]+:.*##/ { printf "$(GREEN)%-20s$(NC) %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+
+help-advanced: ## Show detailed help with examples and workflows
+	@printf "$(CYAN)╔════════════════════════════════════════════════════╗\n$(NC)"
+	@printf "$(CYAN)║   NixOS Management - Advanced Help & Workflows    ║\n$(NC)"
+	@printf "$(CYAN)╚════════════════════════════════════════════════════╝\n$(NC)"
+	@printf "\n$(GREEN)📚 Common Workflows:$(NC)\n"
+	@printf "  $(BLUE)Daily Development:$(NC)\n"
+	@printf "    make test              → Test changes without commitment\n"
+	@printf "    make switch            → Apply changes permanently\n"
+	@printf "    make rollback          → Undo if something breaks\n"
+	@printf "\n  $(BLUE)Safe Updates:$(NC)\n"
+	@printf "    make backup            → Create backup first\n"
+	@printf "    make update            → Update flake inputs\n"
+	@printf "    make diff-update       → See what changed\n"
+	@printf "    make validate          → Validate config\n"
+	@printf "    make test              → Test new config\n"
+	@printf "    make switch            → Apply if all good\n"
+	@printf "\n  $(BLUE)Maintenance:$(NC)\n"
+	@printf "    make health            → Check system health\n"
+	@printf "    make clean             → Clean old generations\n"
+	@printf "    make optimize          → Optimize store\n"
+	@printf "    make generation-sizes  → See space usage\n"
+	@printf "\n  $(BLUE)Multi-Host:$(NC)\n"
+	@printf "    make list-hosts        → See available hosts\n"
+	@printf "    make switch HOSTNAME=laptop  → Deploy to laptop\n"
+	@printf "\n$(GREEN)🔍 Discovery:$(NC)\n"
+	@printf "  make search PKG=neovim     → Search packages\n"
+	@printf "  make info                  → System information\n"
+	@printf "  make status                → Comprehensive status\n"
+	@printf "\n$(GREEN)🐛 Troubleshooting:$(NC)\n"
+	@printf "  make debug                 → Rebuild with full trace\n"
+	@printf "  make validate              → Check for issues\n"
+	@printf "  make watch-logs            → Monitor system logs\n"
+	@printf "  make emergency             → Maximum verbosity rebuild\n"
+	@printf "\n$(YELLOW)For full command list:$(NC) make help\n"
+	@printf "$(YELLOW)For tutorial:$(NC) less MAKEFILE_TUTORIAL.md\n\n"
 
 # === Building and Switching ===
 
@@ -35,6 +72,8 @@ switch: ## Build and switch to new configuration
 	@printf "$(BLUE)🔄 Git add, Building and switching to new configuration...\n$(NC)"
 	git add .
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
+
+safe-switch: validate switch ## Validate then switch (safest option)
 
 test: ## Build and test configuration (no switch)
 	@printf "$(YELLOW)🧪 Testing configuration (no switch)...\n$(NC)"
@@ -51,6 +90,96 @@ dry-run: ## Show what would be built/changed
 boot: ## Build and set as boot default (no immediate switch)
 	@printf "$(PURPLE)🥾 Setting configuration for next boot...\n$(NC)"
 	sudo nixos-rebuild boot --flake $(FLAKE_DIR)#$(HOSTNAME)
+
+# === Multi-Host Support ===
+
+list-hosts: ## List available host configurations
+	@printf "$(CYAN)📋 Available Hosts\n$(NC)"
+	@printf "=================\n"
+	@for host in $(AVAILABLE_HOSTS); do \
+		printf "  $(GREEN)%-15s$(NC) " $$host; \
+		if [ -d "hosts/$$host" ]; then \
+			printf "✓ configured"; \
+			if [ "$$host" = "$(HOSTNAME)" ]; then \
+				printf " $(YELLOW)(current)$(NC)"; \
+			fi; \
+			printf "\n"; \
+		else \
+			printf "$(RED)✗ not found$(NC)\n"; \
+		fi \
+	done
+	@printf "\n$(BLUE)Usage:$(NC) make switch HOSTNAME=<host>\n"
+	@printf "$(BLUE)Example:$(NC) make switch HOSTNAME=laptop\n"
+
+# === Validation ===
+
+validate: ## Validate configuration before switching
+	@printf "$(CYAN)🔍 Validation Checks\n$(NC)"
+	@printf "===================\n\n"
+	@printf "$(BLUE)1/3 Checking flake syntax...$(NC) "
+	@if nix flake check $(FLAKE_DIR) >/dev/null 2>&1; then \
+		printf "$(GREEN)✓$(NC)\n"; \
+	else \
+		printf "$(RED)✗$(NC)\n"; \
+		nix flake check $(FLAKE_DIR); \
+		exit 1; \
+	fi
+	@printf "$(BLUE)2/3 Checking configuration evaluation...$(NC) "
+	@if nix eval .#nixosConfigurations.$(HOSTNAME).config.system.build.toplevel >/dev/null 2>&1; then \
+		printf "$(GREEN)✓$(NC)\n"; \
+	else \
+		printf "$(RED)✗$(NC)\n"; \
+		nix eval .#nixosConfigurations.$(HOSTNAME).config.system.build.toplevel --show-trace; \
+		exit 1; \
+	fi
+	@printf "$(BLUE)3/3 Checking for common issues...$(NC) "
+	@if command -v statix >/dev/null 2>&1; then \
+		if statix check . >/dev/null 2>&1; then \
+			printf "$(GREEN)✓$(NC)\n"; \
+		else \
+			printf "$(YELLOW)⚠$(NC) (warnings found, see 'make lint')\n"; \
+		fi \
+	else \
+		printf "$(YELLOW)⊘$(NC) (statix not installed)\n"; \
+	fi
+	@printf "\n$(GREEN)✅ Validation passed\n$(NC)"
+
+health: ## Run comprehensive system health checks
+	@printf "$(CYAN)🏥 System Health Check\n$(NC)"
+	@printf "=====================\n\n"
+	@printf "$(BLUE)1. Flake validation:$(NC) "
+	@if nix flake check . >/dev/null 2>&1; then \
+		printf "$(GREEN)✓ Passed$(NC)\n"; \
+	else \
+		printf "$(RED)✗ Failed$(NC)\n"; \
+	fi
+	@printf "$(BLUE)2. Store consistency:$(NC) "
+	@if nix-store --verify --check-contents >/dev/null 2>&1; then \
+		printf "$(GREEN)✓ Healthy$(NC)\n"; \
+	else \
+		printf "$(YELLOW)⚠ Issues detected$(NC)\n"; \
+	fi
+	@printf "$(BLUE)3. Disk space (/nix):$(NC) "
+	@df -h /nix 2>/dev/null | tail -1 | awk '{printf "%s used (%s free)\n", $$5, $$4}'
+	@printf "$(BLUE)4. Generations count:$(NC) "
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l | awk '{print $$1 " generations"}'
+	@printf "$(BLUE)5. Boot entries:$(NC) "
+	@ls /boot/loader/entries/ 2>/dev/null | wc -l | awk '{print $$1 " entries"}' || printf "$(YELLOW)N/A$(NC)\n"
+	@printf "$(BLUE)6. Failed services:$(NC) "
+	@FAILED=$$(systemctl --failed --no-legend 2>/dev/null | wc -l); \
+	if [ $$FAILED -eq 0 ]; then \
+		printf "$(GREEN)✓ None$(NC)\n"; \
+	else \
+		printf "$(RED)✗ $$FAILED failed$(NC)\n"; \
+		printf "$(YELLOW)  Run 'systemctl --failed' for details$(NC)\n"; \
+	fi
+	@printf "$(BLUE)7. Git status:$(NC) "
+	@if git diff-index --quiet HEAD -- 2>/dev/null; then \
+		printf "$(GREEN)✓ Clean$(NC)\n"; \
+	else \
+		printf "$(YELLOW)⚠ Uncommitted changes$(NC)\n"; \
+	fi
+	@printf "\n$(GREEN)Health check complete$(NC)\n"
 
 # === Debugging ===
 
@@ -90,8 +219,8 @@ deep-clean: ## Aggressive cleanup (removes ALL old generations)
 	@printf "$(RED)🗑️  Performing deep cleanup...\n$(NC)"
 	@printf "$(YELLOW)⚠️  WARNING: This will remove ALL old system generations!\n$(NC)"
 	@printf "$(YELLOW)This is irreversible and you won't be able to rollback!\n$(NC)"
-	@read -p "Are you absolutely sure? Type 'yes' to continue: " -r; \
-	printf "\n"; \
+	@printf "Type 'yes' to continue: "; \
+	read -r REPLY; \
 	if [ "$$REPLY" = "yes" ]; then \
 		sudo nix-collect-garbage -d; \
 		nix-collect-garbage -d; \
@@ -115,6 +244,19 @@ optimize: ## Optimize nix store
 	sudo nix-store --optimise
 	@printf "$(GREEN)✅ Store optimization complete\n$(NC)"
 
+generation-sizes: ## Show disk usage per generation
+	@printf "$(CYAN)💾 Generation Disk Usage\n$(NC)"
+	@printf "=======================\n"
+	@if ls /nix/var/nix/profiles/system-*-link >/dev/null 2>&1; then \
+		du -sh /nix/var/nix/profiles/system-*-link 2>/dev/null | \
+		sort -h | \
+		tail -15 | \
+		awk '{printf "  %s\t%s\n", $$1, $$2}'; \
+		printf "\n$(BLUE)Showing last 15 generations by size$(NC)\n"; \
+	else \
+		printf "$(YELLOW)No generations found$(NC)\n"; \
+	fi
+
 # === Updates ===
 
 update: ## Update flake inputs
@@ -130,6 +272,45 @@ update-hydenix: ## Update only hydenix input
 	@printf "$(BLUE)📦 Updating hydenix...\n$(NC)"
 	nix flake lock --update-input hydenix $(FLAKE_DIR)
 
+update-input: ## Update specific flake input (use INPUT=name)
+	@if [ -z "$(INPUT)" ]; then \
+		printf "$(RED)Error: INPUT variable required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make update-input INPUT=hydenix$(NC)\n"; \
+		printf "$(BLUE)Available inputs:$(NC)\n"; \
+		printf "  - nixpkgs\n"; \
+		printf "  - hydenix\n"; \
+		printf "  - nixos-hardware\n"; \
+		printf "  - mynixpkgs\n"; \
+		printf "  - opencode\n"; \
+		printf "  - zen-browser-flake\n"; \
+		exit 1; \
+	fi
+	@printf "$(BLUE)📦 Updating input: $(INPUT)\n$(NC)"
+	nix flake lock --update-input $(INPUT)
+	@printf "$(GREEN)✅ Input '$(INPUT)' updated\n$(NC)"
+	@printf "$(YELLOW)Run 'make diff-update' to see changes$(NC)\n"
+
+update-info: ## Show current flake input information
+	@printf "$(CYAN)📦 Current Flake Inputs\n$(NC)"
+	@printf "======================\n"
+	@nix flake metadata --json | \
+		grep -E '"(url|lastModified)"' | \
+		sed 's/"//g' | \
+		sed 's/,//g' | \
+		awk '{print $$1, $$2}'
+	@printf "\n$(BLUE)To update:$(NC) make update\n"
+	@printf "$(BLUE)To update specific input:$(NC) make update-input INPUT=<name>\n"
+
+diff-update: ## Show changes in flake.lock after update
+	@printf "$(CYAN)📊 Flake Lock Differences\n$(NC)"
+	@printf "=========================\n"
+	@if git diff --quiet flake.lock; then \
+		printf "$(YELLOW)No changes in flake.lock\n$(NC)"; \
+		printf "$(BLUE)Tip: Run 'make update' first\n$(NC)"; \
+	else \
+		git diff flake.lock; \
+	fi
+
 upgrade: ## Update and rebuild
 	@printf "$(BLUE)🆙 Updating and rebuilding...\n$(NC)"
 	@make update
@@ -139,12 +320,34 @@ upgrade: ## Update and rebuild
 
 format: ## Format nix files
 	@printf "$(CYAN)💅 Formatting nix files...\n$(NC)"
-	find . -name "*.nix" -not -path "*/.*" -exec nixpkgs-fmt {} \;
-	@printf "$(GREEN)✅ Formatting complete\n$(NC)"
+	@if command -v nixpkgs-fmt >/dev/null 2>&1; then \
+		find . -name "*.nix" -not -path "*/.*" -exec nixpkgs-fmt {} \; ; \
+		printf "$(GREEN)✅ Formatting complete\n$(NC)"; \
+	elif command -v alejandra >/dev/null 2>&1; then \
+		alejandra . ; \
+		printf "$(GREEN)✅ Formatting complete (alejandra)\n$(NC)"; \
+	else \
+		printf "$(YELLOW)⚠️  No formatter found\n$(NC)"; \
+		printf "$(BLUE)Install with: nix-shell -p nixpkgs-fmt\n$(NC)"; \
+		printf "$(BLUE)Or use: nix fmt (if configured)\n$(NC)"; \
+		exit 1; \
+	fi
 
-lint: ## Lint nix files
+lint: ## Lint nix files (requires statix)
 	@printf "$(CYAN)🔍 Linting nix files...\n$(NC)"
-	find . -name "*.nix" -not -path "*/.*" -exec statix check {} \; || printf "$(YELLOW)Note: Install 'statix' for linting\n$(NC)"
+	@if command -v statix >/dev/null 2>&1; then \
+		statix check . ; \
+		if [ $$? -eq 0 ]; then \
+			printf "$(GREEN)✅ Linting complete - no issues found\n$(NC)"; \
+		else \
+			printf "$(YELLOW)⚠️  Linting found issues (see above)\n$(NC)"; \
+		fi \
+	else \
+		printf "$(YELLOW)⚠️  statix not found\n$(NC)"; \
+		printf "$(BLUE)Install with: nix-shell -p statix\n$(NC)"; \
+		printf "$(BLUE)Or run directly: nix run nixpkgs#statix check .\n$(NC)"; \
+		exit 1; \
+	fi
 
 # === Backup and Restore ===
 
@@ -161,6 +364,37 @@ list-generations: ## List system generations
 rollback: ## Rollback to previous generation
 	@printf "$(YELLOW)⏪ Rolling back to previous generation...\n$(NC)"
 	sudo nixos-rebuild switch --rollback
+
+diff-generations: ## Compare current with previous generation
+	@printf "$(CYAN)📊 Comparing Generations\n$(NC)"
+	@printf "========================\n"
+	@if command -v nix >/dev/null 2>&1 && nix store diff-closures --help >/dev/null 2>&1; then \
+		CURRENT=$$(readlink /nix/var/nix/profiles/system); \
+		PREVIOUS=$$(readlink /nix/var/nix/profiles/system-*-link 2>/dev/null | tail -2 | head -1); \
+		if [ -n "$$PREVIOUS" ]; then \
+			printf "$(BLUE)Previous → Current$(NC)\n"; \
+			nix store diff-closures $$PREVIOUS $$CURRENT; \
+		else \
+			printf "$(YELLOW)No previous generation found$(NC)\n"; \
+		fi \
+	else \
+		printf "$(YELLOW)nix store diff-closures not available$(NC)\n"; \
+	fi
+
+diff-gen: ## Compare two specific generations (use GEN1=N GEN2=M)
+	@if [ -z "$(GEN1)" ] || [ -z "$(GEN2)" ]; then \
+		printf "$(RED)Error: Specify both generations$(NC)\n"; \
+		printf "$(YELLOW)Usage: make diff-gen GEN1=184 GEN2=186$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(CYAN)📊 Comparing Generation $(GEN1) → $(GEN2)\n$(NC)"
+	@GEN1_PATH=$$(ls /nix/var/nix/profiles/system-$(GEN1)-link 2>/dev/null); \
+	GEN2_PATH=$$(ls /nix/var/nix/profiles/system-$(GEN2)-link 2>/dev/null); \
+	if [ -n "$$GEN1_PATH" ] && [ -n "$$GEN2_PATH" ]; then \
+		nix store diff-closures $$GEN1_PATH $$GEN2_PATH; \
+	else \
+		printf "$(RED)One or both generations not found$(NC)\n"; \
+	fi
 
 # === Git Integration (with GitHub CLI) ===
 
@@ -179,7 +413,7 @@ git-push: ## Push to remote using GitHub CLI
 
 git-status: ## Show git status with GitHub CLI
 	@printf "$(CYAN)📊 Repository Status:\n$(NC)"
-	@gh repo view --json nameWithOwner -q .nameWithOwner
+	@gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || printf "$(YELLOW)Not a GitHub repo$(NC)\n"
 	@printf "\n$(BLUE)Local changes:\n$(NC)"
 	@git status --short
 
@@ -201,15 +435,60 @@ info: ## Show system information
 	@printf "$(BLUE)Flake Location:$(NC) $(PWD)\n"
 	@printf "$(BLUE)Store Size:$(NC) $(shell du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')\n"
 
-status: ## Show git and system status
-	@printf "$(CYAN)📊 Status Overview\n$(NC)"
-	@printf "==================\n"
-	@printf "$(BLUE)Git Status:\n$(NC)"
-	@git status --short || printf "Not a git repository\n"
-	@printf "\n$(BLUE)Uncommitted Changes:\n$(NC)"
-	@git diff --name-only || printf "Not a git repository\n"
+status: ## Show comprehensive system status
+	@printf "$(CYAN)╔══════════════════════════════════════╗\n$(NC)"
+	@printf "$(CYAN)║      SYSTEM STATUS OVERVIEW          ║\n$(NC)"
+	@printf "$(CYAN)╚══════════════════════════════════════╝\n$(NC)"
+	@printf "\n$(PURPLE)📍 Configuration$(NC)\n"
+	@printf "├─ Host: $(HOSTNAME)\n"
+	@printf "├─ Flake: $(PWD)\n"
+	@printf "└─ NixOS: $$(nixos-version 2>/dev/null || echo 'N/A')\n"
+	@printf "\n$(BLUE)📦 Git Status$(NC)\n"
+	@if git rev-parse --git-dir > /dev/null 2>&1; then \
+		printf "├─ Branch: $$(git branch --show-current)\n"; \
+		printf "├─ Status: "; \
+		if git diff-index --quiet HEAD -- 2>/dev/null; then \
+			printf "$(GREEN)Clean$(NC)\n"; \
+		else \
+			printf "$(YELLOW)Uncommitted changes$(NC)\n"; \
+		fi; \
+		git status --short | head -5 | sed 's/^/│  /'; \
+		printf "└─ Last 3 commits:\n"; \
+		git log --oneline -3 | sed 's/^/   /'; \
+	else \
+		printf "$(YELLOW)Not a git repository$(NC)\n"; \
+	fi
+	@printf "\n$(BLUE)💾 System Info$(NC)\n"
+	@printf "├─ Store size: $$(du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')\n"
+	@printf "├─ Current gen: $$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1}' || echo 'N/A')\n"
+	@printf "├─ Total gens: $$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo 'N/A')\n"
+	@printf "└─ Disk usage: $$(df -h /nix 2>/dev/null | tail -1 | awk '{print $$5 " used"}' || echo 'N/A')\n"
+	@printf "\n$(BLUE)🔄 Recent Generations$(NC)\n"
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -5 | sed 's/^/  /' || printf "  $(YELLOW)None$(NC)\n"
 	@printf "\n"
-	@make info
+
+# === Search and Discovery ===
+
+search: ## Search for packages in nixpkgs (use PKG=name)
+	@if [ -z "$(PKG)" ]; then \
+		printf "$(RED)Error: PKG variable required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make search PKG=firefox$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(CYAN)🔍 Searching for: $(PKG)\n$(NC)"
+	@printf "================================\n"
+	@nix search nixpkgs $(PKG)
+
+search-installed: ## Search in currently installed packages (use PKG=name)
+	@if [ -z "$(PKG)" ]; then \
+		printf "$(RED)Error: PKG variable required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make search-installed PKG=firefox$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(CYAN)🔍 Searching installed packages for: $(PKG)\n$(NC)"
+	@nix-env -q | grep -i "$(PKG)" || printf "$(YELLOW)Not found in user environment$(NC)\n"
+	@printf "\n$(BLUE)System packages:$(NC)\n"
+	@nix-store -q --references /run/current-system | grep -i "$(PKG)" | head -20 || printf "$(YELLOW)Not found in system$(NC)\n"
 
 # === Quick Actions ===
 
@@ -221,13 +500,28 @@ emergency: ## Emergency rebuild with maximum verbosity
 	@printf "$(RED)🚨 Emergency rebuild with full debugging...\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose --option eval-cache false
 
+benchmark: ## Time the rebuild process (build only)
+	@printf "$(BLUE)⏱️  Benchmarking Build Process\n$(NC)"
+	@printf "================================\n"
+	@printf "$(YELLOW)Starting benchmark...\n$(NC)"
+	@START=$$(date +%s); \
+	sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME); \
+	END=$$(date +%s); \
+	DURATION=$$((END - START)); \
+	printf "\n$(GREEN)✅ Benchmark Complete\n$(NC)"; \
+	printf "$(CYAN)Total time: $${DURATION}s ($$((DURATION / 60))m $$((DURATION % 60))s)\n$(NC)"
+
 # === Hardware ===
 
 hardware-scan: ## Re-scan hardware configuration
-	@printf "$(BLUE)🔧 Scanning hardware configuration...\n$(NC)"
-	sudo nixos-generate-config --show-hardware-config > hardware-configuration-new.nix
-	@printf "$(YELLOW)New hardware config saved as hardware-configuration-new.nix\n$(NC)"
-	@printf "$(YELLOW)Review and replace hardware-configuration.nix if needed\n$(NC)"
+	@printf "$(BLUE)🔧 Scanning hardware configuration for $(HOSTNAME)...\n$(NC)"
+	@sudo nixos-generate-config --show-hardware-config > hosts/$(HOSTNAME)/hardware-configuration-new.nix
+	@printf "$(YELLOW)New hardware config saved as:\n$(NC)"
+	@printf "  hosts/$(HOSTNAME)/hardware-configuration-new.nix\n"
+	@printf "$(CYAN)To review differences:\n$(NC)"
+	@printf "  diff hosts/$(HOSTNAME)/hardware-configuration.nix hosts/$(HOSTNAME)/hardware-configuration-new.nix\n"
+	@printf "$(CYAN)To apply:\n$(NC)"
+	@printf "  mv hosts/$(HOSTNAME)/hardware-configuration-new.nix hosts/$(HOSTNAME)/hardware-configuration.nix\n"
 
 # === Monitoring ===
 
@@ -248,10 +542,12 @@ shell: ## Enter development shell
 	@printf "$(CYAN)🐚 Entering development shell...\n$(NC)"
 	nix develop $(FLAKE_DIR)
 
-vm: ## Build and run VM (if configured)
-	@printf "$(BLUE)🖥️  Building and starting VM...\n$(NC)"
-	nixos-rebuild build-vm --flake $(FLAKE_DIR)#$(HOSTNAME)
-	./result/bin/run-*-vm
+vm: ## Build and run VM
+	@printf "$(BLUE)🖥️  Building VM...\n$(NC)"
+	nix build .#vm
+	@printf "$(GREEN)✅ VM built successfully\n$(NC)"
+	@printf "$(CYAN)Starting VM...\n$(NC)"
+	./result/bin/run-nixos-vm
 
 # === Migration Helpers ===
 
@@ -262,4 +558,3 @@ progress: ## Show migration progress from AGENTS.md
 phases: ## Show current phase tasks
 	@printf "$(CYAN)📋 Current Phase Tasks:\n$(NC)"
 	@grep -A 20 "### 🔄" AGENTS.md | head -25 || printf "No current phase found\n"
-
