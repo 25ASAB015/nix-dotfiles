@@ -44,6 +44,18 @@
   };
 
   # ════════════════════════════════════════════════════════════════════════════
+  # NIX DEVELOPMENT TOOLS - Linters y formatters para desarrollo en Nix
+  # ════════════════════════════════════════════════════════════════════════════
+  # Herramientas necesarias para `make format` y `make lint`
+  # - nixpkgs-fmt/alejandra: formatea archivos .nix
+  # - statix: linter estático para Nix (detecta problemas y malas prácticas)
+  modules.development.nix-tools = {
+    enable = true;
+    formatter = "nixpkgs-fmt";  # o "alejandra"
+    installLinter = true;        # instala statix
+  };
+
+  # ════════════════════════════════════════════════════════════════════════════
   # ATUIN - Historial de shell mejorado con búsqueda fuzzy
   # ════════════════════════════════════════════════════════════════════════════
   # Uso: Ctrl+R para buscar en historial
