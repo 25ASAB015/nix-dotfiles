@@ -40,13 +40,14 @@
     let
       # Main desktop PC configuration
       hydenixConfig = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        # Modern syntax (replaces deprecated 'system')
+        modules = [
+          { nixpkgs.hostPlatform = "x86_64-linux"; }
+          ./hosts/hydenix/configuration.nix
+        ];
         specialArgs = {
           inherit inputs;
         };
-        modules = [
-          ./hosts/hydenix/configuration.nix
-        ];
       };
       
       # VM configuration (using hydenix lib)
