@@ -946,6 +946,93 @@ make progress
 
 ## Flujos de Trabajo Comunes
 
+### 🎯 Flujo de Trabajo Recomendado (NUEVO)
+
+Elige el flujo según el tipo de cambio que estás haciendo:
+
+#### **Desarrollo Iterativo** (cambios frecuentes y pequeños)
+
+Para cuando estás probando cosas y haciendo cambios rápidos:
+
+```bash
+# 1. Hacer cambios
+nano modules/hm/hydenix-config.nix
+
+# 2. Validar (rápido, sin aplicar)
+make validate
+
+# 3. Si pasa, aplicar
+make switch
+
+# 4. Si falla algo, rollback
+make rollback
+```
+
+**Ventajas:**
+- ⚡ Rápido (validate es más rápido que safe-switch)
+- 🔍 Ves exactamente qué validación falla
+- 🎯 Separas validación de aplicación
+
+**Cuándo usarlo:**
+- Cambios de configuración pequeños
+- Ajustes de valores
+- Iteración rápida durante desarrollo
+
+---
+
+#### **Cambios Importantes** (más seguro)
+
+Para cambios que requieren más cuidado:
+
+```bash
+# 1. Hacer cambios
+nano modules/hm/programs/development/nix-tools.nix
+
+# 2. Validar + aplicar en un solo paso
+make safe-switch
+
+# 3. Listo! (o rollback si algo falla)
+```
+
+**Ventajas:**
+- 🛡️ Más seguro (valida antes de aplicar automáticamente)
+- 🎯 Todo-en-uno (un solo comando)
+- ✅ No aplica si hay errores
+
+**Cuándo usarlo:**
+- Módulos nuevos completos
+- Cambios en múltiples archivos
+- Imports nuevos
+- Después de updates
+- Cuando no estás 100% seguro
+
+---
+
+#### **Testing Antes de Producción**
+
+Para experimentar sin riesgo:
+
+```bash
+# 1. Test temporal (no persiste al reboot)
+make test
+
+# 2. Si funciona bien, hacer permanente
+make safe-switch
+```
+
+**Ventajas:**
+- 🔬 Experimentación sin riesgo
+- 🔄 Los cambios se revierten al reiniciar
+- ✅ Pruebas en ambiente "real" pero temporal
+
+**Cuándo usarlo:**
+- Configuraciones experimentales
+- Probar software nuevo
+- Verificar compatibilidad
+- Antes de commits importantes
+
+---
+
 ### 📅 Flujo Diario Básico
 
 ```bash
@@ -1410,6 +1497,12 @@ Combo: valida y luego hace switch (la opción más segura).
 make safe-switch
 # Valida primero, solo hace switch si todo está bien
 ```
+
+**Diferencias con `make switch`:**
+- `make switch` → Aplica directo (rápido)
+- `make safe-switch` → Valida primero, luego aplica (seguro)
+
+**Ver:** [Flujo de Trabajo Recomendado](#flujo-de-trabajo-recomendado-nuevo) para saber cuándo usar cada uno.
 
 #### `make health`
 Chequeo de salud del sistema completo (flake, store, disco, servicios, git).
@@ -2219,9 +2312,10 @@ Esto te permite encontrar información de diferentes formas según tu necesidad:
 ---
 
 *Última actualización: 2026-01-11*  
-*Versión: 5.0 - Sistema de Ayuda Híbrido Implementado*  
+*Versión: 5.1 - Flujos de Trabajo Recomendados Añadidos*  
 *Total de comandos: 83+*  
 *Sistema de ayuda: 3 niveles (help, help-examples, help-advanced)*  
 *Fases completadas: 100% (FASE 1, 2, 3 + extras)*  
-*Mantenedor: ludus*
+*Mantenedor: ludus*  
+*Nueva sección: Flujo de Trabajo Recomendado (switch vs safe-switch)*
 
