@@ -13,7 +13,7 @@
       # CONFIGURACIONES
       # ══════════════════════════════════════════════════════════════════════════
       ./hydenix-config.nix # Configuración de todos los módulos modules.*
-    ] ++ import ./programs/browsers;
+    ];
 
   # ════════════════════════════════════════════════════════════════════════════
   # HOME MANAGER - Paquetes adicionales
