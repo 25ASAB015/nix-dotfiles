@@ -1696,6 +1696,107 @@ make compare-hosts HOST1=hydenix HOST2=laptop
 
 ---
 
+### 🔍 Comandos de Build Analysis
+
+#### `make why-depends PKG=nombre`
+Muestra por qué el sistema depende de un paquete específico (cadena de dependencias).
+
+```bash
+make why-depends PKG=firefox
+# Muestra la cadena de dependencias completa
+# /nix/store/...-nixos-system
+# └─ /nix/store/...-firefox
+#    └─ /nix/store/...-gtk3
+#       └─ etc...
+```
+
+**Útil para:**
+- Entender por qué algo está instalado
+- Depurar dependencias no deseadas
+- Optimizar el closure del sistema
+
+#### `make build-trace`
+Muestra qué se construiría con información completa de derivaciones.
+
+```bash
+make build-trace
+# will be built:
+#   /nix/store/...-package-1.0
+# will be fetched:
+#   /nix/store/...-package-2.0
+# evaluating...
+```
+
+**Útil para:**
+- Ver qué se compilaría vs qué se descargaría
+- Debugging de builds lentas
+- Planear rebuilds grandes
+
+#### `make closure-size`
+Muestra el tamaño del closure del sistema y los 10 paquetes más grandes.
+
+```bash
+make closure-size
+# System Closure Size
+# /run/current-system: 8.2G
+# 
+# Top 10 largest packages:
+#   1.2G  /nix/store/...-linux-kernel
+#   856M  /nix/store/...-gcc
+#   642M  /nix/store/...-llvm
+```
+
+**Útil para:**
+- Identificar qué consume más espacio
+- Optimizar el sistema
+- Decidir qué desinstalar
+
+---
+
+### 🛠️ Comandos de Quick Fixes
+
+#### `make fix-permissions`
+Corrige problemas comunes de permisos en `~/.config` y `~/.local`.
+
+```bash
+make fix-permissions
+# 🔧 Fixing Permissions
+# This requires sudo...
+# ✅ Permissions fixed
+```
+
+**Cuándo usarlo:**
+- Después de errores de "permission denied"
+- Problemas con aplicaciones que no pueden escribir configs
+- Después de cambiar de usuario
+
+**Qué hace:**
+```bash
+sudo chown -R $USER:users ~/.config
+sudo chown -R $USER:users ~/.local
+```
+
+#### `make fix-store`
+Intenta reparar problemas en el Nix store.
+
+```bash
+make fix-store
+# 🔧 Repairing Nix Store
+# This will verify and repair the store...
+# checking path '/nix/store/...'
+# ✅ Store repair complete
+```
+
+**Cuándo usarlo:**
+- Errores de "hash mismatch"
+- Corrupción del store
+- Después de apagones o crashes
+- Problemas extraños al compilar
+
+**⚠️ Advertencia:** Puede tardar varios minutos
+
+---
+
 ### 🔧 Comandos Utilitarios
 
 #### `make clean-result`
@@ -1843,6 +1944,66 @@ make diff-flake
 
 ---
 
+### Flujo de Build Analysis
+
+```bash
+# ¿Por qué tengo este paquete instalado?
+make why-depends PKG=firefox
+
+# ¿Qué se compilaría si hago rebuild?
+make build-trace
+
+# ¿Qué consume más espacio?
+make closure-size
+
+# Optimizar basado en resultados
+make clean
+```
+
+---
+
+### Flujo de Troubleshooting Avanzado
+
+```bash
+# Problemas de permisos
+make fix-permissions
+
+# Errores extraños en el store
+make fix-store
+
+# Ver errores del sistema
+make logs-errors
+
+# Ver logs de boot si hay problemas al iniciar
+make logs-boot
+
+# Verificar salud general
+make health
+```
+
+---
+
+### Flujo de Optimización de Espacio
+
+```bash
+# 1. Ver qué ocupa más espacio
+make closure-size
+
+# 2. Ver tamaño de generaciones
+make generation-sizes
+
+# 3. Limpiar generaciones antiguas
+make clean-week
+
+# 4. Optimizar el store
+make optimize
+
+# 5. Verificar resultado
+make info
+```
+
+---
+
 ## 📊 Resumen: Todos los Comandos Disponibles
 
 ### Construcción y Despliegue (11)
@@ -1860,7 +2021,7 @@ make diff-flake
 ### Formateo y Linting (2)
 - format, lint
 
-### Backup y Restore (4)
+### Backup y Restore (5)
 - backup, list-generations, rollback, diff-generations, diff-gen
 
 ### Git Integration (5)
@@ -1878,7 +2039,7 @@ make diff-flake
 ### Hardware (1)
 - hardware-scan
 
-### Monitoring (3)
+### Monitoring (5)
 - watch-logs, watch-rebuild, logs-boot, logs-errors, logs-service
 
 ### Advanced (3)
@@ -1902,18 +2063,38 @@ make diff-flake
 ### Diff Tools (3)
 - diff-config, diff-flake, compare-hosts
 
+### Build Analysis (3) ⭐ NUEVO
+- why-depends, build-trace, closure-size
+
+### Quick Fixes (2) ⭐ NUEVO
+- fix-permissions, fix-store
+
 ### Utilidades (2)
 - clean-result, tree
 
 ### Migration Helpers (2)
 - progress, phases
 
-**Total: ~70+ comandos disponibles** 🎉
+**Total: 75+ comandos disponibles** 🎉
 
 ---
 
-*Última actualización: 2026-01-11*
-*Versión: 3.0 - Con mejoras FASE 1, FASE 2 y FASE 3 completadas*
-*Total de comandos: 70+*
+## 🏆 Implementación Completa Finalizada
+
+Todas las mejoras planificadas han sido implementadas exitosamente:
+- ✅ **FASE 1:** 5 correcciones críticas
+- ✅ **FASE 2:** 8 mejoras importantes  
+- ✅ **FASE 3:** 14 ampliaciones seleccionadas
+- ✅ **Build Analysis:** 3 comandos (why-depends, build-trace, closure-size)
+- ✅ **Quick Fixes:** 2 comandos (fix-permissions, fix-store)
+
+**Total implementado: 32 mejoras**
+
+---
+
+*Última actualización: 2026-01-11*  
+*Versión: 4.0 - IMPLEMENTACIÓN COMPLETA*  
+*Total de comandos: 75+*  
+*Fases completadas: 100% (FASE 1, 2, 3 + extras)*  
 *Mantenedor: ludus*
 

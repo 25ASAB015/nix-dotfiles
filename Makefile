@@ -761,6 +761,59 @@ compare-hosts: ## Compare two host configurations (use HOST1=a HOST2=b)
 	@printf "=====================================\n"
 	@diff -u hosts/$(HOST1)/configuration.nix hosts/$(HOST2)/configuration.nix || true
 
+# === Build Analysis ===
+
+why-depends: ## Show why system depends on a package (use PKG=name)
+	@if [ -z "$(PKG)" ]; then \
+		printf "$(RED)Error: PKG variable required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make why-depends PKG=firefox$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(CYAN)🔍 Dependency Chain for: $(PKG)\n$(NC)"
+	@printf "================================\n"
+	@PKG_PATH=$$(nix-store -q --references /run/current-system | grep -i "$(PKG)" | head -1); \
+	if [ -n "$$PKG_PATH" ]; then \
+		nix why-depends /run/current-system $$PKG_PATH; \
+	else \
+		printf "$(YELLOW)Package not found in current system$(NC)\n"; \
+		printf "$(BLUE)Searching in store...$(NC)\n"; \
+		nix-store -q --references /run/current-system | grep -i "$(PKG)" | head -5; \
+	fi
+
+build-trace: ## Show what would be built with full derivation info
+	@printf "$(CYAN)🔨 Build Trace\n$(NC)"
+	@printf "=============\n"
+	@nix build .#nixosConfigurations.$(HOSTNAME).config.system.build.toplevel --dry-run --show-trace 2>&1 | \
+		grep -E "(will be built|will be fetched|evaluating)" | \
+		head -50
+
+closure-size: ## Show closure size of current system
+	@printf "$(CYAN)📊 System Closure Size\n$(NC)"
+	@printf "======================\n"
+	@nix path-info -Sh /run/current-system | head -1
+	@printf "\n$(BLUE)Top 10 largest packages:$(NC)\n"
+	@nix path-info -rSh /run/current-system | \
+		sort -k2 -h | \
+		tail -10 | \
+		awk '{printf "  %8s  %s\n", $$2, $$1}'
+
+# === Quick Fixes ===
+
+fix-permissions: ## Fix common permission issues
+	@printf "$(CYAN)🔧 Fixing Permissions\n$(NC)"
+	@printf "====================\n"
+	@printf "$(YELLOW)This requires sudo...$(NC)\n"
+	@sudo chown -R $$USER:users ~/.config 2>/dev/null || true
+	@sudo chown -R $$USER:users ~/.local 2>/dev/null || true
+	@printf "$(GREEN)✅ Permissions fixed$(NC)\n"
+
+fix-store: ## Attempt to repair nix store
+	@printf "$(CYAN)🔧 Repairing Nix Store\n$(NC)"
+	@printf "=====================\n"
+	@printf "$(YELLOW)This will verify and repair the store...$(NC)\n"
+	@nix-store --verify --check-contents --repair
+	@printf "$(GREEN)✅ Store repair complete\n$(NC)"
+
 # === Utilities ===
 
 clean-result: ## Remove result symlinks
