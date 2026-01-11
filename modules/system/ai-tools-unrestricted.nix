@@ -66,18 +66,26 @@
   };
 
   # ══════════════════════════════════════════════════════════════════════════
-  # SUDO - Sin restricciones para wheel
+  # SUDO - CON CONTRASEÑA + TIMEOUT (Opción 2 - Balance seguridad/comodidad)
+  # Ver SECURITY_SUDO.md para más opciones de configuración
   # ══════════════════════════════════════════════════════════════════════════
   security.sudo = {
     enable = true;
-    wheelNeedsPassword = false; # wheel sin contraseña (CAMBIAR SI QUIERES SEGURIDAD)
+    wheelNeedsPassword = true; # Requiere contraseña (más seguro)
     extraConfig = ''
       # Mantener variables de entorno importantes
       Defaults env_keep += "SSH_AUTH_SOCK"
       Defaults env_keep += "NIX_PATH"
       Defaults env_keep += "HOME"
+      
+      # Recordar contraseña por 10 minutos después de ingresarla
+      Defaults timestamp_timeout=10
+      
+      # Una contraseña vale para todas las terminales abiertas
+      Defaults !tty_tickets
+      
+      # No mostrar mensaje de advertencia cada vez
       Defaults !lecture
-      Defaults !authenticate
     '';
   };
 
