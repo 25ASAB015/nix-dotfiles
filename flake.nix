@@ -38,23 +38,29 @@
   outputs =
     { ... }@inputs:
     let
+      # Main desktop PC configuration
       hydenixConfig = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
         };
         modules = [
-          ./configuration.nix
+          ./hosts/hydenix/configuration.nix
         ];
       };
+      
+      # VM configuration (using hydenix lib)
       vmConfig = inputs.hydenix.lib.vmConfig {
         inherit inputs;
         nixosConfiguration = hydenixConfig;
       };
     in
     {
+      # Main host configuration
       nixosConfigurations.hydenix = hydenixConfig;
       nixosConfigurations.default = hydenixConfig;
+      
+      # VM package
       packages."x86_64-linux".vm = vmConfig.config.system.build.vm;
     };
 }
