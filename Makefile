@@ -549,6 +549,236 @@ vm: ## Build and run VM
 	@printf "$(CYAN)Starting VM...\n$(NC)"
 	./result/bin/run-nixos-vm
 
+# === Changelog and History ===
+
+changelog: ## Show recent changes from git log
+	@printf "$(CYAN)📝 Recent Changes\n$(NC)"
+	@printf "================\n\n"
+	@git log --pretty=format:"$(GREEN)%h$(NC) - %s $(BLUE)(%ar by %an)$(NC)" --max-count=20 2>/dev/null || \
+		printf "$(YELLOW)Not a git repository$(NC)\n"
+
+changelog-detailed: ## Show detailed changelog with diffs
+	@printf "$(CYAN)📝 Detailed Changelog (Last 10 commits)\n$(NC)"
+	@printf "======================================\n\n"
+	@git log --pretty=format:"$(GREEN)%h$(NC) - %s%n$(BLUE)Date: %ad | Author: %an$(NC)%n" \
+		--date=short --max-count=10 2>/dev/null || \
+		printf "$(YELLOW)Not a git repository$(NC)\n"
+
+# === Package Information ===
+
+packages: ## List all installed packages
+	@printf "$(CYAN)📦 Installed Packages\n$(NC)"
+	@printf "====================\n\n"
+	@printf "$(BLUE)User packages:$(NC)\n"
+	@nix-env -q | sort | sed 's/^/  /' || printf "  $(YELLOW)None$(NC)\n"
+	@printf "\n$(BLUE)System packages (count):$(NC) "
+	@nix-store -q --references /run/current-system | wc -l
+	@printf "\n$(YELLOW)Tip: Use 'make search-installed PKG=name' to find specific package$(NC)\n"
+
+version: ## Show NixOS and flake versions
+	@printf "$(CYAN)📌 Version Information\n$(NC)"
+	@printf "=====================\n"
+	@printf "$(BLUE)NixOS:$(NC) $$(nixos-version 2>/dev/null || echo 'N/A')\n"
+	@printf "$(BLUE)Nix:$(NC) $$(nix --version 2>/dev/null || echo 'N/A')\n"
+	@printf "$(BLUE)Hostname:$(NC) $(HOSTNAME)\n"
+	@printf "$(BLUE)System:$(NC) $$(uname -sm)\n"
+	@printf "\n$(BLUE)Flake inputs versions:$(NC)\n"
+	@nix flake metadata --json 2>/dev/null | \
+		grep -o '"lastModified":[0-9]*' | \
+		head -5 || printf "  $(YELLOW)Unable to read$(NC)\n"
+
+current-generation: ## Show current generation details
+	@printf "$(CYAN)📍 Current Generation\n$(NC)"
+	@printf "====================\n"
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | tail -1
+	@printf "\n$(BLUE)Activation date:$(NC) "
+	@stat -c %y /run/current-system 2>/dev/null | cut -d'.' -f1 || echo "N/A"
+	@printf "$(BLUE)Closure size:$(NC) "
+	@nix path-info -Sh /run/current-system 2>/dev/null | awk '{print $$2}' || echo "N/A"
+
+hosts-info: ## Show info about all configured hosts
+	@printf "$(CYAN)📋 Configured Hosts\n$(NC)"
+	@printf "===================\n"
+	@for host in $(AVAILABLE_HOSTS); do \
+		printf "\n$(GREEN)$${host}$(NC)"; \
+		if [ "$$host" = "$(HOSTNAME)" ]; then \
+			printf " $(YELLOW)(current)$(NC)"; \
+		fi; \
+		printf "\n"; \
+		if [ -f "hosts/$$host/configuration.nix" ]; then \
+			printf "  Status: $(GREEN)✓$(NC) configured\n"; \
+			printf "  Path: hosts/$$host/\n"; \
+			printf "  Files: "; \
+			ls hosts/$$host/ 2>/dev/null | wc -l; \
+		else \
+			printf "  Status: $(RED)✗$(NC) not found\n"; \
+		fi; \
+	done
+
+# === Logs and Monitoring ===
+
+logs-boot: ## Show boot logs
+	@printf "$(CYAN)📋 Boot Logs\n$(NC)"
+	@printf "===========\n"
+	@journalctl -b -p err..alert --no-pager | tail -50
+
+logs-errors: ## Show recent error logs
+	@printf "$(CYAN)📋 Recent Errors\n$(NC)"
+	@printf "===============\n"
+	@journalctl -p err -n 50 --no-pager
+
+logs-service: ## Show logs for specific service (use SVC=name)
+	@if [ -z "$(SVC)" ]; then \
+		printf "$(RED)Error: SVC variable required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make logs-service SVC=sshd$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(CYAN)📋 Logs for service: $(SVC)\n$(NC)"
+	@journalctl -u $(SVC) -n 100 --no-pager
+
+# === Export and Import ===
+
+export-config: ## Export configuration to timestamped tarball
+	@printf "$(BLUE)📦 Exporting configuration...\n$(NC)"
+	@EXPORT_NAME="nixos-config-$$(date +%Y%m%d-%H%M%S).tar.gz"; \
+	tar -czf $$EXPORT_NAME \
+		--exclude='.git' \
+		--exclude='result' \
+		--exclude='*.tar.gz' \
+		--exclude='.direnv' \
+		. ; \
+	printf "$(GREEN)✅ Exported to: $$EXPORT_NAME\n$(NC)"; \
+	printf "$(BLUE)Size: $$(du -h $$EXPORT_NAME | cut -f1)\n$(NC)"
+
+export-minimal: ## Export only essential files (flake.nix, hosts/, modules/)
+	@printf "$(BLUE)📦 Exporting minimal configuration...\n$(NC)"
+	@EXPORT_NAME="nixos-config-minimal-$$(date +%Y%m%d).tar.gz"; \
+	tar -czf $$EXPORT_NAME \
+		flake.nix \
+		flake.lock \
+		hosts/ \
+		modules/ \
+		Makefile \
+		README.md 2>/dev/null; \
+	printf "$(GREEN)✅ Minimal config exported to: $$EXPORT_NAME\n$(NC)"; \
+	printf "$(BLUE)Size: $$(du -h $$EXPORT_NAME | cut -f1)\n$(NC)"
+
+# === Documentation ===
+
+docs-local: ## Show local documentation files
+	@printf "$(CYAN)📚 Local Documentation\n$(NC)"
+	@printf "=====================\n"
+	@if [ -f "README.md" ]; then printf "  $(GREEN)✓$(NC) README.md\n"; fi
+	@if [ -f "MAKEFILE_TUTORIAL.md" ]; then printf "  $(GREEN)✓$(NC) MAKEFILE_TUTORIAL.md\n"; fi
+	@if [ -f "MAKEFILE_IMPROVEMENTS_PLAN.md" ]; then printf "  $(GREEN)✓$(NC) MAKEFILE_IMPROVEMENTS_PLAN.md\n"; fi
+	@if [ -f "AGENTS.md" ]; then printf "  $(GREEN)✓$(NC) AGENTS.md\n"; fi
+	@if [ -d "docs/" ]; then \
+		printf "  $(GREEN)✓$(NC) docs/\n"; \
+		ls docs/*.md 2>/dev/null | sed 's/^/    /'; \
+	fi
+	@printf "\n$(BLUE)View with:$(NC) less <file> or cat <file>\n"
+
+readme: ## Show README in terminal
+	@if [ -f "README.md" ]; then \
+		less README.md; \
+	else \
+		printf "$(YELLOW)README.md not found$(NC)\n"; \
+	fi
+
+tutorial: ## Show Makefile tutorial
+	@if [ -f "MAKEFILE_TUTORIAL.md" ]; then \
+		less MAKEFILE_TUTORIAL.md; \
+	else \
+		printf "$(YELLOW)MAKEFILE_TUTORIAL.md not found$(NC)\n"; \
+	fi
+
+# === Configuration Templates ===
+
+new-host: ## Create new host configuration template (use HOST=name)
+	@if [ -z "$(HOST)" ]; then \
+		printf "$(RED)Error: HOST variable required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make new-host HOST=mylaptop$(NC)\n"; \
+		exit 1; \
+	fi
+	@if [ -d "hosts/$(HOST)" ]; then \
+		printf "$(RED)Error: Host '$(HOST)' already exists$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(BLUE)📝 Creating host configuration: $(HOST)\n$(NC)"
+	@mkdir -p hosts/$(HOST)
+	@printf "# Configuration for $(HOST)\n{ inputs, ... }: {\n  imports = [ ../default.nix ];\n\n  networking.hostName = \"$(HOST)\";\n}\n" \
+		> hosts/$(HOST)/configuration.nix
+	@printf "# User configuration for $(HOST)\n{ inputs, ... }: {\n  # Add user-specific config here\n}\n" \
+		> hosts/$(HOST)/user.nix
+	@printf "$(GREEN)✅ Host template created at: hosts/$(HOST)/$(NC)\n"
+	@printf "$(YELLOW)Remember to:$(NC)\n"
+	@printf "  1. Run: sudo nixos-generate-config --show-hardware-config > hosts/$(HOST)/hardware-configuration.nix\n"
+	@printf "  2. Add to flake.nix outputs\n"
+	@printf "  3. Update AVAILABLE_HOSTS in Makefile\n"
+
+new-module: ## Create new module template (use MODULE=path/name)
+	@if [ -z "$(MODULE)" ]; then \
+		printf "$(RED)Error: MODULE variable required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make new-module MODULE=hm/programs/terminal/alacritty$(NC)\n"; \
+		exit 1; \
+	fi
+	@MODULE_PATH="modules/$(MODULE).nix"; \
+	if [ -f "$$MODULE_PATH" ]; then \
+		printf "$(RED)Error: Module already exists: $$MODULE_PATH$(NC)\n"; \
+		exit 1; \
+	fi; \
+	mkdir -p "$$(dirname $$MODULE_PATH)"; \
+	printf "# Module: $(MODULE)\n{ config, lib, pkgs, ... }:\n\n{\n  # Add your configuration here\n}\n" \
+		> "$$MODULE_PATH"; \
+	printf "$(GREEN)✅ Module created: $$MODULE_PATH$(NC)\n"; \
+	printf "$(YELLOW)Remember to import it in the appropriate default.nix$(NC)\n"
+
+# === Diff Tools ===
+
+diff-config: ## Show uncommitted changes to .nix files
+	@printf "$(CYAN)📊 Configuration Changes\n$(NC)"
+	@printf "=======================\n"
+	@if git diff --quiet -- '*.nix'; then \
+		printf "$(GREEN)No changes to .nix files$(NC)\n"; \
+	else \
+		git diff --stat -- '*.nix'; \
+		printf "\n$(BLUE)Detailed diff:$(NC)\n"; \
+		git diff -- '*.nix'; \
+	fi
+
+diff-flake: ## Show changes to flake.nix and flake.lock
+	@printf "$(CYAN)📊 Flake Changes\n$(NC)"
+	@printf "===============\n"
+	@git diff flake.nix flake.lock || printf "$(GREEN)No changes$(NC)\n"
+
+compare-hosts: ## Compare two host configurations (use HOST1=a HOST2=b)
+	@if [ -z "$(HOST1)" ] || [ -z "$(HOST2)" ]; then \
+		printf "$(RED)Error: Both HOST1 and HOST2 required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make compare-hosts HOST1=hydenix HOST2=laptop$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(CYAN)📊 Comparing $(HOST1) vs $(HOST2)\n$(NC)"
+	@printf "=====================================\n"
+	@diff -u hosts/$(HOST1)/configuration.nix hosts/$(HOST2)/configuration.nix || true
+
+# === Utilities ===
+
+clean-result: ## Remove result symlinks
+	@printf "$(CYAN)🧹 Cleaning result symlinks\n$(NC)"
+	@find . -maxdepth 2 -name 'result*' -type l -delete 2>/dev/null || true
+	@printf "$(GREEN)✅ Result symlinks removed\n$(NC)"
+
+tree: ## Show configuration structure
+	@printf "$(CYAN)📁 Configuration Structure\n$(NC)"
+	@printf "=========================\n"
+	@if command -v tree >/dev/null 2>&1; then \
+		tree -L 3 -I '.git|result|*.tar.gz' --dirsfirst; \
+	else \
+		find . -type d -not -path '*/\.*' -not -path '*/result*' | \
+			head -50 | \
+			sed 's|[^/]*/| |g'; \
+	fi
+
 # === Migration Helpers ===
 
 progress: ## Show migration progress from AGENTS.md

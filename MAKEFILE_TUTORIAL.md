@@ -1487,7 +1487,433 @@ make switch HOSTNAME=laptop    # Aplicar a laptop
 
 ---
 
+## 🎉 Comandos FASE 3: Ampliaciones Adicionales (2026-01-11)
+
+### 📝 Comandos de Changelog e Historial
+
+#### `make changelog`
+Muestra los últimos 20 commits en formato compacto.
+
+```bash
+make changelog
+# c517db4 - feat: implement Makefile improvements (2 minutes ago by Roberto)
+# 147d632 - docs: add comprehensive plan (4 hours ago by Roberto)
+```
+
+#### `make changelog-detailed`
+Muestra changelog detallado de los últimos 10 commits con fecha y autor.
+
+```bash
+make changelog-detailed
+# Incluye fecha completa y detalles de cada commit
+```
+
+---
+
+### 📦 Comandos de Paquetes e Información
+
+#### `make packages`
+Lista todos los paquetes instalados (usuario y sistema).
+
+```bash
+make packages
+# User packages: neovim, fish, kitty, ...
+# System packages (count): 1247
+```
+
+#### `make version`
+Muestra versiones detalladas del sistema.
+
+```bash
+make version
+# NixOS: 26.05.20251229
+# Nix: 2.31.2
+# Hostname: hydenix
+# System: Linux x86_64
+# + versiones de inputs del flake
+```
+
+#### `make current-generation`
+Muestra detalles de la generación actual.
+
+```bash
+make current-generation
+# 26   2026-01-11 14:30:00 (current)
+# Activation date: 2026-01-11 14:30:00
+# Closure size: 8.2G
+```
+
+#### `make hosts-info`
+Muestra información detallada de todos los hosts configurados.
+
+```bash
+make hosts-info
+# hydenix (current) ✓ configured - 2 files
+# laptop ✓ configured - 3 files
+# vm ✓ configured - 3 files
+```
+
+---
+
+### 📋 Comandos de Logs
+
+#### `make logs-boot`
+Muestra los logs de arranque (errores y alertas).
+
+```bash
+make logs-boot
+# Útil para debugging de problemas al iniciar
+```
+
+#### `make logs-errors`
+Muestra los últimos 50 errores del sistema.
+
+```bash
+make logs-errors
+# Encuentra problemas recientes rápidamente
+```
+
+#### `make logs-service SVC=nombre`
+Muestra logs de un servicio específico.
+
+```bash
+make logs-service SVC=sshd
+make logs-service SVC=networkmanager
+make logs-service SVC=docker
+```
+
+---
+
+### 📤 Comandos de Export/Import
+
+#### `make export-config`
+Exporta toda la configuración a un tarball con timestamp.
+
+```bash
+make export-config
+# ✅ Exported to: nixos-config-20260111-143000.tar.gz
+# Size: 2.3M
+```
+
+**Qué incluye:**
+- Todos los archivos de configuración
+- Excluye: .git, result, .direnv, *.tar.gz
+
+#### `make export-minimal`
+Exporta solo archivos esenciales (más pequeño).
+
+```bash
+make export-minimal
+# Incluye solo: flake.nix, flake.lock, hosts/, modules/, Makefile, README.md
+# Perfecto para compartir o backup ligero
+```
+
+---
+
+### 📚 Comandos de Documentación
+
+#### `make docs-local`
+Lista toda la documentación local disponible.
+
+```bash
+make docs-local
+# ✓ README.md
+# ✓ MAKEFILE_TUTORIAL.md
+# ✓ MAKEFILE_IMPROVEMENTS_PLAN.md
+# ✓ AGENTS.md
+# ✓ docs/
+```
+
+#### `make readme`
+Abre el README en el terminal con `less`.
+
+```bash
+make readme
+# Lectura rápida del README sin salir del terminal
+```
+
+#### `make tutorial`
+Abre este tutorial en el terminal con `less`.
+
+```bash
+make tutorial
+# ¡Estás aquí! 😉
+```
+
+---
+
+### 🛠️ Comandos de Templates
+
+#### `make new-host HOST=nombre`
+Crea una nueva configuración de host desde plantilla.
+
+```bash
+make new-host HOST=server
+# ✅ Host template created at: hosts/server/
+# Creates: configuration.nix, user.nix
+```
+
+**Recuerda después:**
+1. Generar `hardware-configuration.nix`
+2. Agregar a `flake.nix`
+3. Actualizar `AVAILABLE_HOSTS` en Makefile
+
+#### `make new-module MODULE=path/name`
+Crea un nuevo módulo desde plantilla.
+
+```bash
+make new-module MODULE=hm/programs/terminal/alacritty
+# ✅ Module created: modules/hm/programs/terminal/alacritty.nix
+```
+
+---
+
+### 📊 Comandos de Diff
+
+#### `make diff-config`
+Muestra cambios en archivos .nix sin commitear.
+
+```bash
+make diff-config
+# Ve exactamente qué cambios has hecho antes de commitear
+```
+
+#### `make diff-flake`
+Muestra cambios en flake.nix y flake.lock.
+
+```bash
+make diff-flake
+# Útil después de updates para ver qué cambió
+```
+
+#### `make compare-hosts HOST1=a HOST2=b`
+Compara configuraciones de dos hosts.
+
+```bash
+make compare-hosts HOST1=hydenix HOST2=laptop
+# Ver diferencias entre configuraciones de diferentes máquinas
+```
+
+---
+
+### 🔧 Comandos Utilitarios
+
+#### `make clean-result`
+Elimina symlinks `result` que quedan después de builds.
+
+```bash
+make clean-result
+# Limpia directorios de symlinks innecesarios
+```
+
+#### `make tree`
+Muestra la estructura de directorios de tu configuración.
+
+```bash
+make tree
+# Vista en árbol de tu proyecto (si tienes tree instalado)
+```
+
+---
+
+## 🎯 Nuevos Flujos de Trabajo
+
+### Flujo de Documentación
+
+```bash
+# Ver qué documentación tienes
+make docs-local
+
+# Leer el tutorial
+make tutorial
+
+# Leer el README
+make readme
+```
+
+---
+
+### Flujo de Logs y Debugging
+
+```bash
+# Ver errores recientes
+make logs-errors
+
+# Ver logs de boot
+make logs-boot
+
+# Ver logs de un servicio específico
+make logs-service SVC=docker
+```
+
+---
+
+### Flujo de Backup y Export
+
+```bash
+# Backup completo antes de cambios grandes
+make backup
+
+# Export para compartir o guardar en otro lugar
+make export-config
+
+# Export mínimo para compartir solo lo esencial
+make export-minimal
+```
+
+---
+
+### Flujo de Changelog y Versiones
+
+```bash
+# Ver qué has cambiado recientemente
+make changelog
+
+# Ver versión actual del sistema
+make version
+
+# Ver detalles de generación actual
+make current-generation
+
+# Ver todos los hosts configurados
+make hosts-info
+```
+
+---
+
+### Flujo de Creación de Nuevo Host
+
+```bash
+# 1. Crear template
+make new-host HOST=server
+
+# 2. Generar hardware config
+sudo nixos-generate-config --show-hardware-config > hosts/server/hardware-configuration.nix
+
+# 3. Editar configuración
+nvim hosts/server/configuration.nix
+nvim hosts/server/user.nix
+
+# 4. Agregar a flake.nix y Makefile AVAILABLE_HOSTS
+
+# 5. Validar y aplicar
+make validate HOSTNAME=server
+make switch HOSTNAME=server
+```
+
+---
+
+### Flujo de Desarrollo de Módulos
+
+```bash
+# 1. Crear módulo desde template
+make new-module MODULE=hm/programs/editors/helix
+
+# 2. Editar módulo
+nvim modules/hm/programs/editors/helix.nix
+
+# 3. Importar en default.nix
+nvim modules/hm/programs/editors/default.nix
+
+# 4. Ver cambios
+make diff-config
+
+# 5. Probar
+make test
+
+# 6. Aplicar
+make switch
+```
+
+---
+
+### Flujo de Comparación
+
+```bash
+# Comparar configuraciones de diferentes hosts
+make compare-hosts HOST1=hydenix HOST2=laptop
+
+# Ver diferencias en archivos .nix
+make diff-config
+
+# Ver cambios en flake después de update
+make update
+make diff-flake
+```
+
+---
+
+## 📊 Resumen: Todos los Comandos Disponibles
+
+### Construcción y Despliegue (11)
+- help, help-advanced, rebuild, switch, safe-switch, test, build, dry-run, boot, list-hosts
+
+### Validación y Salud (3)
+- validate, health, check-syntax
+
+### Mantenimiento y Limpieza (8)
+- clean, clean-week, clean-conservative, deep-clean, clean-generations, gc, optimize, generation-sizes
+
+### Actualizaciones (6)
+- update, update-nixpkgs, update-hydenix, update-input, update-info, diff-update, upgrade
+
+### Formateo y Linting (2)
+- format, lint
+
+### Backup y Restore (4)
+- backup, list-generations, rollback, diff-generations, diff-gen
+
+### Git Integration (5)
+- git-add, git-commit, git-push, git-status, save
+
+### Información del Sistema (5)
+- info, status, version, current-generation, hosts-info
+
+### Búsqueda (2)
+- search, search-installed
+
+### Quick Actions (3)
+- quick, emergency, benchmark
+
+### Hardware (1)
+- hardware-scan
+
+### Monitoring (3)
+- watch-logs, watch-rebuild, logs-boot, logs-errors, logs-service
+
+### Advanced (3)
+- repl, shell, vm
+
+### Changelog (2)
+- changelog, changelog-detailed
+
+### Paquetes (1)
+- packages
+
+### Export/Import (2)
+- export-config, export-minimal
+
+### Documentación (3)
+- docs-local, readme, tutorial
+
+### Templates (2)
+- new-host, new-module
+
+### Diff Tools (3)
+- diff-config, diff-flake, compare-hosts
+
+### Utilidades (2)
+- clean-result, tree
+
+### Migration Helpers (2)
+- progress, phases
+
+**Total: ~70+ comandos disponibles** 🎉
+
+---
+
 *Última actualización: 2026-01-11*
-*Versión: 2.0 - Con mejoras FASE 1 y FASE 2 implementadas*
+*Versión: 3.0 - Con mejoras FASE 1, FASE 2 y FASE 3 completadas*
+*Total de comandos: 70+*
 *Mantenedor: ludus*
 
