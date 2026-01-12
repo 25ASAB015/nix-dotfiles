@@ -256,20 +256,22 @@
     uninstallUnmanaged = false;   # No desinstalar apps instaladas manualmente
     
     # Aplicaciones a instalar (ejemplos de gitm3-hydenix)
+    # NOTA: Temporalmente vacío en primera instalación para evitar timeouts
+    # Después del primer rebuild exitoso, descomenta las apps que quieras
     packages = [
       # Bottles - Ejecutar aplicaciones Windows en Linux
       # Alternativa gráfica a Wine con gestión de prefijos
-      {
-        appId = "com.usebottles.bottles";
-        origin = "flathub";
-      }
+      # {
+      #   appId = "com.usebottles.bottles";
+      #   origin = "flathub";
+      # }
       
       # Stretchly - Recordatorios de descanso para salud postural
       # Útil para prevenir fatiga ocular y problemas de espalda
-      {
-        appId = "net.hovancik.Stretchly";
-        origin = "flathub";
-      }
+      # {
+      #   appId = "net.hovancik.Stretchly";
+      #   origin = "flathub";
+      # }
       
       # Para agregar más aplicaciones:
       # 1. Busca en Flathub: https://flathub.org/
