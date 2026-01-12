@@ -61,11 +61,29 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Paquetes adicionales para mejor experiencia
-    # exiftool: información de archivos (metadata EXIF)
+    # Paquetes adicionales para mejor experiencia con Yazi
+    # Estos paquetes mejoran las capacidades de vista previa y manejo de archivos
     home.packages = with pkgs; [
-      exiftool
-    ];
+      # ── Información de Archivos ──────────────────────────────────────────────
+      exiftool       # Metadata EXIF de imágenes y archivos multimedia
+      
+      # ── Vista Previa Multimedia ──────────────────────────────────────────────
+      ffmpeg         # Vista previa de videos y audio
+      poppler        # Vista previa de archivos PDF (usando pdftoppm/pdftotext)
+      
+      # ── Manipulación de Imágenes ─────────────────────────────────────────────
+      imagemagick    # Conversión y edición de imágenes (thumbnails, resize)
+      resvg          # Renderizar archivos SVG a imágenes
+      
+      # ── Archivos Comprimidos ─────────────────────────────────────────────────
+      p7zip          # Soporte para archivos .7z
+      
+      # ── Integración con Sistema ──────────────────────────────────────────────
+      wl-clipboard   # Copiar/pegar archivos en Wayland (wl-copy/wl-paste)
+    ]
+    # Agregar dependencias condicionales solo si están habilitadas
+    ++ lib.optional config.modules.terminal.software.cli.fzf pkgs.fzf
+    ++ lib.optional config.modules.terminal.software.zoxide.enable pkgs.zoxide;
 
     # Configuración principal de Yazi
     programs.yazi = {
