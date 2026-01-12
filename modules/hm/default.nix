@@ -36,4 +36,25 @@
   
   # Habilitar Spotify
   hydenix.hm.spotify.enable = true;
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # ZSH SHELL - Configuración y plugins
+  # ════════════════════════════════════════════════════════════════════════════
+  hydenix.hm.shell = {
+    enable = true;
+    zsh = {
+      enable = true;
+      plugins = [
+        "sudo"
+        "zoxide"
+        "git"
+        "fzf"
+        "direnv"
+      ];
+      configText = ''
+        # Cargar configuraciones extras (.zshrc_extra)
+        source ~/dotfiles/resources/config/.zshrc_extra
+      '';
+    };
+  };
 }

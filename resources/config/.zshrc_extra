@@ -10,3 +10,4 @@ alias rviz2='QT_QPA_PLATFORM=xcb rviz2'
 alias t='tree -L 2'
 alias tt='tree -L 3'
 
+
