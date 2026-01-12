@@ -4,6 +4,7 @@
   imports = [
     ./packages.nix              # System-level packages (VLC, etc.)
     ./ai-tools-unrestricted.nix # Sin restricciones para Cursor, VSCode, Antigravity, OpenCode
+    ./flatpak.nix               # Flatpak system service and XDG portals
     # Future modular system configurations:
     # ./audio.nix       # Audio configuration (pipewire, pulseaudio)
     # ./boot.nix        # Boot loader configuration

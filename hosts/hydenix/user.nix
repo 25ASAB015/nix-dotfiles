@@ -17,6 +17,7 @@
     users."ludus" = { ... }: {
       imports = [
         inputs.hydenix.homeModules.default
+        inputs.nix-flatpak.homeManagerModules.nix-flatpak  # Flatpak declarative management
         ../../modules/hm # Custom home-manager modules (configure hydenix.hm here!)
       ];
     };

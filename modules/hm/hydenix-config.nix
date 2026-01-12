@@ -243,5 +243,39 @@
     enable = true;
     enableFishIntegration = true;
   };
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # FLATPAK - Gestor de aplicaciones en sandbox
+  # ════════════════════════════════════════════════════════════════════════════
+  # Instalación declarativa de aplicaciones flatpak desde Flathub
+  # Útil para apps no disponibles en nixpkgs o que funcionan mejor aisladas
+  # Documentación: https://flatpak.org/
+  modules.apps.flatpak = {
+    enable = true;
+    autoUpdate = false;           # Actualizar manualmente con: flatpak update
+    uninstallUnmanaged = false;   # No desinstalar apps instaladas manualmente
+    
+    # Aplicaciones a instalar (ejemplos de gitm3-hydenix)
+    packages = [
+      # Bottles - Ejecutar aplicaciones Windows en Linux
+      # Alternativa gráfica a Wine con gestión de prefijos
+      {
+        appId = "com.usebottles.bottles";
+        origin = "flathub";
+      }
+      
+      # Stretchly - Recordatorios de descanso para salud postural
+      # Útil para prevenir fatiga ocular y problemas de espalda
+      {
+        appId = "net.hovancik.Stretchly";
+        origin = "flathub";
+      }
+      
+      # Agrega más aplicaciones aquí:
+      # { appId = "org.gimp.GIMP"; origin = "flathub"; }
+      # { appId = "com.obsproject.Studio"; origin = "flathub"; }
+      # { appId = "org.videolan.VLC"; origin = "flathub"; }
+    ];
+  };
 }
 

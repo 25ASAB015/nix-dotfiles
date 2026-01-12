@@ -33,6 +33,15 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # NIX-FLATPAK - Gestión declarativa de aplicaciones Flatpak
+    # Permite instalar y configurar aplicaciones Flatpak desde Flathub
+    # Documentación: https://github.com/gmodena/nix-flatpak
+    # ══════════════════════════════════════════════════════════════════════════
+    nix-flatpak = {
+      url = "github:gmodena/nix-flatpak/?ref=latest";
+    };
   };
 
   outputs =
