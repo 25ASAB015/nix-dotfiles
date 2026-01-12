@@ -266,5 +266,14 @@
   # Apps incluidas: Bottles, Stretchly
   # Para agregar más: edita modules/hm/flatpak.nix
   # Documentación: https://flatpak.org/
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # ZATHURA - Visor de PDF minimalista con soporte LaTeX
+  # ════════════════════════════════════════════════════════════════════════════
+  # Ideal para documentos LaTeX con SyncTeX (sincronización PDF <-> código)
+  # Atajos estilo Vim para navegación rápida
+  # Integrado con Neovim/VimTeX para desarrollo LaTeX
+  # Documentación: https://pwmt.org/projects/zathura/
+  modules.document-viewers.zathura.enable = true;
 }
 
