@@ -1,0 +1,12 @@
+export NIXPKGS_ALLOW_UNFREE=1
+export MANPAGER='nvim +Man!'
+export PYTHON_BASIC_REPL=1
+alias fn='nvim $(fzf)'
+alias fp='zathura $(fzf)'
+alias da='direnv allow .'
+alias cat='bat'
+alias lzd='DOCKER_HOST=unix:///run/user/1000/podman/podman.sock lazydocker'
+alias rviz2='QT_QPA_PLATFORM=xcb rviz2'
+alias t='tree -L 2'
+alias tt='tree -L 3'
+

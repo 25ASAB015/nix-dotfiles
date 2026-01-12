@@ -7,6 +7,7 @@ Este directorio contiene configuraciones mutables y recursos que no son código 
 ```
 resources/
 ├── config/         # Archivos de configuración planos (editable text files)
+│   ├── .zshrc_extra  # Zsh aliases y exports extras
 │   ├── hypr/      # Hyprland configs (keybindings, monitors, etc.)
 │   ├── fish/      # Fish shell configs
 │   └── starship/  # Starship prompt configs
