@@ -247,37 +247,9 @@
   # ════════════════════════════════════════════════════════════════════════════
   # FLATPAK - Gestor de aplicaciones en sandbox
   # ════════════════════════════════════════════════════════════════════════════
-  # Instalación declarativa de aplicaciones flatpak desde Flathub
-  # Útil para apps no disponibles en nixpkgs o que funcionan mejor aisladas
+  # Configuración en modules/hm/flatpak.nix (simple como gitm3-hydenix)
+  # Apps incluidas: Bottles, Stretchly
+  # Para agregar más: edita modules/hm/flatpak.nix
   # Documentación: https://flatpak.org/
-  modules.apps.flatpak = {
-    enable = true;
-    autoUpdate = false;           # Actualizar manualmente con: flatpak update
-    uninstallUnmanaged = false;   # No desinstalar apps instaladas manualmente
-    
-    # Aplicaciones a instalar (ejemplos de gitm3-hydenix)
-    # NOTA: Temporalmente vacío en primera instalación para evitar timeouts
-    # Después del primer rebuild exitoso, descomenta las apps que quieras
-    packages = [
-      # Bottles - Ejecutar aplicaciones Windows en Linux
-      # Alternativa gráfica a Wine con gestión de prefijos
-      # {
-      #   appId = "com.usebottles.bottles";
-      #   origin = "flathub";
-      # }
-      
-      # Stretchly - Recordatorios de descanso para salud postural
-      # Útil para prevenir fatiga ocular y problemas de espalda
-      # {
-      #   appId = "net.hovancik.Stretchly";
-      #   origin = "flathub";
-      # }
-      
-      # Para agregar más aplicaciones:
-      # 1. Busca en Flathub: https://flathub.org/
-      # 2. Copia el Application ID
-      # 3. Agrega aquí: { appId = "app.id"; origin = "flathub"; }
-    ];
-  };
 }
 

@@ -7,7 +7,6 @@
     ./terminal      # Terminal: emulators, shell, CLI tools
     ./browsers      # Web browsers
     ./development   # Development tools and languages
-    ./apps          # Application management (flatpak, appimage)
     # ./editors    # Future: Editors (neovim, vscode, helix)
     # ./media      # Future: Media apps (vlc, mpv, spotify)
   ];
