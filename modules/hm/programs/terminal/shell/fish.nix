@@ -35,6 +35,12 @@ in
     # Paquete adicional para colorear output
     home.packages = with pkgs; [ grc ];
 
+    # Forzar EDITOR a nvim (sobrescribe configuración de Hydenix)
+    home.sessionVariables = {
+      EDITOR = lib.mkForce cfg.editor;
+      VISUAL = lib.mkForce cfg.editor;
+    };
+
     programs = {
       # ══════════════════════════════════════════════════════════════════════
       # Carapace - Autocompletado multi-shell

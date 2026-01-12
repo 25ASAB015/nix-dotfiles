@@ -18,7 +18,7 @@
       imports = [
         inputs.hydenix.homeModules.default
         inputs.nix-flatpak.homeManagerModules.nix-flatpak  # Flatpak declarative management
-        inputs.nixvim.homeManagerModules.nixvim            # Nixvim - Neovim configuration
+        inputs.nixvim.homeModules.default                  # Nixvim - Neovim configuration (renamed from homeManagerModules)
         ../../modules/hm # Custom home-manager modules (configure hydenix.hm here!)
       ];
     };
