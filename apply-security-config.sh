@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script para aplicar la nueva configuración de seguridad
 
 echo "════════════════════════════════════════════════════════════════"

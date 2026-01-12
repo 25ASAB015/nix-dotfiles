@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script final: Push y crear PR
 
 cd ~/dotfiles

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script para hacer commits atómicos de la reorganización
 # Ejecuta esto en tu terminal: bash ~/dotfiles/commit_reorganization.sh
 

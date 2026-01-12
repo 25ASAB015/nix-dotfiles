@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Fix completo: Reorganizar toda la estructura correctamente
 
 cd ~/dotfiles

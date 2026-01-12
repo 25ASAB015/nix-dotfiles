@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Fix: Mover archivos a la estructura correcta
 
 cd ~/dotfiles
