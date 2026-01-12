@@ -27,11 +27,31 @@
     isNormalUser = true;
     initialPassword = "0394661280"; # SECURITY: Change this password after first login with `passwd`
     extraGroups = [
+      # ── Core System Access ──────────────────────────────────────────────────
       "wheel"           # Sudo access
       "networkmanager"  # Network management
       "video"           # Display/graphics access
+      
+      # ── Audio ───────────────────────────────────────────────────────────────
+      "audio"           # Audio devices access
+      "pipewire"        # PipeWire audio system
+      "rtkit"           # Real-time priority for low-latency audio
+      
+      # ── Hardware/Devices ────────────────────────────────────────────────────
+      "dialout"         # Serial ports (Arduino, USB devices, etc.)
+      "plugdev"         # USB devices and peripherals
+      
+      # ── Containers/Virtualization ───────────────────────────────────────────
+      "docker"          # Docker without sudo
+      "libvirtd"        # KVM/QEMU virtualization (if using virt-manager)
     ];
     shell = pkgs.zsh; # Default shell (options: pkgs.bash, pkgs.zsh, pkgs.fish)
   };
+
+  # Nix Settings - Trust user for binary caches and faster builds
+  nix.settings.trusted-users = [
+    "root"
+    "ludus"
+  ];
 }
 
