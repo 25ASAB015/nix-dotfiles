@@ -56,6 +56,18 @@
   };
 
   # ════════════════════════════════════════════════════════════════════════════
+  # DIRENV - Carga automática de entornos por directorio
+  # ════════════════════════════════════════════════════════════════════════════
+  # Uso: echo "use nix" > .envrc en tu proyecto, luego direnv allow
+  # Al entrar al directorio, carga el entorno automáticamente (nix-shell, variables, etc.)
+  # Documentación: https://direnv.net/
+  modules.development.direnv = {
+    enable = true;
+    enableFishIntegration = true;  # Integración con Fish
+    enableZshIntegration = true;   # Integración con Zsh (Hydenix)
+  };
+
+  # ════════════════════════════════════════════════════════════════════════════
   # ATUIN - Historial de shell mejorado con búsqueda fuzzy
   # ════════════════════════════════════════════════════════════════════════════
   # Uso: Ctrl+R para buscar en historial
