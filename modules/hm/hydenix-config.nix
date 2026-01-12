@@ -86,6 +86,7 @@
   # ════════════════════════════════════════════════════════════════════════════
   # Incluye: eza (ls), fzf (fuzzy), ripgrep (grep), dust (du), duf (df), fd (find)
   # TUI Apps: discordo (Discord), reddit-tui, scope-tui (audio visualizer)
+  # Dev Tools: lua-language-server, nixd, stylua, prettierd, gotools
   # Mynixpkgs: bmm, dawn, dfft, lightview, nekot, omm, orchat, prs
   modules.terminal.software.cli = {
     enable = true;
@@ -93,6 +94,7 @@
     archives = true;                # zip, unzip, unrar
     systemUtils = true;             # dust, duf, fd, jq, glow, gtt, zfxtop, inshellisense
     tuiApps = true;                 # discordo, reddit-tui, scope-tui
+    devTools = true;                # LSPs y formatters (lua-language-server, nixd, stylua, prettierd, gotools)
     mynixpkgsApps = true;           # bmm, dawn, dfft, lightview, nekot, omm, orchat, prs
     eza = true;                     # ls moderno con iconos
     fzf = true;                     # Buscador fuzzy (Ctrl+T)

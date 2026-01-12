@@ -43,7 +43,7 @@ in
     systemUtils = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Incluir utilidades del sistema (dust, duf, fd, etc.)";
+      description = "Incluir utilidades del sistema (dust, duf, fd, jq, etc.)";
     };
 
     # Habilitar herramientas TUI extra (discord, reddit, etc)
@@ -79,6 +79,13 @@ in
       type = lib.types.bool;
       default = true;
       description = "Habilitar ripgrep (grep ultrarrápido)";
+    };
+
+    # Habilitar herramientas de desarrollo (LSPs y formatters)
+    devTools = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Incluir LSPs y formatters (lua-language-server, nixd, stylua, prettierd, gotools)";
     };
   };
 
@@ -126,6 +133,23 @@ in
         discordo    # Cliente Discord TUI - chatea en Discord desde la terminal
         reddit-tui  # Cliente Reddit TUI - navega Reddit sin salir de la terminal
         scope-tui   # Visualizador de audio - muestra espectro de audio en terminal
+      ])
+
+      # ════════════════════════════════════════════════════════════════════════
+      # DEVELOPMENT TOOLS - LSPs y Formatters para editores
+      # Herramientas para mejorar la experiencia de desarrollo en Neovim/Helix
+      # ════════════════════════════════════════════════════════════════════════
+      ++ (lib.optionals cfg.devTools [
+        # ── Language Servers (LSP) ─────────────────────────────────────────────
+        lua-language-server  # LSP para Lua - autocompletado y diagnósticos
+        nixd                 # LSP para Nix - mejor que nil/rnix-lsp
+        
+        # ── Formatters ─────────────────────────────────────────────────────────
+        stylua               # Formatter para Lua (config de Neovim)
+        prettierd            # Formatter daemon para JS/TS/JSON/Markdown/HTML/CSS
+        
+        # ── Go Development ─────────────────────────────────────────────────────
+        gotools              # Herramientas de Go (goimports, gopls, etc.)
       ])
 
       # ════════════════════════════════════════════════════════════════════════
