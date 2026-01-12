@@ -29,7 +29,7 @@ in {
         options = {
           appId = mkOption {
             type = types.str;
-            description = "Application ID (e.g., com.valvesoftware.Steam)";
+            description = "Application ID from Flathub";
           };
           origin = mkOption {
             type = types.str;
@@ -40,12 +40,6 @@ in {
       });
       default = [];
       description = "Lista de aplicaciones flatpak a instalar";
-      example = literalExpression ''
-        [
-          { appId = "com.valvesoftware.Steam"; origin = "flathub"; }
-          { appId = "org.gimp.GIMP"; origin = "flathub"; }
-        ]
-      '';
     };
   };
 

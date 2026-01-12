@@ -271,10 +271,10 @@
         origin = "flathub";
       }
       
-      # Agrega más aplicaciones aquí:
-      # { appId = "org.gimp.GIMP"; origin = "flathub"; }
-      # { appId = "com.obsproject.Studio"; origin = "flathub"; }
-      # { appId = "org.videolan.VLC"; origin = "flathub"; }
+      # Para agregar más aplicaciones:
+      # 1. Busca en Flathub: https://flathub.org/
+      # 2. Copia el Application ID
+      # 3. Agrega aquí: { appId = "app.id"; origin = "flathub"; }
     ];
   };
 }
