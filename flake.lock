@@ -81,7 +81,7 @@
     "home-manager_2": {
       "inputs": {
         "nixpkgs": [
-          "zen-browser-flake",
+          "zen-browser",
           "nixpkgs"
         ]
       },
@@ -498,7 +498,7 @@
         ],
         "nixvim": "nixvim",
         "opencode": "opencode",
-        "zen-browser-flake": "zen-browser-flake"
+        "zen-browser": "zen-browser"
       }
     },
     "rust-overlay": {
@@ -549,7 +549,7 @@
         "type": "github"
       }
     },
-    "zen-browser-flake": {
+    "zen-browser": {
       "inputs": {
         "home-manager": "home-manager_2",
         "nixpkgs": [
@@ -557,11 +557,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767568852,
-        "narHash": "sha256-6s8hL3YX9zAq2T7qvcwwzaEVwc9MEYbW+C2LcAAQfbk=",
+        "lastModified": 1768183082,
+        "narHash": "sha256-XsiMOsqRLfmUi+24F7adhb/GAM2dMvplzwaW2Wxg/lo=",
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
-        "rev": "350c729b261e6f5529460140a5f0943dd4c5e156",
+        "rev": "cdbc300fd89d503a95d1c8564de31a93d7b0a0ae",
         "type": "github"
       },
       "original": {
