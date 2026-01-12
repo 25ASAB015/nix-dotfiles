@@ -245,6 +245,21 @@
   };
 
   # ════════════════════════════════════════════════════════════════════════════
+  # GAMMASTEP - Ajuste de temperatura de color de pantalla
+  # ════════════════════════════════════════════════════════════════════════════
+  # Reduce luz azul en la noche para mejor salud visual y sueño
+  # Alternativa Wayland a Redshift
+  # Ubicación: San Salvador, El Salvador
+  modules.system.gammastep = {
+    enable = true;
+    latitude = "13.6929";   # San Salvador
+    longitude = "-89.2182"; # San Salvador
+    dayTemp = 5700;         # Temperatura diurna (neutral)
+    nightTemp = 3500;       # Temperatura nocturna (cálida, menos luz azul)
+    tray = true;            # Icono en bandeja del sistema
+  };
+
+  # ════════════════════════════════════════════════════════════════════════════
   # FLATPAK - Gestor de aplicaciones en sandbox
   # ════════════════════════════════════════════════════════════════════════════
   # Configuración en modules/hm/flatpak.nix (simple como gitm3-hydenix)
