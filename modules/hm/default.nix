@@ -33,4 +33,7 @@
 
   # Desactivar git de Hydenix para usar nuestra configuración personalizada
   hydenix.hm.git.enable = false;
+  
+  # Habilitar Spotify
+  hydenix.hm.spotify.enable = true;
 }
