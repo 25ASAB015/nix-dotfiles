@@ -29,7 +29,7 @@
     };
 
     # Navegador Zen (flake comunitario)
-    zen-browser-flake = {
+    zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
