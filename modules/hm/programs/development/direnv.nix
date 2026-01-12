@@ -11,18 +11,6 @@ in {
   # ══════════════════════════════════════════════════════════════════════════
   options.modules.development.direnv = {
     enable = mkEnableOption "Direnv con nix-direnv integration";
-    
-    enableFishIntegration = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Habilitar integración con Fish shell";
-    };
-    
-    enableZshIntegration = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Habilitar integración con Zsh shell";
-    };
   };
 
   # ══════════════════════════════════════════════════════════════════════════
@@ -36,9 +24,10 @@ in {
       # Sin esto, direnv reconstruye el entorno cada vez
       nix-direnv.enable = true;
       
-      # Integración con shells
-      enableFishIntegration = cfg.enableFishIntegration && config.programs.fish.enable;
-      enableZshIntegration = cfg.enableZshIntegration;
+      # Integración con shells (automática según shells habilitados)
+      # Fish: se habilita automáticamente si programs.fish.enable = true
+      # Zsh: se habilita automáticamente si programs.zsh.enable = true
+      # Bash: se habilita automáticamente si programs.bash.enable = true
       
       # Configuración adicional
       config = {
@@ -57,12 +46,15 @@ in {
       $DRY_RUN_CMD echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
       $DRY_RUN_CMD echo "✅ Direnv instalado y configurado"
       $DRY_RUN_CMD echo ""
-      $DRY_RUN_CMD echo "   Integración habilitada:"
-      ${if cfg.enableFishIntegration && config.programs.fish.enable then ''
+      $DRY_RUN_CMD echo "   Integración automática con shells habilitados:"
+      ${if config.programs.fish.enable then ''
         $DRY_RUN_CMD echo "   - 🐟 Fish shell"
       '' else ""}
-      ${if cfg.enableZshIntegration then ''
+      ${if config.programs.zsh.enable then ''
         $DRY_RUN_CMD echo "   - 🐚 Zsh shell"
+      '' else ""}
+      ${if config.programs.bash.enable then ''
+        $DRY_RUN_CMD echo "   - 🐚 Bash shell"
       '' else ""}
       $DRY_RUN_CMD echo ""
       $DRY_RUN_CMD echo "   Uso:"

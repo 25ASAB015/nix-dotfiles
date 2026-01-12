@@ -60,12 +60,9 @@
   # ════════════════════════════════════════════════════════════════════════════
   # Uso: echo "use nix" > .envrc en tu proyecto, luego direnv allow
   # Al entrar al directorio, carga el entorno automáticamente (nix-shell, variables, etc.)
+  # Integración automática con Fish y Zsh (detecta shells habilitados)
   # Documentación: https://direnv.net/
-  modules.development.direnv = {
-    enable = true;
-    enableFishIntegration = true;  # Integración con Fish
-    enableZshIntegration = true;   # Integración con Zsh (Hydenix)
-  };
+  modules.development.direnv.enable = true;
 
   # ════════════════════════════════════════════════════════════════════════════
   # ATUIN - Historial de shell mejorado con búsqueda fuzzy
