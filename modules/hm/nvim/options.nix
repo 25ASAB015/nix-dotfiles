@@ -9,7 +9,7 @@
     tabstop = 2;
 
     undofile = true;
-    undodir = "/home/zander/.local/state/nvim/undo";
+    undodir = "$HOME/.local/state/nvim/undo";
 
     termguicolors = true;
     signcolumn = "yes";
