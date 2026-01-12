@@ -147,9 +147,17 @@ in
         # ── Formatters ─────────────────────────────────────────────────────────
         stylua               # Formatter para Lua (config de Neovim)
         prettierd            # Formatter daemon para JS/TS/JSON/Markdown/HTML/CSS
+        shfmt                # Formatter para shell scripts (bash, sh, etc.)
+        
+        # ── Python Development ─────────────────────────────────────────────────
+        python312Packages.black   # Formatter opinionated para Python
         
         # ── Go Development ─────────────────────────────────────────────────────
         gotools              # Herramientas de Go (goimports, gopls, etc.)
+        
+        # ── Docker/Containers ──────────────────────────────────────────────────
+        lazydocker           # TUI para gestionar Docker (alternativa a docker ps)
+        hadolint             # Linter para Dockerfiles
       ])
 
       # ════════════════════════════════════════════════════════════════════════
