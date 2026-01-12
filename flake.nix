@@ -42,6 +42,15 @@
     nix-flatpak = {
       url = "github:gmodena/nix-flatpak/?ref=latest";
     };
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # NIXVIM - Configuración declarativa de Neovim con Nix
+    # Permite configurar Neovim usando sintaxis Nix en lugar de Lua/VimScript
+    # Documentación: https://github.com/nix-community/nixvim
+    # ══════════════════════════════════════════════════════════════════════════
+    nixvim = {
+      url = "github:nix-community/nixvim/nixos-25.11";
+    };
   };
 
   outputs =
