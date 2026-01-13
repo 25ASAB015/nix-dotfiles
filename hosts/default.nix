@@ -47,6 +47,7 @@
       connect-timeout = 10;
       download-attempts = 5;
       fallback = true;
+      download-buffer-size = 1073741824; # 1 GiB (default: 64 MiB) - evita "download buffer is full"
 
       # ===== PARALELIZACIÓN =====
       max-jobs = "auto";
