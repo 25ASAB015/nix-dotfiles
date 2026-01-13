@@ -260,11 +260,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767572995,
-        "narHash": "sha256-R95uDFlnFhRXK7rfmoCUs5wph3SvAVBI/mBbhBtIIPs=",
+        "lastModified": 1768163326,
+        "narHash": "sha256-+vJlFI4pYxnqUsL6DIPJw6gvEJ0Mjh/v9chxGuBgz3Y=",
         "owner": "linuxmobile",
         "repo": "mynixpkgs",
-        "rev": "f2197d431461aa5851d3f93436e3bec0070a0769",
+        "rev": "2f8e0a405094037b85b9fe0f6158c0fe7b4a2543",
         "type": "github"
       },
       "original": {
@@ -405,26 +405,12 @@
         "type": "github"
       }
     },
-    "nixpkgs_4": {
-      "locked": {
-        "lastModified": 1767325753,
-        "narHash": "sha256-yA/CuWyqm+AQo2ivGy6PlYrjZBQm7jfbe461+4HF2fo=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "64049ca74d63e971b627b5f3178d95642e61cedd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-25.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixvim": {
       "inputs": {
         "flake-parts": "flake-parts_2",
-        "nixpkgs": "nixpkgs_4",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "nuschtosSearch": "nuschtosSearch",
         "systems": "systems_2"
       },
@@ -473,11 +459,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767701090,
-        "narHash": "sha256-Q6oX+3YAvYoHl8Aj1WGOA0SxlSu6tCE/cmkreUvLI1E=",
+        "lastModified": 1768273958,
+        "narHash": "sha256-aunf8Fc3GYX0QTT45T7RGrJfAk+sbzqOjJW/cDVB81I=",
         "owner": "anomalyco",
         "repo": "opencode",
-        "rev": "0b02f6d22f793387322d96f937cfc1c8eee9bfbb",
+        "rev": "8daeec2ed30eb5388675af60271f16417da42821",
         "type": "github"
       },
       "original": {
@@ -557,11 +543,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768183082,
-        "narHash": "sha256-XsiMOsqRLfmUi+24F7adhb/GAM2dMvplzwaW2Wxg/lo=",
+        "lastModified": 1768270784,
+        "narHash": "sha256-Ybx8SbGtiGLKY+CHx/QSaPQo35AhbTF3JUZw6ZyZENE=",
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
-        "rev": "cdbc300fd89d503a95d1c8564de31a93d7b0a0ae",
+        "rev": "cd65e0cdc95726e75c15f514ea6daf8b21b1b1d9",
         "type": "github"
       },
       "original": {

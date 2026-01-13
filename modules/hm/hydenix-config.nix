@@ -18,7 +18,7 @@
     lfs.enable = true;                   # Git LFS para archivos grandes
     # GPG signing
     gpg.enable = true;
-    gpg.signingKey = "A2EFB4449AD569C6";
+    gpg.signingKey = "7D54AEC4";
   };
 
   # ════════════════════════════════════════════════════════════════════════════
@@ -63,6 +63,17 @@
   # Integración automática con Fish y Zsh (detecta shells habilitados)
   # Documentación: https://direnv.net/
   modules.development.direnv.enable = true;
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # ZOXIDE - Navegación inteligente de directorios
+  # ════════════════════════════════════════════════════════════════════════════
+  # Uso: z carpeta (salta a directorios visitados), zi (interactivo)
+  # Aprende tus directorios frecuentes para saltar rápidamente
+  # Documentación: https://github.com/ajeetdsouza/zoxide
+  modules.terminal.software.zoxide = {
+    enable = true;
+    enableFishIntegration = true;   # Integración con Fish
+  };
 
   # ════════════════════════════════════════════════════════════════════════════
   # ATUIN - Historial de shell mejorado con búsqueda fuzzy

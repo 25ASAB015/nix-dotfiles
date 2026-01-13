@@ -42,24 +42,59 @@
   # Common Nix settings
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      # ===== OPTIMIZACIÓN DE RED =====
+      http2 = false;
+      connect-timeout = 10;
+      download-attempts = 5;
+      fallback = true;
+
+      # ===== PARALELIZACIÓN =====
+      max-jobs = "auto";
+      cores = 0;
+      max-substitution-jobs = 16;
+
+      # ===== SUBSTITUTERS (MIRRORS) =====
+      substituters = [
+        "https://cache.nixos.org"
+        "https://nix-community.cachix.org"
+        "https://hyprland.cachix.org"
+      ];
+      trusted-public-keys = [
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      ];
+
+      # ===== USUARIOS DE CONFIANZA =====
+      trusted-users = [ "root" "@wheel" "ludus" ];
+
+      # ===== OPTIMIZACIONES ADICIONALES =====
       auto-optimise-store = true;
-    };
-    
-    # Garbage collection (can be overridden per-host)
-    gc = {
-      automatic = lib.mkDefault false; # Disabled by default, enable per-host
-      dates = lib.mkDefault "weekly";
-      options = lib.mkDefault "--delete-older-than 30d";
+      experimental-features = [ "nix-command" "flakes" ];
+      narinfo-cache-negative-ttl = 0;
+      tarball-ttl = 300;
+
+      # ===== LIMPIEZA AUTOMÁTICA =====
     };
   };
 
   # Common networking
   networking = {
     networkmanager.enable = true;
+    nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" "8.8.4.4" ];
   };
 
   # System version
   system.stateVersion = lib.mkDefault "25.05";
+
+  # Kernel parameters
+  boot.kernel.sysctl = {
+    "net.core.rmem_max" = 134217728;
+    "net.core.wmem_max" = 134217728;
+    "net.ipv4.tcp_rmem" = "4096 87380 67108864";
+    "net.ipv4.tcp_wmem" = "4096 65536 67108864";
+    "net.ipv4.tcp_congestion_control" = "bbr";
+    "net.core.default_qdisc" = "fq";
+  };
 }
 

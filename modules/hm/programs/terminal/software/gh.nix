@@ -1,6 +1,9 @@
 # GitHub CLI (gh) - Herramienta oficial de GitHub para la terminal
 # Integrado desde Kaku: https://github.com/linuxmobile/kaku
 # Documentación: https://cli.github.com/manual/
+#
+# NOTA: Este módulo NO gestiona config.yml para permitir autenticación con `gh auth login`
+# La configuración se maneja con variables de entorno y aliases
 {
   config,
   lib,
@@ -11,12 +14,6 @@
 let
   # Configuración personalizable
   cfg = config.modules.terminal.software.gh;
-  
-  # Helper para generar archivos YAML
-  toYAML = (pkgs.formats.yaml {}).generate;
-  
-  # Rutas de configuración XDG
-  configFile = "gh/config.yml";
 in
 {
   # Opciones configurables del módulo
@@ -61,22 +58,21 @@ in
       gh
     ];
 
-    # Archivo de configuración principal de gh
-    xdg.configFile."${configFile}".source = toYAML "config.yml" {
-      version = 1;
-      git_protocol = cfg.gitProtocol;
-      editor = cfg.editor;
-      prompt = "enabled";
-      prefer_editor_prompt = "disabled";
-      pager = "less -FR";
-      aliases = {
-        co = "pr checkout";     # gh co <pr-number> - checkout de un PR
-        pv = "pr view";         # gh pv - ver PR actual
-        rv = "repo view";       # gh rv - ver repo actual
-        is = "issue status";    # gh is - estado de issues
-      };
-      http_unix_socket = "";
-      browser = cfg.browser;
+    # Variables de entorno para configuración de gh
+    # (en lugar de archivo config.yml que bloquea autenticación)
+    home.sessionVariables = {
+      GH_EDITOR = cfg.editor;
+      GH_PAGER = "less -FR";
+    } // lib.optionalAttrs (cfg.browser != "") {
+      GH_BROWSER = cfg.browser;
+    };
+
+    # Aliases útiles para gh (funciona en todos los shells: fish, zsh, bash)
+    home.shellAliases = {
+      ghco = "gh pr checkout";     # ghco <pr-number> - checkout de un PR
+      ghpv = "gh pr view";         # ghpv - ver PR actual
+      ghrv = "gh repo view";       # ghrv - ver repo actual
+      ghis = "gh issue status";    # ghis - estado de issues
     };
   };
 }

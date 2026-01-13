@@ -55,7 +55,7 @@
       ];
       configText = ''
         # Cargar configuraciones extras (.zshrc_extra)
-        source ~/dotfiles/resources/config/.zshrc_extra
+        source ~/Dotfiles/resources/config/.zshrc_extra
       '';
     };
   };
