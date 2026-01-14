@@ -14,21 +14,22 @@
     extraSpecialArgs = { inherit inputs; };
     
     # User Configuration for ludus
-    users."ludus" = { ... }: {
+    users."ludus" = { pkgs, ... }: {
       imports = [
         inputs.hydenix.homeModules.default
         inputs.nix-flatpak.homeManagerModules.nix-flatpak  # Flatpak declarative management
-        inputs.nixvim.homeManagerModules.nixvim           # Nixvim home-manager module
         ../../modules/hm # Custom home-manager modules (configure hydenix.hm here!)
       ];
       
-      # Use khanelivim configuration directly via programs.nixvim
-      programs.nixvim = {
-        enable = true;
-        defaultEditor = true;
-        imports = [
-          inputs.khanelivim.nixvimModules.default
-        ];
+      # Use khanelivim as neovim package (replaces default nvim)
+      home.packages = [
+        inputs.khanelivim.packages.${pkgs.system}.default
+      ];
+      
+      # Set as default editor
+      home.sessionVariables = {
+        EDITOR = "nvim";
+        VISUAL = "nvim";
       };
     };
   };
