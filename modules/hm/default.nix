@@ -37,7 +37,7 @@
   hydenix.hm.git.enable = false;
   
   # Desactivar Neovim de Hydenix para usar khanelivim
-  hydenix.hm.neovim.enable = false;
+  hydenix.hm.editors.neovim = false;
   
   # Habilitar Spotify
   hydenix.hm.spotify.enable = true;
