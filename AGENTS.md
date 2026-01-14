@@ -206,10 +206,15 @@ gh pr create --title "Full reorganization: professional structure" --body "See A
 - Testing después de cada fase
 
 ### Problemas Encontrados:
-- (ninguno aún)
+- **Neovim no cargaba plugins (2026-01-13):**
+  - Problema: nixvim no agregaba plugins al runtimepath
+  - Causa raíz: Conflicto entre configuración custom y módulo de Hydenix
+  - Solución: Migrar a khanelivim (nixvim pre-configurado)
+  - Resultado: ✅ Neovim funcionando con configuración completa
 
 ### Mejoras Identificadas:
-- (ninguno aún)
+- Usar configuraciones nixvim pre-hechas (como khanelivim) para evitar problemas de runtimepath
+- Siempre deshabilitar módulos de Hydenix cuando uses alternativas custom
 
 ---
 
@@ -226,5 +231,39 @@ gh pr create --title "Full reorganization: professional structure" --body "See A
 
 ---
 
-**Última actualización:** 2026-01-10 (Fases 1-3 completadas ✅✅✅ - 81% progreso - CORE MIGRATION COMPLETE!)
+**Última actualización:** 2026-01-13 (Fases 1-3 completadas ✅✅✅ - 81% progreso - CORE MIGRATION COMPLETE!)
+
+---
+
+## 🎉 Extras Post-Migración
+
+### ✅ Neovim Integration (2026-01-13)
+**Rama:** `experiment/nvim-test` → **Merged to main** ✅
+
+**Problema:** 
+- Neovim no cargaba plugins (errores `module not found`)
+- Intentos con nixvim custom fallaron repetidamente
+- Conflictos con módulo de neovim de Hydenix
+
+**Solución:**
+1. Agregar khanelivim como flake input
+2. Deshabilitar `hydenix.hm.editors.neovim = false`
+3. Instalar khanelivim en `home.packages`
+4. Configurar `EDITOR`/`VISUAL` variables
+
+**Commits:**
+- `chore: increase download-buffer-size to 1GB` 
+- `feat: add khanelivim neovim configuration`
+- `fix: add inputs to user module for khanelivim`
+- `fix: disable hydenix neovim to allow khanelivim`
+- `fix: correct hydenix neovim disable path`
+- `feat: integrate khanelivim as neovim configuration` (merge commit)
+
+**Testing:** ✅ Neovim carga completamente con which-key, plugins, y configuración de khanelivim
+
+**Archivos modificados:**
+- `flake.nix` - agregado input khanelivim
+- `hosts/hydenix/user.nix` - instalado khanelivim package
+- `hosts/default.nix` - aumentado download-buffer-size
+- `modules/hm/default.nix` - deshabilitado neovim de hydenix
 
