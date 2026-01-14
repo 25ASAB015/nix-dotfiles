@@ -10,7 +10,7 @@
       ./programs/terminal/software/essentials.nix  # Herramientas esenciales (gh, git)
       ./flatpak.nix        # Flatpak applications (simple, like gitm3-hydenix)
       ./tex.nix            # LaTeX - TeX Live with Japanese support
-      ./nvim               # Neovim configuration (nixvim)
+      # ./nvim               # Neovim configuration (DISABLED - using khanelivim instead)
       
       # ══════════════════════════════════════════════════════════════════════════
       # CONFIGURACIONES

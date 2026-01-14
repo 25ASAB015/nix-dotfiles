@@ -44,12 +44,12 @@
     };
 
     # ══════════════════════════════════════════════════════════════════════════
-    # NIXVIM - Configuración declarativa de Neovim con Nix
-    # Permite configurar Neovim usando sintaxis Nix en lugar de Lua/VimScript
-    # Documentación: https://github.com/nix-community/nixvim
+    # KHANELIVIM - Configuración profesional de Neovim con Nixvim
+    # Full-featured Neovim setup con LSP, DAP, y más
+    # Documentación: https://github.com/khaneliman/khanelivim
     # ══════════════════════════════════════════════════════════════════════════
-    nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.11";
+    khanelivim = {
+      url = "github:khaneliman/khanelivim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
