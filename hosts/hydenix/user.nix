@@ -14,7 +14,7 @@
     extraSpecialArgs = { inherit inputs; };
     
     # User Configuration for ludus
-    users."ludus" = { pkgs, ... }: {
+    users."ludus" = { pkgs, inputs, ... }: {
       imports = [
         inputs.hydenix.homeModules.default
         inputs.nix-flatpak.homeManagerModules.nix-flatpak  # Flatpak declarative management
