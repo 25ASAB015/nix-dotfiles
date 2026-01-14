@@ -44,6 +44,14 @@
     };
 
     # ══════════════════════════════════════════════════════════════════════════
+    # NIXVIM - Configuración declarativa de Neovim
+    # ══════════════════════════════════════════════════════════════════════════
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    # ══════════════════════════════════════════════════════════════════════════
     # KHANELIVIM - Configuración profesional de Neovim con Nixvim
     # Full-featured Neovim setup con LSP, DAP, y más
     # Documentación: https://github.com/khaneliman/khanelivim
