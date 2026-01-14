@@ -27,7 +27,7 @@
         enable = true;
         defaultEditor = true;
         imports = [
-          inputs.khanelivim.nixvimModules.khanelivim
+          inputs.khanelivim.nixvimModules.default
         ];
       };
     };
