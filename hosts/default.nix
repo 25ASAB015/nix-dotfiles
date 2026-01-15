@@ -43,7 +43,7 @@
   nix = {
     settings = {
       # ===== OPTIMIZACIÓN DE RED =====
-      http2 = false;
+      http2 = true; # ✅ HTTP/2 mejora velocidad de descargas (cachix, binarios)
       connect-timeout = 10;
       download-attempts = 5;
       fallback = true;
@@ -81,7 +81,14 @@
 
   # Common networking
   networking = {
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      # Insertar DNS manualmente (ignora DNS del ISP/DHCP)
+      insertNameservers = [ "1.1.1.1" "1.0.0.1" ];
+      # No usar DNS del router/ISP
+      dns = "none";
+    };
+    # DNS del sistema (fallback)
     nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" "8.8.4.4" ];
   };
 
