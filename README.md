@@ -30,14 +30,20 @@ make switch
 sudo nixos-rebuild switch --flake .#hydenix
 ```
 
+## 📚 Documentation
+
+- Online manual: https://25ASAB015.github.io/nix-dotfiles/
+- Source manual: `manual/USER_MANUAL.md`
+- Legacy docs: `legacydocs/`
+
 ## 📁 Structure
 
 ```
 dotfiles/
 ├── flake.nix              # Flake entry point
 ├── Makefile               # 40+ management commands
-├── ANALYSIS.md            # Comparative analysis of Hydenix configs
-├── AGENTS.md              # Migration progress tracking
+├── manual/                # Single-source user manual
+├── legacydocs/            # Archived markdown docs
 │
 ├── hosts/                 # Multi-host configurations
 │   ├── default.nix        # Shared configuration
@@ -63,7 +69,7 @@ dotfiles/
 │   ├── scripts/           # Utility scripts
 │   └── wallpapers/        # Theme backgrounds
 │
-└── docs/                  # Hydenix documentation
+└── docs/                  # Starlight docs site (GitHub Pages)
 ```
 
 ## 🎯 Key Files
@@ -72,6 +78,8 @@ dotfiles/
 |------|---------|
 | `flake.nix` | Flake inputs and outputs |
 | `Makefile` | Management commands (try `make help`) |
+| `manual/USER_MANUAL.md` | Single-source user manual |
+| `legacydocs/` | Archived Markdown docs (legacy) |
 | `hosts/hydenix/configuration.nix` | Main system config |
 | `hosts/hydenix/user.nix` | User ludus configuration |
 | `modules/hm/hydenix-config.nix` | All program configurations |

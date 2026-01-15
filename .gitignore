@@ -2,3 +2,7 @@
 *.qcow2
 result
 .git-hooks
+node_modules/
+docs/node_modules/
+docs/dist/
+.astro/
