@@ -160,7 +160,7 @@ switch: ## Build and switch to new configuration
 	fi
 	@printf "\n$(BLUE)==================== Build =====================\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
-	@printf "$(GREEN)==================== Done ======================\n$(NC)"
+	@printf "\n$(GREEN)==================== Done ======================\n$(NC)"
 
 safe-switch: validate switch ## Validate then switch (safest option)
 
