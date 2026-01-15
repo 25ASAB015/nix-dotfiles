@@ -9,6 +9,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Hydenix Manual',
+			customCss: ['./src/styles/custom.css'],
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/25ASAB015/nix-dotfiles' }],
 			sidebar: [{ label: 'Manual', slug: '' }],
 		}),
