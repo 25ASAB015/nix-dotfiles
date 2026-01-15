@@ -55,10 +55,9 @@ Esta configuración integra `keybinds.nix` y recursos desde `resources/` para pr
 Si estás empezando o quieres cambios rápidos:
 
 1. **Keybinds:** `resources/config/keybinds.conf`
-2. **Waybar:** `resources/config/waybar/` (config, módulos y estilos)
-3. **Scripts:** `resources/scripts/` (lanzadores, grabación, utilidades)
-4. **Kitty:** `resources/config/kitty.conf`
-5. **Monitores:** `resources/config/monitors.conf`
+2. **Scripts:** `resources/scripts/` (lanzadores, grabación, utilidades)
+3. **Kitty:** `resources/config/kitty.conf`
+4. **Monitores:** `resources/config/monitors.conf`
 
 ## Shell (Zsh) - Overrides rápidos
 
