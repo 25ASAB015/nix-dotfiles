@@ -85,6 +85,25 @@
       enable = true;
       # Usa systemd-resolved para evitar que el ISP inyecte DNS lentos
       dns = "systemd-resolved";
+      # Forzar DNS en la conexión cableada (ignora DNS del ISP/DHCP)
+      ensureProfiles.profiles."wired-main" = {
+        connection = {
+          id = "Wired connection 1";
+          type = "ethernet";
+          permissions = "";
+        };
+        ipv4 = {
+          method = "auto";
+          ignore-auto-dns = "true";
+          dns = "1.1.1.1;1.0.0.1;9.9.9.9;";
+          dns-search = "";
+        };
+        ipv6 = {
+          method = "auto";
+          ignore-auto-dns = "true";
+          dns-search = "";
+        };
+      };
     };
     # DNS del sistema (fallback)
     nameservers = [ "1.1.1.1" "9.9.9.9" "8.8.8.8" "8.8.4.4" ];
