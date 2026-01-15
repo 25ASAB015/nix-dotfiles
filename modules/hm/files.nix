@@ -13,10 +13,6 @@ in {
     ".config/hypr/keybindings.conf" = lib.mkForce {
       source = mkSymlink "${dotfilesDir}/resources/config/keybinds.conf";
     };
-    ".config/waybar" = lib.mkForce {
-      source = mkSymlink "${dotfilesDir}/resources/config/waybar";
-      recursive = true;
-    };
     ".local/lib/hyde/script_launcher.sh" = {
       source = mkSymlink "${dotfilesDir}/resources/scripts/script_launcher.sh";
       executable = true;
