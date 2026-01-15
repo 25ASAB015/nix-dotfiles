@@ -6,7 +6,7 @@ pkill -x rofi && exit
 # Set comprehensive PATH like your dict script
 export PATH="/run/current-system/sw/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 
-SCRIPT_DIR="$HOME/hydix/resources/scripts"
+SCRIPT_DIR="$HOME/Dotfiles/resources/scripts"
 
 # Check if directory exists
 if [[ ! -d "$SCRIPT_DIR" ]]; then
