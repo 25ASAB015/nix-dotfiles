@@ -11,26 +11,6 @@
   };
 in {
   home.file = {
-    ".local/lib/hyde/script_launcher.sh" = {
-      executable = true;
-      source = ../../resources/scripts/script_launcher.sh;
-    };
-    ".local/lib/hyde/record.sh" = {
-      executable = true;
-      source = ../../resources/scripts/record.sh;
-    };
-    ".local/lib/hyde/dict.sh" = {
-      executable = true;
-      source = ../../resources/scripts/dict.sh;
-    };
-    # Override the keybindings.conf that Hydenix manages
-    ".config/hypr/keybindings.conf" = lib.mkForce {
-      source = ../../resources/config/keybinds.conf;
-    };
-    ".config/waybar" = lib.mkForce {
-      source = ../../resources/config/waybar;
-      recursive = true;
-    };
     ".config/fcitx/skin".source = fcitx-skin;
     # ".config/hyde/themes/Decay Green/wallpapers/cat.png" = {
     #   source = ../../resources/wallpapers/cat.png;

@@ -292,6 +292,12 @@ make switch → cambios permanentes (nueva generación)
 make boot   → cambios aplicados en próximo boot
 ```
 
+**Flujo recomendado (rápido y seguro):**
+```
+make test
+make switch
+```
+
 ---
 
 #### `make build`

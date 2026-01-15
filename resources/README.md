@@ -45,10 +45,24 @@ Esta configuración integra `keybinds.nix` y recursos desde `resources/` para pr
 **Cómo personalizar:**
 1. Edita `resources/config/keybinds.conf`
 2. Ajusta scripts en `resources/scripts/`
-3. Rebuild:
+3. Aplica una vez (luego no necesitas rebuild para cambios en resources):
    ```bash
    make switch
    ```
+
+## ¿Qué editar primero?
+
+Si estás empezando o quieres cambios rápidos:
+
+1. **Keybinds:** `resources/config/keybinds.conf`
+2. **Waybar:** `resources/config/waybar/` (config, módulos y estilos)
+3. **Scripts:** `resources/scripts/` (lanzadores, grabación, utilidades)
+4. **Kitty:** `resources/config/kitty.conf`
+5. **Monitores:** `resources/config/monitors.conf`
+
+## Shell (Zsh) - Overrides rápidos
+
+Usa `resources/config/.zshrc_extra` para aliases y exports personales sin tocar módulos Nix.
 
 ### Scripts
 

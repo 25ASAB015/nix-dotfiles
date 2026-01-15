@@ -1,3 +1,4 @@
+# Personal overrides (edit freely)
 export NIXPKGS_ALLOW_UNFREE=1
 export MANPAGER='nvim +Man!'
 export PYTHON_BASIC_REPL=1

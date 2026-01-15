@@ -94,6 +94,10 @@ make progress          # Show migration progress
 
 See `make help` for all 40+ commands!
 
+**Flujo recomendado:** `make test` → `make switch`
+
+**Diagnóstico de red:** `make test-network` cuando notes lentitud.
+
 ## 📦 Installed Software
 
 ### Terminal Tools
