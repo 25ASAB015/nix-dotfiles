@@ -1,7 +1,7 @@
 # NixOS Management Makefile
 # Place this in your flake directory (where flake.nix is located)
 
-.PHONY: help help-advanced help-examples rebuild switch test build clean gc update check format lint backup restore
+.PHONY: help help-advanced help-examples rebuild switch test build clean gc update check format lint backup restore test-network
 
 # Default target
 .DEFAULT_GOAL := help
@@ -256,6 +256,28 @@ health: ## Run comprehensive system health checks
 		printf "$(YELLOW)⚠ Uncommitted changes$(NC)\n"; \
 	fi
 	@printf "\n$(GREEN)Health check complete$(NC)\n"
+
+# === Network Tests ===
+
+test-network: ## Run comprehensive network diagnostics
+	@printf "$(CYAN)🌐 Network Diagnostics\n$(NC)"
+	@printf "=====================\n\n"
+	@printf "$(BLUE)1. DNS status (resolved):$(NC)\n"
+	@resolvectl status 2>/dev/null | head -60 || printf "$(YELLOW)resolvectl not available$(NC)\n"
+	@printf "\n$(BLUE)2. DNS from NetworkManager:$(NC)\n"
+	@nmcli device show | grep -E "IP4.DNS|GENERAL.CONNECTION" || true
+	@printf "\n$(BLUE)3. Ping (1.1.1.1):$(NC)\n"
+	@ping -c 5 1.1.1.1
+	@printf "\n$(BLUE)4. Ping (google.com):$(NC)\n"
+	@ping -c 5 google.com
+	@printf "\n$(BLUE)5. Throughput (Cloudflare 50MB, max 20s):$(NC)\n"
+	@curl -L -o /dev/null --max-time 20 -w "Downloaded: %{size_download} bytes, Speed: %{speed_download} B/s, Total: %{time_total}s\n" \
+		"https://speed.cloudflare.com/__down?bytes=50000000"
+	@printf "\n$(BLUE)6. Speedtest (nearest):$(NC)\n"
+	@nix run 'nixpkgs#speedtest-cli' -- --simple 2>/dev/null || printf "$(YELLOW)speedtest-cli failed or not available$(NC)\n"
+	@printf "\n$(BLUE)7. Route quality (mtr to 1.1.1.1, 50 probes):$(NC)\n"
+	@mtr -rw 1.1.1.1 -c 50 || printf "$(YELLOW)mtr not available$(NC)\n"
+	@printf "\n$(GREEN)✅ Network diagnostics complete$(NC)\n"
 
 # === Debugging ===
 
