@@ -145,8 +145,9 @@ rebuild: ## Full rebuild and switch (alias for switch)
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
 
 switch: ## Build and switch to new configuration
-	@printf "$(BLUE)🔄 Git add, Building and switching to new configuration...\n$(NC)"
-	@$(MAKE) fix-git-permissions
+	@printf "\n$(BLUE)==================== Switch ====================\n$(NC)"
+	@printf "$(BLUE)🔄 Git add, build y switch...\n$(NC)"
+	@$(MAKE) --no-print-directory fix-git-permissions
 	@if [ "$$(id -u)" -eq 0 ]; then \
 		if [ -n "$$SUDO_USER" ]; then \
 			sudo -u "$$SUDO_USER" git add .; \
@@ -157,7 +158,9 @@ switch: ## Build and switch to new configuration
 	else \
 		git add .; \
 	fi
+	@printf "$(BLUE)==================== Build =====================\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
+	@printf "$(GREEN)==================== Done ======================\n$(NC)"
 
 safe-switch: validate switch ## Validate then switch (safest option)
 
@@ -917,8 +920,7 @@ fix-permissions: ## Fix common permission issues
 	@printf "$(GREEN)✅ Permissions fixed$(NC)\n"
 
 fix-git-permissions: ## Fix git repo ownership issues in flake dir
-	@printf "$(CYAN)🔧 Fixing Git Permissions\n$(NC)"
-	@printf "========================\n"
+	@printf "$(CYAN)---------- Git Permissions ----------\n$(NC)"
 	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \
 		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $$USER | grep -q .; then \
 			printf "$(YELLOW)Fixing ownership in $(FLAKE_DIR)/.git...\n$(NC)"; \
