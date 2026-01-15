@@ -405,6 +405,26 @@ nixosConfigurations
 
 ---
 
+#### `make test-network`
+Diagnóstico completo de red (DNS, ping, throughput y ruta).
+
+```bash
+make test-network
+```
+
+**Qué hace:**
+- Verifica DNS activos (systemd-resolved y NetworkManager)
+- Mide latencia a 1.1.1.1 y google.com
+- Mide throughput con Cloudflare
+- Ejecuta speedtest y mtr
+
+**Cuándo usarlo:**
+- Navegación lenta o intermitente
+- Verificar rendimiento real del ISP
+- Confirmar que el DNS no está siendo inyectado
+
+---
+
 ### 🧹 Maintenance and Cleanup
 
 NixOS guarda **TODAS** las versiones antiguas. Esto permite rollbacks pero consume espacio.
