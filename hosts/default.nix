@@ -83,13 +83,22 @@
   networking = {
     networkmanager = {
       enable = true;
-      # Insertar DNS manualmente (ignora DNS del ISP/DHCP)
-      insertNameservers = [ "1.1.1.1" "1.0.0.1" ];
-      # No usar DNS del router/ISP
-      dns = "none";
+      # Usa systemd-resolved para evitar que el ISP inyecte DNS lentos
+      dns = "systemd-resolved";
     };
     # DNS del sistema (fallback)
-    nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" "8.8.4.4" ];
+    nameservers = [ "1.1.1.1" "9.9.9.9" "8.8.8.8" "8.8.4.4" ];
+  };
+
+  # Resolver centralizado con DNS seguro y consistente
+  services.resolved = {
+    enable = true;
+    dns = [ "1.1.1.1" "9.9.9.9" ];
+    fallbackDns = [ "8.8.8.8" "8.8.4.4" ];
+    dnssec = "false";
+    extraConfig = ''
+      DNSOverTLS=opportunistic
+    '';
   };
 
   # System version
