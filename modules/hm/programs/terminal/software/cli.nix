@@ -18,7 +18,7 @@ let
   
   # Paquetes de mynixpkgs (repositorio personal de linuxmobile)
   # Solo disponibles si el input existe en el flake
-  mynixpkgs = inputs.mynixpkgs.packages.${pkgs.system} or {};
+  mynixpkgs = inputs.mynixpkgs.packages.${pkgs.stdenv.hostPlatform.system} or {};
   hasMynixpkgs = inputs ? mynixpkgs;
 in
 {
