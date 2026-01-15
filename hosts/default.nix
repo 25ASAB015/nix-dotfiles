@@ -93,10 +93,10 @@
   # Resolver centralizado con DNS seguro y consistente
   services.resolved = {
     enable = true;
-    dns = [ "1.1.1.1" "9.9.9.9" ];
-    fallbackDns = [ "8.8.8.8" "8.8.4.4" ];
     dnssec = "false";
     extraConfig = ''
+      DNS=1.1.1.1 9.9.9.9
+      FallbackDNS=8.8.8.8 8.8.4.4
       DNSOverTLS=opportunistic
     '';
   };
