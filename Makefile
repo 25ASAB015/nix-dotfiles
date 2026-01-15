@@ -158,7 +158,7 @@ switch: ## Build and switch to new configuration
 	else \
 		git add .; \
 	fi
-	@printf "$(BLUE)==================== Build =====================\n$(NC)"
+	@printf "\n$(BLUE)==================== Build =====================\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
 	@printf "$(GREEN)==================== Done ======================\n$(NC)"
 
