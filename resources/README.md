@@ -30,6 +30,26 @@ Los archivos en `config/` son para configuraciones que cambias frecuentemente y 
    };
    ```
 
+### Hydenix Keybinds y Recursos (Pruebas)
+
+Esta configuración integra `keybinds.nix` y recursos desde `resources/` para pruebas rápidas:
+
+- **Keybinds:** `resources/config/keybinds.conf`
+- **Scripts:** `resources/scripts/` y `resources/script_launcher.sh`
+- **Wallpapers:** `resources/wallpapers/`
+- **Themes:** `resources/themes/`
+
+**Dónde se integra:**
+- Módulo: `modules/hm/keybinds.nix`
+
+**Cómo personalizar:**
+1. Edita `resources/config/keybinds.conf`
+2. Ajusta scripts en `resources/scripts/`
+3. Rebuild:
+   ```bash
+   make switch
+   ```
+
 ### Scripts
 
 Scripts de utilidad que quieres tener disponibles en el sistema.
