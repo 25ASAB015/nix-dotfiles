@@ -37,6 +37,8 @@
     
     # Network tools
     networkmanagerapplet
+    ethtool
+    mtr
   ];
 
   # Common Nix settings
