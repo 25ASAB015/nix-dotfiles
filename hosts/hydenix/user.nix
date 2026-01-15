@@ -9,6 +9,7 @@
 {
   # Home Manager Configuration - manages user-specific configurations (dotfiles, themes, etc.)
   home-manager = {
+    backupFileExtension = "hm-bak";
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = { inherit inputs; };
