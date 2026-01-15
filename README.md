@@ -88,6 +88,7 @@ make update            # Update flake inputs
 make clean             # Clean old generations (30 days)
 make backup            # Backup current configuration
 make rollback          # Rollback to previous generation
+make test-network      # Run network diagnostics
 make progress          # Show migration progress
 ```
 
