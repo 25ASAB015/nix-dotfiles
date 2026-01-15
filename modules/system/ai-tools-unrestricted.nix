@@ -102,7 +102,8 @@
       # Mantener variables de entorno importantes
       Defaults env_keep += "SSH_AUTH_SOCK"
       Defaults env_keep += "NIX_PATH"
-      Defaults env_keep += "HOME"
+      # Evita warnings: usa el HOME del usuario target (root) al hacer sudo
+      Defaults always_set_home
       
       # Recordar contraseña por 60 minutos después de ingresarla
       Defaults timestamp_timeout=60
