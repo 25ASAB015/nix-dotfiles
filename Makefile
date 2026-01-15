@@ -146,6 +146,7 @@ rebuild: ## Full rebuild and switch (alias for switch)
 
 switch: ## Build and switch to new configuration
 	@printf "$(BLUE)🔄 Git add, Building and switching to new configuration...\n$(NC)"
+	@$(MAKE) fix-git-permissions
 	git add .
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
 
@@ -903,7 +904,22 @@ fix-permissions: ## Fix common permission issues
 	@printf "$(YELLOW)This requires sudo...$(NC)\n"
 	@sudo chown -R $$USER:users ~/.config 2>/dev/null || true
 	@sudo chown -R $$USER:users ~/.local 2>/dev/null || true
+	@$(MAKE) fix-git-permissions
 	@printf "$(GREEN)✅ Permissions fixed$(NC)\n"
+
+fix-git-permissions: ## Fix git repo ownership issues in flake dir
+	@printf "$(CYAN)🔧 Fixing Git Permissions\n$(NC)"
+	@printf "========================\n"
+	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \
+		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $$USER | grep -q .; then \
+			printf "$(YELLOW)Fixing ownership in $(FLAKE_DIR)/.git...\n$(NC)"; \
+			sudo chown -R $$USER:users "$(FLAKE_DIR)/.git" 2>/dev/null || true; \
+		else \
+			printf "$(GREEN)✓ Git permissions OK\n$(NC)"; \
+		fi \
+	else \
+		printf "$(YELLOW)No git repo at $(FLAKE_DIR)\n$(NC)"; \
+	fi
 
 fix-store: ## Attempt to repair nix store
 	@printf "$(CYAN)🔧 Repairing Nix Store\n$(NC)"

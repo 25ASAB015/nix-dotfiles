@@ -124,6 +124,15 @@ in
         gtt          # Google Translate en terminal
         inshellisense # Autocompletado inteligente para shells
         zfxtop       # Monitor del sistema estilo htop
+        jj           # Jujutsu (VCS) para jj-nvim
+        glab         # GitLab CLI (blink-cmp)
+        wordnet      # Diccionario (blink-cmp)
+        yq-go        # Procesar YAML (kulala)
+        libxml2      # xmllint (kulala)
+        imagemagick  # Conversión de imágenes (snacks image)
+        ghostscript  # Render PDF (snacks image)
+        typst        # Render matemático (snacks image)
+        tectonic     # LaTeX para matemáticas (snacks image)
       ])
 
       # ════════════════════════════════════════════════════════════════════════
@@ -148,16 +157,36 @@ in
         stylua               # Formatter para Lua (config de Neovim)
         prettierd            # Formatter daemon para JS/TS/JSON/Markdown/HTML/CSS
         shfmt                # Formatter para shell scripts (bash, sh, etc.)
+        prettier             # Formatter CLI (kulala)
+        alejandra            # Formatter Nix (alternativa)
+        nixpkgs-fmt          # Formatter Nix (nixpkgs)
+        nixfmt               # Formatter Nix (khanelivim)
+        markdownlint-cli     # Linter Markdown (khanelivim)
+        rustfmt              # Formatter Rust (khanelivim)
         
         # ── Python Development ─────────────────────────────────────────────────
         python312Packages.black   # Formatter opinionated para Python
         
         # ── Go Development ─────────────────────────────────────────────────────
         gotools              # Herramientas de Go (goimports, gopls, etc.)
+        delve                # Debugger Go (DAP)
         
         # ── Docker/Containers ──────────────────────────────────────────────────
         lazydocker           # TUI para gestionar Docker (alternativa a docker ps)
         hadolint             # Linter para Dockerfiles
+
+        # ── Linters/Tooling extra ──────────────────────────────────────────────
+        biome                # Lint/format JS/TS (khanelivim)
+        shellcheck           # Linter shell (khanelivim)
+        deadnix              # Linter Nix (khanelivim)
+        statix               # Linter Nix (khanelivim)
+
+        # ── Debugging (DAP) ────────────────────────────────────────────────────
+        nodejs               # Runtime Node (DAP JS)
+        vscode-js-debug      # Adapter DAP JS (Linux)
+        lldb                 # LLDB + lldb-dap
+        gdb                  # GDB DAP (Linux)
+        netcoredbg           # DAP .NET (coreclr)
       ])
 
       # ════════════════════════════════════════════════════════════════════════
