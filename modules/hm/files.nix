@@ -20,5 +20,12 @@ in {
     ".local/lib/hyde/dict.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/dict.sh";
   };
+
+  # Asegurar que todos los scripts en resources/scripts sean ejecutables
+  home.activation.ensureScriptsExecutable = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    if [ -d "${dotfilesDir}/resources/scripts" ]; then
+      chmod -R u+rx,go+rx "${dotfilesDir}/resources/scripts"
+    fi
+  '';
 }
 
