@@ -2191,6 +2191,9 @@ make clean
 # Problemas de permisos
 make fix-permissions
 
+# Diagnóstico de red completo
+make test-network
+
 # Errores extraños en el store
 make fix-store
 
