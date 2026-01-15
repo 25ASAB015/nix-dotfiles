@@ -66,20 +66,42 @@
   };
 
   # ══════════════════════════════════════════════════════════════════════════
-  # SUDO - CON CONTRASEÑA + TIMEOUT (Opción 2 - Balance seguridad/comodidad)
+  # SUDO - Sin contraseña SOLO para comandos específicos (Opción 3)
   # Ver SECURITY_SUDO.md para más opciones de configuración
   # ══════════════════════════════════════════════════════════════════════════
   security.sudo = {
     enable = true;
-    wheelNeedsPassword = true; # Requiere contraseña (más seguro)
+    wheelNeedsPassword = true; # Por defecto requiere contraseña
+    extraRules = [
+      {
+        users = [ "ludus" ];
+        commands = [
+          # nixos-rebuild sin contraseña
+          {
+            command = "${pkgs.nixos-rebuild}/bin/nixos-rebuild";
+            options = [ "NOPASSWD" ];
+          }
+          # systemctl sin contraseña
+          {
+            command = "${pkgs.systemd}/bin/systemctl";
+            options = [ "NOPASSWD" ];
+          }
+          # journalctl sin contraseña
+          {
+            command = "${pkgs.systemd}/bin/journalctl";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
     extraConfig = ''
       # Mantener variables de entorno importantes
       Defaults env_keep += "SSH_AUTH_SOCK"
       Defaults env_keep += "NIX_PATH"
       Defaults env_keep += "HOME"
       
-      # Recordar contraseña por 10 minutos después de ingresarla
-      Defaults timestamp_timeout=10
+      # Recordar contraseña por 60 minutos después de ingresarla
+      Defaults timestamp_timeout=60
       
       # Una contraseña vale para todas las terminales abiertas
       Defaults !tty_tickets
