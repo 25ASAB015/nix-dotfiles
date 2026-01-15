@@ -147,7 +147,16 @@ rebuild: ## Full rebuild and switch (alias for switch)
 switch: ## Build and switch to new configuration
 	@printf "$(BLUE)🔄 Git add, Building and switching to new configuration...\n$(NC)"
 	@$(MAKE) fix-git-permissions
-	git add .
+	@if [ "$$(id -u)" -eq 0 ]; then \
+		if [ -n "$$SUDO_USER" ]; then \
+			sudo -u "$$SUDO_USER" git add .; \
+		else \
+			printf "$(RED)✗ Do not run 'make switch' as root (no SUDO_USER)\n$(NC)"; \
+			exit 1; \
+		fi; \
+	else \
+		git add .; \
+	fi
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
 
 safe-switch: validate switch ## Validate then switch (safest option)
