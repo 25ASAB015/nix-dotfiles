@@ -11,12 +11,6 @@ export default defineConfig({
 			title: 'Hydenix Manual',
 			customCss: ['./src/styles/custom.css'],
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/25ASAB015/nix-dotfiles' }],
-			nav: [
-				{ text: 'Manual', link: '/' },
-				{ text: 'Updates', link: '/updates/' },
-				{ text: 'Troubleshooting', link: '/troubleshooting/' },
-				{ text: 'FAQ', link: '/faq/' },
-			],
 			sidebar: [
 				{
 					label: 'Manual',
