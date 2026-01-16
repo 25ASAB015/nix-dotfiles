@@ -789,6 +789,15 @@ docs-local: ## Show local documentation files
 	fi
 	@printf "\n$(BLUE)View with:$(NC) less <file> or cat <file>\n"
 
+docs-dev: ## Run Astro docs dev server locally
+	@printf "$(CYAN)📘 Astro Docs Dev Server\n$(NC)"
+	@printf "========================\n"
+	@if [ -d "docs" ]; then \
+		cd docs && npm run dev; \
+	else \
+		printf "$(YELLOW)docs/ not found$(NC)\n"; \
+	fi
+
 readme: ## Show README in terminal
 	@if [ -f "README.md" ]; then \
 		less README.md; \
