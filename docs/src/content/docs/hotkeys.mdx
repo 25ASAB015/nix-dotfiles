@@ -1,6 +1,374 @@
 ---
 title: Hotkeys
-description: Placeholder page.
+description: Atajos configurados en Hydenix (Hyprland, terminal y Neovim).
 ---
 
 # Hotkeys
+
+Los atajos se generan desde los dotfiles en `~/Dotfiles`. Esta pagina centraliza
+los keybindings definidos en el sistema (Hyprland), terminal y Neovim.
+
+## Convenciones
+
+- `Super` = tecla Windows/Meta.
+- `$mainMod` = `Super`.
+- `$TERMINAL`, `$EDITOR`, `$EXPLORER`, `$BROWSER` se toman de tu config de Hypr.
+
+## Hyprland
+
+### Controles basicos
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + Q | Cerrar ventana (no mata Steam) |
+| Alt + F4 | Cerrar ventana (no mata Steam) |
+| Super + Shift + Space | Alternar ventana flotante |
+| Super + G | Alternar grupo |
+| Super + F | Pantalla completa |
+| Super + X | Bloquear pantalla |
+| Super + Shift + P | Fijar ventana |
+| Ctrl + Alt + Delete | Menu de logout |
+
+### Navegacion de grupos
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + [ | Grupo anterior |
+| Super + ] | Grupo siguiente |
+
+### Navegacion de foco
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + H | Foco a la izquierda |
+| Super + L | Foco a la derecha |
+| Super + K | Foco arriba |
+| Super + J | Foco abajo |
+| Super + Flecha izquierda | Foco a la izquierda |
+| Super + Flecha derecha | Foco a la derecha |
+| Super + Flecha arriba | Foco arriba |
+| Super + Flecha abajo | Foco abajo |
+
+### Redimensionar ventana (estilo Vim)
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + Ctrl + L | Aumentar ancho |
+| Super + Ctrl + H | Disminuir ancho |
+| Super + Ctrl + K | Aumentar alto |
+| Super + Ctrl + J | Disminuir alto |
+
+### Mover ventana (estilo Vim)
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + Shift + H | Mover a la izquierda |
+| Super + Shift + L | Mover a la derecha |
+| Super + Shift + K | Mover arriba |
+| Super + Shift + J | Mover abajo |
+
+### Mover y redimensionar con mouse
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + Mouse 1 (mouse:272) | Mover ventana |
+| Super + Mouse 2 (mouse:273) | Redimensionar ventana |
+| Super + Z | Mover ventana |
+| Super + Shift + Z | Redimensionar ventana |
+
+### Splits
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + S | Alternar split |
+
+### Lanzador de apps
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + Enter | Terminal |
+| Super + E | Explorador de archivos |
+| Super + V | Editor |
+| Super + B | Navegador |
+| Ctrl + Shift + Escape | Monitor del sistema |
+
+### Rofi
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + Space | Buscador de apps |
+| Super + Tab | Cambiar ventana |
+| Super + Shift + E | Buscador de archivos |
+| Super + / | Ayuda de keybindings |
+| Super + ; | Selector de emojis |
+| Super + ' | Selector de glifos |
+| Super + P | Clipboard |
+| Super + Shift + P | Clipboard manager |
+
+### Audio
+
+| Atajo | Funcion |
+| --- | --- |
+| F10 | Silenciar salida |
+| XF86AudioMute | Silenciar salida |
+| F11 | Bajar volumen |
+| XF86AudioLowerVolume | Bajar volumen |
+| F12 | Subir volumen |
+| XF86AudioRaiseVolume | Subir volumen |
+| XF86AudioMicMute | Silenciar microfono |
+
+### Multimedia
+
+| Atajo | Funcion |
+| --- | --- |
+| XF86AudioPlay | Play/Pause |
+| XF86AudioPause | Pause |
+| XF86AudioNext | Siguiente pista |
+| XF86AudioPrev | Pista anterior |
+
+### Brillo
+
+| Atajo | Funcion |
+| --- | --- |
+| XF86MonBrightnessUp | Subir brillo |
+| XF86MonBrightnessDown | Bajar brillo |
+
+### Utilidades
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + Backslash | Cambiar layout de teclado |
+| Super + F11 | Game mode |
+| Super + Alt + G | Lanzador de juegos |
+| Alt derecho + Ctrl derecho | Alternar Waybar y recargar |
+
+### Capturas de pantalla
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + Shift + C | Selector de color |
+| Super + Shift + S | Captura de region |
+| Super + Ctrl + Shift + S | Congelar y capturar region |
+| Super + Shift + M | Capturar monitor |
+| Print | Capturar todos los monitores |
+
+### Theming y wallpapers
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + . | Siguiente wallpaper global |
+| Super + , | Wallpaper global anterior |
+| Super + W | Selector de wallpaper |
+| Super + Ctrl + . | Siguiente layout de Waybar |
+| Super + Ctrl + , | Layout de Waybar anterior |
+| Super + R | Selector de wallbash |
+| Super + T | Selector de tema |
+
+### Workspaces
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + 1 | Ir a workspace 1 |
+| Super + 2 | Ir a workspace 2 |
+| Super + 3 | Ir a workspace 3 |
+| Super + 4 | Ir a workspace 4 |
+| Super + 5 | Ir a workspace 5 |
+| Super + 6 | Ir a workspace 6 |
+| Super + 7 | Ir a workspace 7 |
+| Super + 8 | Ir a workspace 8 |
+| Super + 9 | Ir a workspace 9 |
+| Super + 0 | Ir a workspace 10 |
+| Super + Grave | Volver al workspace previo (por monitor) |
+| Super + Alt + L | Siguiente workspace relativo |
+| Super + Alt + H | Anterior workspace relativo |
+| Super + N | Ir al workspace vacio mas cercano |
+| Super + Shift + 1 | Mover ventana al workspace 1 |
+| Super + Shift + 2 | Mover ventana al workspace 2 |
+| Super + Shift + 3 | Mover ventana al workspace 3 |
+| Super + Shift + 4 | Mover ventana al workspace 4 |
+| Super + Shift + 5 | Mover ventana al workspace 5 |
+| Super + Shift + 6 | Mover ventana al workspace 6 |
+| Super + Shift + 7 | Mover ventana al workspace 7 |
+| Super + Shift + 8 | Mover ventana al workspace 8 |
+| Super + Shift + 9 | Mover ventana al workspace 9 |
+| Super + Shift + 0 | Mover ventana al workspace 10 |
+| Super + Shift + N | Mover ventana al siguiente workspace relativo |
+| Super + Shift + B | Mover ventana al workspace relativo anterior |
+| Super + Mouse wheel down | Workspace siguiente |
+| Super + Mouse wheel up | Workspace anterior |
+| Super + - | Mover a scratchpad |
+| Super + Shift + - | Mover a scratchpad (silencioso) |
+| Super + = | Alternar scratchpad |
+| Super + Alt + 1 | Mover a workspace 1 (silencioso) |
+| Super + Alt + 2 | Mover a workspace 2 (silencioso) |
+| Super + Alt + 3 | Mover a workspace 3 (silencioso) |
+| Super + Alt + 4 | Mover a workspace 4 (silencioso) |
+| Super + Alt + 5 | Mover a workspace 5 (silencioso) |
+| Super + Alt + 6 | Mover a workspace 6 (silencioso) |
+| Super + Alt + 7 | Mover a workspace 7 (silencioso) |
+| Super + Alt + 8 | Mover a workspace 8 (silencioso) |
+| Super + Alt + 9 | Mover a workspace 9 (silencioso) |
+| Super + Alt + 0 | Mover a workspace 10 (silencioso) |
+
+### Metodo de entrada
+
+| Atajo | Funcion |
+| --- | --- |
+| Ctrl + Space | Alternar input method (fcitx5) |
+| Super + Shift + I | Abrir configuracion de fcitx5 |
+
+### Scripts personalizados
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + S | Lanzador de scripts |
+| Super + D | Diccionario (abrir o enfocar) |
+
+### Grabacion de pantalla
+
+| Atajo | Funcion |
+| --- | --- |
+| Super + Shift + R | Grabar region (mp4) |
+| Super + Shift + G | Grabar region (gif) |
+
+> Nota: `Super + S` esta definido dos veces (split y scripts). La ultima
+> definicion en el archivo de Hyprland es la que aplica.
+
+## Terminal
+
+### Ghostty
+
+| Atajo | Funcion |
+| --- | --- |
+| Ctrl + Shift + I | Toggle inspector |
+| Ctrl + Shift + P | Command palette |
+| Ctrl + Shift + C | Copiar |
+| Ctrl + Shift + V | Pegar |
+| Ctrl + Shift + - | Reducir fuente |
+| Ctrl + Shift + + | Aumentar fuente |
+| Ctrl + Shift + 0 | Resetear fuente |
+| Ctrl + Shift + R | Recargar configuracion |
+| Alt + V | Split a la derecha |
+| Alt + S | Split hacia abajo |
+| Alt + H | Ir al split izquierdo |
+| Alt + L | Ir al split derecho |
+| Alt + J | Ir al split inferior |
+| Alt + K | Ir al split superior |
+| Alt + N | Nueva pestaña |
+| Ctrl + = | Aumentar fuente |
+| Ctrl + - | Reducir fuente |
+
+### Fish
+
+| Atajo | Funcion |
+| --- | --- |
+| Ctrl + Backspace | Borrar palabra atras |
+| Ctrl + Z | Undo |
+| Ctrl + B | Inicio de linea |
+| Ctrl + E | Fin de linea |
+| Flecha arriba | Buscar en historial con prefijo |
+| Flecha abajo | Buscar en historial con prefijo |
+| Ctrl + X | Atajo de `fifc` |
+| Ctrl + S | Secuencia de `sudope` |
+
+### Atuin
+
+| Atajo | Funcion |
+| --- | --- |
+| Flecha arriba | Deshabilitado (para no interferir) |
+| Ctrl + N | Atajos `ctrl_n_shortcuts` habilitados (Atuin UI) |
+
+## Neovim
+
+> `Leader` esta configurado como `Space`.
+
+### Ventanas y splits
+
+| Atajo | Funcion |
+| --- | --- |
+| Ctrl + H | Ventana izquierda |
+| Ctrl + L | Ventana derecha |
+| Ctrl + J | Ventana abajo |
+| Ctrl + K | Ventana arriba |
+| Ctrl + Flecha arriba | Aumentar alto |
+| Ctrl + Flecha abajo | Disminuir alto |
+| Ctrl + Flecha izquierda | Disminuir ancho |
+| Ctrl + Flecha derecha | Aumentar ancho |
+| Leader + \| | Split vertical |
+| Leader + - | Split horizontal |
+
+### Exploracion y busqueda
+
+| Atajo | Funcion |
+| --- | --- |
+| Leader + E | Abrir Neo-tree |
+| Leader + Y | Abrir Yazi |
+| Leader + Leader | Buscar archivos |
+| Leader + F W | Buscar palabra (live grep) |
+
+### Buffers
+
+| Atajo | Funcion |
+| --- | --- |
+| Leader + B B | Lista de buffers |
+| Leader + B D | Cerrar buffer |
+| Leader + B N | Buffer siguiente |
+| Leader + B P | Buffer anterior |
+
+### Undo tree
+
+| Atajo | Funcion |
+| --- | --- |
+| Leader + U U | Toggle undotree |
+
+### VimTeX
+
+| Atajo | Funcion |
+| --- | --- |
+| Leader + L L | Compilar |
+| Leader + L K | Detener compilacion |
+| Leader + L V | Ver PDF |
+| Leader + L C | Limpiar todo |
+| Leader + L c | Limpiar auxiliares |
+| Leader + L T | Tabla de contenidos |
+| Leader + L I | VimTeX info |
+
+### LSP y diagnosticos
+
+| Atajo | Funcion |
+| --- | --- |
+| K | Hover |
+| gD | Ir a declaracion |
+| gd | Ir a definicion |
+| gr | Referencias |
+| gI | Implementaciones |
+| gy | Tipo/definicion |
+| Leader + C A | Code action |
+| Leader + C R | Renombrar |
+| Leader + W L | Listar workspaces |
+| Leader + W R | Eliminar workspace |
+| Leader + W A | Agregar workspace |
+| Leader + E | Diagnostico en ventana flotante |
+| [ | Diagnostico anterior |
+| ] | Diagnostico siguiente |
+| Leader + D O | Enviar diagnosticos al loclist |
+| Leader + L S | Simbolos del documento |
+| Leader + L Shift + S | Simbolos del workspace |
+| Leader + L R | Renombrar simbolo |
+
+### Movimiento rapido (Leap)
+
+| Atajo | Funcion |
+| --- | --- |
+| s | Leap forward |
+| S | Leap backward |
+
+### Harpoon
+
+| Atajo | Funcion |
+| --- | --- |
+| Leader + H A | Agregar archivo |
+| Leader + H E | Quick menu |
+| Leader + 1 | Seleccionar marca 1 |
+| Leader + 2 | Seleccionar marca 2 |
+| Leader + 3 | Seleccionar marca 3 |
