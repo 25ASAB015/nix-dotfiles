@@ -511,11 +511,23 @@ git-status: ## Show git status with GitHub CLI
 	fi
 	@printf "\n"
 save: ## Quick save: add, commit, push, and rebuild
-	@printf "$(PURPLE)💾 Quick save: staging, committing, pushing, and rebuilding...\n$(NC)"
-	@make git-add
-	@make git-commit
-	@make git-push
-	@make switch
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)              💾 Quick Save Workflow                \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(PURPLE)Executing complete workflow:$(NC)\n"
+	@printf "  1. Stage changes\n"
+	@printf "  2. Commit changes\n"
+	@printf "  3. Push to remote\n"
+	@printf "  4. Rebuild and switch\n"
+	@printf "\n"
+	@$(MAKE) --no-print-directory git-add
+	@$(MAKE) --no-print-directory git-commit
+	@$(MAKE) --no-print-directory git-push
+	@$(MAKE) --no-print-directory switch
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Quick save completed successfully!$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 backup: ## Backup current configuration
 	@printf "$(BLUE)💾 Backing up configuration...\n$(NC)"
