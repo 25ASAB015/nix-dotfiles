@@ -875,10 +875,23 @@ phases: ## Show current phase tasks
 # === Reportes y Exportación ===
 
 changelog: ## Show recent changes from git log
-	@printf "$(CYAN)📝 Recent Changes\n$(NC)"
-	@printf "================\n\n"
-	@git log --pretty=format:"$(GREEN)%h$(NC) - %s $(BLUE)(%ar by %an)$(NC)" --max-count=20 2>/dev/null || \
-		printf "$(YELLOW)Not a git repository$(NC)\n"
+	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            📝 Recent Changes                      \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@if git rev-parse --git-dir > /dev/null 2>&1; then \
+		printf "\n"; \
+		git log --max-count=15 --pretty=format:"%h|%s|%ar" 2>/dev/null | \
+		while IFS='|' read -r hash subject time; do \
+			SUBJECT_SHORT=$$(echo "$$subject" | cut -c1-55); \
+			if [ "$${#subject}" -gt 55 ]; then \
+				SUBJECT_SHORT="$$SUBJECT_SHORT..."; \
+			fi; \
+			printf "  $(GREEN)%-8s$(NC)  %-58s$(BLUE)%15s$(NC)\n" "$$hash" "$$SUBJECT_SHORT" "$$time"; \
+		done; \
+	else \
+		printf "\n$(YELLOW)Not a git repository$(NC)\n"; \
+	fi
+	@printf "\n"
 changelog-detailed: ## Show detailed changelog with diffs
 	@printf "$(CYAN)📝 Detailed Changelog (Last 10 commits)\n$(NC)"
 	@printf "======================================\n\n"

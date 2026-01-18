@@ -1139,13 +1139,29 @@ make switch
 ### 📝 Changelog e historial
 
 #### `make changelog`
-Muestra los últimos 20 commits en formato compacto.
+Muestra los últimos 15 commits en formato compacto y visual.
 
 ```bash
 make changelog
-# c517db4 - feat: implement Makefile improvements (2 minutes ago by Roberto)
-# 147d632 - docs: add comprehensive plan (4 hours ago by Roberto)
 ```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+            📝 Recent Changes                      
+════════════════════════════════════════════════════
+
+  de95dff   refactor: remove make packages command and update docs    3 minutes ago
+  a9a8e70   feat: combine list-hosts and hosts-info, update docs...   7 minutes ago
+  c4dbec9   feat: improve list-generations output format with...  12 minutes ago
+  c6830ae   fix: improve search-installed to find packages in...  17 minutes ago
+```
+
+**Características:**
+- Formato compacto: cada commit en una línea
+- Mensajes truncados a 55 caracteres si son muy largos
+- Columna de tiempo alineada a la derecha
+- Hash en verde, tiempo en azul
 
 #### `make changelog-detailed`
 Muestra changelog detallado de los últimos 10 commits con fecha y autor.
