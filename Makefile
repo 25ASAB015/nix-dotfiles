@@ -42,7 +42,7 @@ help: ## Show this help message
 		} \
 	} \
 	END { \
-		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev readme tutorial progress"); \
+		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev readme tutorial"); \
 		print_cat("Gestión del Sistema (Rebuild/Switch)", "rebuild switch safe-switch test build dry-run boot validate debug quick emergency"); \
 		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean clean-generations gc optimize clean-result fix-store"); \
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input update-info diff-update upgrade show flake-check diff-flake"); \
@@ -196,10 +196,6 @@ tutorial: ## Show Makefile tutorial
 	else \
 		printf "$(YELLOW)MAKEFILE_TUTORIAL.md not found$(NC)\n"; \
 	fi
-
-progress: ## Show migration progress from AGENTS.md
-	@printf "$(CYAN)📊 Migration Progress:\n$(NC)"
-	@grep -A 7 "## 📊 Métricas de Progreso" AGENTS.md || printf "AGENTS.md not found\n"
 
 # === Gestión del Sistema (Rebuild/Switch) ===
 
