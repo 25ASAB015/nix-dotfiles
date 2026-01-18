@@ -1,6 +1,21 @@
 ---
 title: Unified clipboard
-description: Placeholder page.
+description: Atajos universales de portapapeles al estilo Omarchy.
 ---
 
 # Unified clipboard
+
+Esta configuracion replica el comportamiento de Omarchy para copiar/pegar/cortar
+en aplicaciones que no respetan Ctrl+C/V. Se basa en `sendshortcut` de Hyprland,
+igual que en Omarchy.
+
+## Atajos
+
+- `SUPER + C` = copiar universal (envia `Ctrl+Insert`)
+- `SUPER + V` = pegar universal (envia `Shift+Insert`)
+- `SUPER + X` = cortar universal (envia `Ctrl+X`)
+
+## Notas
+
+- El editor paso a `SUPER + Ctrl + V` para liberar `SUPER + V` al pegado universal.
+- El gestor de portapapeles sigue en `SUPER + P` / `SUPER + Shift + P`.
