@@ -168,9 +168,10 @@ echo "✅ NIVEL 2 COMPLETADO (2/2)"
 ```bash
 echo "=== NIVEL 3: Diff y Comparación ==="
 
-# 21. make diff-config
-make diff-config
-echo "✓ make diff-config funciona"
+# 21. make git-diff (renombrado desde diff-config)
+make git-diff
+echo "✓ make git-diff funciona"
+# También funciona el alias: make diff-config
 
 # 22. make diff-flake
 make diff-flake

@@ -47,7 +47,7 @@ help: ## Show this help message
 		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean clean-generations gc optimize clean-result fix-store"); \
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input update-info diff-update upgrade show flake-check diff-flake"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
-		print_cat("Git y Respaldo", "git-add git-commit git-push git-status save backup diff-config"); \
+		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save backup"); \
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs watch-rebuild logs-boot logs-errors logs-service"); \
 		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
@@ -586,16 +586,34 @@ backup: ## Backup current configuration
 	@mkdir -p $(BACKUP_DIR)
 	@cp -r $(FLAKE_DIR) $(BACKUP_DIR)/backup-$(shell date +%Y%m%d-%H%M%S)
 	@printf "$(GREEN)✅ Backup saved to $(BACKUP_DIR)\n$(NC)"
-diff-config: ## Show uncommitted changes to .nix files
-	@printf "$(CYAN)📊 Configuration Changes\n$(NC)"
-	@printf "=======================\n"
-	@if git diff --quiet -- '*.nix'; then \
-		printf "$(GREEN)No changes to .nix files$(NC)\n"; \
+git-diff: ## Show uncommitted changes to .nix configuration files
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📊 Configuration Changes                  \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@if git diff --quiet -- '*.nix' 2>/dev/null; then \
+		printf "\n$(GREEN)✅ No uncommitted changes to .nix files$(NC)\n"; \
+		printf "$(BLUE)All configuration files are clean.$(NC)\n"; \
 	else \
-		git diff --stat -- '*.nix'; \
-		printf "\n$(BLUE)Detailed diff:$(NC)\n"; \
-		git diff -- '*.nix'; \
+		printf "\n$(BLUE)📝 Uncommitted changes in .nix files:$(NC)\n\n"; \
+		CHANGED_FILES=$$(git diff --name-only -- '*.nix' 2>/dev/null | wc -l); \
+		ADDED_LINES=$$(git diff --numstat -- '*.nix' 2>/dev/null | awk '{sum+=$$1} END {print sum+0}'); \
+		DELETED_LINES=$$(git diff --numstat -- '*.nix' 2>/dev/null | awk '{sum+=$$2} END {print sum+0}'); \
+		printf "$(PURPLE)Summary:$(NC)\n"; \
+		printf "├─ $(BLUE)Files changed:$(NC) $(GREEN)$$CHANGED_FILES$(NC)\n"; \
+		if [ -n "$$ADDED_LINES" ] && [ "$$ADDED_LINES" != "0" ]; then \
+			printf "├─ $(BLUE)Lines added:$(NC) $(GREEN)+$$ADDED_LINES$(NC)\n"; \
+		fi; \
+		if [ -n "$$DELETED_LINES" ] && [ "$$DELETED_LINES" != "0" ]; then \
+			printf "└─ $(BLUE)Lines deleted:$(NC) $(RED)-$$DELETED_LINES$(NC)\n"; \
+		fi; \
+		printf "\n$(BLUE)📋 File changes:$(NC)\n"; \
+		git diff --stat --color=always -- '*.nix' 2>/dev/null || git diff --stat -- '*.nix'; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(CYAN)          📄 Detailed Diff                         \n$(NC)"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)\n"; \
+		git diff --color=always -- '*.nix' 2>/dev/null || git diff -- '*.nix'; \
 	fi
+	@printf "\n"
 
 # === Diagnóstico y Logs ===
 
@@ -917,6 +935,7 @@ tree: ## Show configuration structure
 			sed 's|[^/]*/| |g'; \
 	fi
 	@printf "\n"
+diff-config: git-diff ## Alias for git-diff (deprecated, use git-diff)
 
 # === Reportes y Exportación ===
 
