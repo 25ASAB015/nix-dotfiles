@@ -52,7 +52,7 @@ help: ## Show this help message
 		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
 		print_cat("Reportes y Exportación", "git-log export-config export-minimal"); \
-		print_cat("Plantillas y Otros", "new-host new-module compare-hosts hardware-scan fix-permissions fix-git-permissions"); \
+		print_cat("Plantillas y Otros", "new-host new-module hardware-scan fix-permissions fix-git-permissions"); \
 		printf "\nWorkflows sugeridos:\n"; \
 		printf "  • Desarrollo diario:  make test → make switch → make rollback\n"; \
 		printf "  • Updates seguros:    make backup → make update → make diff-update → make validate → make test → make switch\n"; \
@@ -99,9 +99,6 @@ help-examples: ## Show commands with usage examples
 	@printf "  → make new-module MODULE=hm/programs/terminal/alacritty\n"
 	@printf "  → make new-module MODULE=system/services/backup\n\n"
 	@printf "$(GREEN)═══ 📊 Diff & Compare ═══$(NC)\n"
-	@printf "$(BLUE)compare-hosts HOST1=<a> HOST2=<b>$(NC)\n"
-	@printf "  → make compare-hosts HOST1=hydenix HOST2=laptop\n"
-	@printf "  → make compare-hosts HOST1=laptop HOST2=vm\n\n"
 	@printf "$(GREEN)═══ 🔍 Build Analysis ═══$(NC)\n"
 	@printf "$(BLUE)why-depends PKG=<name>$(NC)\n"
 	@printf "  → make why-depends PKG=firefox\n"
@@ -1058,16 +1055,6 @@ new-module: ## Create new module template (use MODULE=path/name)
 		> "$$MODULE_PATH"; \
 	printf "$(GREEN)✅ Module created: $$MODULE_PATH$(NC)\n"; \
 	printf "$(YELLOW)Remember to import it in the appropriate default.nix$(NC)\n"
-
-compare-hosts: ## Compare two host configurations (use HOST1=a HOST2=b)
-	@if [ -z "$(HOST1)" ] || [ -z "$(HOST2)" ]; then \
-		printf "$(RED)Error: Both HOST1 and HOST2 required$(NC)\n"; \
-		printf "$(YELLOW)Usage: make compare-hosts HOST1=hydenix HOST2=laptop$(NC)\n"; \
-		exit 1; \
-	fi
-	@printf "$(CYAN)📊 Comparing $(HOST1) vs $(HOST2)\n$(NC)"
-	@printf "=====================================\n"
-	@diff -u hosts/$(HOST1)/configuration.nix hosts/$(HOST2)/configuration.nix || true
 
 hardware-scan: ## Re-scan hardware configuration
 	@printf "$(BLUE)🔧 Scanning hardware configuration for $(HOSTNAME)...\n$(NC)"

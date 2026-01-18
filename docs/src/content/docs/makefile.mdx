@@ -1737,15 +1737,6 @@ make diff-flake
 # Útil después de updates para ver qué cambió
 ```
 
-#### `make compare-hosts HOST1=a HOST2=b`
-Compara configuraciones de dos hosts.
-
-```bash
-make compare-hosts HOST1=hydenix HOST2=laptop
-# Ver diferencias entre configuraciones de diferentes máquinas
-```
-
----
 
 <a id="cmd-build-analysis"></a>
 ### 🔍 Build Analysis
@@ -2717,7 +2708,6 @@ make switch
 
 ```bash
 # Comparar configuraciones de diferentes hosts
-make compare-hosts HOST1=hydenix HOST2=laptop
 
 # Ver diferencias en archivos .nix
 make git-diff
@@ -2833,7 +2823,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 `git-log`, `export-config`, `export-minimal`
 
 ### Plantillas y Otros (6)
-`new-host`, `new-module`, `compare-hosts`, `hardware-scan`, `fix-permissions`, `fix-git-permissions`
+`new-host`, `new-module`, `hardware-scan`, `fix-permissions`, `fix-git-permissions`
 
 **Total: 75+ comandos disponibles** 🎉
 

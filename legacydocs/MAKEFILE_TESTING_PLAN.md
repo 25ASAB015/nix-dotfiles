@@ -188,9 +188,7 @@ PREV_GEN=$((CURRENT_GEN - 1))
 make diff-gen GEN1=$PREV_GEN GEN2=$CURRENT_GEN
 echo "✓ make diff-gen funciona"
 
-# 25. make compare-hosts (requiere HOST1 y HOST2)
-make compare-hosts HOST1=hydenix HOST2=laptop
-echo "✓ make compare-hosts funciona"
+# 25. make compare-hosts (removed)
 
 echo "✅ NIVEL 3 COMPLETADO (5/5)"
 ```
@@ -730,7 +728,6 @@ Marca cada comando conforme lo verifiques manualmente:
 ### Diff Tools
 - [ ] diff-config
 - [ ] diff-flake
-- [ ] compare-hosts
 
 ### Build Analysis
 - [ ] why-depends
