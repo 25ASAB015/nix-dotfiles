@@ -224,15 +224,24 @@ build: ## Build configuration without switching
 	@printf "$(BLUE)🔨 Building configuration...\n$(NC)"
 	sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME)
 dry-run: ## Show what would be built/changed
-	@printf "$(CYAN)🔍 Dry run - showing what would change...\n$(NC)"
-	sudo nixos-rebuild dry-run --flake $(FLAKE_DIR)#$(HOSTNAME)
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🔍 Dry Run - Preview Changes             \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)Showing what would be built/changed without applying...$(NC)\n\n"
+	@sudo nixos-rebuild dry-run --flake $(FLAKE_DIR)#$(HOSTNAME)
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Dry run completed$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 boot: ## Build and set as boot default (no immediate switch)
 	@printf "$(PURPLE)🥾 Setting configuration for next boot...\n$(NC)"
 	sudo nixos-rebuild boot --flake $(FLAKE_DIR)#$(HOSTNAME)
 
 validate: ## Validate configuration before switching
-	@printf "$(CYAN)🔍 Validation Checks\n$(NC)"
-	@printf "===================\n\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🔍 Validation Checks                       \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 	@printf "$(BLUE)1/3 Checking flake syntax...$(NC) "
 	@if nix flake check $(FLAKE_DIR) >/dev/null 2>&1; then \
 		printf "$(GREEN)✓$(NC)\n"; \
@@ -259,7 +268,10 @@ validate: ## Validate configuration before switching
 	else \
 		printf "$(YELLOW)⊘$(NC) (statix not installed)\n"; \
 	fi
-	@printf "\n$(GREEN)✅ Validation passed\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Validation passed$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 debug: ## Rebuild with verbose output and trace
 	@printf "$(RED)🐛 Debug rebuild with full trace...\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose
@@ -652,27 +664,23 @@ git-diff: ## Show uncommitted changes to .nix configuration files
 # === Diagnóstico y Logs ===
 
 health: ## Run comprehensive system health checks
-	@printf "$(CYAN)🏥 System Health Check\n$(NC)"
-	@printf "=====================\n\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🏥 System Health Check                    \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 	@printf "$(BLUE)1. Flake validation:$(NC) "
 	@if nix flake check . >/dev/null 2>&1; then \
 		printf "$(GREEN)✓ Passed$(NC)\n"; \
 	else \
 		printf "$(RED)✗ Failed$(NC)\n"; \
 	fi
-	@printf "$(BLUE)2. Store consistency:$(NC) "
-	@if nix-store --verify --check-contents >/dev/null 2>&1; then \
-		printf "$(GREEN)✓ Healthy$(NC)\n"; \
-	else \
-		printf "$(YELLOW)⚠ Issues detected$(NC)\n"; \
-	fi
-	@printf "$(BLUE)3. Disk space (/nix):$(NC) "
-	@df -h /nix 2>/dev/null | tail -1 | awk '{printf "%s used (%s free)\n", $$5, $$4}'
-	@printf "$(BLUE)4. Generations count:$(NC) "
-	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l | awk '{print $$1 " generations"}'
-	@printf "$(BLUE)5. Boot entries:$(NC) "
+	@printf "$(BLUE)2. Disk space (/nix):$(NC) "
+	@df -h /nix 2>/dev/null | tail -1 | awk '{printf "%s used (%s free)\n", $$5, $$4}' || printf "$(YELLOW)N/A$(NC)\n"
+	@printf "$(BLUE)3. Generations count:$(NC) "
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l | awk '{print $$1 " generations"}' || printf "$(YELLOW)N/A$(NC)\n"
+	@printf "$(BLUE)4. Boot entries:$(NC) "
 	@ls /boot/loader/entries/ 2>/dev/null | wc -l | awk '{print $$1 " entries"}' || printf "$(YELLOW)N/A$(NC)\n"
-	@printf "$(BLUE)6. Failed services:$(NC) "
+	@printf "$(BLUE)5. Failed services:$(NC) "
 	@FAILED=$$(systemctl --failed --no-legend 2>/dev/null | wc -l); \
 	if [ $$FAILED -eq 0 ]; then \
 		printf "$(GREEN)✓ None$(NC)\n"; \
@@ -680,13 +688,16 @@ health: ## Run comprehensive system health checks
 		printf "$(RED)✗ $$FAILED failed$(NC)\n"; \
 		printf "$(YELLOW)  Run 'systemctl --failed' for details$(NC)\n"; \
 	fi
-	@printf "$(BLUE)7. Git status:$(NC) "
+	@printf "$(BLUE)6. Git status:$(NC) "
 	@if git diff-index --quiet HEAD -- 2>/dev/null; then \
 		printf "$(GREEN)✓ Clean$(NC)\n"; \
 	else \
 		printf "$(YELLOW)⚠ Uncommitted changes$(NC)\n"; \
 	fi
-	@printf "\n$(GREEN)Health check complete$(NC)\n"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Health check complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 # --- Diagnóstico de Red ---
 test-network: ## Run comprehensive network diagnostics

@@ -405,7 +405,7 @@ make build
 ---
 
 #### `make dry-run`
-Muestra qué cambiaría sin hacer cambios reales.
+Muestra qué cambiaría sin hacer cambios reales usando `nixos-rebuild dry-run`.
 
 ```bash
 make dry-run
@@ -413,19 +413,38 @@ make dry-run
 
 **Output ejemplo:**
 ```
-would build:
-  - /nix/store/...-neovim-0.9.5
-  - /nix/store/...-kitty-0.31.0
-would install:
-  - kitty-0.31.0
-would remove:
-  - kitty-0.30.0
+════════════════════════════════════════════════════
+          🔍 Dry Run - Preview Changes             
+════════════════════════════════════════════════════
+
+Showing what would be built/changed without applying...
+
+building the system configuration...
+[detalles de lo que se construiría/cambiaría]
+
+════════════════════════════════════════════════════
+✅ Dry run completed
+════════════════════════════════════════════════════
 ```
 
+**¿Por qué es necesario?**
+- **Seguridad:** Ver exactamente qué cambios se aplicarían antes de ejecutarlos
+- **Planificación:** Entender el impacto de actualizaciones o cambios de configuración
+- **Debugging:** Identificar problemas de dependencias o configuraciones incorrectas antes de aplicar
+- **Transparencia:** Saber qué paquetes se construirían o descargarían
+
 **Cuándo usarlo:**
-- Antes de `make switch` en cambios grandes
-- Ver el impacto de actualizaciones
-- Depurar problemas de dependencias
+- Antes de `make switch` en cambios grandes o importantes
+- Después de `make update` para ver qué se actualizaría
+- Cuando sospechas que un cambio puede tener efectos inesperados
+- Para entender el impacto de agregar o remover paquetes
+- Antes de aplicar cambios en producción o sistemas críticos
+
+**Ventajas:**
+- No modifica el sistema, solo muestra qué pasaría
+- Rápido comparado con un rebuild completo
+- Muestra dependencias y paquetes afectados
+- Útil para estimar tiempo de construcción
 
 ---
 
@@ -447,14 +466,50 @@ make boot
 ### ✅ Validación
 
 #### `make validate`
-Valida la configuración antes de aplicarla (chequeos de sintaxis y evaluación).
+Valida la configuración antes de aplicarla mediante tres chequeos: sintaxis del flake, evaluación de configuración y problemas comunes.
 
 ```bash
 make validate
-# 1/3 Checking flake syntax... ✓
-# 2/3 Checking configuration evaluation... ✓
-# 3/3 Checking for common issues... ⊘
 ```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🔍 Validation Checks                       
+════════════════════════════════════════════════════
+
+1/3 Checking flake syntax... ✓
+2/3 Checking configuration evaluation... ✓
+3/3 Checking for common issues... ✓
+
+════════════════════════════════════════════════════
+✅ Validation passed
+════════════════════════════════════════════════════
+```
+
+**¿Por qué es necesario?**
+- **Prevención de errores:** Detecta problemas antes de intentar aplicar la configuración
+- **Ahorro de tiempo:** Evita rebuilds que fallarían por errores de sintaxis o evaluación
+- **Calidad del código:** Usa `statix` para detectar problemas comunes en código Nix
+- **Confianza:** Te asegura que la configuración es válida antes de hacer `make switch`
+
+**Qué verifica:**
+1. **Sintaxis del flake:** Valida que `flake.nix` y sus inputs sean correctos
+2. **Evaluación de configuración:** Verifica que la configuración de NixOS se pueda evaluar correctamente
+3. **Problemas comunes:** Usa `statix` para detectar anti-patrones y problemas conocidos
+
+**Cuándo usarlo:**
+- Antes de cada `make switch` para asegurar que la configuración es válida
+- Después de editar archivos `.nix` para verificar que no introdujiste errores
+- Como parte de un workflow de CI/CD para validar cambios
+- Antes de hacer commit de cambios importantes
+- Cuando sospechas que hay un error de sintaxis o configuración
+
+**Ventajas:**
+- Muy rápido comparado con un rebuild completo
+- Detecta errores temprano en el proceso
+- Proporciona feedback claro sobre qué está mal
+- Puede integrarse en scripts automatizados
 
 #### `make safe-switch`
 Combo: valida y luego hace switch (la opción más segura).
@@ -471,12 +526,59 @@ make safe-switch
 **Ver:** [Flujo de Trabajo Recomendado](#flujo-de-trabajo-recomendado-nuevo) para saber cuándo usar cada uno.
 
 #### `make health`
-Chequeo de salud del sistema completo (flake, store, disco, servicios, git).
+Chequeo rápido de salud del sistema que verifica aspectos críticos sin operaciones costosas.
 
 ```bash
 make health
-# Revisa 7 aspectos del sistema
 ```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🏥 System Health Check                    
+════════════════════════════════════════════════════
+
+1. Flake validation: ✓ Passed
+2. Disk space (/nix): 47% used (250G free)
+3. Generations count: 33 generations
+4. Boot entries: 5 entries
+5. Failed services: ✓ None
+6. Git status: ✓ Clean
+
+════════════════════════════════════════════════════
+✅ Health check complete
+════════════════════════════════════════════════════
+```
+
+**¿Por qué es necesario?**
+- **Monitoreo preventivo:** Detecta problemas antes de que se vuelvan críticos
+- **Mantenimiento proactivo:** Identifica cuándo necesitas limpiar espacio o servicios
+- **Estado del sistema:** Proporciona una vista rápida del estado general
+- **Debugging inicial:** Primer paso para diagnosticar problemas del sistema
+
+**Qué verifica:**
+1. **Flake validation:** La configuración es válida
+2. **Disk space:** Espacio disponible en `/nix` (crítico para builds)
+3. **Generations count:** Cuántas generaciones tienes (útil para limpieza)
+4. **Boot entries:** Entradas de arranque disponibles
+5. **Failed services:** Servicios systemd que fallaron
+6. **Git status:** Estado del repositorio de dotfiles
+
+**Cuándo usarlo:**
+- Regularmente para monitorear el estado del sistema
+- Antes de hacer cambios importantes
+- Cuando experimentas problemas inesperados
+- Como parte de un mantenimiento rutinario
+- Después de actualizaciones o cambios grandes
+
+**Nota importante:**
+Este comando está optimizado para ser rápido. Eliminamos la verificación del store (`nix-store --verify`) porque puede tardar horas en sistemas grandes. Si necesitas verificar la integridad del store, usa `make fix-store` directamente.
+
+**Ventajas:**
+- Ejecución rápida (segundos, no minutos)
+- Proporciona información útil sin ser invasivo
+- Formato claro y fácil de leer
+- Identifica problemas comunes rápidamente
 
 ---
 
