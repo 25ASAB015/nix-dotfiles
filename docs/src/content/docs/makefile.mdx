@@ -956,17 +956,16 @@ make switch
 ### 🔧 Git Integration
 
 #### `make git-status`
-Muestra estado del repositorio con GitHub CLI.
+Muestra estado completo del repositorio y configuración del sistema.
 
 ```bash
 make git-status
 ```
 
 **Output:**
-- Nombre del repo
-- Branch actual
-- Archivos modificados
-- Cambios staged/unstaged
+- **Configuration**: Hostname, Flake Location, NixOS Version
+- **Git Status**: Repository, Branch, Status, Last 3 commits
+- **Local changes**: Archivos modificados con formato colorido de git
 
 ---
 
@@ -1060,7 +1059,7 @@ make changelog-detailed
 ### 📊 System Information
 
 #### `make info`
-Muestra información completa del sistema.
+Muestra información completa del sistema, incluyendo generaciones y uso de disco.
 
 ```bash
 make info
@@ -1068,30 +1067,47 @@ make info
 
 **Output ejemplo:**
 ```
-💻 System Information
-===================
-Hostname: hydenix
-NixOS Version: 24.11.20260110.abc123
-Current Generation: 187   2026-01-11 14:20:01
-Flake Location: /home/ludus/dotfiles
-Store Size: 45G
+⏳ Gathering system information, please wait...
+════════════════════════════════════════════════════
+           💻 System Information                    
+════════════════════════════════════════════════════
+
+Hostname:             hydenix
+NixOS Version:        26.05.20251229.95e96e8
+Flake Location:       /home/ludus/Dotfiles
+
+💾 System Info
+Store Size:            71G
+Current Generation:    33 (2026-01-17 23:59:11)
+Total Generations:     33
+Disk Usage (/nix):     47%
+
+🔄 Recent Generations
+    29   2026-01-15 06:38:07
+    30   2026-01-15 08:45:09
+    31   2026-01-15 09:10:08
+    32   2026-01-17 23:37:08
+    33   2026-01-17 23:59:11   (current)
 ```
 
 **Cuándo usarlo:**
 - Verificar tamaño de `/nix/store`
+- Ver información de generaciones del sistema
+- Verificar uso de disco
 - Ver versión de NixOS
 - Debugging general
 
 ---
 
 #### `make status`
-Combo de git status + system info.
+Alias de `make git-status` para mantener compatibilidad.
 
 ```bash
 make status
+# Equivalente a: make git-status
 ```
 
-Vista general completa de tu sistema.
+Muestra la misma información que `make git-status`: configuración del sistema y estado completo del repositorio git.
 
 ---
 
@@ -2155,7 +2171,8 @@ make test              # Probar sin aplicar
 make rollback          # Deshacer último cambio
 
 # Información
-make status            # Estado del sistema
+  make git-status        # Estado completo del repositorio y sistema
+  make status            # Alias de git-status
 make health            # Health check
 make version           # Versiones
 
@@ -2218,33 +2235,35 @@ Los siguientes comandos fueron corregidos en esta actualización:
 
 ---
 
-### Status Mejorado
+### Git Status Mejorado
 
-El comando `make status` ahora muestra información mucho más detallada y organizada:
+Los comandos `make git-status` y `make status` (alias) ahora muestran información completa y organizada:
 
 ```bash
-make status
-# ╔══════════════════════════════════════╗
-# ║      SYSTEM STATUS OVERVIEW          ║
-# ╚══════════════════════════════════════╝
+make git-status
+# ════════════════════════════════════════════════════
+#            📊 Repository Status                    
+# ════════════════════════════════════════════════════
 # 
 # 📍 Configuration
 # ├─ Host: hydenix
-# ├─ Flake: /home/ludus/dotfiles
-# └─ NixOS: 24.11
+# ├─ Flake: /home/ludus/Dotfiles
+# └─ NixOS: 26.05.20251229.95e96e8
 #
 # 📦 Git Status
-# ├─ Branch: feature/reorganize-structure
+# ├─ Repository: 25ASAB015/nix-dotfiles
+# ├─ Branch: main
 # ├─ Status: Uncommitted changes
-# │  M Makefile
-# └─ Last 3 commits: ...
+# └─ Last 3 commits:
+#    abc1234 config: update
+#    def5678 docs: improve
+#    ghi9012 feat: add feature
 #
-# 💾 System Info
-# ├─ Store size: 45G
-# ├─ Current gen: 26
-# ├─ Total gens: 26
-# └─ Disk usage: 35% used
+# Local changes:
+# M Makefile
 ```
+
+**Nota:** La información de System Info (Store size, Generations, Disk usage) ahora se muestra en `make info` en lugar de `make status`.
 
 ---
 
