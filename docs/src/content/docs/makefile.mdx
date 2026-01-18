@@ -14,7 +14,7 @@ Este documento **preserva íntegramente** el contenido del tutorial original y l
 ```bash
 make help            # lista todos los comandos
 make help-examples   # ejemplos de uso con parámetros
-make help-advanced   # workflows completos
+make help            # workflows completos
 make test            # prueba sin aplicar permanentemente
 make switch          # aplica cambios
 make rollback        # revierte a la generación anterior
@@ -189,7 +189,7 @@ make help
 make help-examples
 ```
 
-### Nivel 3: `make help-advanced` - Workflows Completos
+### Nivel 3: `make help` - Workflows Completos
 **¿Cómo combino comandos?**
 - Workflows para casos de uso comunes
 - Secuencias de comandos
@@ -197,7 +197,7 @@ make help-examples
 - Para flujos de trabajo profesionales
 
 ```bash
-make help-advanced
+make help
 ```
 
 ### 💡 Recomendación de Uso
@@ -210,7 +210,7 @@ make help
 make help-examples
 
 # ¿Quieres aprender workflows profesionales?
-make help-advanced
+make help
 
 # ¿Necesitas documentación completa?
 make tutorial   # (este archivo)
@@ -309,11 +309,11 @@ new-host HOST=<name>
 
 ---
 
-#### `make help-advanced`
+#### `make help`
 Muestra ayuda avanzada con workflows completos y ejemplos.
 
 ```bash
-make help-advanced
+make help
 # Guía de workflows: desarrollo diario, updates seguros, mantenimiento, etc
 ```
 
@@ -2146,7 +2146,7 @@ echo "## $(date +%Y-%m-%d) - Configuración inicial kitty" >> CHANGELOG.md
 # Sistema de Ayuda
 make help              # Lista de todos los comandos
 make help-examples     # Comandos con ejemplos de uso ⭐
-make help-advanced     # Workflows completos
+make help            # Workflows completos
 make tutorial          # Esta guía completa
 
 # Uso Diario
@@ -2493,7 +2493,7 @@ make info
 Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acceso rápido antes de ir al detalle.
 
 ### Ayuda y Documentación (8)
-`help`, `help-advanced`, `help-examples`, `docs-local`, `docs-dev`, `readme`, `tutorial`, `progress`
+`help`, `help-examples`, `docs-local`, `docs-dev`, `readme`, `tutorial`, `progress`
 
 ### Gestión del Sistema (Rebuild/Switch) (11)
 `rebuild`, `switch`, `safe-switch`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `quick`, `emergency`
@@ -2550,19 +2550,19 @@ Tu Makefile ahora incluye un **sistema de ayuda profesional** con tres niveles:
 
 1. **`make help`** - Referencia rápida de todos los comandos
 2. **`make help-examples`** ⭐ - Ejemplos de uso con parámetros
-3. **`make help-advanced`** - Workflows y mejores prácticas
+3. **`make help`** - Workflows y mejores prácticas
 
 Esto te permite encontrar información de diferentes formas según tu necesidad:
 - **¿Qué hay disponible?** → `make help`
 - **¿Cómo lo uso?** → `make help-examples`
-- **¿Cómo combino comandos?** → `make help-advanced`
+- **¿Cómo combino comandos?** → `make help`
 
 ---
 
 *Última actualización: 2026-01-11*  
 *Versión: 5.1 - Flujos de Trabajo Recomendados Añadidos*  
 *Total de comandos: 83+*  
-*Sistema de ayuda: 3 niveles (help, help-examples, help-advanced)*  
+*Sistema de ayuda: 2 niveles (help, help-examples)*
 *Fases completadas: 100% (FASE 1, 2, 3 + extras)*  
 *Mantenedor: ludus*  
 *Nueva sección: Flujo de Trabajo Recomendado (switch vs safe-switch)*

@@ -51,9 +51,9 @@ echo "✓ make help funciona"
 make help-examples
 echo "✓ make help-examples funciona"
 
-# 3. make help-advanced
-make help-advanced
-echo "✓ make help-advanced funciona"
+# 3. make help (workflows)
+make help
+echo "✓ make help (workflows) funciona"
 
 echo "✅ NIVEL 0 COMPLETADO (3/3)"
 ```
@@ -612,9 +612,9 @@ Marca cada nivel conforme lo completes:
 Marca cada comando conforme lo verifiques manualmente:
 
 ### Sistema de Ayuda
-- [ ] help
-- [ ] help-examples
-- [ ] help-advanced
+- [x] help
+- [x] help-examples
+- [x] help (workflows)
 
 ### Building and Switching
 - [ ] rebuild
