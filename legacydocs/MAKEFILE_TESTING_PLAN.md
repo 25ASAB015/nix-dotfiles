@@ -625,7 +625,7 @@ Marca cada comando conforme lo verifiques manualmente:
 - [ ] boot
 
 ### Multi-Host
-- [ ] list-hosts
+- [x] list-hosts
 
 ### Validación
 - [ ] validate
@@ -673,6 +673,7 @@ Marca cada comando conforme lo verifiques manualmente:
 - [x] git-add
 - [x] git-commit
 - [x] git-push
+- [x] git-log
 - [x] save
 
 ### Información del Sistema
