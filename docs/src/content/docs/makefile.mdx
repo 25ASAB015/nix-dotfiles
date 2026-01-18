@@ -1525,23 +1525,69 @@ make watch-rebuild
 ---
 
 #### `make logs-boot`
-Muestra los logs de arranque (errores y alertas).
+Muestra los logs de arranque (errores y alertas) con formato visual mejorado.
 
 ```bash
 make logs-boot
-# Útil para debugging de problemas al iniciar
 ```
 
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📋 Boot Logs                              
+════════════════════════════════════════════════════
+
+Showing errors and alerts from current boot...
+
+[logs de errores y alertas del boot actual]
+```
+
+**Características:**
+- Formato visual consistente con otros comandos
+- Muestra solo errores y alertas del boot actual
+- Últimos 50 mensajes relevantes
+- Útil para diagnosticar problemas al iniciar el sistema
+
+**Cuándo usarlo:**
+- Cuando el sistema tiene problemas al arrancar
+- Para diagnosticar errores de hardware detectados durante el boot
+- Verificar si hay problemas con servicios que inician al arranque
+
 #### `make logs-errors`
-Muestra los últimos 50 errores del sistema.
+Muestra los últimos 50 errores del sistema con formato visual mejorado.
 
 ```bash
 make logs-errors
-# Encuentra problemas recientes rápidamente
 ```
 
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📋 Recent Error Logs                      
+════════════════════════════════════════════════════
+
+Showing last 50 error-level messages
+Found: 50 error message(s)
+
+Jan 18 08:00:27 hydenix kernel: serial 00:01: PM: failed to resume: error -5
+Jan 18 08:00:27 hydenix kernel: usb 1-6: device descriptor read/64, error -71
+...
+```
+
+**Características:**
+- Muestra contador de errores encontrados
+- Formato visual consistente con otros comandos
+- Últimos 50 mensajes de nivel error del sistema
+- Incluye mensaje cuando no hay errores recientes
+
+**Cuándo usarlo:**
+- Para diagnosticar problemas del sistema
+- Después de un error para ver qué pasó
+- Como parte del troubleshooting general
+- Para monitorear errores recurrentes
+
 #### `make logs-service SVC=nombre`
-Muestra logs de un servicio específico.
+Muestra logs de un servicio específico con formato visual mejorado.
 
 ```bash
 make logs-service SVC=sshd

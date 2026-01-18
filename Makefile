@@ -742,21 +742,39 @@ watch-rebuild: ## Watch rebuild process
 	watch -n 1 'sudo nixos-rebuild switch --flake . --dry-run | tail -20'
 
 logs-boot: ## Show boot logs
-	@printf "$(CYAN)📋 Boot Logs\n$(NC)"
-	@printf "===========\n"
-	@journalctl -b -p err..alert --no-pager | tail -50
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📋 Boot Logs                              \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)Showing errors and alerts from current boot...$(NC)\n\n"
+	@journalctl -b -p err..alert --no-pager | tail -50 || true
+	@printf "\n"
 logs-errors: ## Show recent error logs
-	@printf "$(CYAN)📋 Recent Errors\n$(NC)"
-	@printf "===============\n"
-	@journalctl -p err -n 50 --no-pager
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📋 Recent Error Logs                      \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@ERROR_COUNT=$$(journalctl -p err -n 50 --no-pager 2>/dev/null | wc -l || echo "0"); \
+	printf "\n$(BLUE)Showing last 50 error-level messages$(NC)\n"; \
+	if [ "$$ERROR_COUNT" -eq 0 ]; then \
+		printf "$(GREEN)✅ No recent errors found$(NC)\n"; \
+	else \
+		printf "$(PURPLE)Found:$(NC) $(GREEN)$$ERROR_COUNT$(NC) error message(s)\n"; \
+	fi
+	@printf "\n"
+	@journalctl -p err -n 50 --no-pager || true
+	@printf "\n"
 logs-service: ## Show logs for specific service (use SVC=name)
 	@if [ -z "$(SVC)" ]; then \
 		printf "$(RED)Error: SVC variable required$(NC)\n"; \
 		printf "$(YELLOW)Usage: make logs-service SVC=sshd$(NC)\n"; \
 		exit 1; \
 	fi
-	@printf "$(CYAN)📋 Logs for service: $(SVC)\n$(NC)"
-	@journalctl -u $(SVC) -n 100 --no-pager
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📋 Service Logs                           \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)Service:$(NC) $(GREEN)$(SVC)$(NC)\n"
+	@printf "$(BLUE)Showing last 100 log entries...$(NC)\n\n"
+	@journalctl -u $(SVC) -n 100 --no-pager || printf "$(YELLOW)⚠ Service '$(SVC)' not found or no logs available$(NC)\n"
+	@printf "\n"
 
 # === Análisis y Desarrollo ===
 
