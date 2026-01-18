@@ -143,6 +143,17 @@ if [ -f ~/.ssh/id_ed25519 ]; then
     echo "✅ Llave SSH agregada al agente"
 fi
 
+# Agregar GitHub a known_hosts si no está ya presente
+echo "🔧 Verificando known_hosts para GitHub..."
+if [ ! -f ~/.ssh/known_hosts ] || ! grep -q "github.com" ~/.ssh/known_hosts 2>/dev/null; then
+    echo "📝 Agregando GitHub a known_hosts..."
+    ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+    chmod 600 ~/.ssh/known_hosts
+    echo "✅ GitHub agregado a known_hosts"
+else
+    echo "✅ GitHub ya está en known_hosts"
+fi
+
 # Generar llave GPG si no existe
 if ! gpg --list-secret-keys | grep -q "Roberto Flores"; then
     echo "🔐 Generando llave GPG..."
