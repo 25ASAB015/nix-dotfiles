@@ -557,11 +557,11 @@ make debug
 
 ---
 
-#### `make check-syntax`
+#### `make flake-check`
 Valida la sintaxis del flake sin compilar.
 
 ```bash
-make check-syntax
+make flake-check
 # Equivalente a: nix flake check
 ```
 
@@ -615,7 +615,7 @@ git+file:///home/ludus/Dotfiles?ref=refs/heads/main&rev=38ee020...
 **Relación con otros comandos:**
 - `make list-hosts` - Muestra información detallada de cada host (usa `make show` internamente)
 - `make switch HOSTNAME=<host>` - Requiere que el host exista en `nixosConfigurations` (verificable con `make show`)
-- `make check-syntax` - Valida la sintaxis, mientras que `make show` valida la estructura
+- `make flake-check` - Valida la sintaxis, mientras que `make show` valida la estructura
 
 **Cuándo usarlo:**
 - Antes de hacer un `switch` a un host nuevo para verificar que existe
@@ -2033,7 +2033,7 @@ make switch
 ```bash
 make debug               # Ver error completo
 # Suele ser error de sintaxis en .nix
-make check-syntax        # Valida sintaxis
+make flake-check        # Valida sintaxis
 ```
 
 **Causas comunes:**
@@ -2179,7 +2179,7 @@ alias nt='make test'
 
 ```bash
 # Antes de commit:
-make check-syntax && make dry-run
+make flake-check && make dry-run
 # Si ambos pasan, es seguro hacer switch
 ```
 
@@ -2677,7 +2677,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 `clean`, `clean-week`, `clean-conservative`, `deep-clean`, `clean-generations`, `gc`, `optimize`, `clean-result`, `fix-store`
 
 ### Actualizaciones y Flakes (10)
-`update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `update-info`, `diff-update`, `upgrade`, `show`, `check-syntax`, `diff-flake`
+`update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `update-info`, `diff-update`, `upgrade`, `show`, `flake-check`, `diff-flake`
 
 ### Generaciones y Rollback (6)
 `list-generations`, `rollback`, `diff-generations`, `diff-gen`, `generation-sizes`, `current-generation`

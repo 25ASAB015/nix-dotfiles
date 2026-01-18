@@ -117,9 +117,9 @@ echo "✓ make changelog-detailed funciona"
 make show
 echo "✓ make show funciona"
 
-# 16. make check-syntax
-make check-syntax
-echo "✓ make check-syntax funciona"
+# 16. make flake-check
+make flake-check
+echo "✓ make flake-check funciona"
 
 # 17. make docs-local
 make docs-local
@@ -633,7 +633,7 @@ Marca cada comando conforme lo verifiques manualmente:
 
 ### Debugging y Diagnóstico
 - [ ] debug
-- [ ] check-syntax
+- [ ] flake-check
 - [ ] show
 - [ ] test-network
 
