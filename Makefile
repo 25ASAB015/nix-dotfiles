@@ -913,17 +913,76 @@ search-installed: ## Search in currently installed packages (use PKG=name)
 	@printf "\n"
 
 repl: ## Start nix repl with flake
-	@printf "$(CYAN)🧠 Starting nix repl...\n$(NC)"
-	nix repl --extra-experimental-features repl-flake $(FLAKE_DIR)
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🧠 Nix REPL - Interactive Shell           \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Starting Nix REPL with flake loaded...$(NC)\n"
+	@printf "$(YELLOW)Useful commands:$(NC)\n"
+	@printf "  $(GREEN):q$(NC) or $(GREEN):quit$(NC) - Exit REPL\n"
+	@printf "  $(GREEN)outputs$(NC) - View flake outputs\n"
+	@printf "  $(GREEN)outputs.nixosConfigurations.hydenix$(NC) - View configuration\n"
+	@printf "\n"
+	@nix repl --extra-experimental-features repl-flake $(FLAKE_DIR)
 shell: ## Enter development shell
-	@printf "$(CYAN)🐚 Entering development shell...\n$(NC)"
-	nix develop $(FLAKE_DIR)
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🐚 Development Shell                      \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@if nix flake show $(FLAKE_DIR) 2>/dev/null | grep -q "devShells"; then \
+		printf "$(BLUE)Entering development shell...$(NC)\n"; \
+		printf "$(YELLOW)This shell includes development tools from your flake.$(NC)\n"; \
+		printf "\n"; \
+		nix develop $(FLAKE_DIR); \
+	else \
+		printf "$(YELLOW)⚠️  No devShells configured in flake$(NC)\n"; \
+		printf "$(BLUE)To use this command, add devShells to your flake.nix:$(NC)\n"; \
+		printf "\n"; \
+		printf "$(CYAN)devShells.x86_64-linux.default = pkgs.mkShell {$(NC)\n"; \
+		printf "$(CYAN)  buildInputs = [ /* your tools */ ];$(NC)\n"; \
+		printf "$(CYAN)};$(NC)\n"; \
+		printf "\n"; \
+		printf "$(YELLOW)For now, using basic nix-shell...$(NC)\n"; \
+		printf "\n"; \
+		nix develop $(FLAKE_DIR) || nix-shell; \
+	fi
 vm: ## Build and run VM
-	@printf "$(BLUE)🖥️  Building VM...\n$(NC)"
-	nix build .#vm
-	@printf "$(GREEN)✅ VM built successfully\n$(NC)"
-	@printf "$(CYAN)Starting VM...\n$(NC)"
-	./result/bin/run-nixos-vm
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🖥️  NixOS Virtual Machine               \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Building VM from current configuration...$(NC)\n"
+	@printf "$(YELLOW)This may take a few minutes on first build.$(NC)\n"
+	@printf "\n"
+	@if nix build '.#vm' 2>&1; then \
+		printf "\n$(GREEN)✅ VM built successfully$(NC)\n"; \
+		if [ -f "./result/bin/run-hydenix-vm" ]; then \
+			VM_SCRIPT="./result/bin/run-hydenix-vm"; \
+		elif [ -f "./result/bin/run-nixos-vm" ]; then \
+			VM_SCRIPT="./result/bin/run-nixos-vm"; \
+		else \
+			VM_SCRIPT=$$(find ./result -name "run-*-vm" -type f -executable | head -1); \
+			if [ -z "$$VM_SCRIPT" ]; then \
+				printf "$(RED)✗ VM script not found$(NC)\n"; \
+				printf "$(YELLOW)Checking result directory...$(NC)\n"; \
+				ls -la ./result/bin/ 2>/dev/null || find ./result -type f -executable 2>/dev/null | head -5; \
+				printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+				printf "\n"; \
+				exit 1; \
+			fi; \
+		fi; \
+		printf "$(BLUE)Starting VM...$(NC)\n"; \
+		printf "$(YELLOW)Press Ctrl+Alt+G to release mouse/keyboard$(NC)\n"; \
+		printf "$(YELLOW)Use 'systemctl poweroff' in VM to shutdown$(NC)\n"; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)\n"; \
+		$$VM_SCRIPT; \
+	else \
+		printf "\n$(RED)✗ VM build failed$(NC)\n"; \
+		printf "$(YELLOW)Check the error messages above for details.$(NC)\n"; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n"; \
+		exit 1; \
+	fi
 
 closure-size: ## Show closure size of current system
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"

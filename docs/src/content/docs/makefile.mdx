@@ -1814,42 +1814,94 @@ Abre un REPL interactivo de Nix con tu flake cargado.
 
 ```bash
 make repl
+# ════════════════════════════════════════════════════════
+#           🧠 Nix REPL - Interactive Shell           
+# ════════════════════════════════════════════════════════
+# 
+# Starting Nix REPL with flake loaded...
+# Useful commands:
+#   :q or :quit - Exit REPL
+#   outputs - View flake outputs
+#   outputs.nixosConfigurations.hydenix - View configuration
+# 
+# nix-repl> outputs.nixosConfigurations.hydenix.config.services
+# nix-repl> :q
 ```
 
 **Qué puedes hacer:**
 ```nix
-nix-repl> outputs.nixosConfigurations.hydenix.config.services
-# Ver configuraciones
-nix-repl> :q  # salir
+nix-repl> outputs                              # Ver todos los outputs del flake
+nix-repl> outputs.nixosConfigurations.hydenix  # Ver configuración específica
+nix-repl> outputs.packages.x86_64-linux.vm     # Ver paquetes disponibles
+nix-repl> :q                                   # Salir del REPL
 ```
 
 **Cuándo usarlo:**
-- Explorar configuraciones
-- Testing de expresiones Nix
-- Aprender Nix
+- Explorar configuraciones sin editar archivos
+- Testing de expresiones Nix interactivamente
+- Aprender Nix y entender cómo funciona tu configuración
+- Debugging: ver valores de configuraciones en tiempo real
+- Verificar que las expresiones Nix son correctas antes de aplicar
 
 ---
 
 #### `make shell`
-Entra a un shell de desarrollo (si está configurado).
+Entra a un shell de desarrollo del flake.
 
 ```bash
 make shell
+# ════════════════════════════════════════════════════════
+#           🐚 Development Shell                      
+# ════════════════════════════════════════════════════════
+# 
+# Entering development shell...
+# This shell includes development tools from your flake.
 ```
+
+**Requisitos:**
+- El flake debe tener `devShells` configurado
+- Si no está configurado, el comando mostrará instrucciones
+
+**Cuándo usarlo:**
+- Desarrollo con herramientas específicas del proyecto
+- Entornos de desarrollo reproducibles
+- Testing con dependencias específicas
+
+**Nota:** Si no tienes `devShells` configurado, el comando mostrará cómo agregarlo.
 
 ---
 
 #### `make vm`
-Construye y ejecuta una VM de tu configuración.
+Construye y ejecuta una VM de tu configuración NixOS.
 
 ```bash
 make vm
+# ════════════════════════════════════════════════════════
+#           🖥️  NixOS Virtual Machine               
+# ════════════════════════════════════════════════════════
+# 
+# Building VM from current configuration...
+# This may take a few minutes on first build.
+# 
+# ✅ VM built successfully
+# Starting VM...
+# Press Ctrl+Alt+G to release mouse/keyboard
+# Use 'systemctl poweroff' in VM to shutdown
 ```
 
 **Útil para:**
-- Testing sin riesgo
-- Probar en "otra máquina"
-- Desarrollo
+- Testing sin riesgo: probar cambios sin afectar el sistema real
+- Desarrollo: probar configuraciones en un entorno aislado
+- Debugging: reproducir problemas en un entorno limpio
+- Demostraciones: mostrar la configuración sin instalar
+- Experimentación: probar configuraciones nuevas con seguridad
+
+**Controles de la VM:**
+- `Ctrl+Alt+G`: Liberar mouse y teclado
+- `systemctl poweroff`: Apagar la VM desde dentro
+- `Ctrl+C`: Detener la VM (forzado)
+
+**Nota:** La primera construcción puede tardar varios minutos. Construcciones posteriores son más rápidas gracias al caché de Nix.
 
 ---
 
