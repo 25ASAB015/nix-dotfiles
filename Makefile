@@ -24,9 +24,9 @@ NC := \033[0m # No Color
 # === Ayuda y Documentación ===
 
 help: ## Show this help message
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)      Ayuda Avanzada y Workflows (Makefile)        \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@awk -v GREEN="$(GREEN)" -v BLUE="$(BLUE)" -v NC="$(NC)" 'BEGIN {FS=":.*##"} /^[a-zA-Z0-9_-]+:.*##/ {desc[$$1]=$$2} \
 	function print_cat(title, list,    n,i,cmd) { \
 		printf "\n%s%s%s\n", BLUE, title, NC; \
@@ -118,9 +118,9 @@ help-examples: ## Show commands with usage examples
 	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n\n"
 
 docs-local: ## Show local documentation files
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📚 Local Documentation                    \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@COUNT=0; \
 	if [ -f "README.md" ]; then \
@@ -193,26 +193,38 @@ test: ## Build and test configuration (no switch)
 	@printf "$(YELLOW)🧪 Testing configuration (no switch)...\n$(NC)"
 	sudo nixos-rebuild test --flake $(FLAKE_DIR)#$(HOSTNAME)
 build: ## Build configuration without switching
-	@printf "$(BLUE)🔨 Building configuration...\n$(NC)"
-	sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME)
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🔨 Build Configuration                    \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Building configuration without applying changes...$(NC)\n"
+	@printf "$(YELLOW)This will compile but not activate the new generation.$(NC)\n"
+	@printf "\n"
+	@sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME)
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Build completed successfully$(NC)\n"
+	@printf "$(BLUE)Configuration compiled but not activated.$(NC)\n"
+	@printf "$(YELLOW)Use 'make switch' to apply changes.$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 dry-run: ## Show what would be built/changed
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔍 Dry Run - Preview Changes             \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Showing what would be built/changed without applying...$(NC)\n\n"
 	@sudo nixos-rebuild dry-run --flake $(FLAKE_DIR)#$(HOSTNAME)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Dry run completed$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 boot: ## Build and set as boot default (no immediate switch)
 	@printf "$(PURPLE)🥾 Setting configuration for next boot...\n$(NC)"
 	sudo nixos-rebuild boot --flake $(FLAKE_DIR)#$(HOSTNAME)
 
 validate: ## Validate configuration before switching
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔍 Validation Checks                       \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)1/3 Checking flake syntax...$(NC) "
 	@if nix flake check $(FLAKE_DIR) >/dev/null 2>&1; then \
@@ -242,7 +254,7 @@ validate: ## Validate configuration before switching
 	fi
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Validation passed$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 debug: ## Rebuild with verbose output and trace
 	@printf "$(RED)🐛 Debug rebuild with full trace...\n$(NC)"
@@ -351,9 +363,9 @@ upgrade: ## Update and rebuild
 	@make switch
 
 show: ## Show flake outputs
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📄 Flake Outputs Structure                \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@nix flake show $(FLAKE_DIR) 2>&1 | grep -v "^warning:" || nix flake show $(FLAKE_DIR) 2>/dev/null || true
 	@printf "\n"
@@ -369,9 +381,9 @@ diff-flake: ## Show changes to flake.nix and flake.lock
 # === Generaciones y Rollback ===
 
 list-generations: ## List system generations
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📋 System Generations                    \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@TOTAL=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo "0"); \
 	CURRENT_GEN=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1}' || echo "N/A"); \
 	printf "\n$(BLUE)Total generations:$(NC) $(GREEN)$$TOTAL$(NC)\n"; \
@@ -385,9 +397,9 @@ rollback: ## Rollback to previous generation
 	@printf "$(YELLOW)⏪ Rolling back to previous generation...\n$(NC)"
 	sudo nixos-rebuild switch --rollback
 diff-generations: ## Compare current with previous generation
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Comparing Generations                  \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@if command -v nix >/dev/null 2>&1 && nix store diff-closures --help >/dev/null 2>&1; then \
 		CURRENT=$$(readlink -f /nix/var/nix/profiles/system 2>/dev/null); \
 		if [ -z "$$CURRENT" ]; then \
@@ -419,9 +431,9 @@ diff-gen: ## Compare two specific generations (use GEN1=N GEN2=M)
 		printf "$(YELLOW)Usage: make diff-gen GEN1=184 GEN2=186$(NC)\n"; \
 		exit 1; \
 	fi
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Comparing Generations                  \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@GEN1_LINK="/nix/var/nix/profiles/system-$(GEN1)-link"; \
 	GEN2_LINK="/nix/var/nix/profiles/system-$(GEN2)-link"; \
 	if [ ! -e "$$GEN1_LINK" ] || [ ! -e "$$GEN2_LINK" ]; then \
@@ -465,9 +477,9 @@ generation-sizes: ## Show disk usage per generation
 	fi
 
 current-generation: ## Show current generation details
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)        📍 Current Generation Details              \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | tail -1 | sed 's/^/  /'
 	@printf "\n$(BLUE)Activation date:$(NC) "
@@ -479,9 +491,9 @@ current-generation: ## Show current generation details
 # === Git y Respaldo ===
 
 git-add: ## Stage all changes for git
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)              📝 Staging Changes                   \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Adding all changes to staging area...$(NC)\n"
 	@git add .
 	@CHANGED=$$(git status --short | wc -l); \
@@ -494,9 +506,9 @@ git-add: ## Stage all changes for git
 	fi
 	@printf "\n"
 git-commit: ## Quick commit with timestamp
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📝 Committing Changes                  \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Staging changes...$(NC)\n"
 	@git add .
 	@COMMIT_MSG="config: update $$(date '+%Y-%m-%d %H:%M:%S')"; \
@@ -509,9 +521,9 @@ git-commit: ## Quick commit with timestamp
 	printf "$(BLUE)Branch:$(NC) $(GREEN)$$BRANCH$(NC)\n"
 	@printf "\n"
 git-push: ## Push to remote using GitHub CLI
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)              🚀 Pushing to Remote                 \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@BRANCH=$$(git branch --show-current); \
 	REMOTE=$$(git remote get-url origin 2>/dev/null | sed -E 's|.*github.com[:/]([^/]+/[^/]+)(\.git)?$$|\1|' | sed 's|\.git$$||'); \
 	printf "\n$(BLUE)Branch:$(NC) $(GREEN)$$BRANCH$(NC)\n"; \
@@ -523,7 +535,7 @@ git-push: ## Push to remote using GitHub CLI
 git-status: ## Show git status with GitHub CLI
 	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)           📊 Repository Status                    \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)📍 Configuration$(NC)\n"
 	@printf "├─ Host: $(HOSTNAME)\n"
 	@printf "├─ Flake: $(PWD)\n"
@@ -556,7 +568,7 @@ git-status: ## Show git status with GitHub CLI
 	fi
 	@printf "\n$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📝 Recent Changes                      \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@if git rev-parse --git-dir > /dev/null 2>&1; then \
 		printf "\n"; \
 		git log --max-count=3 --pretty=format:"%h|%s|%ar%n" 2>/dev/null | \
@@ -573,7 +585,7 @@ git-status: ## Show git status with GitHub CLI
 save: ## Quick save: add, commit, push, and rebuild
 	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)              💾 Quick Save Workflow                \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)Executing complete workflow:$(NC)\n"
 	@printf "  1. Stage changes\n"
 	@printf "  2. Commit changes\n"
@@ -584,15 +596,15 @@ save: ## Quick save: add, commit, push, and rebuild
 	@$(MAKE) --no-print-directory git-commit
 	@$(MAKE) --no-print-directory git-push
 	@$(MAKE) --no-print-directory switch
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Quick save completed successfully!$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
 git-diff: ## Show uncommitted changes to .nix configuration files
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Configuration Changes                  \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@if git diff --quiet -- '*.nix' 2>/dev/null; then \
 		printf "\n$(GREEN)✅ No uncommitted changes to .nix files$(NC)\n"; \
 		printf "$(BLUE)All configuration files are clean.$(NC)\n"; \
@@ -621,9 +633,9 @@ git-diff: ## Show uncommitted changes to .nix configuration files
 # === Diagnóstico y Logs ===
 
 health: ## Run comprehensive system health checks
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🏥 System Health Check                    \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)1. Flake validation:$(NC) "
 	@if nix flake check . >/dev/null 2>&1; then \
@@ -653,14 +665,14 @@ health: ## Run comprehensive system health checks
 	fi
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Health check complete$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
 # --- Diagnóstico de Red ---
 test-network: ## Run comprehensive network diagnostics
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🌐 Network Diagnostics                    \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)1. DNS status (resolved):$(NC)\n"
 	@resolvectl status 2>/dev/null | head -60 || printf "$(YELLOW)resolvectl not available$(NC)\n"
@@ -679,14 +691,14 @@ test-network: ## Run comprehensive network diagnostics
 	@mtr -rw 1.1.1.1 -c 50 || printf "$(YELLOW)mtr not available$(NC)\n"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Network diagnostics complete$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
 info: ## Show system information
 	@printf "$(YELLOW)⏳ Gathering system information, please wait...\n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)           💻 System Information                    \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Hostname:$(NC)             $(GREEN)$(HOSTNAME)$(NC)\n"
 	@printf "$(BLUE)NixOS Version:$(NC)        $(GREEN)$(shell nixos-version 2>/dev/null | cut -d' ' -f1 || echo 'N/A')$(NC)\n"
 	@printf "$(BLUE)Flake Location:$(NC)       $(GREEN)$(PWD)$(NC)\n"
@@ -709,22 +721,22 @@ info: ## Show system information
 status: git-status ## Show comprehensive system status (alias for git-status)
 
 watch-logs: ## Watch system logs in real-time (follow mode)
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Watching System Logs                   \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Press $(GREEN)Ctrl+C$(BLUE) to exit$(NC)\n\n"
 	@journalctl -f
 logs-boot: ## Show boot logs
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📋 Boot Logs                              \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Showing errors and alerts from current boot...$(NC)\n\n"
 	@journalctl -b -p err..alert --no-pager | tail -50 || true
 	@printf "\n"
 logs-errors: ## Show recent error logs
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📋 Recent Error Logs                      \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@ERROR_COUNT=$$(journalctl -p err -n 50 --no-pager 2>/dev/null | wc -l || echo "0"); \
 	printf "\n$(BLUE)Showing last 50 error-level messages$(NC)\n"; \
 	if [ "$$ERROR_COUNT" -eq 0 ]; then \
@@ -755,9 +767,9 @@ logs-service: ## Show logs for specific service (use SVC=name)
 		printf "\n"; \
 		exit 1; \
 	fi
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📋 Service Logs                           \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Service:$(NC) $(GREEN)$(SVC)$(NC)\n"
 	@HAS_RECENT=$$(journalctl -u $(SVC) --since "1 hour ago" --no-pager 2>/dev/null | grep -v "^-- No entries --" | grep -q . && echo "yes" || echo "no"); \
 	if [ "$$HAS_RECENT" = "yes" ]; then \
@@ -780,9 +792,9 @@ logs-service: ## Show logs for specific service (use SVC=name)
 # === Análisis y Desarrollo ===
 
 list-hosts: ## List available host configurations
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📋 Available Hosts                         \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@TOTAL=0; CONFIGURED=0; \
 	for host in $(AVAILABLE_HOSTS); do \
 		TOTAL=$$((TOTAL + 1)); \
@@ -843,7 +855,7 @@ search-installed: ## Search in currently installed packages (use PKG=name)
 		exit 1; \
 	fi
 	@printf "$(CYAN)🔍 Searching installed packages for: $(PKG)\n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)1. Executable in PATH:$(NC)\n"
 	@if command -v $(PKG) >/dev/null 2>&1; then \
 		EXEC_PATH=$$(command -v $(PKG)); \
@@ -883,15 +895,36 @@ search-installed: ## Search in currently installed packages (use PKG=name)
 	@printf "\n"
 
 benchmark: ## Time the rebuild process (build only)
-	@printf "$(BLUE)⏱️  Benchmarking Build Process\n$(NC)"
-	@printf "================================\n"
-	@printf "$(YELLOW)Starting benchmark...\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          ⏱️  Build Performance Benchmark          \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Measuring build time for configuration...$(NC)\n"
+	@printf "$(YELLOW)This will perform a full build without applying changes.$(NC)\n"
+	@printf "\n"
 	@START=$$(date +%s); \
 	sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME); \
+	BUILD_EXIT=$$?; \
 	END=$$(date +%s); \
 	DURATION=$$((END - START)); \
-	printf "\n$(GREEN)✅ Benchmark Complete\n$(NC)"; \
-	printf "$(CYAN)Total time: $${DURATION}s ($$((DURATION / 60))m $$((DURATION % 60))s)\n$(NC)"
+	MINUTES=$$((DURATION / 60)); \
+	SECONDS=$$((DURATION % 60)); \
+	printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+	if [ $$BUILD_EXIT -eq 0 ]; then \
+		printf "$(GREEN)✅ Benchmark Complete$(NC)\n"; \
+		printf "\n$(BLUE)Build Results:$(NC)\n"; \
+		if [ $$MINUTES -gt 0 ]; then \
+			printf "  $(GREEN)Total time:$(NC) $(YELLOW)$${MINUTES}m $${SECONDS}s$(NC) ($(YELLOW)$${DURATION}s$(NC))\n"; \
+		else \
+			printf "  $(GREEN)Total time:$(NC) $(YELLOW)$${SECONDS}s$(NC)\n"; \
+		fi; \
+	else \
+		printf "$(RED)✗ Build failed during benchmark$(NC)\n"; \
+		printf "$(YELLOW)Time measured: $${DURATION}s$(NC)\n"; \
+	fi; \
+	printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+	printf "\n"; \
+	exit $$BUILD_EXIT
 
 repl: ## Start nix repl with flake
 	@printf "$(CYAN)🧠 Starting nix repl...\n$(NC)"
@@ -907,9 +940,9 @@ vm: ## Build and run VM
 	./result/bin/run-nixos-vm
 
 closure-size: ## Show closure size of current system
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 System Closure Size Analysis          \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Total system closure size:$(NC)\n"
 	@SYSTEM_INFO=$$(nix path-info -Sh /run/current-system | head -1); \
@@ -924,7 +957,7 @@ closure-size: ## Show closure size of current system
 		awk -v GREEN="$(GREEN)" -v YELLOW="$(YELLOW)" -v NC="$(NC)" '{printf "  %s%8s%s  %s%s%s\n", GREEN, $$2, NC, YELLOW, $$1, NC}'
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Analysis complete$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
 # === Formato, Linting y Estructura ===
@@ -960,9 +993,9 @@ lint: ## Lint nix files (requires statix)
 	fi
 
 tree: ## Show configuration structure
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📁 Configuration Structure                 \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@if command -v eza >/dev/null 2>&1; then \
 		eza --tree --level=3 --icons --git-ignore --ignore-glob='result|*.tar.gz|node_modules' hosts/ modules/ resources/ 2>/dev/null || \
@@ -984,7 +1017,7 @@ diff-config: git-diff ## Alias for git-diff (deprecated, use git-diff)
 git-log: ## Show recent changes from git log
 	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📝 Recent Changes                      \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@if git rev-parse --git-dir > /dev/null 2>&1; then \
 		printf "\n"; \
 		git log --max-count=15 --pretty=format:"%h|%s|%ar" 2>/dev/null | \
