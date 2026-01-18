@@ -746,8 +746,13 @@ watch-logs: ## Watch system logs in real-time (follow mode)
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Press $(GREEN)Ctrl+C$(BLUE) to exit$(NC)\n\n"
 	@journalctl -f
-watch-rebuild: ## Watch rebuild process
-	watch -n 1 'sudo nixos-rebuild switch --flake . --dry-run | tail -20'
+watch-rebuild: ## Watch rebuild process (dry-run mode)
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🔄 Watching Rebuild Process               \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)Refreshing every 1 second (dry-run mode)$(NC)\n"
+	@printf "$(BLUE)Press $(GREEN)Ctrl+C$(BLUE) to exit$(NC)\n\n"
+	@watch -n 1 'sudo nixos-rebuild dry-run --flake . 2>&1 | tail -20'
 
 logs-boot: ## Show boot logs
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
