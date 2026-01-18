@@ -633,8 +633,8 @@ Marca cada comando conforme lo verifiques manualmente:
 
 ### Debugging y Diagnóstico
 - [ ] debug
-- [ ] flake-check
-- [ ] show
+- [x] flake-check
+- [x] show
 - [ ] test-network
 
 ### Maintenance and Cleanup
