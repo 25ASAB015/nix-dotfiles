@@ -2069,49 +2069,100 @@ Corrige problemas comunes de permisos en `~/.config` y `~/.local`.
 
 ```bash
 make fix-permissions
-# 🔧 Fixing Permissions
-# This requires sudo...
+# ════════════════════════════════════════════════════════
+#           🔧 Fix Permissions                        
+# ════════════════════════════════════════════════════════
+# 
+# Fixing common permission issues...
+# This requires sudo privileges.
+# 
+# 1. Fixing ~/.config permissions... ✓
+# 2. Fixing ~/.local permissions... ✓
+# 3. Fixing git repository permissions...
+#   ✓ Git permissions OK
+# 
+# ════════════════════════════════════════════════════════
 # ✅ Permissions fixed
+# Common permission issues have been resolved.
+# ════════════════════════════════════════════════════════
 ```
 
 **Cuándo usarlo:**
 - Después de errores de "permission denied"
 - Problemas con aplicaciones que no pueden escribir configs
 - Después de cambiar de usuario
+- Después de ejecutar comandos con `sudo` que afectan permisos
 
 **Qué hace:**
-```bash
-sudo chown -R $USER:users ~/.config
-sudo chown -R $USER:users ~/.local
-```
+- Corrige ownership de `~/.config` y `~/.local`
+- Corrige permisos del repositorio git automáticamente
+- Muestra progreso paso a paso
+
+**Nota:** Este comando se ejecuta automáticamente en `make switch` para prevenir problemas de permisos.
+
+---
 
 #### `make fix-git-permissions`
 Corrige permisos de ownership dentro del repositorio git del flake.
 
 ```bash
 make fix-git-permissions
-```
-
-**Cuándo usarlo:** Si `git` falla por permisos después de ejecutar comandos con `sudo`.
-
-#### `make fix-store`
-Intenta reparar problemas en el Nix store.
-
-```bash
-make fix-store
-# 🔧 Repairing Nix Store
-# This will verify and repair the store...
-# checking path '/nix/store/...'
-# ✅ Store repair complete
+#   ✓ Git permissions OK
+# o
+#   Fixing ownership in /home/user/Dotfiles/.git... ✓
 ```
 
 **Cuándo usarlo:**
-- Errores de "hash mismatch"
-- Corrupción del store
-- Después de apagones o crashes
-- Problemas extraños al compilar
+- Si `git` falla por permisos después de ejecutar comandos con `sudo`
+- Cuando git muestra errores de "permission denied"
+- Después de usar `sudo` en comandos que tocan el repositorio
 
-**⚠️ Advertencia:** Puede tardar varios minutos
+**Qué hace:**
+- Verifica si hay problemas de ownership en `.git/objects`
+- Solo corrige si es necesario (no hace cambios si todo está bien)
+- Maneja el caso cuando no hay repositorio git
+
+**Nota:** Este comando se ejecuta automáticamente en `make fix-permissions` y `make switch`.
+
+---
+
+#### `make fix-store`
+Intenta reparar problemas en el Nix store verificando y reparando corrupción.
+
+```bash
+make fix-store
+# ════════════════════════════════════════════════════════
+#           🔧 Repair Nix Store                       
+# ════════════════════════════════════════════════════════
+# 
+# Verifying and repairing Nix store...
+# ⚠️  This may take a long time (minutes to hours) on large systems.
+# The store will be checked for corruption and repaired if needed.
+# 
+# [verification output...]
+# 
+# ════════════════════════════════════════════════════════
+# ✅ Store repair complete
+# All store paths verified and repaired.
+# ════════════════════════════════════════════════════════
+```
+
+**Cuándo usarlo:**
+- Errores de "hash mismatch" al compilar o usar paquetes
+- Corrupción del store detectada
+- Después de apagones o crashes del sistema
+- Problemas extraños al compilar que no tienen otra explicación
+- Cuando `nix-store --verify` reporta problemas
+
+**⚠️ Advertencia importante:**
+- Puede tardar **mucho tiempo** (minutos a horas) en sistemas grandes
+- Verifica cada path en el store, lo cual es muy lento
+- Solo úsalo cuando realmente tengas problemas, no como mantenimiento rutinario
+
+**Qué hace:**
+- Verifica la integridad de todos los paths en el store
+- Repara automáticamente cualquier corrupción encontrada
+- Descarga paths corruptos nuevamente si es necesario
 
 ---
 

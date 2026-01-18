@@ -358,11 +358,28 @@ clean-result: ## Remove result symlinks
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 fix-store: ## Attempt to repair nix store
-	@printf "$(CYAN)🔧 Repairing Nix Store\n$(NC)"
-	@printf "=====================\n"
-	@printf "$(YELLOW)This will verify and repair the store...$(NC)\n"
-	@nix-store --verify --check-contents --repair
-	@printf "$(GREEN)✅ Store repair complete\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🔧 Repair Nix Store                       \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Verifying and repairing Nix store...$(NC)\n"
+	@printf "$(YELLOW)⚠️  This may take a long time (minutes to hours) on large systems.$(NC)\n"
+	@printf "$(YELLOW)The store will be checked for corruption and repaired if needed.$(NC)\n"
+	@printf "\n"
+	@if nix-store --verify --check-contents --repair; then \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(GREEN)✅ Store repair complete$(NC)\n"; \
+		printf "$(BLUE)All store paths verified and repaired.$(NC)\n"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n"; \
+	else \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(RED)✗ Store repair encountered errors$(NC)\n"; \
+		printf "$(YELLOW)Check the output above for details.$(NC)\n"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n"; \
+		exit 1; \
+	fi
 
 # === Actualizaciones y Flakes ===
 
@@ -1118,22 +1135,44 @@ hardware-scan: ## Re-scan hardware configuration
 	@printf "  mv hosts/$(HOSTNAME)/hardware-configuration-new.nix hosts/$(HOSTNAME)/hardware-configuration.nix\n"
 
 fix-permissions: ## Fix common permission issues
-	@printf "$(CYAN)🔧 Fixing Permissions\n$(NC)"
-	@printf "====================\n"
-	@printf "$(YELLOW)This requires sudo...$(NC)\n"
-	@sudo chown -R $$USER:users ~/.config 2>/dev/null || true
-	@sudo chown -R $$USER:users ~/.local 2>/dev/null || true
-	@$(MAKE) fix-git-permissions
-	@printf "$(GREEN)✅ Permissions fixed$(NC)\n"
-fix-git-permissions: ## Fix git repo ownership issues in flake dir
-	@printf "$(CYAN)---------- Git Permissions ----------\n$(NC)"
-	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \
-		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $$USER | grep -q .; then \
-			printf "$(YELLOW)Fixing ownership in $(FLAKE_DIR)/.git...\n$(NC)"; \
-			sudo chown -R $$USER:users "$(FLAKE_DIR)/.git" 2>/dev/null || true; \
-		else \
-			printf "$(GREEN)✓ Git permissions OK\n$(NC)"; \
-		fi \
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🔧 Fix Permissions                        \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Fixing common permission issues...$(NC)\n"
+	@printf "$(YELLOW)This requires sudo privileges.$(NC)\n"
+	@printf "\n"
+	@printf "$(BLUE)1. Fixing ~/.config permissions...$(NC) "
+	@if sudo chown -R $$USER:users ~/.config 2>/dev/null; then \
+		printf "$(GREEN)✓$(NC)\n"; \
 	else \
-		printf "$(YELLOW)No git repo at $(FLAKE_DIR)\n$(NC)"; \
+		printf "$(YELLOW)⚠️  (skipped)$(NC)\n"; \
+	fi
+	@printf "$(BLUE)2. Fixing ~/.local permissions...$(NC) "
+	@if sudo chown -R $$USER:users ~/.local 2>/dev/null; then \
+		printf "$(GREEN)✓$(NC)\n"; \
+	else \
+		printf "$(YELLOW)⚠️  (skipped)$(NC)\n"; \
+	fi
+	@printf "$(BLUE)3. Fixing git repository permissions...$(NC)\n"
+	@$(MAKE) --no-print-directory fix-git-permissions
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Permissions fixed$(NC)\n"
+	@printf "$(BLUE)Common permission issues have been resolved.$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+fix-git-permissions: ## Fix git repo ownership issues in flake dir
+	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \
+		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $$USER 2>/dev/null | grep -q .; then \
+			printf "  $(YELLOW)Fixing ownership in $(FLAKE_DIR)/.git...$(NC) "; \
+			if sudo chown -R $$USER:users "$(FLAKE_DIR)/.git" 2>/dev/null; then \
+				printf "$(GREEN)✓$(NC)\n"; \
+			else \
+				printf "$(RED)✗$(NC)\n"; \
+			fi; \
+		else \
+			printf "  $(GREEN)✓ Git permissions OK$(NC)\n"; \
+		fi; \
+	else \
+		printf "  $(YELLOW)⚠️  No git repository found at $(FLAKE_DIR)$(NC)\n"; \
 	fi
