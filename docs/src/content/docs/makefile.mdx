@@ -1529,18 +1529,57 @@ make switch
 ### 📡 Monitoring
 
 #### `make watch-logs`
-Ve logs del sistema en tiempo real.
+Monitorea los logs del sistema en tiempo real usando `journalctl -f` (modo follow).
 
 ```bash
 make watch-logs
 ```
 
-**Útil para:**
-- Ver qué hace el sistema
-- Debugging de servicios
-- Monitoreo durante rebuild
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📊 Watching System Logs                   
+════════════════════════════════════════════════════
 
-**Salir:** `Ctrl + C`
+Press Ctrl+C to exit
+
+Jan 18 13:28:32 hydenix hypridle[339158]: Device 'input2::numlock'...
+Jan 18 13:28:46 hydenix hypridle[10122]: [LOG] Resumed: rule 55d4a0439f40
+Jan 18 13:29:23 hydenix ghostty[206074]: info(stream): OSC 1 received...
+```
+
+**¿Para qué sirve?**
+- **Monitoreo en tiempo real:** Ver eventos del sistema conforme ocurren
+- **Debugging activo:** Identificar problemas mientras suceden
+- **Seguimiento durante rebuilds:** Observar logs mientras se ejecuta `make switch` o `make rebuild` en otra terminal
+- **Análisis de servicios:** Ver cómo responden los servicios a cambios o eventos
+- **Troubleshooting interactivo:** Detectar patrones o errores repetitivos en tiempo real
+
+**Características:**
+- Usa `journalctl -f` (follow mode) para mostrar logs en tiempo real
+- Muestra todos los logs del sistema (kernel, servicios, aplicaciones)
+- Formato consistente con otros comandos de diagnóstico
+- Instrucciones claras para salir (`Ctrl+C`)
+
+**Cuándo usarlo:**
+- Durante un `make switch` o `make rebuild` para ver qué está pasando
+- Cuando un servicio no funciona correctamente y necesitas ver sus logs en vivo
+- Para monitorear el sistema después de hacer cambios de configuración
+- Cuando sospechas que hay actividad sospechosa o errores recurrentes
+- Para entender el comportamiento del sistema durante operaciones específicas
+
+**Workflow típico:**
+```bash
+# Terminal 1: Monitorear logs
+make watch-logs
+
+# Terminal 2: Ejecutar operación
+make switch
+
+# Los logs aparecerán en tiempo real en Terminal 1
+```
+
+**Salir:** Presiona `Ctrl + C` para detener el monitoreo.
 
 ---
 

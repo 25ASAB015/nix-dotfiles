@@ -740,9 +740,12 @@ info: ## Show system information
 	@printf "\n"
 status: git-status ## Show comprehensive system status (alias for git-status)
 
-watch-logs: ## Watch system logs during rebuild
-	@printf "$(CYAN)📊 Watching system logs...\n$(NC)"
-	journalctl -f
+watch-logs: ## Watch system logs in real-time (follow mode)
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📊 Watching System Logs                   \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)Press $(GREEN)Ctrl+C$(BLUE) to exit$(NC)\n\n"
+	@journalctl -f
 watch-rebuild: ## Watch rebuild process
 	watch -n 1 'sudo nixos-rebuild switch --flake . --dry-run | tail -20'
 
