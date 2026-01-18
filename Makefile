@@ -690,8 +690,10 @@ health: ## Run comprehensive system health checks
 
 # --- Diagnóstico de Red ---
 test-network: ## Run comprehensive network diagnostics
-	@printf "$(CYAN)🌐 Network Diagnostics\n$(NC)"
-	@printf "=====================\n\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🌐 Network Diagnostics                    \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 	@printf "$(BLUE)1. DNS status (resolved):$(NC)\n"
 	@resolvectl status 2>/dev/null | head -60 || printf "$(YELLOW)resolvectl not available$(NC)\n"
 	@printf "\n$(BLUE)2. DNS from NetworkManager:$(NC)\n"
@@ -707,7 +709,10 @@ test-network: ## Run comprehensive network diagnostics
 	@nix run 'nixpkgs#speedtest-cli' -- --simple 2>/dev/null || printf "$(YELLOW)speedtest-cli failed or not available$(NC)\n"
 	@printf "\n$(BLUE)7. Route quality (mtr to 1.1.1.1, 50 probes):$(NC)\n"
 	@mtr -rw 1.1.1.1 -c 50 || printf "$(YELLOW)mtr not available$(NC)\n"
-	@printf "\n$(GREEN)✅ Network diagnostics complete$(NC)\n"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Network diagnostics complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 info: ## Show system information
 	@printf "$(YELLOW)⏳ Gathering system information, please wait...\n$(NC)"

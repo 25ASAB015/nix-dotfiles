@@ -624,22 +624,53 @@ git+file:///home/ludus/Dotfiles?ref=refs/heads/main&rev=38ee020...
 ---
 
 #### `make test-network`
-Diagnóstico completo de red (DNS, ping, throughput y ruta).
+Diagnóstico completo de red (DNS, ping, throughput y ruta) con formato visual mejorado.
 
 ```bash
 make test-network
 ```
 
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🌐 Network Diagnostics                    
+════════════════════════════════════════════════════
+
+1. DNS status (resolved):
+[estado de DNS]
+
+2. DNS from NetworkManager:
+[configuración DNS]
+
+3. Ping (1.1.1.1):
+[resultados de ping]
+
+...
+
+════════════════════════════════════════════════════
+✅ Network diagnostics complete
+════════════════════════════════════════════════════
+```
+
 **Qué hace:**
 - Verifica DNS activos (systemd-resolved y NetworkManager)
 - Mide latencia a 1.1.1.1 y google.com
-- Mide throughput con Cloudflare
-- Ejecuta speedtest y mtr
+- Mide throughput con Cloudflare (50MB, máximo 20s)
+- Ejecuta speedtest al servidor más cercano
+- Analiza calidad de ruta con mtr (50 probes a 1.1.1.1)
+
+**Características:**
+- Formato visual consistente con otros comandos
+- Encabezado y footer con líneas de separación
+- Pruebas completas de conectividad y rendimiento
+- Manejo de errores cuando herramientas no están disponibles
 
 **Cuándo usarlo:**
 - Navegación lenta o intermitente
 - Verificar rendimiento real del ISP
 - Confirmar que el DNS no está siendo inyectado
+- Diagnosticar problemas de conectividad
+- Medir calidad de conexión antes y después de cambios de red
 
 ---
 
