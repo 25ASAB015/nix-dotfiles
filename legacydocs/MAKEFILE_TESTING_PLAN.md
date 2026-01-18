@@ -16,7 +16,7 @@
 4. **Nivel 3: Diff y Comparación** (5 comandos) - Solo lectura
 5. **Nivel 4: Logs y Monitoring** (6 comandos) - Solo lectura
 6. **Nivel 5: Validación** (3 comandos) - Validación sin cambios
-7. **Nivel 6: Export y Documentación** (7 comandos) - Crea archivos
+7. **Nivel 6: Export y Documentación** (2 comandos) - Crea archivos
 8. **Nivel 7: Templates** (2 comandos) - Crea archivos de plantilla
 9. **Nivel 8: Git (solo lectura)** (1 comando) - Git status
 10. **Nivel 9: Backup** (1 comando) - Solo consulta
