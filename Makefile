@@ -327,9 +327,36 @@ optimize: ## Optimize nix store
 	sudo nix-store --optimise
 	@printf "$(GREEN)✅ Store optimization complete\n$(NC)"
 clean-result: ## Remove result symlinks
-	@printf "$(CYAN)🧹 Cleaning result symlinks\n$(NC)"
-	@find . -maxdepth 2 -name 'result*' -type l -delete 2>/dev/null || true
-	@printf "$(GREEN)✅ Result symlinks removed\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🧹 Clean Result Symlinks                  \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Searching for result symlinks...$(NC)\n"
+	@printf "$(YELLOW)These symlinks are created by Nix builds and can be safely removed.$(NC)\n"
+	@printf "\n"
+	@RESULT_LINKS=$$(find . -maxdepth 2 -name 'result*' -type l 2>/dev/null); \
+	if [ -z "$$RESULT_LINKS" ]; then \
+		printf "$(GREEN)✓ No result symlinks found$(NC)\n"; \
+	else \
+		COUNT=$$(echo "$$RESULT_LINKS" | wc -l); \
+		printf "$(BLUE)Found $(YELLOW)$$COUNT$(NC) $(BLUE)result symlink(s):$(NC)\n"; \
+		echo "$$RESULT_LINKS" | while read -r link; do \
+			TARGET=$$(readlink -f "$$link" 2>/dev/null || echo "broken"); \
+			printf "  $(YELLOW)$$link$(NC)"; \
+			if [ "$$TARGET" != "broken" ]; then \
+				printf " → $(GREEN)$$TARGET$(NC)\n"; \
+			else \
+				printf " → $(RED)(broken link)$(NC)\n"; \
+			fi; \
+		done; \
+		printf "\n$(BLUE)Removing symlinks...$(NC)\n"; \
+		find . -maxdepth 2 -name 'result*' -type l -delete 2>/dev/null; \
+		printf "$(GREEN)✅ Removed $$COUNT symlink(s)$(NC)\n"; \
+	fi
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Cleanup complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 fix-store: ## Attempt to repair nix store
 	@printf "$(CYAN)🔧 Repairing Nix Store\n$(NC)"
 	@printf "=====================\n"

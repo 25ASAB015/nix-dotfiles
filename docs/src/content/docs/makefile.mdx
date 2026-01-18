@@ -2075,12 +2075,41 @@ make fix-store
 ### 🔧 Utilidades
 
 #### `make clean-result`
-Elimina symlinks `result` que quedan después de builds.
+Elimina symlinks `result*` que quedan después de builds de Nix.
 
 ```bash
 make clean-result
-# Limpia directorios de symlinks innecesarios
+# ════════════════════════════════════════════════════════
+#           🧹 Clean Result Symlinks                  
+# ════════════════════════════════════════════════════════
+# 
+# Searching for result symlinks...
+# These symlinks are created by Nix builds and can be safely removed.
+# 
+# Found 2 result symlink(s):
+#   ./result → /nix/store/...-nixos-system-hydenix-26.05...
+#   ./result-vm → /nix/store/...-run-nixos-vm
+# 
+# Removing symlinks...
+# ✅ Removed 2 symlink(s)
+# 
+# ════════════════════════════════════════════════════════
+# ✅ Cleanup complete
+# ════════════════════════════════════════════════════════
 ```
+
+**Qué hace:**
+- Busca symlinks `result*` en el directorio actual y un nivel de profundidad
+- Muestra qué symlinks encontró y a dónde apuntan
+- Elimina los symlinks de forma segura
+- No afecta el store de Nix (solo elimina los symlinks, no los builds)
+
+**Cuándo usarlo:**
+- Después de builds: limpiar symlinks residuales de `nix build` o `nixos-rebuild build`
+- Mantenimiento: mantener el directorio del proyecto limpio
+- Antes de commits: evitar incluir symlinks en git (aunque deberían estar en .gitignore)
+
+**Nota:** Estos symlinks son creados por Nix para facilitar el acceso a builds. Eliminarlos no afecta los builds en el store de Nix, solo limpia el directorio del proyecto.
 
 #### `make tree`
 Muestra la estructura de directorios de tu configuración usando `eza` (con iconos) o `tree` como fallback.
