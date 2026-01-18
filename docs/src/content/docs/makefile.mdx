@@ -385,7 +385,7 @@ make switch
 ---
 
 #### `make build`
-Compila la configuración sin aplicar cambios al sistema.
+Compila la configuración sin aplicar cambios al sistema e incluye medición de tiempo.
 
 ```bash
 make build
@@ -402,6 +402,9 @@ make build
 # ✅ Build completed successfully
 # Configuration compiled but not activated.
 # Use 'make switch' to apply changes.
+# 
+# Build Statistics:
+#   Build time: 2m 15s (135s total)
 # ════════════════════════════════════════════════════════
 ```
 
@@ -410,11 +413,19 @@ make build
 - CI/CD pipelines para validar que la configuración compila
 - Debugging: ver errores de build sin afectar el sistema
 - Validación: comprobar cambios antes de hacer `make switch`
+- Medir performance: ver cuánto tiempo tarda el build
+- Comparar tiempos: identificar si cambios afectan el tiempo de build
+
+**Características:**
+- Mide automáticamente el tiempo de build
+- Muestra estadísticas informativas al finalizar
+- No aplica cambios al sistema (solo compila)
+- Preserva el código de salida del build
 
 **Diferencia con otros comandos:**
 - `make test`: Compila y activa temporalmente (se revierte al reiniciar)
 - `make switch`: Compila y activa permanentemente
-- `make build`: Solo compila, no activa nada
+- `make build`: Solo compila, no activa nada, incluye medición de tiempo
 
 ---
 
@@ -1562,37 +1573,6 @@ make emergency
 
 ---
 
-#### `make benchmark`
-Mide el tiempo que tarda un build completo de la configuración.
-
-```bash
-make benchmark
-# ════════════════════════════════════════════════════════
-#           ⏱️  Build Performance Benchmark          
-# ════════════════════════════════════════════════════════
-# 
-# Measuring build time for configuration...
-# This will perform a full build without applying changes.
-# 
-# [build output...]
-# 
-# ════════════════════════════════════════════════════════
-# ✅ Benchmark Complete
-# 
-# Build Results:
-#   Total time: 2m 15s (135s)
-# ════════════════════════════════════════════════════════
-```
-
-**Cuándo usarlo:**
-- Medir performance: comparar tiempos de build entre diferentes configuraciones
-- Optimización: identificar si cambios afectan el tiempo de build
-- Debugging: detectar builds inusualmente lentos
-- Documentación: registrar tiempos de build para referencia
-
-**Nota:** Este comando realiza un build completo sin aplicar cambios, similar a `make build` pero con medición de tiempo.
-
----
 
 <a id="cmd-hardware"></a>
 ### 🔩 Hardware
@@ -2928,7 +2908,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 `health`, `test-network`, `info`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
 
 ### Análisis y Desarrollo (11)
-`list-hosts`, `hosts-info`, `search`, `search-installed`, `benchmark`, `repl`, `shell`, `vm`, `closure-size`
+`list-hosts`, `hosts-info`, `search`, `search-installed`, `repl`, `shell`, `vm`, `closure-size`
 
 ### Formato, Linting y Estructura (4)
 `format`, `lint`, `tree`

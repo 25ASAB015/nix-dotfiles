@@ -48,7 +48,7 @@ help: ## Show this help message
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save"); \
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs logs-boot logs-errors logs-service"); \
-		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm closure-size"); \
+		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed repl shell vm closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
 		print_cat("Reportes y Exportación", "git-log"); \
 		print_cat("Plantillas y Otros", "hardware-scan fix-permissions fix-git-permissions"); \
@@ -200,13 +200,31 @@ build: ## Build configuration without switching
 	@printf "$(BLUE)Building configuration without applying changes...$(NC)\n"
 	@printf "$(YELLOW)This will compile but not activate the new generation.$(NC)\n"
 	@printf "\n"
-	@sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Build completed successfully$(NC)\n"
-	@printf "$(BLUE)Configuration compiled but not activated.$(NC)\n"
-	@printf "$(YELLOW)Use 'make switch' to apply changes.$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
+	@START=$$(date +%s); \
+	sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME); \
+	BUILD_EXIT=$$?; \
+	END=$$(date +%s); \
+	DURATION=$$((END - START)); \
+	MINUTES=$$((DURATION / 60)); \
+	SECONDS=$$((DURATION % 60)); \
+	printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+	if [ $$BUILD_EXIT -eq 0 ]; then \
+		printf "$(GREEN)✅ Build completed successfully$(NC)\n"; \
+		printf "$(BLUE)Configuration compiled but not activated.$(NC)\n"; \
+		printf "$(YELLOW)Use 'make switch' to apply changes.$(NC)\n"; \
+		printf "\n$(BLUE)Build Statistics:$(NC)\n"; \
+		if [ $$MINUTES -gt 0 ]; then \
+			printf "  $(GREEN)Build time:$(NC) $(YELLOW)$${MINUTES}m $${SECONDS}s$(NC) ($(YELLOW)$${DURATION}s$(NC) total)\n"; \
+		else \
+			printf "  $(GREEN)Build time:$(NC) $(YELLOW)$${SECONDS}s$(NC)\n"; \
+		fi; \
+	else \
+		printf "$(RED)✗ Build failed$(NC)\n"; \
+		printf "$(YELLOW)Build time: $${DURATION}s$(NC)\n"; \
+	fi; \
+	printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+	printf "\n"; \
+	exit $$BUILD_EXIT
 dry-run: ## Show what would be built/changed
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔍 Dry Run - Preview Changes             \n$(NC)"
@@ -893,38 +911,6 @@ search-installed: ## Search in currently installed packages (use PKG=name)
 		printf "  $(YELLOW)Home Manager profiles not found$(NC)\n"; \
 	fi
 	@printf "\n"
-
-benchmark: ## Time the rebuild process (build only)
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          ⏱️  Build Performance Benchmark          \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@printf "$(BLUE)Measuring build time for configuration...$(NC)\n"
-	@printf "$(YELLOW)This will perform a full build without applying changes.$(NC)\n"
-	@printf "\n"
-	@START=$$(date +%s); \
-	sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME); \
-	BUILD_EXIT=$$?; \
-	END=$$(date +%s); \
-	DURATION=$$((END - START)); \
-	MINUTES=$$((DURATION / 60)); \
-	SECONDS=$$((DURATION % 60)); \
-	printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-	if [ $$BUILD_EXIT -eq 0 ]; then \
-		printf "$(GREEN)✅ Benchmark Complete$(NC)\n"; \
-		printf "\n$(BLUE)Build Results:$(NC)\n"; \
-		if [ $$MINUTES -gt 0 ]; then \
-			printf "  $(GREEN)Total time:$(NC) $(YELLOW)$${MINUTES}m $${SECONDS}s$(NC) ($(YELLOW)$${DURATION}s$(NC))\n"; \
-		else \
-			printf "  $(GREEN)Total time:$(NC) $(YELLOW)$${SECONDS}s$(NC)\n"; \
-		fi; \
-	else \
-		printf "$(RED)✗ Build failed during benchmark$(NC)\n"; \
-		printf "$(YELLOW)Time measured: $${DURATION}s$(NC)\n"; \
-	fi; \
-	printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-	printf "\n"; \
-	exit $$BUILD_EXIT
 
 repl: ## Start nix repl with flake
 	@printf "$(CYAN)🧠 Starting nix repl...\n$(NC)"

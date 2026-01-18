@@ -340,9 +340,8 @@ echo "=== NIVEL 11: Build Commands (Dry-run) ==="
 # SKIP POR AHORA - puede tardar mucho
 echo "⊘ make build SKIPPED (tarda mucho)"
 
-# 48. make benchmark
-# SKIP - hace build completo
-echo "⊘ make benchmark SKIPPED (hace build completo)"
+# Nota: make benchmark ha sido eliminado
+# La funcionalidad de medición de tiempo ahora está integrada en make build
 
 echo "✅ NIVEL 11 COMPLETADO (0/2 - skipped por tiempo)"
 ```
@@ -510,7 +509,7 @@ echo "   y en el orden que consideres apropiado."
 
 ### Comandos a Probar Manualmente (según necesidad):
 - ⊘ Interactivos (5): watch-logs, docs-dev, repl, shell, vm
-- ⊘ Pesados (2): build, benchmark
+- ⊘ Pesados (1): build (ahora incluye medición de tiempo)
 - ⚠️ Modifican sistema (18): switch, test, safe-switch, boot, rollback, rebuild, updates, limpieza, hardware-scan, fix-permissions
 - 🔴 Peligrosos (4): deep-clean, emergency, quick, restore
 
@@ -641,7 +640,7 @@ Marca cada comando conforme lo verifiques manualmente:
 ### Quick Actions
 - [ ] quick
 - [ ] emergency
-- [ ] benchmark
+- [x] ~~benchmark~~ (eliminado - funcionalidad integrada en make build)
 
 ### Hardware
 - [ ] hardware-scan
