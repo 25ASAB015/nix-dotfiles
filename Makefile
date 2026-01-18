@@ -48,7 +48,7 @@ help: ## Show this help message
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input update-info diff-update upgrade show flake-check diff-flake"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save backup"); \
-		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs watch-rebuild logs-boot logs-errors logs-service"); \
+		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs logs-boot logs-errors logs-service"); \
 		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
 		print_cat("Reportes y Exportación", "git-log export-config export-minimal"); \
@@ -746,14 +746,6 @@ watch-logs: ## Watch system logs in real-time (follow mode)
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Press $(GREEN)Ctrl+C$(BLUE) to exit$(NC)\n\n"
 	@journalctl -f
-watch-rebuild: ## Watch rebuild process (dry-run mode)
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🔄 Watching Rebuild Process               \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n$(BLUE)Refreshing every 1 second (dry-run mode)$(NC)\n"
-	@printf "$(BLUE)Press $(GREEN)Ctrl+C$(BLUE) to exit$(NC)\n\n"
-	@watch -n 1 'sudo nixos-rebuild dry-run --flake . 2>&1 | tail -20'
-
 logs-boot: ## Show boot logs
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📋 Boot Logs                              \n$(NC)"

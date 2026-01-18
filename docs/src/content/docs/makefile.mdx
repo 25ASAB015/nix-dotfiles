@@ -1583,50 +1583,6 @@ make switch
 
 ---
 
-#### `make watch-rebuild`
-Monitorea el proceso de rebuild en modo dry-run, actualizándose cada segundo.
-
-```bash
-make watch-rebuild
-```
-
-**Output ejemplo:**
-```
-════════════════════════════════════════════════════
-          🔄 Watching Rebuild Process               
-════════════════════════════════════════════════════
-
-Refreshing every 1 second (dry-run mode)
-Press Ctrl+C to exit
-
-[Salida de nixos-rebuild dry-run actualizándose cada segundo]
-```
-
-**¿Para qué sirve?**
-- **Monitoreo continuo:** Observa el estado del rebuild sin ejecutarlo realmente
-- **Verificación previa:** Revisa qué cambios se aplicarían antes de hacer `make switch`
-- **Debugging:** Identifica problemas de configuración mientras se resuelven
-- **Aprendizaje:** Entiende qué hace NixOS durante un rebuild
-
-**Características:**
-- Usa `nixos-rebuild dry-run` para simular el rebuild sin aplicarlo
-- Se actualiza cada segundo usando `watch`
-- Muestra las últimas 20 líneas de la salida
-- Formato consistente con otros comandos de monitoreo
-- Modo seguro: no modifica el sistema, solo muestra qué pasaría
-
-**Cuándo usarlo:**
-- Antes de hacer un `make switch` para verificar cambios
-- Mientras editas archivos de configuración para ver el impacto en tiempo real
-- Para entender qué paquetes se construirían o descargarían
-- Cuando quieres monitorear el progreso de un rebuild sin ejecutarlo
-
-**Nota:** Este comando usa `dry-run`, por lo que no modifica el sistema. Para aplicar los cambios, usa `make switch` en otra terminal.
-
-**Salir:** Presiona `Ctrl + C` para detener el monitoreo.
-
----
-
 #### `make logs-boot`
 Muestra los logs de arranque (errores y alertas) con formato visual mejorado.
 
@@ -3029,8 +2985,8 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Git y Respaldo (7)
 `git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `save`, `backup`
 
-### Diagnóstico y Logs (9)
-`health`, `test-network`, `info`, `status`, `watch-logs`, `watch-rebuild`, `logs-boot`, `logs-errors`, `logs-service`
+### Diagnóstico y Logs (8)
+`health`, `test-network`, `info`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
 
 ### Análisis y Desarrollo (11)
 `list-hosts`, `hosts-info`, `search`, `search-installed`, `benchmark`, `repl`, `shell`, `vm`, `why-depends`, `build-trace`, `closure-size`

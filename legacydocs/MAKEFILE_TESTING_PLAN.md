@@ -221,8 +221,6 @@ echo "✓ make test-network funciona"
 # 30. make watch-logs (SKIP - es interactivo, requiere Ctrl+C)
 echo "⊘ make watch-logs SKIPPED (interactivo)"
 
-# 31. make watch-rebuild (SKIP - es interactivo)
-echo "⊘ make watch-rebuild SKIPPED (interactivo)"
 
 echo "✅ NIVEL 4 COMPLETADO (4/6 - 2 skipped por ser interactivos)"
 ```
@@ -553,7 +551,7 @@ echo "   y en el orden que consideres apropiado."
 **Total testeables automáticamente: 49 comandos**
 
 ### Comandos a Probar Manualmente (según necesidad):
-- ⊘ Interactivos (6): watch-logs, watch-rebuild, docs-dev, repl, shell, vm
+- ⊘ Interactivos (5): watch-logs, docs-dev, repl, shell, vm
 - ⊘ Pesados (2): build, benchmark
 - ⚠️ Modifican sistema (18): switch, test, safe-switch, boot, rollback, rebuild, updates, limpieza, hardware-scan, fix-permissions
 - 🔴 Peligrosos (4): deep-clean, emergency, quick, restore
@@ -694,7 +692,6 @@ Marca cada comando conforme lo verifiques manualmente:
 
 ### Monitoring y Logs
 - [ ] watch-logs
-- [ ] watch-rebuild
 - [ ] logs-boot
 - [ ] logs-errors
 - [ ] logs-service
