@@ -1545,16 +1545,45 @@ make export-minimal
 ### 📚 Documentación
 
 #### `make docs-local`
-Lista toda la documentación local disponible.
+Lista toda la documentación local disponible en el repositorio.
 
 ```bash
 make docs-local
-# ✓ README.md
-# ✓ MAKEFILE_TUTORIAL.md
-# ✓ MAKEFILE_IMPROVEMENTS_PLAN.md
-# ✓ AGENTS.md
-# ✓ docs/
 ```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📚 Local Documentation                    
+════════════════════════════════════════════════════
+
+  ✓ README.md
+  ✓ docs/
+    ├─ docs/README.md
+
+💡 Tip: Use less <file> or cat <file> to view documentation
+```
+
+**¿Para qué sirve?**
+
+1. **Descubrir documentación disponible:** En lugar de explorar manualmente el repositorio, este comando te muestra rápidamente qué archivos de documentación están disponibles sin tener que navegar por el sistema de archivos.
+
+2. **Verificación rápida:** Útil cuando necesitas recordar qué documentación existe o cuando estás trabajando en un proyecto por primera vez y quieres saber qué recursos de documentación están disponibles.
+
+3. **Navegación eficiente:** Te indica dónde están los archivos de documentación, especialmente útil si hay documentación distribuida en diferentes ubicaciones (raíz del proyecto, directorio `docs/`, `legacydocs/`, etc.).
+
+4. **Workflow de lectura:** Junto con comandos como `make readme` o `make tutorial`, forma parte de un flujo de trabajo para acceder rápidamente a la documentación desde la terminal sin necesidad de abrir un navegador o editor.
+
+**Cuándo usarlo:**
+- Cuando necesitas encontrar documentación específica pero no recuerdas dónde está
+- Al explorar el proyecto por primera vez
+- Para verificar qué documentación está disponible antes de hacer cambios
+- Como punto de partida para entender la estructura de documentación del proyecto
+
+**Relación con otros comandos:**
+- `make readme` - Abre el README directamente
+- `make tutorial` - Abre el tutorial del Makefile
+- `make docs-dev` - Inicia el servidor de desarrollo de la documentación web
 
 #### `make readme`
 Abre el README en el terminal con `less`.

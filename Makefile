@@ -136,17 +136,46 @@ help-examples: ## Show commands with usage examples
 	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n\n"
 
 docs-local: ## Show local documentation files
-	@printf "$(CYAN)📚 Local Documentation\n$(NC)"
-	@printf "=====================\n"
-	@if [ -f "README.md" ]; then printf "  $(GREEN)✓$(NC) README.md\n"; fi
-	@if [ -f "MAKEFILE_TUTORIAL.md" ]; then printf "  $(GREEN)✓$(NC) MAKEFILE_TUTORIAL.md\n"; fi
-	@if [ -f "MAKEFILE_IMPROVEMENTS_PLAN.md" ]; then printf "  $(GREEN)✓$(NC) MAKEFILE_IMPROVEMENTS_PLAN.md\n"; fi
-	@if [ -f "AGENTS.md" ]; then printf "  $(GREEN)✓$(NC) AGENTS.md\n"; fi
-	@if [ -d "docs/" ]; then \
-		printf "  $(GREEN)✓$(NC) docs/\n"; \
-		ls docs/*.md 2>/dev/null | sed 's/^/    /'; \
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📚 Local Documentation                    \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@COUNT=0; \
+	if [ -f "README.md" ]; then \
+		printf "  $(GREEN)✓$(NC) $(BLUE)README.md$(NC)\n"; \
+		COUNT=$$((COUNT + 1)); \
+	fi; \
+	if [ -f "MAKEFILE_TUTORIAL.md" ]; then \
+		printf "  $(GREEN)✓$(NC) $(BLUE)MAKEFILE_TUTORIAL.md$(NC)\n"; \
+		COUNT=$$((COUNT + 1)); \
+	fi; \
+	if [ -f "MAKEFILE_IMPROVEMENTS_PLAN.md" ]; then \
+		printf "  $(GREEN)✓$(NC) $(BLUE)MAKEFILE_IMPROVEMENTS_PLAN.md$(NC)\n"; \
+		COUNT=$$((COUNT + 1)); \
+	fi; \
+	if [ -f "AGENTS.md" ]; then \
+		printf "  $(GREEN)✓$(NC) $(BLUE)AGENTS.md$(NC)\n"; \
+		COUNT=$$((COUNT + 1)); \
+	fi; \
+	if [ -d "docs/" ]; then \
+		printf "  $(GREEN)✓$(NC) $(BLUE)docs/$(NC)\n"; \
+		DOCS_COUNT=0; \
+		for doc in docs/*.md; do \
+			if [ -f "$$doc" ]; then \
+				printf "    ├─ $(PURPLE)$$doc$(NC)\n"; \
+				DOCS_COUNT=$$((DOCS_COUNT + 1)); \
+			fi; \
+		done; \
+		if [ $$DOCS_COUNT -eq 0 ]; then \
+			printf "    └─ $(YELLOW)No .md files found$(NC)\n"; \
+		fi; \
+		COUNT=$$((COUNT + 1)); \
+	fi; \
+	if [ $$COUNT -eq 0 ]; then \
+		printf "  $(YELLOW)⚠ No documentation files found$(NC)\n"; \
 	fi
-	@printf "\n$(BLUE)View with:$(NC) less <file> or cat <file>\n"
+	@printf "\n$(BLUE)💡 Tip:$(NC) Use $(GREEN)less <file>$(NC) or $(GREEN)cat <file>$(NC) to view documentation\n"
+	@printf "\n"
 docs-dev: ## Run Astro docs dev server locally
 	@printf "$(CYAN)📘 Astro Docs Dev Server\n$(NC)"
 	@printf "========================\n"
