@@ -13,12 +13,23 @@ in {
     ".config/hypr/keybindings.conf" = lib.mkForce {
       source = mkSymlink "${dotfilesDir}/resources/config/keybinds.conf";
     };
+    # Scripts en .local/lib/hyde/ (todos los scripts de resources/scripts)
     ".local/lib/hyde/script_launcher.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/script_launcher.sh";
     ".local/lib/hyde/record.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/record.sh";
     ".local/lib/hyde/dict.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/dict.sh";
+    ".local/lib/hyde/sysmonlaunch.sh".source =
+      mkSymlink "${dotfilesDir}/resources/scripts/sysmonlaunch.sh";
+    ".local/lib/hyde/if_discharging.sh".source =
+      mkSymlink "${dotfilesDir}/resources/scripts/if_discharging.sh";
+    ".local/lib/hyde/nixos_github_setup.sh".source =
+      mkSymlink "${dotfilesDir}/resources/scripts/nixos_github_setup.sh";
+    ".local/lib/hyde/toggle-hdmi.sh".source =
+      mkSymlink "${dotfilesDir}/resources/scripts/toggle-hdmi.sh";
+    ".local/lib/hyde/ubuntu_github_setupsh".source =
+      mkSymlink "${dotfilesDir}/resources/scripts/ubuntu_github_setupsh";
   };
 
   # Asegurar que todos los scripts en resources/scripts sean ejecutables
