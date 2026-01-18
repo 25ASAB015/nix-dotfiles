@@ -13,6 +13,9 @@ in {
     ".config/hypr/keybindings.conf" = lib.mkForce {
       source = mkSymlink "${dotfilesDir}/resources/config/keybinds.conf";
     };
+    ".config/neovide/config.toml" = lib.mkForce {
+      source = mkSymlink "${dotfilesDir}/resources/config/neovide/config.toml";
+    };
     # Scripts en .local/lib/hyde/ (todos los scripts de resources/scripts)
     ".local/lib/hyde/script_launcher.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/script_launcher.sh";
