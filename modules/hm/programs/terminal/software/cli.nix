@@ -106,6 +106,7 @@ in
       ++ [
         libnotify   # Enviar notificaciones del sistema
         fontconfig  # Configuración de fuentes
+        neovide     # Neovim GUI
       ]
 
       # ════════════════════════════════════════════════════════════════════════
