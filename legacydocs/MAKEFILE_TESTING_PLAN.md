@@ -276,21 +276,8 @@ echo "✅ NIVEL 6 COMPLETADO (1/2 - 1 skipped por interactivo)"
 
 ```bash
 echo "=== NIVEL 7: Templates ==="
-
-# 40. make new-host (requiere HOST)
-make new-host HOST=test-server
-echo "✓ make new-host funciona"
-ls -la hosts/test-server/
-
-# 41. make new-module (requiere MODULE)
-make new-module MODULE=test/example
-echo "✓ make new-module funciona"
-ls -la modules/test/example.nix
-
-# Cleanup
-rm -rf hosts/test-server
-rm -f modules/test/example.nix
-rmdir modules/test 2>/dev/null
+echo "Nota: Los comandos new-host y new-module han sido eliminados"
+echo "      Las plantillas eran demasiado básicas y no reflejaban la complejidad real"
 
 echo "✅ NIVEL 7 COMPLETADO (2/2)"
 ```
@@ -693,8 +680,8 @@ Marca cada comando conforme lo verifiques manualmente:
 - [ ] docs-dev
 
 ### Templates
-- [ ] new-host
-- [ ] new-module
+- [x] ~~new-host~~ (eliminado - plantilla demasiado básica)
+- [x] ~~new-module~~ (eliminado - plantilla demasiado básica)
 
 ### Diff Tools
 - [ ] diff-config

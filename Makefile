@@ -52,7 +52,7 @@ help: ## Show this help message
 		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
 		print_cat("Reportes y Exportación", "git-log"); \
-		print_cat("Plantillas y Otros", "new-host new-module hardware-scan fix-permissions fix-git-permissions"); \
+		print_cat("Plantillas y Otros", "hardware-scan fix-permissions fix-git-permissions"); \
 		printf "\nWorkflows sugeridos:\n"; \
 		printf "  • Desarrollo diario:  make test → make switch → make rollback\n"; \
 		printf "  • Updates seguros:    make backup → make update → make diff-update → make validate → make test → make switch\n"; \
@@ -90,14 +90,6 @@ help-examples: ## Show commands with usage examples
 	@printf "  → make logs-service SVC=sshd\n"
 	@printf "  → make logs-service SVC=docker\n"
 	@printf "  → make logs-service SVC=networkmanager\n\n"
-	@printf "$(GREEN)═══ 🛠️ Templates ═══$(NC)\n"
-	@printf "$(BLUE)new-host HOST=<name>$(NC)\n"
-	@printf "  → make new-host HOST=mylaptop\n"
-	@printf "  → make new-host HOST=server\n"
-	@printf "  → make new-host HOST=workstation\n\n"
-	@printf "$(BLUE)new-module MODULE=<path/name>$(NC)\n"
-	@printf "  → make new-module MODULE=hm/programs/terminal/alacritty\n"
-	@printf "  → make new-module MODULE=system/services/backup\n\n"
 	@printf "$(GREEN)═══ 📊 Diff & Compare ═══$(NC)\n"
 	@printf "$(GREEN)═══ 🔍 Build Analysis ═══$(NC)\n"
 	@printf "$(BLUE)why-depends PKG=<name>$(NC)\n"
@@ -1031,44 +1023,6 @@ git-log: ## Show recent changes from git log
 	@printf "\n"
 
 # === Plantillas y Otros ===
-
-new-host: ## Create new host configuration template (use HOST=name)
-	@if [ -z "$(HOST)" ]; then \
-		printf "$(RED)Error: HOST variable required$(NC)\n"; \
-		printf "$(YELLOW)Usage: make new-host HOST=mylaptop$(NC)\n"; \
-		exit 1; \
-	fi
-	@if [ -d "hosts/$(HOST)" ]; then \
-		printf "$(RED)Error: Host '$(HOST)' already exists$(NC)\n"; \
-		exit 1; \
-	fi
-	@printf "$(BLUE)📝 Creating host configuration: $(HOST)\n$(NC)"
-	@mkdir -p hosts/$(HOST)
-	@printf "# Configuration for $(HOST)\n{ inputs, ... }: {\n  imports = [ ../default.nix ];\n\n  networking.hostName = \"$(HOST)\";\n}\n" \
-		> hosts/$(HOST)/configuration.nix
-	@printf "# User configuration for $(HOST)\n{ inputs, ... }: {\n  # Add user-specific config here\n}\n" \
-		> hosts/$(HOST)/user.nix
-	@printf "$(GREEN)✅ Host template created at: hosts/$(HOST)/$(NC)\n"
-	@printf "$(YELLOW)Remember to:$(NC)\n"
-	@printf "  1. Run: sudo nixos-generate-config --show-hardware-config > hosts/$(HOST)/hardware-configuration.nix\n"
-	@printf "  2. Add to flake.nix outputs\n"
-	@printf "  3. Update AVAILABLE_HOSTS in Makefile\n"
-new-module: ## Create new module template (use MODULE=path/name)
-	@if [ -z "$(MODULE)" ]; then \
-		printf "$(RED)Error: MODULE variable required$(NC)\n"; \
-		printf "$(YELLOW)Usage: make new-module MODULE=hm/programs/terminal/alacritty$(NC)\n"; \
-		exit 1; \
-	fi
-	@MODULE_PATH="modules/$(MODULE).nix"; \
-	if [ -f "$$MODULE_PATH" ]; then \
-		printf "$(RED)Error: Module already exists: $$MODULE_PATH$(NC)\n"; \
-		exit 1; \
-	fi; \
-	mkdir -p "$$(dirname $$MODULE_PATH)"; \
-	printf "# Module: $(MODULE)\n{ config, lib, pkgs, ... }:\n\n{\n  # Add your configuration here\n}\n" \
-		> "$$MODULE_PATH"; \
-	printf "$(GREEN)✅ Module created: $$MODULE_PATH$(NC)\n"; \
-	printf "$(YELLOW)Remember to import it in the appropriate default.nix$(NC)\n"
 
 hardware-scan: ## Re-scan hardware configuration
 	@printf "$(BLUE)🔧 Scanning hardware configuration for $(HOSTNAME)...\n$(NC)"

@@ -289,10 +289,6 @@ update-input INPUT=<name>
   → make update-input INPUT=hydenix
   → make update-input INPUT=nixpkgs
 
-═══ 🛠️ Templates ═══
-new-host HOST=<name>
-  → make new-host HOST=mylaptop
-  → make new-host HOST=server
 ```
 
 **Perfecto para:**
@@ -1926,33 +1922,6 @@ make docs-dev
 
 ---
 
-<a id="cmd-templates"></a>
-### 🛠️ Templates
-
-#### `make new-host HOST=nombre`
-Crea una nueva configuración de host desde plantilla.
-
-```bash
-make new-host HOST=server
-# ✅ Host template created at: hosts/server/
-# Creates: configuration.nix, user.nix
-```
-
-**Recuerda después:**
-1. Generar `hardware-configuration.nix`
-2. Agregar a `flake.nix`
-3. Actualizar `AVAILABLE_HOSTS` en Makefile
-
-#### `make new-module MODULE=path/name`
-Crea un nuevo módulo desde plantilla.
-
-```bash
-make new-module MODULE=hm/programs/terminal/alacritty
-# ✅ Module created: modules/hm/programs/terminal/alacritty.nix
-```
-
----
-
 <a id="cmd-diff-tools"></a>
 ### 📊 Diff Tools
 
@@ -2875,53 +2844,6 @@ make hosts-info
 
 ---
 
-<a id="flujo-nuevo-host"></a>
-### Flujo de Creación de Nuevo Host
-
-```bash
-# 1. Crear template
-make new-host HOST=server
-
-# 2. Generar hardware config
-sudo nixos-generate-config --show-hardware-config > hosts/server/hardware-configuration.nix
-
-# 3. Editar configuración
-nvim hosts/server/configuration.nix
-nvim hosts/server/user.nix
-
-# 4. Agregar a flake.nix y Makefile AVAILABLE_HOSTS
-
-# 5. Validar y aplicar
-make validate HOSTNAME=server
-make switch HOSTNAME=server
-```
-
----
-
-<a id="flujo-modulos"></a>
-### Flujo de Desarrollo de Módulos
-
-```bash
-# 1. Crear módulo desde template
-make new-module MODULE=hm/programs/editors/helix
-
-# 2. Editar módulo
-nvim modules/hm/programs/editors/helix.nix
-
-# 3. Importar en default.nix
-nvim modules/hm/programs/editors/default.nix
-
-# 4. Ver cambios
-make git-diff
-
-# 5. Probar
-make test
-
-# 6. Aplicar
-make switch
-```
-
----
 
 <a id="flujo-comparacion"></a>
 ### Flujo de Comparación
@@ -3042,8 +2964,8 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Reportes y Exportación (1)
 `git-log`
 
-### Plantillas y Otros (6)
-`new-host`, `new-module`, `hardware-scan`, `fix-permissions`, `fix-git-permissions`
+### Plantillas y Otros (4)
+`hardware-scan`, `fix-permissions`, `fix-git-permissions`
 
 **Total: 75+ comandos disponibles** 🎉
 
