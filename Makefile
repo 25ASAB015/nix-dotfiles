@@ -51,7 +51,7 @@ help: ## Show this help message
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs watch-rebuild logs-boot logs-errors logs-service"); \
 		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree phases"); \
-		print_cat("Reportes y Exportación", "changelog changelog-detailed packages version export-config export-minimal"); \
+		print_cat("Reportes y Exportación", "changelog changelog-detailed export-config export-minimal"); \
 		print_cat("Plantillas y Otros", "new-host new-module compare-hosts hardware-scan fix-permissions fix-git-permissions"); \
 		printf "\nWorkflows sugeridos:\n"; \
 		printf "  • Desarrollo diario:  make test → make switch → make rollback\n"; \
@@ -886,14 +886,6 @@ changelog-detailed: ## Show detailed changelog with diffs
 		--date=short --max-count=10 2>/dev/null || \
 		printf "$(YELLOW)Not a git repository$(NC)\n"
 
-packages: ## List all installed packages
-	@printf "$(CYAN)📦 Installed Packages\n$(NC)"
-	@printf "====================\n\n"
-	@printf "$(BLUE)User packages:$(NC)\n"
-	@nix-env -q | sort | sed 's/^/  /' || printf "  $(YELLOW)None$(NC)\n"
-	@printf "\n$(BLUE)System packages (count):$(NC) "
-	@nix-store -q --references /run/current-system | wc -l
-	@printf "\n$(YELLOW)Tip: Use 'make search-installed PKG=name' to find specific package$(NC)\n"
 export-config: ## Export configuration to timestamped tarball
 	@printf "$(BLUE)📦 Exporting configuration...\n$(NC)"
 	@EXPORT_NAME="nixos-config-$$(date +%Y%m%d-%H%M%S).tar.gz"; \
