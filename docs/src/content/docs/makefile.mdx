@@ -488,11 +488,45 @@ make health
 ### 🖥️ Multi-Host
 
 #### `make list-hosts`
-Lista todas las configuraciones de hosts disponibles (hydenix, laptop, vm).
+Lista todas las configuraciones de hosts disponibles con información detallada.
 
 ```bash
 make list-hosts
-# Muestra qué hosts están configurados y cuál es el actual
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📋 Available Hosts                         
+════════════════════════════════════════════════════
+
+Total hosts: 3
+Configured: 3
+
+Hosts overview:
+  hydenix         ✓ configured (current)
+  laptop          ✓ configured
+  vm              ✓ configured
+
+Detailed information:
+
+  hydenix (current)
+    Status: ✓ configured
+    Path: hosts/hydenix/
+    Files: 2
+
+  laptop
+    Status: ✓ configured
+    Path: hosts/laptop/
+    Files: 3
+
+  vm
+    Status: ✓ configured
+    Path: hosts/vm/
+    Files: 3
+
+Usage: make switch HOSTNAME=<host>
+Example: make switch HOSTNAME=laptop
 ```
 
 **Usar con otros comandos:**
@@ -873,7 +907,7 @@ make switch
 ---
 
 #### `make list-generations`
-Lista todas las generaciones del sistema con fechas.
+Lista todas las generaciones del sistema con fechas y resumen.
 
 ```bash
 make list-generations
@@ -881,10 +915,18 @@ make list-generations
 
 **Output ejemplo:**
 ```
-  184   2026-01-08 10:23:45   
-  185   2026-01-09 15:30:12   
-  186   2026-01-10 09:45:33   
-  187   2026-01-11 14:20:01   (current)
+════════════════════════════════════════════════════
+          📋 System Generations                    
+════════════════════════════════════════════════════
+
+Total generations: 33
+Current generation: 33
+
+All generations:
+   1   2026-01-12 07:36:26
+   2   2026-01-12 19:33:50
+   ...
+  33   2026-01-17 23:59:11   (current)
 ```
 
 **Cuándo usarlo:**
@@ -970,21 +1012,48 @@ make git-status
 ---
 
 #### `make git-add`
-Stages todos los cambios.
+Stages todos los cambios con formato visual mejorado.
 
 ```bash
 make git-add
-# Equivalente a: git add .
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+              📝 Staging Changes                   
+════════════════════════════════════════════════════
+
+Adding all changes to staging area...
+✅ Staged 3 file(s)
+
+Changes staged:
+  M Makefile
+  M docs/makefile.mdx
+  A new-file.nix
 ```
 
 ---
 
 #### `make git-commit`
-Commit rápido con timestamp automático.
+Commit rápido con timestamp automático y formato visual mejorado.
 
 ```bash
 make git-commit
-# Crea commit: "config: update 2026-01-11 14:30:45"
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+            📝 Committing Changes                  
+════════════════════════════════════════════════════
+
+Staging changes...
+Creating commit: config: update 2026-01-18 10:48:16
+
+✅ Commit created successfully
+Hash: 71d24b4
+Branch: main
 ```
 
 **Mejor práctica:** Usa mensajes descriptivos manualmente:
@@ -996,26 +1065,60 @@ git commit -m "feat: add kitty terminal config"
 ---
 
 #### `make git-push`
-Push al remoto.
+Push al remoto con formato visual mejorado.
 
 ```bash
 make git-push
 ```
 
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+              🚀 Pushing to Remote                 
+════════════════════════════════════════════════════
+
+Branch: main
+Remote: 25ASAB015/nix-dotfiles
+
+Pushing changes...
+[output de git push]
+
+✅ Successfully pushed to remote
+```
+
 ---
 
 #### `make save`
-**Comando ultra-rápido:** add + commit + push + rebuild todo en uno.
+**Comando ultra-rápido:** add + commit + push + rebuild todo en uno con workflow visual.
 
 ```bash
 make save
 ```
 
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+              💾 Quick Save Workflow               
+════════════════════════════════════════════════════
+
+Executing complete workflow:
+  1. Stage changes
+  2. Commit changes
+  3. Push to remote
+  4. Rebuild and switch
+
+[ejecuta cada paso con su formato visual]
+
+════════════════════════════════════════════════════
+✅ Quick save completed successfully!
+════════════════════════════════════════════════════
+```
+
 **Qué hace:**
-1. `git add .`
-2. `git commit -m "config: update [timestamp]"`
-3. `git push`
-4. `make switch`
+1. `make git-add` - Stage cambios
+2. `make git-commit` - Commit con timestamp
+3. `make git-push` - Push al remoto
+4. `make switch` - Rebuild y switch
 
 **⚠️ Úsalo con cuidado:** Es conveniente pero hace commits automáticos. Mejor para cambios pequeños.
 
@@ -1119,24 +1222,26 @@ Muestra la misma información que `make git-status`: configuración del sistema 
 ---
 
 #### `make current-generation`
-Muestra detalles de la generación actual.
+Muestra detalles de la generación actual con formato visual mejorado.
 
 ```bash
 make current-generation
-# 26   2026-01-11 14:30:00 (current)
-# Activation date: 2026-01-11 14:30:00
-# Closure size: 8.2G
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+        📍 Current Generation Details              
+════════════════════════════════════════════════════
+
+  33   2026-01-17 23:59:11   (current)
+
+Activation date:  2026-01-18 06:08:36
+Closure size:  40.5G
 ```
 
 #### `make hosts-info`
-Muestra información detallada de todos los hosts configurados.
-
-```bash
-make hosts-info
-# hydenix (current) ✓ configured - 2 files
-# laptop ✓ configured - 3 files
-# vm ✓ configured - 3 files
-```
+Alias de `make list-hosts` para mantener compatibilidad. Muestra la misma información detallada de todos los hosts configurados.
 
 ---
 
@@ -1166,12 +1271,36 @@ make search PKG=firefox
 ```
 
 #### `make search-installed PKG=nombre`
-Busca en paquetes ya instalados en tu sistema.
+Busca en paquetes ya instalados en tu sistema, incluyendo PATH y perfiles de Home Manager.
 
 ```bash
 make search-installed PKG=kitty
-# Verifica si kitty está instalado
 ```
+
+**Output ejemplo:**
+```
+🔍 Searching installed packages for: kitty
+════════════════════════════════════════════════════
+
+1. Executable in PATH:
+  ✓ Found: /etc/profiles/per-user/ludus/bin/kitty
+  Store path: /nix/store/abc123-kitty-0.30.1
+
+2. User environment (nix-env):
+  Not found
+
+3. System packages (current-system):
+  /nix/store/abc123-kitty-0.30.1
+
+4. Home Manager profiles:
+  /etc/profiles/per-user/ludus/bin/kitty
+```
+
+**Mejoras:** Ahora busca en múltiples ubicaciones:
+- Ejecutables en PATH
+- Entorno de usuario (nix-env)
+- Paquetes del sistema
+- Perfiles de Home Manager
 
 ---
 

@@ -667,41 +667,52 @@ logs-service: ## Show logs for specific service (use SVC=name)
 # === Análisis y Desarrollo ===
 
 list-hosts: ## List available host configurations
-	@printf "$(CYAN)📋 Available Hosts\n$(NC)"
-	@printf "=================\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📋 Available Hosts                         \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@TOTAL=0; CONFIGURED=0; \
+	for host in $(AVAILABLE_HOSTS); do \
+		TOTAL=$$((TOTAL + 1)); \
+		if [ -d "hosts/$$host" ] && [ -f "hosts/$$host/configuration.nix" ]; then \
+			CONFIGURED=$$((CONFIGURED + 1)); \
+		fi; \
+	done; \
+	printf "\n$(BLUE)Total hosts:$(NC) $(GREEN)$$TOTAL$(NC)\n"; \
+	printf "$(BLUE)Configured:$(NC) $(GREEN)$$CONFIGURED$(NC)\n"
+	@printf "\n$(BLUE)Hosts overview:$(NC)\n"
 	@for host in $(AVAILABLE_HOSTS); do \
 		printf "  $(GREEN)%-15s$(NC) " $$host; \
-		if [ -d "hosts/$$host" ]; then \
-			printf "✓ configured"; \
+		if [ -d "hosts/$$host" ] && [ -f "hosts/$$host/configuration.nix" ]; then \
+			printf "$(GREEN)✓$(NC) configured"; \
 			if [ "$$host" = "$(HOSTNAME)" ]; then \
 				printf " $(YELLOW)(current)$(NC)"; \
 			fi; \
 			printf "\n"; \
 		else \
-			printf "$(RED)✗ not found$(NC)\n"; \
-		fi \
+			printf "$(RED)✗$(NC) not found\n"; \
+		fi; \
 	done
-	@printf "\n$(BLUE)Usage:$(NC) make switch HOSTNAME=<host>\n"
-	@printf "$(BLUE)Example:$(NC) make switch HOSTNAME=laptop\n"
-
-hosts-info: ## Show info about all configured hosts
-	@printf "$(CYAN)📋 Configured Hosts\n$(NC)"
-	@printf "===================\n"
+	@printf "\n$(BLUE)Detailed information:$(NC)\n"
 	@for host in $(AVAILABLE_HOSTS); do \
-		printf "\n$(GREEN)$${host}$(NC)"; \
+		printf "\n  $(GREEN)$${host}$(NC)"; \
 		if [ "$$host" = "$(HOSTNAME)" ]; then \
 			printf " $(YELLOW)(current)$(NC)"; \
 		fi; \
 		printf "\n"; \
 		if [ -f "hosts/$$host/configuration.nix" ]; then \
-			printf "  Status: $(GREEN)✓$(NC) configured\n"; \
-			printf "  Path: hosts/$$host/\n"; \
-			printf "  Files: "; \
-			ls hosts/$$host/ 2>/dev/null | wc -l; \
+			printf "    Status: $(GREEN)✓$(NC) configured\n"; \
+			printf "    Path: $(BLUE)hosts/$$host/$(NC)\n"; \
+			FILE_COUNT=$$(ls hosts/$$host/ 2>/dev/null | wc -l); \
+			printf "    Files: $(GREEN)$$FILE_COUNT$(NC)\n"; \
 		else \
-			printf "  Status: $(RED)✗$(NC) not found\n"; \
+			printf "    Status: $(RED)✗$(NC) not found\n"; \
 		fi; \
 	done
+	@printf "\n$(BLUE)Usage:$(NC) make switch HOSTNAME=<host>\n"
+	@printf "$(BLUE)Example:$(NC) make switch HOSTNAME=laptop\n"
+	@printf "\n"
+
+hosts-info: list-hosts ## Show info about all configured hosts (alias for list-hosts)
 
 search: ## Search for packages in nixpkgs (use PKG=name)
 	@if [ -z "$(PKG)" ]; then \
