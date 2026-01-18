@@ -10,9 +10,6 @@
   # Paquetes esenciales (adaptado de environment.systemPackages del archivo fuente)
   # Nota: git y gh removidos para evitar duplicados (ya en git.nix y gh.nix)
   home.packages = with pkgs; [
-    # Browsers
-    brave # Brave Browser
-    
     # Editors
     code-cursor-fhs # Cursor AI
     cursor-cli # Cursor CLI

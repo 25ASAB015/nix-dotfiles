@@ -36,4 +36,12 @@
     "x-scheme-handler/about" = "zen-browser.desktop";
     "x-scheme-handler/unknown" = "zen-browser.desktop";
   };
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # VARIABLE DE ENTORNO - Establecer BROWSER para Hyprland y scripts
+  # ════════════════════════════════════════════════════════════════════════════
+  # Nota: El ejecutable se llama "zen", no "zen-browser"
+  home.sessionVariables = {
+    BROWSER = "zen";
+  };
 }
