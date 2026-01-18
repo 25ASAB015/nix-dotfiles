@@ -145,33 +145,21 @@ Uso: `@printf "$(GREEN)✅ Éxito\n$(NC)"`
 
 ### 2. Categorías de Comandos
 
-Tu Makefile está organizado en secciones lógicas (refleja el índice real del documento):
+En el **Makefile actual**, los comandos están agrupados así:
 
-1. **Building and Switching** - Compilar y activar configuraciones
-2. **Validation** - Validación previa a cambios
-3. **Multi-Host** - Gestión de múltiples máquinas
-4. **Debugging** - Diagnóstico de problemas
-5. **Maintenance and Cleanup** - Limpieza y optimización
-6. **Updates** - Actualizar dependencias
-7. **Formatting and Linting** - Calidad de código
-8. **Backup and Restore** - Copias de seguridad
-9. **Git Integration** - Control de versiones
-10. **Changelog e Historial** - Historial de cambios
-11. **System Information** - Información del sistema
-12. **Paquetes** - Paquetes instalados
-13. **Búsqueda** - Búsqueda de paquetes
-14. **Quick Actions** - Atajos rápidos
-15. **Hardware** - Configuración de hardware
-16. **Monitoring** - Monitoreo y logs del sistema
-17. **Advanced** - Herramientas avanzadas
-18. **Export/Import** - Exportación e importación
-19. **Documentación** - Documentación local
-20. **Templates** - Plantillas de configuración
-21. **Diff Tools** - Comparación de cambios
-22. **Build Analysis** - Análisis de builds
-23. **Quick Fixes** - Arreglos rápidos
-24. **Utilidades** - Utilidades varias
-25. **Migration Helpers** - Ayudantes de migración
+1. **Ayuda y Documentación** - Ayuda y lectura de docs
+2. **Gestión del Sistema (Rebuild/Switch)** - Builds y activación
+3. **Limpieza y Optimización** - Limpiezas y optimizaciones
+4. **Actualizaciones y Flakes** - Updates y flake tooling
+5. **Generaciones y Rollback** - Generaciones y rollback
+6. **Git y Respaldo** - Git y backups
+7. **Diagnóstico y Logs** - Salud, red y logs
+8. **Análisis y Desarrollo** - Búsqueda, analysis, VM, repl
+9. **Formato, Linting y Estructura** - Format, lint, tree, phases
+10. **Reportes y Exportación** - Reportes y exportaciones
+11. **Plantillas y Otros** - Templates y utilitarios de hardware/permisos
+
+En esta guía, el detalle se organiza por bloques funcionales para facilitar la lectura, pero mantiene la **misma cobertura de comandos**.
 
 ---
 
@@ -2536,78 +2524,6 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 
 ### Plantillas y Otros (6)
 `new-host`, `new-module`, `compare-hosts`, `hardware-scan`, `fix-permissions`, `fix-git-permissions`
-
-### Construcción y Despliegue (11)
-- help, help-examples, help-advanced, rebuild, switch, safe-switch, test, build, dry-run, boot, list-hosts
-
-### Validación y Salud (4)
-- validate, health, check-syntax, show
-
-### Debugging y Diagnóstico (2)
-- debug, test-network
-
-### Mantenimiento y Limpieza (8)
-- clean, clean-week, clean-conservative, deep-clean, clean-generations, gc, optimize, generation-sizes
-
-### Actualizaciones (7)
-- update, update-nixpkgs, update-hydenix, update-input, update-info, diff-update, upgrade
-
-### Formateo y Linting (2)
-- format, lint
-
-### Backup y Restore (5)
-- backup, list-generations, rollback, diff-generations, diff-gen
-
-### Git Integration (5)
-- git-add, git-commit, git-push, git-status, save
-
-### Información del Sistema (5)
-- info, status, version, current-generation, hosts-info
-
-### Búsqueda (2)
-- search, search-installed
-
-### Quick Actions (3)
-- quick, emergency, benchmark
-
-### Hardware (1)
-- hardware-scan
-
-### Monitoring (5)
-- watch-logs, watch-rebuild, logs-boot, logs-errors, logs-service
-
-### Advanced (3)
-- repl, shell, vm
-
-### Changelog (2)
-- changelog, changelog-detailed
-
-### Paquetes (1)
-- packages
-
-### Export/Import (2)
-- export-config, export-minimal
-
-### Documentación (4)
-- docs-local, docs-dev, readme, tutorial
-
-### Templates (2)
-- new-host, new-module
-
-### Diff Tools (3)
-- diff-config, diff-flake, compare-hosts
-
-### Build Analysis (3) ⭐ NUEVO
-- why-depends, build-trace, closure-size
-
-### Quick Fixes (3) ⭐ NUEVO
-- fix-permissions, fix-git-permissions, fix-store
-
-### Utilidades (2)
-- clean-result, tree
-
-### Migration Helpers (2)
-- progress, phases
 
 **Total: 75+ comandos disponibles** 🎉
 
