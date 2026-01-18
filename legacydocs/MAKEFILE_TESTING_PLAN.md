@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-01-11  
 **Objetivo:** Probar todos los comandos del Makefile de forma sistemática y segura  
-**Total de comandos:** 83+
+**Total de comandos:** 87
 
 ---
 
@@ -11,27 +11,27 @@
 ### Orden Recomendado (de más seguro a menos seguro):
 
 1. **Nivel 0: Sistema de Ayuda** (3 comandos) - Totalmente seguro
-2. **Nivel 1: Información y Consulta** (15 comandos) - Solo lectura, muy seguro
+2. **Nivel 1: Información y Consulta** (17 comandos) - Solo lectura, muy seguro
 3. **Nivel 2: Búsqueda y Discovery** (2 comandos) - Requiere parámetros
 4. **Nivel 3: Diff y Comparación** (5 comandos) - Solo lectura
-5. **Nivel 4: Logs y Monitoring** (5 comandos) - Solo lectura
+5. **Nivel 4: Logs y Monitoring** (6 comandos) - Solo lectura
 6. **Nivel 5: Validación** (3 comandos) - Validación sin cambios
-7. **Nivel 6: Export y Documentación** (6 comandos) - Crea archivos
+7. **Nivel 6: Export y Documentación** (7 comandos) - Crea archivos
 8. **Nivel 7: Templates** (2 comandos) - Crea archivos de plantilla
-9. **Nivel 8: Git (solo lectura)** (2 comandos) - Git status/diff
-10. **Nivel 9: Backup y Generations** (2 comandos) - Solo consulta
+9. **Nivel 8: Git (solo lectura)** (1 comando) - Git status
+10. **Nivel 9: Backup** (1 comando) - Solo consulta
 11. **Nivel 10: Build Analysis** (3 comandos) - Análisis sin cambios
-12. **Nivel 11: Comandos de Build (dry-run)** (3 comandos) - Simulación
+12. **Nivel 11: Comandos de Build (dry-run)** (2 comandos) - Simulación
 13. **Nivel 12: Advanced (seguros)** (3 comandos) - REPL, shell
-14. **Nivel 13: Maintenance (consulta)** (2 comandos) - Solo info
-15. **Nivel 14: Quick Fixes (seguros)** (2 comandos) - Fix no destructivos
-16. **Nivel 15: Updates (info)** (3 comandos) - Solo info de updates
+14. **Nivel 13: Maintenance (consulta)** (1 comando) - Solo info
+15. **Nivel 14: Quick Fixes (seguros)** (3 comandos) - Fix no destructivos
+16. **Nivel 15: Updates (info)** (0 comandos) - Cubierto en Nivel 6
 17. **Nivel 16: Formateo y Linting** (2 comandos) - Puede modificar archivos ⚠️
-18. **Nivel 17: Git Operations** (3 comandos) - Modifica git ⚠️
-19. **Nivel 18: Build Operations** (4 comandos) - Modifica sistema ⚠️
-20. **Nivel 19: Updates** (4 comandos) - Actualiza sistema ⚠️
+18. **Nivel 17: Git Operations** (4 comandos) - Modifica git ⚠️
+19. **Nivel 18: Build Operations** (6 comandos) - Modifica sistema ⚠️
+20. **Nivel 19: Updates** (5 comandos) - Actualiza sistema ⚠️
 21. **Nivel 20: Maintenance** (6 comandos) - Limpieza de sistema ⚠️
-22. **Nivel 21: Comandos Destructivos** (2 comandos) - PELIGROSO 🔴
+22. **Nivel 21: Comandos Destructivos** (4 comandos) - PELIGROSO 🔴
 
 ---
 
@@ -129,7 +129,16 @@ echo "✓ make docs-local funciona"
 make tree
 echo "✓ make tree funciona"
 
-echo "✅ NIVEL 1 COMPLETADO (15/15)"
+# Extra (Migration helpers seguros)
+# - make progress
+make progress
+echo "✓ make progress funciona"
+
+# - make phases
+make phases
+echo "✓ make phases funciona"
+
+echo "✅ NIVEL 1 COMPLETADO (17/17)"
 ```
 
 **Verificación:** ¿Toda la información se muestra correctamente?
@@ -208,13 +217,17 @@ echo "✓ make logs-boot funciona"
 make logs-service SVC=systemd-journald | head -20
 echo "✓ make logs-service funciona"
 
-# 29. make watch-logs (SKIP - es interactivo, requiere Ctrl+C)
+# 29. make test-network
+make test-network
+echo "✓ make test-network funciona"
+
+# 30. make watch-logs (SKIP - es interactivo, requiere Ctrl+C)
 echo "⊘ make watch-logs SKIPPED (interactivo)"
 
-# 30. make watch-rebuild (SKIP - es interactivo)
+# 31. make watch-rebuild (SKIP - es interactivo)
 echo "⊘ make watch-rebuild SKIPPED (interactivo)"
 
-echo "✅ NIVEL 4 COMPLETADO (3/5 - 2 skipped por ser interactivos)"
+echo "✅ NIVEL 4 COMPLETADO (4/6 - 2 skipped por ser interactivos)"
 ```
 
 **Verificación:** ¿Los logs se muestran correctamente?
@@ -268,15 +281,18 @@ echo "✓ make readme funciona"
 echo "q" | make tutorial
 echo "✓ make tutorial funciona"
 
-# 38. make update-info
+# 38. make docs-dev (SKIP - corre servidor)
+echo "⊘ make docs-dev SKIPPED (servidor interactivo)"
+
+# 39. make update-info
 make update-info
 echo "✓ make update-info funciona"
 
-# 39. make diff-update
+# 40. make diff-update
 make diff-update
 echo "✓ make diff-update funciona"
 
-echo "✅ NIVEL 6 COMPLETADO (6/6)"
+echo "✅ NIVEL 6 COMPLETADO (6/7 - 1 skipped por interactivo)"
 ```
 
 **Verificación:** ¿Se crearon los archivos exportados correctamente?
@@ -425,7 +441,11 @@ echo "⚠️  make fix-permissions SKIPPED (modifica permisos)"
 # SKIP - puede tardar mucho
 echo "⚠️  make fix-store SKIPPED (verifica store, tarda)"
 
-echo "✅ NIVEL 14 COMPLETADO (0/2 - skipped por modificar sistema)"
+# 55. make fix-git-permissions
+# SKIP - requiere revisar ownership en git
+echo "⚠️  make fix-git-permissions SKIPPED (requiere revisar permisos)"
+
+echo "✅ NIVEL 14 COMPLETADO (0/3 - skipped por modificar sistema)"
 ```
 
 ---
@@ -488,6 +508,7 @@ echo "   - make switch        (activa config)"
 echo "   - make boot          (config para next boot)"
 echo "   - make rollback      (vuelve a anterior)"
 echo "   - make rebuild       (alias de switch)"
+echo "   - make restore       (no implementado, usar flujo manual)"
 echo ""
 echo "🟠 Updates:"
 echo "   - make update        (actualiza flake.lock)"
@@ -517,14 +538,14 @@ echo "   y en el orden que consideres apropiado."
 
 ## 📝 RESUMEN DE TESTING
 
-### Comandos Seguros que se Pueden Probar (≈50 comandos):
+### Comandos Seguros que se Pueden Probar (≈49 comandos):
 - ✅ Sistema de ayuda (3)
-- ✅ Información (15)
+- ✅ Información (17)
 - ✅ Búsqueda (2)
 - ✅ Diff (5)
-- ✅ Logs (3)
+- ✅ Logs + network (4)
 - ✅ Validación (3)
-- ✅ Export (6)
+- ✅ Export/Docs (6)
 - ✅ Templates (2)
 - ✅ Git status (1)
 - ✅ Backup (1)
@@ -532,13 +553,13 @@ echo "   y en el orden que consideres apropiado."
 - ✅ Cleanup (1)
 - ✅ Lint (1)
 
-**Total testeables automáticamente: ~46 comandos**
+**Total testeables automáticamente: 49 comandos**
 
 ### Comandos a Probar Manualmente (según necesidad):
-- ⊘ Interactivos (5): watch-logs, watch-rebuild, repl, shell, vm
+- ⊘ Interactivos (6): watch-logs, watch-rebuild, docs-dev, repl, shell, vm
 - ⊘ Pesados (2): build, benchmark
-- ⚠️ Modifican sistema (15): switch, test, updates, limpieza
-- 🔴 Peligrosos (2): deep-clean, emergency
+- ⚠️ Modifican sistema (18): switch, test, safe-switch, boot, rollback, rebuild, updates, limpieza, hardware-scan, fix-permissions
+- 🔴 Peligrosos (4): deep-clean, emergency, quick, restore
 
 ---
 
@@ -561,10 +582,10 @@ chmod +x test-makefile.sh
 Marca cada nivel conforme lo completes:
 
 - [ ] Nivel 0: Sistema de Ayuda (3)
-- [ ] Nivel 1: Información (15)
+- [ ] Nivel 1: Información (17)
 - [ ] Nivel 2: Búsqueda (2)
 - [ ] Nivel 3: Diff (5)
-- [ ] Nivel 4: Logs (3)
+- [ ] Nivel 4: Logs (4)
 - [ ] Nivel 5: Validación (3)
 - [ ] Nivel 6: Export (6)
 - [ ] Nivel 7: Templates (2)
@@ -578,9 +599,155 @@ Marca cada nivel conforme lo completes:
 - [ ] Nivel 15: Updates Info (done)
 - [ ] Nivel 16: Lint (1)
 
-**Total Testeado Automáticamente: 46/83 comandos**
+**Total Testeado Automáticamente: 49/87 comandos**
 
 ---
 
 **Siguiente Paso:** Ejecutar los tests nivel por nivel, comenzando por Nivel 0.
+
+---
+
+## ✅ Checklist Completa (87 comandos)
+
+Marca cada comando conforme lo verifiques manualmente:
+
+### Sistema de Ayuda
+- [ ] help
+- [ ] help-examples
+- [ ] help-advanced
+
+### Building and Switching
+- [ ] rebuild
+- [ ] switch
+- [ ] safe-switch
+- [ ] test
+- [ ] build
+- [ ] dry-run
+- [ ] boot
+
+### Multi-Host
+- [ ] list-hosts
+
+### Validación
+- [ ] validate
+- [ ] health
+
+### Debugging y Diagnóstico
+- [ ] debug
+- [ ] check-syntax
+- [ ] show
+- [ ] test-network
+
+### Maintenance and Cleanup
+- [ ] clean
+- [ ] clean-week
+- [ ] clean-conservative
+- [ ] clean-generations
+- [ ] gc
+- [ ] optimize
+- [ ] generation-sizes
+- [ ] deep-clean
+
+### Updates
+- [ ] update
+- [ ] update-nixpkgs
+- [ ] update-hydenix
+- [ ] update-input
+- [ ] update-info
+- [ ] diff-update
+- [ ] upgrade
+
+### Formatting y Linting
+- [ ] format
+- [ ] lint
+
+### Backup y Generations
+- [ ] backup
+- [ ] list-generations
+- [ ] rollback
+- [ ] diff-generations
+- [ ] diff-gen
+- [ ] restore (no implementado; usar flujo manual)
+
+### Git Integration
+- [ ] git-status
+- [ ] git-add
+- [ ] git-commit
+- [ ] git-push
+- [ ] save
+
+### Información del Sistema
+- [ ] info
+- [ ] status
+- [ ] version
+- [ ] current-generation
+- [ ] hosts-info
+
+### Búsqueda
+- [ ] search
+- [ ] search-installed
+
+### Quick Actions
+- [ ] quick
+- [ ] emergency
+- [ ] benchmark
+
+### Hardware
+- [ ] hardware-scan
+
+### Monitoring y Logs
+- [ ] watch-logs
+- [ ] watch-rebuild
+- [ ] logs-boot
+- [ ] logs-errors
+- [ ] logs-service
+
+### Advanced
+- [ ] repl
+- [ ] shell
+- [ ] vm
+
+### Changelog e Historial
+- [ ] changelog
+- [ ] changelog-detailed
+
+### Paquetes
+- [ ] packages
+
+### Export/Import
+- [ ] export-config
+- [ ] export-minimal
+
+### Documentación
+- [ ] docs-local
+- [ ] docs-dev
+- [ ] readme
+- [ ] tutorial
+
+### Templates
+- [ ] new-host
+- [ ] new-module
+
+### Diff Tools
+- [ ] diff-config
+- [ ] diff-flake
+- [ ] compare-hosts
+
+### Build Analysis
+- [ ] why-depends
+- [ ] build-trace
+- [ ] closure-size
+
+### Quick Fixes
+- [ ] fix-permissions
+- [ ] fix-git-permissions
+- [ ] fix-store
+
+### Utilidades
+- [ ] clean-result
+- [ ] tree
+
+### Migration Helpers
+- [ ] progress
+- [ ] phases
 

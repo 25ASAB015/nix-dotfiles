@@ -15,6 +15,7 @@ export default defineConfig({
 				{
 					label: 'Manual',
 					items: [
+						{ label: 'Indice', slug: 'index' },
 						{ label: 'The hydenix Manual', slug: 'the-hydenix-manual' },
 						{ label: 'Welcome to hydenix', slug: 'welcome-to-hydenix' },
 						{ label: 'The Basics', slug: 'the-basics' },
@@ -39,6 +40,7 @@ export default defineConfig({
 						{ label: 'Windows VM', slug: 'windows-vm' },
 						{ label: 'Other Packages', slug: 'other-packages' },
 						{ label: 'Configuration', slug: 'configuration' },
+						{ label: 'Makefile', slug: 'makefile' },
 						{ label: 'Updates', slug: 'updates' },
 						{ label: 'Dotfiles', slug: 'dotfiles' },
 						{ label: 'Monitors', slug: 'monitors' },
