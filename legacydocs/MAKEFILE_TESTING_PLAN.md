@@ -130,7 +130,7 @@ make tree
 echo "✓ make tree funciona"
 
 # Extra (Migration helpers seguros)
-# (removed: make progress)
+# (removed: make progress, make phases)
 
 # - make phases
 make phases

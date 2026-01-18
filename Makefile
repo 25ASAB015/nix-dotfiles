@@ -50,7 +50,7 @@ help: ## Show this help message
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status save backup diff-config"); \
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs watch-rebuild logs-boot logs-errors logs-service"); \
 		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
-		print_cat("Formato, Linting y Estructura", "format lint tree phases"); \
+		print_cat("Formato, Linting y Estructura", "format lint tree"); \
 		print_cat("Reportes y Exportación", "git-log export-config export-minimal"); \
 		print_cat("Plantillas y Otros", "new-host new-module compare-hosts hardware-scan fix-permissions fix-git-permissions"); \
 		printf "\nWorkflows sugeridos:\n"; \
@@ -917,10 +917,6 @@ tree: ## Show configuration structure
 			sed 's|[^/]*/| |g'; \
 	fi
 	@printf "\n"
-
-phases: ## Show current phase tasks
-	@printf "$(CYAN)📋 Current Phase Tasks:\n$(NC)"
-	@grep -A 20 "### 🔄" AGENTS.md | head -25 || printf "No current phase found\n"
 
 # === Reportes y Exportación ===
 

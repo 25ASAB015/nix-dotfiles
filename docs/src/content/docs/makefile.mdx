@@ -155,7 +155,7 @@ En el **Makefile actual**, los comandos están agrupados así:
 6. **Git y Respaldo** - Git y backups
 7. **Diagnóstico y Logs** - Salud, red y logs
 8. **Análisis y Desarrollo** - Búsqueda, analysis, VM, repl
-9. **Formato, Linting y Estructura** - Format, lint, tree, phases
+9. **Formato, Linting y Estructura** - Format, lint, tree
 10. **Reportes y Exportación** - Reportes y exportaciones
 11. **Plantillas y Otros** - Templates y utilitarios de hardware/permisos
 
@@ -243,8 +243,6 @@ make tutorial   # (este archivo)
 - [Build Analysis](#cmd-build-analysis)
 - [Quick Fixes](#cmd-quick-fixes)
 - [Utilidades](#cmd-utilities)
-- [Migration Helpers](#cmd-migration-helpers)
-
 <a id="cmd-building-switching"></a>
 ### 🔨 Building and Switching
 
@@ -1858,20 +1856,6 @@ resources
 
 ---
 
-<a id="cmd-migration-helpers"></a>
-### 🚀 Migration Helpers
-
-
-#### `make phases`
-Muestra tareas de la fase actual desde `AGENTS.md`.
-
-```bash
-make phases
-```
-
-**Solo útil durante la migración actual.** Puedes ignorar o eliminar después.
-
----
 
 <a id="flujos-trabajo"></a>
 ## Flujos de Trabajo Comunes
@@ -2765,7 +2749,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 `list-hosts`, `hosts-info`, `search`, `search-installed`, `benchmark`, `repl`, `shell`, `vm`, `why-depends`, `build-trace`, `closure-size`
 
 ### Formato, Linting y Estructura (4)
-`format`, `lint`, `tree`, `phases`
+`format`, `lint`, `tree`
 
 ### Reportes y Exportación (4)
 `git-log`, `export-config`, `export-minimal`
