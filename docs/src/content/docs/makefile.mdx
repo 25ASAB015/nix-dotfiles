@@ -1795,12 +1795,66 @@ make clean-result
 ```
 
 #### `make tree`
-Muestra la estructura de directorios de tu configuración.
+Muestra la estructura de directorios de tu configuración usando `eza` (con iconos) o `tree` como fallback.
 
 ```bash
 make tree
-# Vista en árbol de tu proyecto (si tienes tree instalado)
 ```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📁 Configuration Structure                 
+════════════════════════════════════════════════════
+
+hosts
+├── default.nix
+├── hydenix
+│   ├── configuration.nix
+│   └── user.nix
+├── laptop
+│   ├── configuration.nix
+│   ├── hardware-configuration.nix
+│   └── user.nix
+└── vm
+    ├── configuration.nix
+    ├── hardware-configuration.nix
+    └── user.nix
+modules
+├── hm
+│   ├── nvim
+│   ├── programs
+│   └── ...
+└── system
+    └── ...
+resources
+├── config
+├── scripts
+└── ...
+```
+
+**¿Para qué sirve?**
+
+1. **Visualizar estructura del proyecto:** Ver rápidamente cómo está organizada tu configuración de NixOS sin tener que navegar manualmente por los directorios.
+
+2. **Entender la organización:** Especialmente útil cuando trabajas con múltiples hosts, módulos complejos, o cuando vuelves a un proyecto después de tiempo.
+
+3. **Navegación rápida:** Te ayuda a encontrar dónde están ubicados los archivos de configuración específicos (hosts, módulos de Home Manager, recursos, etc.).
+
+4. **Documentación visual:** Útil para compartir la estructura del proyecto con otros o para documentar cómo está organizado tu repositorio.
+
+**Características:**
+- Usa `eza --tree` con iconos si está disponible (más moderno y visual)
+- Fallback a `tree` si `eza` no está instalado
+- Muestra solo directorios relevantes: `hosts/`, `modules/`, `resources/`
+- Filtra automáticamente: `.git`, `result`, `node_modules`, `*.tar.gz`
+- Nivel de profundidad limitado a 3 para mantener la salida legible
+
+**Cuándo usarlo:**
+- Al explorar el proyecto por primera vez
+- Cuando necesitas encontrar dónde está un archivo de configuración específico
+- Para entender la estructura antes de hacer cambios
+- Como referencia rápida de la organización del proyecto
 
 ---
 

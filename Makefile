@@ -904,15 +904,23 @@ lint: ## Lint nix files (requires statix)
 	fi
 
 tree: ## Show configuration structure
-	@printf "$(CYAN)📁 Configuration Structure\n$(NC)"
-	@printf "=========================\n"
-	@if command -v tree >/dev/null 2>&1; then \
-		tree -L 3 -I '.git|result|*.tar.gz' --dirsfirst; \
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📁 Configuration Structure                 \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@if command -v eza >/dev/null 2>&1; then \
+		eza --tree --level=3 --icons --git-ignore --ignore-glob='result|*.tar.gz|node_modules' hosts/ modules/ resources/ 2>/dev/null || \
+		eza --tree --level=3 --icons --git-ignore hosts/ modules/ resources/ 2>/dev/null || true; \
+	elif command -v tree >/dev/null 2>&1; then \
+		tree -L 3 -I '.git|result|*.tar.gz|node_modules' --dirsfirst hosts/ modules/ resources/ 2>/dev/null || true; \
 	else \
-		find . -type d -not -path '*/\.*' -not -path '*/result*' | \
+		printf "$(YELLOW)⚠ Install 'eza' or 'tree' for better output$(NC)\n"; \
+		find . -type d -not -path '*/\.*' -not -path '*/result*' -not -path '*/node_modules*' | \
+			grep -E '^(\./)?(hosts|modules|resources)' | \
 			head -50 | \
 			sed 's|[^/]*/| |g'; \
 	fi
+	@printf "\n"
 
 phases: ## Show current phase tasks
 	@printf "$(CYAN)📋 Current Phase Tasks:\n$(NC)"
