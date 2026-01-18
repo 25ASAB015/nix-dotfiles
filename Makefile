@@ -439,10 +439,42 @@ git-push: ## Push to remote using GitHub CLI
 	@printf "$(BLUE)🚀 Pushing to remote...\n$(NC)"
 	git push
 git-status: ## Show git status with GitHub CLI
-	@printf "$(CYAN)📊 Repository Status:\n$(NC)"
-	@gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || printf "$(YELLOW)Not a GitHub repo$(NC)\n"
-	@printf "\n$(BLUE)Local changes:\n$(NC)"
-	@git status --short
+	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)           📊 Repository Status                    \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(PURPLE)📍 Configuration$(NC)\n"
+	@printf "├─ Host: $(HOSTNAME)\n"
+	@printf "├─ Flake: $(PWD)\n"
+	@printf "└─ NixOS: $$(nixos-version 2>/dev/null | cut -d' ' -f1 || echo 'N/A')\n"
+	@printf "\n$(BLUE)📦 Git Status$(NC)\n"
+	@if git rev-parse --git-dir > /dev/null 2>&1; then \
+		printf "├─ Repository: "; \
+		REMOTE_URL=$$(git remote get-url origin 2>/dev/null); \
+		if [ -n "$$REMOTE_URL" ]; then \
+			REPO_NAME=$$(echo "$$REMOTE_URL" | sed -E 's|.*github.com[:/]([^/]+/[^/]+)(\.git)?$$|\1|' | sed 's|\.git$$||'); \
+			if [ -n "$$REPO_NAME" ]; then \
+				printf "$$REPO_NAME\n"; \
+			else \
+				printf "$$REMOTE_URL\n"; \
+			fi; \
+		else \
+			printf "$(YELLOW)No remote configured$(NC)\n"; \
+		fi; \
+		printf "├─ Branch: $$(git branch --show-current)\n"; \
+		printf "├─ Status: "; \
+		if git diff-index --quiet HEAD -- 2>/dev/null; then \
+			printf "$(GREEN)Clean$(NC)\n"; \
+		else \
+			printf "$(YELLOW)Uncommitted changes$(NC)\n"; \
+		fi; \
+		printf "└─ Last 3 commits:\n"; \
+		git log --oneline -3 | sed 's/^/   /'; \
+		printf "\n$(BLUE)Local changes:$(NC)\n"; \
+		git status --short; \
+	else \
+		printf "$(YELLOW)Not a git repository$(NC)\n"; \
+	fi
+	@printf "\n"
 save: ## Quick save: add, commit, push, and rebuild
 	@printf "$(PURPLE)💾 Quick save: staging, committing, pushing, and rebuilding...\n$(NC)"
 	@make git-add
@@ -533,42 +565,24 @@ info: ## Show system information
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Hostname:$(NC)             $(GREEN)$(HOSTNAME)$(NC)\n"
 	@printf "$(BLUE)NixOS Version:$(NC)        $(GREEN)$(shell nixos-version 2>/dev/null | cut -d' ' -f1 || echo 'N/A')$(NC)\n"
-	@GEN_INFO=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1 " (" $$2 " " $$3 ")"}' || echo 'N/A'); \
-	printf "$(BLUE)Current Generation:$(NC)   $(GREEN)$$GEN_INFO$(NC)\n"
 	@printf "$(BLUE)Flake Location:$(NC)       $(GREEN)$(PWD)$(NC)\n"
-	@printf "$(BLUE)Store Size:$(NC)           $(GREEN)$(shell du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')$(NC)\n"
-	@printf "\n"
-status: ## Show comprehensive system status
-	@printf "$(CYAN)╔══════════════════════════════════════╗\n$(NC)"
-	@printf "$(CYAN)║      SYSTEM STATUS OVERVIEW          ║\n$(NC)"
-	@printf "$(CYAN)╚══════════════════════════════════════╝\n$(NC)"
-	@printf "\n$(PURPLE)📍 Configuration$(NC)\n"
-	@printf "├─ Host: $(HOSTNAME)\n"
-	@printf "├─ Flake: $(PWD)\n"
-	@printf "└─ NixOS: $$(nixos-version 2>/dev/null || echo 'N/A')\n"
-	@printf "\n$(BLUE)📦 Git Status$(NC)\n"
-	@if git rev-parse --git-dir > /dev/null 2>&1; then \
-		printf "├─ Branch: $$(git branch --show-current)\n"; \
-		printf "├─ Status: "; \
-		if git diff-index --quiet HEAD -- 2>/dev/null; then \
-			printf "$(GREEN)Clean$(NC)\n"; \
-		else \
-			printf "$(YELLOW)Uncommitted changes$(NC)\n"; \
-		fi; \
-		git status --short | head -5 | sed 's/^/│  /'; \
-		printf "└─ Last 3 commits:\n"; \
-		git log --oneline -3 | sed 's/^/   /'; \
-	else \
-		printf "$(YELLOW)Not a git repository$(NC)\n"; \
-	fi
 	@printf "\n$(BLUE)💾 System Info$(NC)\n"
-	@printf "├─ Store size: $$(du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')\n"
-	@printf "├─ Current gen: $$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1}' || echo 'N/A')\n"
-	@printf "├─ Total gens: $$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo 'N/A')\n"
-	@printf "└─ Disk usage: $$(df -h /nix 2>/dev/null | tail -1 | awk '{print $$5 " used"}' || echo 'N/A')\n"
+	@printf "$(BLUE)Store Size:$(NC)           $(GREEN)$(shell du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')$(NC)\n"
+	@CURRENT_GEN_INFO=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1 " (" $$2 " " $$3 ")"}' || echo 'N/A'); \
+	CURRENT_GEN=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1}' || echo 'N/A'); \
+	TOTAL_GENS=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo 'N/A'); \
+	DISK_USAGE=$$(df -h /nix 2>/dev/null | tail -1 | awk '{print $$5}' || echo 'N/A'); \
+	printf "$(BLUE)Current Generation:$(NC)   $(GREEN)%s$(NC)\n" "$$CURRENT_GEN_INFO"; \
+	printf "$(BLUE)Total Generations:$(NC)    $(GREEN)%s$(NC)\n" "$$TOTAL_GENS"; \
+	printf "$(BLUE)Disk Usage (/nix):$(NC)    $(GREEN)%s$(NC)\n" "$$DISK_USAGE"
 	@printf "\n$(BLUE)🔄 Recent Generations$(NC)\n"
 	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -5 | sed 's/^/  /' || printf "  $(YELLOW)None$(NC)\n"
+	@printf "\n$(BLUE)📦 Flake Inputs Versions$(NC)\n"
+	@nix flake metadata --json 2>/dev/null | \
+		grep -o '"lastModified":[0-9]*' | \
+		head -5 | sed 's/"lastModified"://' | sed 's/^/  /' || printf "  $(YELLOW)Unable to read$(NC)\n"
 	@printf "\n"
+status: git-status ## Show comprehensive system status (alias for git-status)
 
 watch-logs: ## Watch system logs during rebuild
 	@printf "$(CYAN)📊 Watching system logs...\n$(NC)"
@@ -777,17 +791,6 @@ packages: ## List all installed packages
 	@printf "\n$(BLUE)System packages (count):$(NC) "
 	@nix-store -q --references /run/current-system | wc -l
 	@printf "\n$(YELLOW)Tip: Use 'make search-installed PKG=name' to find specific package$(NC)\n"
-version: ## Show NixOS and flake versions
-	@printf "$(CYAN)📌 Version Information\n$(NC)"
-	@printf "=====================\n"
-	@printf "$(BLUE)NixOS:$(NC) $$(nixos-version 2>/dev/null || echo 'N/A')\n"
-	@printf "$(BLUE)Nix:$(NC) $$(nix --version 2>/dev/null || echo 'N/A')\n"
-	@printf "$(BLUE)Hostname:$(NC) $(HOSTNAME)\n"
-	@printf "$(BLUE)System:$(NC) $$(uname -sm)\n"
-	@printf "\n$(BLUE)Flake inputs versions:$(NC)\n"
-	@nix flake metadata --json 2>/dev/null | \
-		grep -o '"lastModified":[0-9]*' | \
-		head -5 || printf "  $(YELLOW)Unable to read$(NC)\n"
 export-config: ## Export configuration to timestamped tarball
 	@printf "$(BLUE)📦 Exporting configuration...\n$(NC)"
 	@EXPORT_NAME="nixos-config-$$(date +%Y%m%d-%H%M%S).tar.gz"; \

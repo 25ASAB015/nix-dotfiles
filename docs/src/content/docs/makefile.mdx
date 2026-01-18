@@ -1088,6 +1088,13 @@ Disk Usage (/nix):     47%
     31   2026-01-15 09:10:08
     32   2026-01-17 23:37:08
     33   2026-01-17 23:59:11   (current)
+
+📦 Flake Inputs Versions
+  1768753617
+  1768753617
+  1768135262
+  1768135262
+  1762440070
 ```
 
 **Cuándo usarlo:**
@@ -1110,18 +1117,6 @@ make status
 Muestra la misma información que `make git-status`: configuración del sistema y estado completo del repositorio git.
 
 ---
-
-#### `make version`
-Muestra versiones detalladas del sistema.
-
-```bash
-make version
-# NixOS: 26.05.20251229
-# Nix: 2.31.2
-# Hostname: hydenix
-# System: Linux x86_64
-# + versiones de inputs del flake
-```
 
 #### `make current-generation`
 Muestra detalles de la generación actual.
@@ -2174,7 +2169,6 @@ make rollback          # Deshacer último cambio
   make git-status        # Estado completo del repositorio y sistema
   make status            # Alias de git-status
 make health            # Health check
-make version           # Versiones
 
 # Mantenimiento
 make update            # Actualizar paquetes
@@ -2362,7 +2356,7 @@ make export-minimal
 make changelog
 
 # Ver versión actual del sistema
-make version
+  make info
 
 # Ver detalles de generación actual
 make current-generation
@@ -2538,8 +2532,8 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Formato, Linting y Estructura (4)
 `format`, `lint`, `tree`, `phases`
 
-### Reportes y Exportación (6)
-`changelog`, `changelog-detailed`, `packages`, `version`, `export-config`, `export-minimal`
+### Reportes y Exportación (5)
+`changelog`, `changelog-detailed`, `packages`, `export-config`, `export-minimal`
 
 ### Plantillas y Otros (6)
 `new-host`, `new-module`, `compare-hosts`, `hardware-scan`, `fix-permissions`, `fix-git-permissions`
