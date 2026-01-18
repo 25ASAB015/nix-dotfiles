@@ -448,14 +448,37 @@ diff-gen: ## Compare two specific generations (use GEN1=N GEN2=M)
 		printf "$(YELLOW)Usage: make diff-gen GEN1=184 GEN2=186$(NC)\n"; \
 		exit 1; \
 	fi
-	@printf "$(CYAN)📊 Comparing Generation $(GEN1) → $(GEN2)\n$(NC)"
-	@GEN1_PATH=$$(ls /nix/var/nix/profiles/system-$(GEN1)-link 2>/dev/null); \
-	GEN2_PATH=$$(ls /nix/var/nix/profiles/system-$(GEN2)-link 2>/dev/null); \
-	if [ -n "$$GEN1_PATH" ] && [ -n "$$GEN2_PATH" ]; then \
-		nix store diff-closures $$GEN1_PATH $$GEN2_PATH; \
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📊 Comparing Generations                  \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@GEN1_LINK="/nix/var/nix/profiles/system-$(GEN1)-link"; \
+	GEN2_LINK="/nix/var/nix/profiles/system-$(GEN2)-link"; \
+	if [ ! -e "$$GEN1_LINK" ] || [ ! -e "$$GEN2_LINK" ]; then \
+		printf "\n$(RED)❌ Error: One or both generations not found$(NC)\n"; \
+		printf "$(BLUE)Generation $(GEN1):$(NC) $$([ -e "$$GEN1_LINK" ] && echo "$(GREEN)Found$(NC)" || echo "$(RED)Not found$(NC)")\n"; \
+		printf "$(BLUE)Generation $(GEN2):$(NC) $$([ -e "$$GEN2_LINK" ] && echo "$(GREEN)Found$(NC)" || echo "$(RED)Not found$(NC)")\n"; \
+		exit 1; \
+	fi; \
+	GEN1_PATH=$$(readlink -f "$$GEN1_LINK" 2>/dev/null); \
+	GEN2_PATH=$$(readlink -f "$$GEN2_LINK" 2>/dev/null); \
+	if [ -z "$$GEN1_PATH" ] || [ -z "$$GEN2_PATH" ]; then \
+		printf "\n$(RED)❌ Error: Could not resolve store paths$(NC)\n"; \
+		exit 1; \
+	fi; \
+	if [ "$$GEN1_PATH" = "$$GEN2_PATH" ]; then \
+		printf "\n$(YELLOW)⚠ Generations $(GEN1) and $(GEN2) are the same$(NC)\n"; \
+		exit 0; \
+	fi; \
+	printf "\n$(BLUE)Generation $(GEN1) → Generation $(GEN2)$(NC)\n"; \
+	printf "$(PURPLE)Comparing:$(NC) $$(basename $$GEN1_PATH) → $$(basename $$GEN2_PATH)\n\n"; \
+	if command -v nix >/dev/null 2>&1 && nix store diff-closures --help >/dev/null 2>&1; then \
+		nix store diff-closures "$$GEN1_PATH" "$$GEN2_PATH" 2>/dev/null || \
+		nix store diff-closures "$$GEN1_PATH" "$$GEN2_PATH"; \
 	else \
-		printf "$(RED)One or both generations not found$(NC)\n"; \
+		printf "$(YELLOW)⚠ nix store diff-closures not available$(NC)\n"; \
+		printf "$(BLUE)Tip:$(NC) Requires Nix 2.4+\n"; \
 	fi
+	@printf "\n"
 
 generation-sizes: ## Show disk usage per generation
 	@printf "$(CYAN)💾 Generation Disk Usage\n$(NC)"
