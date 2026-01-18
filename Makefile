@@ -432,15 +432,47 @@ current-generation: ## Show current generation details
 # === Git y Respaldo ===
 
 git-add: ## Stage all changes for git
-	@printf "$(BLUE)📝 Staging changes...\n$(NC)"
-	git add .
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)              📝 Staging Changes                   \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)Adding all changes to staging area...$(NC)\n"
+	@git add .
+	@CHANGED=$$(git status --short | wc -l); \
+	if [ $$CHANGED -gt 0 ]; then \
+		printf "$(GREEN)✅ Staged $$CHANGED file(s)$(NC)\n"; \
+		printf "\n$(BLUE)Changes staged:$(NC)\n"; \
+		git status --short | sed 's/^/  /'; \
+	else \
+		printf "$(YELLOW)⚠ No changes to stage$(NC)\n"; \
+	fi
+	@printf "\n"
 git-commit: ## Quick commit with timestamp
-	@printf "$(BLUE)📝 Committing changes...\n$(NC)"
-	git add .
-	git commit -m "config: update $(shell date '+%Y-%m-%d %H:%M:%S')"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            📝 Committing Changes                  \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)Staging changes...$(NC)\n"
+	@git add .
+	@COMMIT_MSG="config: update $$(date '+%Y-%m-%d %H:%M:%S')"; \
+	printf "$(BLUE)Creating commit:$(NC) $(GREEN)$$COMMIT_MSG$(NC)\n\n"; \
+	git commit -m "$$COMMIT_MSG" || exit 1; \
+	COMMIT_HASH=$$(git rev-parse --short HEAD); \
+	BRANCH=$$(git branch --show-current); \
+	printf "\n$(GREEN)✅ Commit created successfully$(NC)\n"; \
+	printf "$(BLUE)Hash:$(NC) $(GREEN)$$COMMIT_HASH$(NC)\n"; \
+	printf "$(BLUE)Branch:$(NC) $(GREEN)$$BRANCH$(NC)\n"
+	@printf "\n"
 git-push: ## Push to remote using GitHub CLI
-	@printf "$(BLUE)🚀 Pushing to remote...\n$(NC)"
-	git push
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)              🚀 Pushing to Remote                 \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@BRANCH=$$(git branch --show-current); \
+	REMOTE=$$(git remote get-url origin 2>/dev/null | sed -E 's|.*github.com[:/]([^/]+/[^/]+)(\.git)?$$|\1|' | sed 's|\.git$$||'); \
+	printf "\n$(BLUE)Branch:$(NC) $(GREEN)$$BRANCH$(NC)\n"; \
+	printf "$(BLUE)Remote:$(NC) $(GREEN)$$REMOTE$(NC)\n\n"; \
+	printf "$(BLUE)Pushing changes...$(NC)\n"
+	@git push || exit 1
+	@printf "\n$(GREEN)✅ Successfully pushed to remote$(NC)\n"
+	@printf "\n"
 git-status: ## Show git status with GitHub CLI
 	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)           📊 Repository Status                    \n$(NC)"
