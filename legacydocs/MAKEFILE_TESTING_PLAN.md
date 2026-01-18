@@ -152,9 +152,9 @@ echo "=== NIVEL 2: Búsqueda y Discovery ==="
 make search PKG=firefox
 echo "✓ make search funciona"
 
-# 20. make search-installed (requiere PKG)
-make search-installed PKG=fish
-echo "✓ make search-installed funciona"
+# 20. make search-installed (requiere PKG) - Ya actualizado con mejoras
+make search-installed PKG=meld
+echo "✓ make search-installed funciona (busca en PATH y Home Manager)"
 
 echo "✅ NIVEL 2 COMPLETADO (2/2)"
 ```
