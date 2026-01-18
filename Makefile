@@ -1,7 +1,7 @@
 # NixOS Management Makefile
 # Place this in your flake directory (where flake.nix is located)
 
-.PHONY: help help-examples rebuild switch test build clean gc update check format lint backup restore test-network
+.PHONY: help help-examples rebuild switch test build clean gc update check format lint restore test-network
 
 # Default target
 .DEFAULT_GOAL := help
@@ -9,7 +9,6 @@
 # Configuration
 FLAKE_DIR := .
 HOSTNAME ?= hydenix
-BACKUP_DIR := ~/nixos-backups
 AVAILABLE_HOSTS := hydenix laptop vm
 
 # Colors for pretty output
@@ -47,7 +46,7 @@ help: ## Show this help message
 		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean clean-generations gc optimize clean-result fix-store"); \
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input diff-update upgrade show flake-check diff-flake"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
-		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save backup"); \
+		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save"); \
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs logs-boot logs-errors logs-service"); \
 		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
@@ -55,7 +54,7 @@ help: ## Show this help message
 		print_cat("Plantillas y Otros", "hardware-scan fix-permissions fix-git-permissions"); \
 		printf "\nWorkflows sugeridos:\n"; \
 		printf "  • Desarrollo diario:  make test → make switch → make rollback\n"; \
-		printf "  • Updates seguros:    make backup → make update → make diff-update → make validate → make test → make switch\n"; \
+		printf "  • Updates seguros:    make update → make diff-update → make validate → make test → make switch\n"; \
 		printf "  • Mantenimiento:      make health → make clean → make optimize → make generation-sizes\n"; \
 		printf "  • Multi-host:         make list-hosts → make switch HOSTNAME=laptop\n"; \
 		printf "\nAyuda rápida: make help | make help-examples | less MAKEFILE_TUTORIAL.md\n\n"; \
@@ -81,7 +80,7 @@ help-examples: ## Show commands with usage examples
 	@printf "  → make update-input INPUT=hydenix\n"
 	@printf "  → make update-input INPUT=nixpkgs\n"
 	@printf "  → make update-input INPUT=zen-browser-flake\n\n"
-	@printf "$(GREEN)═══ 💾 Backup & Generations ═══$(NC)\n"
+	@printf "$(GREEN)═══ 💾 Generations ═══$(NC)\n"
 	@printf "$(BLUE)diff-gen GEN1=<n> GEN2=<m>$(NC)\n"
 	@printf "  → make diff-gen GEN1=20 GEN2=25\n"
 	@printf "  → make diff-gen GEN1=184 GEN2=186\n\n"
@@ -595,11 +594,6 @@ save: ## Quick save: add, commit, push, and rebuild
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
-backup: ## Backup current configuration
-	@printf "$(BLUE)💾 Backing up configuration...\n$(NC)"
-	@mkdir -p $(BACKUP_DIR)
-	@cp -r $(FLAKE_DIR) $(BACKUP_DIR)/backup-$(shell date +%Y%m%d-%H%M%S)
-	@printf "$(GREEN)✅ Backup saved to $(BACKUP_DIR)\n$(NC)"
 git-diff: ## Show uncommitted changes to .nix configuration files
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Configuration Changes                  \n$(NC)"

@@ -19,7 +19,7 @@
 7. **Nivel 6: Export y Documentación** (2 comandos) - Crea archivos
 8. **Nivel 7: Templates** (2 comandos) - Crea archivos de plantilla
 9. **Nivel 8: Git (solo lectura)** (1 comando) - Git status
-10. **Nivel 9: Backup** (1 comando) - Solo consulta
+10. **Nivel 9: Generations** (solo consulta)
 11. **Nivel 10: Build Analysis** (3 comandos) - Análisis sin cambios
 12. **Nivel 11: Comandos de Build (dry-run)** (2 comandos) - Simulación
 13. **Nivel 12: Advanced (seguros)** (3 comandos) - REPL, shell
@@ -300,15 +300,13 @@ echo "✅ NIVEL 8 COMPLETADO (1/1)"
 
 ---
 
-## 🟢 NIVEL 9: Backup y Generations (Solo Consulta)
+## 🟢 NIVEL 9: Generations (Solo Consulta)
 
 ```bash
-echo "=== NIVEL 9: Backup y Generations ==="
-
-# 43. make backup
-make backup
-echo "✓ make backup funciona"
-ls -la ~/nixos-backups/
+echo "=== NIVEL 9: Generations ==="
+echo "Nota: El comando make backup ha sido eliminado"
+echo "      Usa Git para versionar cambios: make git-add && make git-commit"
+echo "      O usa make rollback para volver a generaciones anteriores"
 
 echo "✅ NIVEL 9 COMPLETADO (1/1)"
 ```
@@ -508,7 +506,6 @@ echo "   y en el orden que consideres apropiado."
 - ✅ Export/Docs (1)
 - ✅ Templates (2)
 - ✅ Git status (1)
-- ✅ Backup (1)
 - ✅ Build analysis (3)
 - ✅ Cleanup (1)
 - ✅ Lint (1)
@@ -550,7 +547,7 @@ Marca cada nivel conforme lo completes:
 - [ ] Nivel 6: Export (1)
 - [ ] Nivel 7: Templates (2)
 - [ ] Nivel 8: Git Read (1)
-- [ ] Nivel 9: Backup (1)
+- [ ] Nivel 9: Generations
 - [ ] Nivel 10: Build Analysis (3)
 - [ ] Nivel 11: Build Dry-run (skipped)
 - [ ] Nivel 12: Advanced (skipped)
@@ -619,8 +616,7 @@ Marca cada comando conforme lo verifiques manualmente:
 - [ ] format
 - [ ] lint
 
-### Backup y Generations
-- [ ] backup
+### Generations
 - [x] list-generations
 - [ ] rollback
 - [ ] diff-generations

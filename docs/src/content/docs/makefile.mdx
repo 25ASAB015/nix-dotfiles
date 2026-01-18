@@ -106,7 +106,6 @@ target: dependencias ## Descripción (se muestra en help)
 ```makefile
 FLAKE_DIR := .              # Directorio actual (donde está flake.nix)
 HOSTNAME := hydenix         # Nombre de tu máquina
-BACKUP_DIR := ~/nixos-backups  # Dónde guardar backups
 ```
 
 Estas variables se usan con `$(VARIABLE)`:
@@ -152,7 +151,7 @@ En el **Makefile actual**, los comandos están agrupados así:
 3. **Limpieza y Optimización** - Limpiezas y optimizaciones
 4. **Actualizaciones y Flakes** - Updates y flake tooling
 5. **Generaciones y Rollback** - Generaciones y rollback
-6. **Git y Respaldo** - Git y backups
+6. **Git y Respaldo** - Git
 7. **Diagnóstico y Logs** - Salud, red y logs
 8. **Análisis y Desarrollo** - Búsqueda, analysis, VM, repl
 9. **Formato, Linting y Estructura** - Format, lint, tree
@@ -228,7 +227,6 @@ make help
 - [Debugging](#cmd-debugging)
 - [Maintenance and Cleanup](#cmd-maintenance)
 - [Updates](#cmd-updates)
-- [Backup and Restore](#cmd-backup)
 - [Git Integration](#cmd-git)
 - [System Information](#cmd-system-info)
 - [Búsqueda](#cmd-search)
@@ -1019,39 +1017,6 @@ make update && make dry-run && make test && make switch
 
 ---
 
-<a id="cmd-backup"></a>
-### 💾 Backup and Restore
-
-#### `make backup`
-Crea backup completo de tu configuración.
-
-```bash
-make backup
-```
-
-**Qué guarda:**
-- Todo el directorio del flake
-- Timestamp en el nombre: `backup-20260111-143000`
-- Ubicación: `~/nixos-backups/`
-
-**Cuándo usarlo:**
-- Antes de cambios grandes
-- Antes de `make update`
-- Antes de experimentar
-- Semanalmente como rutina
-
-**Ver backups:**
-```bash
-ls -lh ~/nixos-backups/
-```
-
-**Restaurar backup:**
-```bash
-cd ~/nixos-backups/backup-20260111-143000
-make switch
-```
-
----
 
 #### `make list-generations`
 Lista todas las generaciones del sistema con fechas y resumen.
@@ -1217,10 +1182,14 @@ La salida de `nix store diff-closures` usa una notación específica:
 
 #### `make restore`
 En este Makefile, `restore` está listado como target, pero no está implementado.
-Para restaurar un backup, usa el flujo manual:
+Para restaurar una versión anterior, usa Git o rollback:
 
 ```bash
-cd ~/nixos-backups/backup-YYYYMMDD-HHMMSS
+# Opción 1: Rollback a generación anterior del sistema
+make rollback
+
+# Opción 2: Restaurar archivos específicos con Git
+git checkout HEAD~1 -- path/to/file.nix
 make switch
 ```
 
@@ -2244,7 +2213,6 @@ make rollback
 
 ```bash
 # Lunes por la mañana:
-make backup              # Backup preventivo
 make update              # Actualizar inputs
 make dry-run             # Ver qué cambiaría
 make test                # Probar
@@ -2260,7 +2228,6 @@ make info                # Verificar estado
 
 ```bash
 # Probar algo nuevo sin riesgo:
-make backup              # Backup primero
 make test                # Solo para esta sesión
 # Prueba tu cambio
 # Si te gusta:
@@ -2328,9 +2295,9 @@ make rollback            # Intenta volver atrás
 make list-generations    # Ve generaciones disponibles
 # Reinicia y en GRUB elige generación anterior
 
-# Si necesitas backup:
-cd ~/nixos-backups/backup-[fecha]
-make switch
+# Si necesitas restaurar una versión anterior:
+make rollback            # Volver a generación anterior
+# O usar git para restaurar archivos específicos
 ```
 
 ---
@@ -2580,7 +2547,7 @@ Crea un cronjob o systemd timer:
 ```bash
 # Backup semanal automático
 # Agregar a crontab: crontab -e
-0 2 * * 1 cd ~/dotfiles && make backup
+0 2 * * 1 cd ~/dotfiles && git add . && git commit -m "Weekly backup" && git push
 ```
 
 ---
@@ -2652,7 +2619,6 @@ make health            # Health check
 # Mantenimiento
 make update            # Actualizar paquetes
 make clean             # Limpiar espacio
-make backup            # Guardar backup
 make optimize          # Optimizar store
 ```
 
@@ -2662,7 +2628,7 @@ make optimize          # Optimizar store
 
 1. **Lee el README.md** de tu configuración
 2. **Experimenta** con `make test` (es seguro)
-3. **Crea backups** antes de cambios grandes
+3. **Usa Git** para versionar cambios importantes
 4. **Usa rollback** sin miedo si algo falla
 5. **Documenta** tus cambios importantes
 6. **Mantén actualizado** con `make update` semanal
@@ -2774,7 +2740,6 @@ make switch HOSTNAME=laptop    # Aplicar a laptop
 **Mini índice de flujos:**
 - [Documentación](#flujo-docs)
 - [Logs y Debugging](#flujo-logs)
-- [Backup y Export](#flujo-backup-export)
 - [Git Log y Versiones](#flujo-git-log)
 - [Creación de Nuevo Host](#flujo-nuevo-host)
 - [Desarrollo de Módulos](#flujo-modulos)
@@ -2812,18 +2777,6 @@ make logs-service SVC=docker
 
 ---
 
-<a id="flujo-backup-export"></a>
-### Flujo de Backup y Export
-
-```bash
-# Backup completo antes de cambios grandes
-make backup
-
-# Para exportar configuración, usa Git directamente
-git archive --format=tar.gz -o config-backup.tar.gz HEAD
-```
-
----
 
 <a id="flujo-git-log"></a>
 ### Flujo de Git Log y Versiones
@@ -2950,7 +2903,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 `list-generations`, `rollback`, `diff-generations`, `diff-gen`, `generation-sizes`, `current-generation`
 
 ### Git y Respaldo (7)
-`git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `save`, `backup`
+`git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `save`
 
 ### Diagnóstico y Logs (8)
 `health`, `test-network`, `info`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
