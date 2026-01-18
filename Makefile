@@ -772,8 +772,22 @@ logs-service: ## Show logs for specific service (use SVC=name)
 	@printf "$(CYAN)          📋 Service Logs                           \n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Service:$(NC) $(GREEN)$(SVC)$(NC)\n"
-	@printf "$(BLUE)Showing last 100 log entries...$(NC)\n\n"
-	@journalctl -u $(SVC) -n 100 --no-pager || printf "$(YELLOW)⚠ Service '$(SVC)' not found or no logs available$(NC)\n"
+	@HAS_RECENT=$$(journalctl -u $(SVC) --since "1 hour ago" --no-pager 2>/dev/null | grep -v "^-- No entries --" | grep -q . && echo "yes" || echo "no"); \
+	if [ "$$HAS_RECENT" = "yes" ]; then \
+		LOG_COUNT=$$(journalctl -u $(SVC) --since "1 hour ago" --no-pager 2>/dev/null | grep -v "^-- No entries --" | wc -l || echo "0"); \
+		printf "$(BLUE)Showing logs from last hour ($(GREEN)$$LOG_COUNT$(NC) entries)...$(NC)\n\n"; \
+		journalctl -u $(SVC) --since "1 hour ago" -n 100 --no-pager 2>/dev/null | grep -v "^-- No entries --" || true; \
+	elif journalctl -u $(SVC) --since today --no-pager 2>/dev/null | grep -v "^-- No entries --" | grep -q . 2>/dev/null; then \
+		printf "$(BLUE)No recent logs (last hour), showing logs from today...$(NC)\n\n"; \
+		journalctl -u $(SVC) --since today -n 100 --no-pager 2>/dev/null | grep -v "^-- No entries --" || true; \
+	else \
+		printf "$(BLUE)No logs from today, showing last 100 entries...$(NC)\n\n"; \
+		if journalctl -u $(SVC) -n 100 --no-pager 2>/dev/null | grep -q .; then \
+			journalctl -u $(SVC) -n 100 --no-pager 2>/dev/null || true; \
+		else \
+			printf "$(YELLOW)⚠ Service '$(SVC)' not found or no logs available$(NC)\n"; \
+		fi \
+	fi
 	@printf "\n"
 
 # === Análisis y Desarrollo ===
