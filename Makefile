@@ -414,20 +414,34 @@ rollback: ## Rollback to previous generation
 	@printf "$(YELLOW)⏪ Rolling back to previous generation...\n$(NC)"
 	sudo nixos-rebuild switch --rollback
 diff-generations: ## Compare current with previous generation
-	@printf "$(CYAN)📊 Comparing Generations\n$(NC)"
-	@printf "========================\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📊 Comparing Generations                  \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@if command -v nix >/dev/null 2>&1 && nix store diff-closures --help >/dev/null 2>&1; then \
-		CURRENT=$$(readlink /nix/var/nix/profiles/system); \
-		PREVIOUS=$$(readlink /nix/var/nix/profiles/system-*-link 2>/dev/null | tail -2 | head -1); \
-		if [ -n "$$PREVIOUS" ]; then \
-			printf "$(BLUE)Previous → Current$(NC)\n"; \
-			nix store diff-closures $$PREVIOUS $$CURRENT; \
+		CURRENT=$$(readlink -f /nix/var/nix/profiles/system 2>/dev/null); \
+		if [ -z "$$CURRENT" ]; then \
+			printf "$(YELLOW)⚠ Could not determine current generation$(NC)\n"; \
+			exit 1; \
+		fi; \
+		PREVIOUS_LINK=$$(ls -dt /nix/var/nix/profiles/system-*-link 2>/dev/null | tail -2 | head -1); \
+		if [ -n "$$PREVIOUS_LINK" ]; then \
+			PREVIOUS=$$(readlink -f "$$PREVIOUS_LINK" 2>/dev/null); \
+			if [ -n "$$PREVIOUS" ] && [ "$$PREVIOUS" != "$$CURRENT" ]; then \
+				printf "\n$(BLUE)Previous → Current$(NC)\n"; \
+				printf "$(PURPLE)Comparing:$(NC) $$(basename $$PREVIOUS) → $$(basename $$CURRENT)\n\n"; \
+				nix store diff-closures "$$PREVIOUS" "$$CURRENT" 2>/dev/null || \
+				nix store diff-closures "$$PREVIOUS" "$$CURRENT"; \
+			else \
+				printf "\n$(YELLOW)⚠ No previous generation found or same as current$(NC)\n"; \
+			fi \
 		else \
-			printf "$(YELLOW)No previous generation found$(NC)\n"; \
+			printf "\n$(YELLOW)⚠ No previous generation found$(NC)\n"; \
 		fi \
 	else \
-		printf "$(YELLOW)nix store diff-closures not available$(NC)\n"; \
+		printf "\n$(YELLOW)⚠ nix store diff-closures not available$(NC)\n"; \
+		printf "$(BLUE)Tip:$(NC) Use $(GREEN)make diff-gen GEN1=N GEN2=M$(NC) to compare specific generations\n"; \
 	fi
+	@printf "\n"
 diff-gen: ## Compare two specific generations (use GEN1=N GEN2=M)
 	@if [ -z "$(GEN1)" ] || [ -z "$(GEN2)" ]; then \
 		printf "$(RED)Error: Specify both generations$(NC)\n"; \
