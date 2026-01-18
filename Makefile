@@ -48,7 +48,7 @@ help: ## Show this help message
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save"); \
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs logs-boot logs-errors logs-service"); \
-		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
+		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
 		print_cat("Reportes y Exportación", "git-log"); \
 		print_cat("Plantillas y Otros", "hardware-scan fix-permissions fix-git-permissions"); \
@@ -90,11 +90,6 @@ help-examples: ## Show commands with usage examples
 	@printf "  → make logs-service SVC=docker\n"
 	@printf "  → make logs-service SVC=networkmanager\n\n"
 	@printf "$(GREEN)═══ 📊 Diff & Compare ═══$(NC)\n"
-	@printf "$(GREEN)═══ 🔍 Build Analysis ═══$(NC)\n"
-	@printf "$(BLUE)why-depends PKG=<name>$(NC)\n"
-	@printf "  → make why-depends PKG=firefox\n"
-	@printf "  → make why-depends PKG=systemd\n"
-	@printf "  → make why-depends PKG=gcc\n\n"
 	@printf "$(GREEN)═══ 📚 Common Commands (No parameters needed) ═══$(NC)\n"
 	@printf "$(BLUE)Everyday use:$(NC)\n"
 	@printf "  make switch         → Apply configuration\n"
@@ -911,37 +906,26 @@ vm: ## Build and run VM
 	@printf "$(CYAN)Starting VM...\n$(NC)"
 	./result/bin/run-nixos-vm
 
-why-depends: ## Show why system depends on a package (use PKG=name)
-	@if [ -z "$(PKG)" ]; then \
-		printf "$(RED)Error: PKG variable required$(NC)\n"; \
-		printf "$(YELLOW)Usage: make why-depends PKG=firefox$(NC)\n"; \
-		exit 1; \
-	fi
-	@printf "$(CYAN)🔍 Dependency Chain for: $(PKG)\n$(NC)"
-	@printf "================================\n"
-	@PKG_PATH=$$(nix-store -q --references /run/current-system | grep -i "$(PKG)" | head -1); \
-	if [ -n "$$PKG_PATH" ]; then \
-		nix why-depends /run/current-system $$PKG_PATH; \
-	else \
-		printf "$(YELLOW)Package not found in current system$(NC)\n"; \
-		printf "$(BLUE)Searching in store...$(NC)\n"; \
-		nix-store -q --references /run/current-system | grep -i "$(PKG)" | head -5; \
-	fi
-build-trace: ## Show what would be built with full derivation info
-	@printf "$(CYAN)🔨 Build Trace\n$(NC)"
-	@printf "=============\n"
-	@nix build .#nixosConfigurations.$(HOSTNAME).config.system.build.toplevel --dry-run --show-trace 2>&1 | \
-		grep -E "(will be built|will be fetched|evaluating)" | \
-		head -50
 closure-size: ## Show closure size of current system
-	@printf "$(CYAN)📊 System Closure Size\n$(NC)"
-	@printf "======================\n"
-	@nix path-info -Sh /run/current-system | head -1
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📊 System Closure Size Analysis          \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Total system closure size:$(NC)\n"
+	@SYSTEM_INFO=$$(nix path-info -Sh /run/current-system | head -1); \
+	SYSTEM_SIZE=$$(echo "$$SYSTEM_INFO" | awk '{print $$2 " " $$3}'); \
+	SYSTEM_PATH=$$(echo "$$SYSTEM_INFO" | awk '{print $$1}'); \
+	printf "  $(GREEN)$$SYSTEM_SIZE$(NC)\n"; \
+	printf "  $(YELLOW)$$SYSTEM_PATH$(NC)\n"
 	@printf "\n$(BLUE)Top 10 largest packages:$(NC)\n"
 	@nix path-info -rSh /run/current-system | \
 		sort -k2 -h | \
 		tail -10 | \
-		awk '{printf "  %8s  %s\n", $$2, $$1}'
+		awk -v GREEN="$(GREEN)" -v YELLOW="$(YELLOW)" -v NC="$(NC)" '{printf "  %s%8s%s  %s%s%s\n", GREEN, $$2, NC, YELLOW, $$1, NC}'
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Analysis complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 # === Formato, Linting y Estructura ===
 

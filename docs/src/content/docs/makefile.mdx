@@ -1906,58 +1906,40 @@ make diff-flake
 <a id="cmd-build-analysis"></a>
 ### 🔍 Build Analysis
 
-#### `make why-depends PKG=nombre`
-Muestra por qué el sistema depende de un paquete específico (cadena de dependencias).
-
-```bash
-make why-depends PKG=firefox
-# Muestra la cadena de dependencias completa
-# /nix/store/...-nixos-system
-# └─ /nix/store/...-firefox
-#    └─ /nix/store/...-gtk3
-#       └─ etc...
-```
-
-**Útil para:**
-- Entender por qué algo está instalado
-- Depurar dependencias no deseadas
-- Optimizar el closure del sistema
-
-#### `make build-trace`
-Muestra qué se construiría con información completa de derivaciones.
-
-```bash
-make build-trace
-# will be built:
-#   /nix/store/...-package-1.0
-# will be fetched:
-#   /nix/store/...-package-2.0
-# evaluating...
-```
-
-**Útil para:**
-- Ver qué se compilaría vs qué se descargaría
-- Debugging de builds lentas
-- Planear rebuilds grandes
-
 #### `make closure-size`
 Muestra el tamaño del closure del sistema y los 10 paquetes más grandes.
 
 ```bash
 make closure-size
-# System Closure Size
-# /run/current-system: 8.2G
+# ════════════════════════════════════════════════════════
+#           📊 System Closure Size Analysis          
+# ════════════════════════════════════════════════════════
+# 
+# Total system closure size:
+#   40.1 GiB
+#   /nix/store/...-nixos-system-hydenix-26.05...
 # 
 # Top 10 largest packages:
-#   1.2G  /nix/store/...-linux-kernel
-#   856M  /nix/store/...-gcc
-#   642M  /nix/store/...-llvm
+#   1006.7 MiB  /nix/store/...-ffmpeg-6.1.3-bin
+#   1008.3 MiB  /nix/store/...-security-wrapper-gamescope...
+#   ...
+# 
+# ════════════════════════════════════════════════════════
+# ✅ Analysis complete
+# ════════════════════════════════════════════════════════
 ```
 
 **Útil para:**
-- Identificar qué consume más espacio
-- Optimizar el sistema
-- Decidir qué desinstalar
+- Identificar qué consume más espacio en el sistema
+- Optimizar el closure del sistema
+- Decidir qué paquetes desinstalar o reemplazar
+- Planear limpiezas de espacio en disco
+
+**Cuándo usarlo:**
+- Antes de hacer limpieza del sistema
+- Cuando el disco se está llenando
+- Para entender el tamaño real del sistema
+- Para comparar tamaños entre generaciones
 
 ---
 
@@ -2819,11 +2801,6 @@ make diff-flake
 
 ```bash
 # ¿Por qué tengo este paquete instalado?
-make why-depends PKG=firefox
-
-# ¿Qué se compilaría si hago rebuild?
-make build-trace
-
 # ¿Qué consume más espacio?
 make closure-size
 
@@ -2909,7 +2886,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 `health`, `test-network`, `info`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
 
 ### Análisis y Desarrollo (11)
-`list-hosts`, `hosts-info`, `search`, `search-installed`, `benchmark`, `repl`, `shell`, `vm`, `why-depends`, `build-trace`, `closure-size`
+`list-hosts`, `hosts-info`, `search`, `search-installed`, `benchmark`, `repl`, `shell`, `vm`, `closure-size`
 
 ### Formato, Linting y Estructura (4)
 `format`, `lint`, `tree`
@@ -2930,7 +2907,7 @@ Todas las mejoras planificadas han sido implementadas exitosamente:
 - ✅ **FASE 1:** 5 correcciones críticas
 - ✅ **FASE 2:** 8 mejoras importantes  
 - ✅ **FASE 3:** 14 ampliaciones seleccionadas
-- ✅ **Build Analysis:** 3 comandos (why-depends, build-trace, closure-size)
+- ✅ **Build Analysis:** 1 comando (closure-size)
 - ✅ **Quick Fixes:** 2 comandos (fix-permissions, fix-store)
 - ✅ **Help System:** Sistema de ayuda híbrido en 3 niveles ⭐ NUEVO
 

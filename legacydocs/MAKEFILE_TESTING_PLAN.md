@@ -322,13 +322,9 @@ echo "=== NIVEL 10: Build Analysis ==="
 make closure-size
 echo "✓ make closure-size funciona"
 
-# 45. make why-depends (requiere PKG)
-make why-depends PKG=bash
-echo "✓ make why-depends funciona"
-
-# 46. make build-trace
-make build-trace | head -30
-echo "✓ make build-trace funciona"
+# Nota: why-depends y build-trace han sido eliminados
+# - why-depends: salida mínima, no muy útil
+# - build-trace: no funcionaba correctamente con nix build --dry-run
 
 echo "✅ NIVEL 10 COMPLETADO (3/3)"
 ```
@@ -684,8 +680,8 @@ Marca cada comando conforme lo verifiques manualmente:
 - [ ] diff-flake
 
 ### Build Analysis
-- [ ] why-depends
-- [ ] build-trace
+- [x] ~~why-depends~~ (eliminado - salida mínima, no muy útil)
+- [x] ~~build-trace~~ (eliminado - no funcionaba correctamente)
 - [ ] closure-size
 
 ### Quick Fixes
