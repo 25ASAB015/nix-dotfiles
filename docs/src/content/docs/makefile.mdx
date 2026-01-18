@@ -1587,12 +1587,49 @@ Jan 18 08:00:27 hydenix kernel: usb 1-6: device descriptor read/64, error -71
 - Para monitorear errores recurrentes
 
 #### `make logs-service SVC=nombre`
-Muestra logs de un servicio específico con formato visual mejorado.
+Muestra logs de un servicio específico con formato visual mejorado y filtrado inteligente por tiempo.
 
 ```bash
 make logs-service SVC=sshd
 make logs-service SVC=networkmanager
 make logs-service SVC=docker
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📋 Service Logs                           
+════════════════════════════════════════════════════
+
+Service: sshd
+No recent logs (last hour), showing logs from today...
+
+[logs del servicio de hoy]
+```
+
+**Características:**
+- **Filtrado inteligente por tiempo:**
+  - Primero intenta mostrar logs de la última hora (más relevantes)
+  - Si no hay logs recientes, muestra logs de hoy
+  - Si tampoco hay logs de hoy, muestra los últimos 100 logs sin filtro de tiempo
+- Formato visual consistente con otros comandos
+- Muestra el nombre del servicio destacado
+- Filtra mensajes vacíos de journalctl (`-- No entries --`)
+- Manejo de errores si el servicio no existe
+- Mensajes informativos sobre qué rango de tiempo está mostrando
+
+**Cuándo usarlo:**
+- Para diagnosticar problemas de un servicio específico
+- Ver actividad reciente de un servicio (última hora o hoy)
+- Debugging de servicios que no funcionan correctamente
+- Monitorear actividad de servicios en tiempo real
+
+**Ejemplos:**
+```bash
+make logs-service SVC=sshd              # Logs de SSH
+make logs-service SVC=networkmanager   # Logs de NetworkManager
+make logs-service SVC=docker           # Logs de Docker
+make logs-service SVC=systemd-journald # Logs del journal
 ```
 
 ---
