@@ -1041,12 +1041,57 @@ Comparing: nixos-system-hydenix-26.05.20251229.95e96e8 → nixos-system-hydenix-
 ---
 
 #### `make diff-gen GEN1=N GEN2=M`
-Compara dos generaciones específicas.
+Compara dos generaciones específicas usando `nix store diff-closures`, mostrando qué paquetes y archivos cambiaron entre ellas.
 
 ```bash
-make diff-gen GEN1=20 GEN2=25
-# Compara generación 20 vs 25
+make diff-gen GEN1=32 GEN2=33
+# Compara generación 32 vs 33
 ```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📊 Comparing Generations                  
+════════════════════════════════════════════════════
+
+Generation 32 → Generation 33
+Comparing:  nngjvi4bcyaw3d0jsdi1w62569llz8hi-nixos-system-hydenix-26.05.20251229.95e96e8 → 0hgc735ijn3yngk7cgkad6g6g0fk062f-nixos-system-hydenix-26.05.20251229.95e96e8
+
+hm_config.toml: ∅ → ε
+```
+
+**¿Cómo interpretar la salida?**
+
+La salida de `nix store diff-closures` usa una notación específica:
+
+- **`∅` (vacío)**: No existía o no estaba presente en la generación anterior
+- **`ε` (epsilon)**: Presente o modificado en la generación nueva
+- **Versiones diferentes**: Muestra ambas versiones separadas por `→` (ej: `firefox-120.0 → firefox-121.0`)
+
+**Ejemplos de interpretación:**
+
+- `paquete: ∅ → 1.0` = Paquete fue **agregado** en la generación nueva
+- `paquete: 1.0 → ∅` = Paquete fue **eliminado** en la generación nueva
+- `paquete: 1.0 → 2.0` = Paquete fue **actualizado** de versión 1.0 a 2.0
+- `archivo.toml: ∅ → ε` = Archivo fue **agregado o modificado** (cambio mínimo)
+
+**¿Para qué sirve?**
+
+- **Comparar generaciones específicas:** Útil cuando quieres comparar dos generaciones que no son consecutivas
+- **Debugging histórico:** Ver qué cambió entre una generación que funcionaba y una que no
+- **Auditoría:** Entender qué cambios se hicieron en un momento específico del tiempo
+- **Rollback informado:** Antes de hacer rollback, ver exactamente qué se perderá
+
+**Cuándo usarlo:**
+- Cuando necesitas comparar generaciones que no son consecutivas
+- Para investigar qué cambió entre una generación estable y una problemática
+- Antes de hacer rollback para entender qué se revertirá
+- Para comparar el estado actual con una generación anterior específica
+
+**Relación con otros comandos:**
+- `make diff-generations` - Compara automáticamente la generación actual con la anterior
+- `make diff-gen GEN1=N GEN2=M` - Compara dos generaciones específicas que tú elijas
+- `make list-generations` - Lista todas las generaciones disponibles para comparar
 
 ---
 
