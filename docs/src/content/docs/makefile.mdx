@@ -1632,6 +1632,39 @@ make logs-service SVC=docker           # Logs de Docker
 make logs-service SVC=systemd-journald # Logs del journal
 ```
 
+**Cuando no se proporciona SVC:**
+Si ejecutas `make logs-service` sin el parámetro `SVC`, verás un mensaje de ayuda útil que incluye:
+- Ejemplos de uso
+- Lista de servicios comunes en ejecución
+- Tip para ver todos los servicios disponibles
+
+**Output cuando falta SVC:**
+```
+════════════════════════════════════════════════════
+          📋 Service Logs                           
+════════════════════════════════════════════════════
+
+❌ Error: SVC variable required
+
+Usage: make logs-service SVC=<service-name>
+
+Examples:
+  make logs-service SVC=sshd
+  make logs-service SVC=networkmanager
+  make logs-service SVC=docker
+
+Common services:
+  dbus-broker.service
+  display-manager.service
+  NetworkManager.service
+  nix-daemon.service
+  sshd.service
+  systemd-journald.service
+  ...
+
+Tip: Use systemctl list-units --type=service to see all services
+```
+
 ---
 
 <a id="cmd-advanced"></a>
