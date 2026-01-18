@@ -230,7 +230,7 @@ make tutorial   # (este archivo)
 - [Updates](#cmd-updates)
 - [Backup and Restore](#cmd-backup)
 - [Git Integration](#cmd-git)
-- [Changelog e historial](#cmd-changelog)
+- [Git Log e historial](#cmd-git-log)
 - [System Information](#cmd-system-info)
 - [Búsqueda](#cmd-search)
 - [Quick Actions](#cmd-quick-actions)
@@ -1136,14 +1136,14 @@ make switch
 
 ---
 
-<a id="cmd-changelog"></a>
-### 📝 Changelog e historial
+<a id="cmd-git-log"></a>
+### 📝 Git Log e historial
 
-#### `make changelog`
+#### `make git-log`
 Muestra los últimos 15 commits en formato compacto y visual.
 
 ```bash
-make changelog
+make git-log
 ```
 
 **Output ejemplo:**
@@ -2419,7 +2419,7 @@ make switch HOSTNAME=laptop    # Aplicar a laptop
 - [Documentación](#flujo-docs)
 - [Logs y Debugging](#flujo-logs)
 - [Backup y Export](#flujo-backup-export)
-- [Changelog y Versiones](#flujo-changelog)
+- [Git Log y Versiones](#flujo-git-log)
 - [Creación de Nuevo Host](#flujo-nuevo-host)
 - [Desarrollo de Módulos](#flujo-modulos)
 - [Comparación](#flujo-comparacion)
@@ -2475,12 +2475,12 @@ make export-minimal
 
 ---
 
-<a id="flujo-changelog"></a>
-### Flujo de Changelog y Versiones
+<a id="flujo-git-log"></a>
+### Flujo de Git Log y Versiones
 
 ```bash
 # Ver qué has cambiado recientemente
-make changelog
+make git-log
 
 # Ver versión actual del sistema
   make info
@@ -2660,7 +2660,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 `format`, `lint`, `tree`, `phases`
 
 ### Reportes y Exportación (4)
-`changelog`, `export-config`, `export-minimal`
+`git-log`, `export-config`, `export-minimal`
 
 ### Plantillas y Otros (6)
 `new-host`, `new-module`, `compare-hosts`, `hardware-scan`, `fix-permissions`, `fix-git-permissions`

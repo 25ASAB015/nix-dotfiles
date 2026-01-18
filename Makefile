@@ -51,7 +51,7 @@ help: ## Show this help message
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs watch-rebuild logs-boot logs-errors logs-service"); \
 		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree phases"); \
-		print_cat("Reportes y Exportación", "changelog changelog-detailed export-config export-minimal"); \
+		print_cat("Reportes y Exportación", "git-log export-config export-minimal"); \
 		print_cat("Plantillas y Otros", "new-host new-module compare-hosts hardware-scan fix-permissions fix-git-permissions"); \
 		printf "\nWorkflows sugeridos:\n"; \
 		printf "  • Desarrollo diario:  make test → make switch → make rollback\n"; \
@@ -118,7 +118,7 @@ help-examples: ## Show commands with usage examples
 	@printf "  make health         → Health check\n"
 	@printf "  make version        → System versions\n"
 	@printf "  make list-hosts     → Show available hosts\n"
-	@printf "  make changelog      → Recent changes\n\n"
+	@printf "  make git-log        → Recent changes\n\n"
 	@printf "$(BLUE)Maintenance:$(NC)\n"
 	@printf "  make clean          → Clean old (30 days)\n"
 	@printf "  make optimize       → Optimize store\n"
@@ -887,7 +887,7 @@ phases: ## Show current phase tasks
 
 # === Reportes y Exportación ===
 
-changelog: ## Show recent changes from git log
+git-log: ## Show recent changes from git log
 	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📝 Recent Changes                      \n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
