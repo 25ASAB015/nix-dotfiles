@@ -709,9 +709,44 @@ search-installed: ## Search in currently installed packages (use PKG=name)
 		exit 1; \
 	fi
 	@printf "$(CYAN)🔍 Searching installed packages for: $(PKG)\n$(NC)"
-	@nix-env -q | grep -i "$(PKG)" || printf "$(YELLOW)Not found in user environment$(NC)\n"
-	@printf "\n$(BLUE)System packages:$(NC)\n"
-	@nix-store -q --references /run/current-system | grep -i "$(PKG)" | head -20 || printf "$(YELLOW)Not found in system$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)1. Executable in PATH:$(NC)\n"
+	@if command -v $(PKG) >/dev/null 2>&1; then \
+		EXEC_PATH=$$(command -v $(PKG)); \
+		printf "  $(GREEN)✓ Found:$(NC) $$EXEC_PATH\n"; \
+		PKG_STORE_PATH=$$(readlink -f $$EXEC_PATH 2>/dev/null | sed 's|/bin/.*||' | head -1); \
+		if [ -n "$$PKG_STORE_PATH" ]; then \
+			printf "  $(BLUE)Store path:$(NC) $$PKG_STORE_PATH\n"; \
+		fi; \
+	else \
+		printf "  $(YELLOW)Not found in PATH$(NC)\n"; \
+	fi
+	@printf "\n$(BLUE)2. User environment (nix-env):$(NC)\n"
+	@USER_PKGS=$$(nix-env -q 2>/dev/null | grep -i "$(PKG)" || true); \
+	if [ -n "$$USER_PKGS" ]; then \
+		echo "$$USER_PKGS" | sed 's/^/  /'; \
+	else \
+		printf "  $(YELLOW)Not found$(NC)\n"; \
+	fi
+	@printf "\n$(BLUE)3. System packages (current-system):$(NC)\n"
+	@SYSTEM_PKGS=$$(nix-store -q --references /run/current-system 2>/dev/null | grep -i "$(PKG)" | head -10 || true); \
+	if [ -n "$$SYSTEM_PKGS" ]; then \
+		echo "$$SYSTEM_PKGS" | sed 's/^/  /'; \
+	else \
+		printf "  $(YELLOW)Not found$(NC)\n"; \
+	fi
+	@printf "\n$(BLUE)4. Home Manager profiles:$(NC)\n"
+	@if [ -d "/etc/profiles/per-user" ]; then \
+		HM_PKGS=$$(find /etc/profiles/per-user -name "$(PKG)" -type f 2>/dev/null | head -5 || true); \
+		if [ -n "$$HM_PKGS" ]; then \
+			echo "$$HM_PKGS" | sed 's/^/  /'; \
+		else \
+			printf "  $(YELLOW)Not found$(NC)\n"; \
+		fi; \
+	else \
+		printf "  $(YELLOW)Home Manager profiles not found$(NC)\n"; \
+	fi
+	@printf "\n"
 
 benchmark: ## Time the rebuild process (build only)
 	@printf "$(BLUE)⏱️  Benchmarking Build Process\n$(NC)"

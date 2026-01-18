@@ -669,22 +669,22 @@ Marca cada comando conforme lo verifiques manualmente:
 - [ ] restore (no implementado; usar flujo manual)
 
 ### Git Integration
-- [ ] git-status
-- [ ] git-add
-- [ ] git-commit
-- [ ] git-push
-- [ ] save
+- [x] git-status
+- [x] git-add
+- [x] git-commit
+- [x] git-push
+- [x] save
 
 ### Información del Sistema
 - [x] info
-- [ ] status
-- [ ] version
-- [ ] current-generation
-- [ ] hosts-info
+- [x] status
+- [x] version
+- [x] current-generation
+- [x] hosts-info
 
 ### Búsqueda
-- [ ] search
-- [ ] search-installed
+- [x] search
+- [x] search-installed
 
 ### Quick Actions
 - [ ] quick
