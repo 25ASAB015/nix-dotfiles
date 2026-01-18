@@ -579,7 +579,7 @@ make check-syntax
 ---
 
 #### `make show`
-Muestra la estructura del flake (outputs, sistemas, etc).
+Muestra la estructura completa de salidas (outputs) del flake, incluyendo todas las configuraciones NixOS y paquetes disponibles.
 
 ```bash
 make show
@@ -587,10 +587,41 @@ make show
 
 **Output ejemplo:**
 ```
-nixosConfigurations
-└───hydenix
+════════════════════════════════════════════════════
+          📄 Flake Outputs Structure                
+════════════════════════════════════════════════════
+
+git+file:///home/ludus/Dotfiles?ref=refs/heads/main&rev=38ee020...
+├───nixosConfigurations
+│   ├───default: NixOS configuration
+│   └───hydenix: NixOS configuration
+└───packages
     └───x86_64-linux
+        └───vm: package 'nixos-vm'
 ```
+
+**¿Para qué sirve?**
+
+1. **Descubrir hosts disponibles:** Ver todas las configuraciones NixOS definidas en tu flake sin tener que leer `flake.nix` manualmente. Útil cuando trabajas con múltiples máquinas o cuando olvidas qué hosts están configurados.
+
+2. **Ver paquetes definidos:** Identificar qué paquetes personalizados están disponibles en el flake (como `vm` en el ejemplo, que genera una máquina virtual NixOS).
+
+3. **Validar estructura del flake:** Verificar rápidamente que el flake está bien estructurado y que todas las salidas esperadas están presentes antes de intentar hacer un `switch` o `build`.
+
+4. **Entender la organización:** Obtener una vista de alto nivel de cómo está organizado tu flake, especialmente útil cuando colaboras con otros o cuando vuelves a un proyecto después de tiempo.
+
+5. **Troubleshooting:** Si un comando como `make switch HOSTNAME=algo` falla, puedes usar `make show` para verificar si ese host realmente existe en el flake.
+
+**Relación con otros comandos:**
+- `make list-hosts` - Muestra información detallada de cada host (usa `make show` internamente)
+- `make switch HOSTNAME=<host>` - Requiere que el host exista en `nixosConfigurations` (verificable con `make show`)
+- `make check-syntax` - Valida la sintaxis, mientras que `make show` valida la estructura
+
+**Cuándo usarlo:**
+- Antes de hacer un `switch` a un host nuevo para verificar que existe
+- Cuando necesitas recordar qué hosts están disponibles
+- Para descubrir qué paquetes personalizados puedes usar
+- Como verificación rápida después de modificar `flake.nix`
 
 ---
 

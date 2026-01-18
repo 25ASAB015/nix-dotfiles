@@ -355,8 +355,12 @@ upgrade: ## Update and rebuild
 	@make switch
 
 show: ## Show flake outputs
-	@printf "$(CYAN)📄 Showing flake outputs...\n$(NC)"
-	nix flake show $(FLAKE_DIR)
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📄 Flake Outputs Structure                \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@nix flake show $(FLAKE_DIR) 2>&1 | grep -v "^warning:" || nix flake show $(FLAKE_DIR) 2>/dev/null || true
+	@printf "\n"
 
 check-syntax: ## Check flake syntax without building
 	@printf "$(CYAN)📋 Checking flake syntax...\n$(NC)"
