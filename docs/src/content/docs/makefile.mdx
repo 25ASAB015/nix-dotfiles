@@ -991,12 +991,52 @@ make debug           # Re-intenta con verbose output
 ---
 
 #### `make diff-generations`
-Compara la generación actual con la anterior (qué cambió).
+Compara la generación actual con la generación anterior usando `nix store diff-closures`, mostrando qué paquetes fueron añadidos, eliminados o actualizados.
 
 ```bash
 make diff-generations
-# Muestra paquetes añadidos/eliminados/actualizados
 ```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📊 Comparing Generations                  
+════════════════════════════════════════════════════
+
+Previous → Current
+Comparing: nixos-system-hydenix-26.05.20251229.95e96e8 → nixos-system-hydenix-26.05.20251229.95e96e8
+
+[lista detallada de paquetes añadidos/eliminados/actualizados con tamaños]
+```
+
+**¿Cómo funciona?**
+
+1. **Obtiene rutas del store:** Usa `readlink -f` para obtener las rutas completas del store de Nix de la generación actual y la anterior
+2. **Compara closures:** Usa `nix store diff-closures` para comparar los closures completos de ambas generaciones
+3. **Muestra diferencias:** Lista todos los paquetes que cambiaron, incluyendo:
+   - Paquetes añadidos (aparecen solo en la generación actual)
+   - Paquetes eliminados (aparecen solo en la generación anterior)
+   - Paquetes actualizados (versiones diferentes)
+   - Tamaños de los cambios
+
+**¿Para qué sirve?**
+
+- **Entender cambios:** Ver exactamente qué paquetes cambiaron entre la última generación y la actual
+- **Debugging:** Identificar qué paquetes podrían estar causando problemas después de un rebuild
+- **Auditoría:** Revisar qué se instaló o actualizó en cada cambio de configuración
+- **Optimización:** Identificar paquetes grandes que se agregaron para decidir si son necesarios
+
+**Cuándo usarlo:**
+- Después de hacer `make switch` para ver qué cambió
+- Cuando algo no funciona después de un rebuild y quieres ver qué paquetes cambiaron
+- Para entender el impacto de una actualización antes de aplicarla
+- Como parte del workflow de mantenimiento del sistema
+
+**Notas:**
+- Requiere que `nix store diff-closures` esté disponible (Nix 2.4+)
+- La salida puede ser muy larga si hay muchos cambios
+- Compara los closures completos, no solo los paquetes explícitos
+- Si no hay generación anterior o es la misma que la actual, muestra un mensaje informativo
 
 ---
 
