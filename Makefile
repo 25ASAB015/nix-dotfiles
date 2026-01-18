@@ -512,12 +512,25 @@ git-status: ## Show git status with GitHub CLI
 		else \
 			printf "$(YELLOW)Uncommitted changes$(NC)\n"; \
 		fi; \
-		printf "└─ Last 3 commits:\n"; \
-		git log --oneline -3 | sed 's/^/   /'; \
 		printf "\n$(BLUE)Local changes:$(NC)\n"; \
 		git status --short; \
 	else \
 		printf "$(YELLOW)Not a git repository$(NC)\n"; \
+	fi
+	@printf "\n$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            📝 Recent Changes                      \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@if git rev-parse --git-dir > /dev/null 2>&1; then \
+		printf "\n"; \
+		git log --max-count=3 --pretty=format:"%h|%s|%ar%n" 2>/dev/null | \
+		while IFS='|' read -r hash subject time; do \
+			[ -z "$$hash" ] && continue; \
+			SUBJECT_SHORT=$$(echo "$$subject" | cut -c1-55); \
+			if [ "$${#subject}" -gt 55 ]; then \
+				SUBJECT_SHORT="$$SUBJECT_SHORT..."; \
+			fi; \
+			printf "  $(GREEN)%-8s$(NC)  %-58s$(BLUE)%15s$(NC)\n" "$$hash" "$$SUBJECT_SHORT" "$$time"; \
+		done; \
 	fi
 	@printf "\n"
 save: ## Quick save: add, commit, push, and rebuild
@@ -892,12 +905,6 @@ changelog: ## Show recent changes from git log
 		printf "\n$(YELLOW)Not a git repository$(NC)\n"; \
 	fi
 	@printf "\n"
-changelog-detailed: ## Show detailed changelog with diffs
-	@printf "$(CYAN)📝 Detailed Changelog (Last 10 commits)\n$(NC)"
-	@printf "======================================\n\n"
-	@git log --pretty=format:"$(GREEN)%h$(NC) - %s%n$(BLUE)Date: %ad | Author: %an$(NC)%n" \
-		--date=short --max-count=10 2>/dev/null || \
-		printf "$(YELLOW)Not a git repository$(NC)\n"
 
 export-config: ## Export configuration to timestamped tarball
 	@printf "$(BLUE)📦 Exporting configuration...\n$(NC)"
