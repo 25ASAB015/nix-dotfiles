@@ -764,8 +764,22 @@ logs-errors: ## Show recent error logs
 	@printf "\n"
 logs-service: ## Show logs for specific service (use SVC=name)
 	@if [ -z "$(SVC)" ]; then \
-		printf "$(RED)Error: SVC variable required$(NC)\n"; \
-		printf "$(YELLOW)Usage: make logs-service SVC=sshd$(NC)\n"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(CYAN)          📋 Service Logs                           \n$(NC)"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n$(RED)❌ Error: SVC variable required$(NC)\n\n"; \
+		printf "$(BLUE)Usage:$(NC) make logs-service SVC=<service-name>\n\n"; \
+		printf "$(BLUE)Examples:$(NC)\n"; \
+		printf "  make logs-service SVC=sshd\n"; \
+		printf "  make logs-service SVC=networkmanager\n"; \
+		printf "  make logs-service SVC=docker\n\n"; \
+		printf "$(BLUE)Common services:$(NC)\n"; \
+		if command -v systemctl >/dev/null 2>&1; then \
+			systemctl list-units --type=service --state=running --no-pager --no-legend 2>/dev/null | \
+			awk '{print "  " $$1}' | head -10 || true; \
+		fi; \
+		printf "\n$(BLUE)Tip:$(NC) Use $(GREEN)systemctl list-units --type=service$(NC) to see all services\n"; \
+		printf "\n"; \
 		exit 1; \
 	fi
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
