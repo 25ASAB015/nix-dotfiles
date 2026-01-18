@@ -662,7 +662,7 @@ Marca cada comando conforme lo verifiques manualmente:
 
 ### Backup y Generations
 - [ ] backup
-- [ ] list-generations
+- [x] list-generations
 - [ ] rollback
 - [ ] diff-generations
 - [ ] diff-gen

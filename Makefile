@@ -369,8 +369,18 @@ diff-flake: ## Show changes to flake.nix and flake.lock
 # === Generaciones y Rollback ===
 
 list-generations: ## List system generations
-	@printf "$(CYAN)📋 System generations:\n$(NC)"
-	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📋 System Generations                    \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@TOTAL=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo "0"); \
+	CURRENT_GEN=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1}' || echo "N/A"); \
+	printf "\n$(BLUE)Total generations:$(NC) $(GREEN)$$TOTAL$(NC)\n"; \
+	printf "$(BLUE)Current generation:$(NC) $(GREEN)$$CURRENT_GEN$(NC)\n"
+	@printf "\n$(BLUE)All generations:$(NC)\n"
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | \
+		sed 's/   (current)/   $(GREEN)(current)$(NC)/' | \
+		sed 's/^/  /' || printf "  $(YELLOW)Unable to list generations$(NC)\n"
+	@printf "\n"
 rollback: ## Rollback to previous generation
 	@printf "$(YELLOW)⏪ Rolling back to previous generation...\n$(NC)"
 	sudo nixos-rebuild switch --rollback
@@ -511,7 +521,7 @@ git-status: ## Show git status with GitHub CLI
 	fi
 	@printf "\n"
 save: ## Quick save: add, commit, push, and rebuild
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)              💾 Quick Save Workflow                \n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)Executing complete workflow:$(NC)\n"
