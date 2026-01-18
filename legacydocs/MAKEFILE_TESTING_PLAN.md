@@ -614,7 +614,6 @@ Marca cada comando conforme lo verifiques manualmente:
 ### Sistema de Ayuda
 - [x] help
 - [x] help-examples
-- [x] help (workflows)
 
 ### Building and Switching
 - [ ] rebuild
@@ -677,7 +676,7 @@ Marca cada comando conforme lo verifiques manualmente:
 - [ ] save
 
 ### Información del Sistema
-- [ ] info
+- [x] info
 - [ ] status
 - [ ] version
 - [ ] current-generation

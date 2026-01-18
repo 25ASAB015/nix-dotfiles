@@ -1,7 +1,7 @@
 # NixOS Management Makefile
 # Place this in your flake directory (where flake.nix is located)
 
-.PHONY: help help-advanced help-examples rebuild switch test build clean gc update check format lint backup restore test-network
+.PHONY: help help-examples rebuild switch test build clean gc update check format lint backup restore test-network
 
 # Default target
 .DEFAULT_GOAL := help
@@ -25,45 +25,41 @@ NC := \033[0m # No Color
 # === Ayuda y Documentación ===
 
 help: ## Show this help message
-	@printf "$(CYAN)NixOS Management Commands\n$(NC)"
-	@printf "==========================\n"
-	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z_-]+:.*##/ { printf "$(GREEN)%-20s$(NC) %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
-help-advanced: ## Show detailed help with examples and workflows
-	@printf "$(CYAN)╔════════════════════════════════════════════════════╗\n$(NC)"
-	@printf "$(CYAN)║   NixOS Management - Advanced Help & Workflows    ║\n$(NC)"
-	@printf "$(CYAN)╚════════════════════════════════════════════════════╝\n$(NC)"
-	@printf "\n$(GREEN)📚 Common Workflows:$(NC)\n"
-	@printf "  $(BLUE)Daily Development:$(NC)\n"
-	@printf "    make test              → Test changes without commitment\n"
-	@printf "    make switch            → Apply changes permanently\n"
-	@printf "    make rollback          → Undo if something breaks\n"
-	@printf "\n  $(BLUE)Safe Updates:$(NC)\n"
-	@printf "    make backup            → Create backup first\n"
-	@printf "    make update            → Update flake inputs\n"
-	@printf "    make diff-update       → See what changed\n"
-	@printf "    make validate          → Validate config\n"
-	@printf "    make test              → Test new config\n"
-	@printf "    make switch            → Apply if all good\n"
-	@printf "\n  $(BLUE)Maintenance:$(NC)\n"
-	@printf "    make health            → Check system health\n"
-	@printf "    make clean             → Clean old generations\n"
-	@printf "    make optimize          → Optimize store\n"
-	@printf "    make generation-sizes  → See space usage\n"
-	@printf "\n  $(BLUE)Multi-Host:$(NC)\n"
-	@printf "    make list-hosts        → See available hosts\n"
-	@printf "    make switch HOSTNAME=laptop  → Deploy to laptop\n"
-	@printf "\n$(GREEN)🔍 Discovery:$(NC)\n"
-	@printf "  make search PKG=neovim     → Search packages\n"
-	@printf "  make info                  → System information\n"
-	@printf "  make status                → Comprehensive status\n"
-	@printf "\n$(GREEN)🐛 Troubleshooting:$(NC)\n"
-	@printf "  make debug                 → Rebuild with full trace\n"
-	@printf "  make validate              → Check for issues\n"
-	@printf "  make watch-logs            → Monitor system logs\n"
-	@printf "  make emergency             → Maximum verbosity rebuild\n"
-	@printf "\n$(YELLOW)For full command list:$(NC) make help\n"
-	@printf "$(YELLOW)For commands with examples:$(NC) make help-examples\n"
-	@printf "$(YELLOW)For tutorial:$(NC) less MAKEFILE_TUTORIAL.md\n\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)      Ayuda Avanzada y Workflows (Makefile)        \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@awk -v GREEN="$(GREEN)" -v BLUE="$(BLUE)" -v NC="$(NC)" 'BEGIN {FS=":.*##"} /^[a-zA-Z0-9_-]+:.*##/ {desc[$$1]=$$2} \
+	function print_cat(title, list,    n,i,cmd) { \
+		printf "\n%s%s%s\n", BLUE, title, NC; \
+		n = split(list, arr, " "); \
+		for (i=1; i<=n; i++) { \
+			cmd = arr[i]; \
+			if (cmd in desc) { \
+				printf "  %s%-18s%s %s\n", GREEN, cmd, NC, desc[cmd]; \
+			} else { \
+				printf "  %s%-18s%s %s\n", GREEN, cmd, NC, "(sin descripción)"; \
+			} \
+		} \
+	} \
+	END { \
+		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev readme tutorial progress"); \
+		print_cat("Gestión del Sistema (Rebuild/Switch)", "rebuild switch safe-switch test build dry-run boot validate debug quick emergency"); \
+		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean clean-generations gc optimize clean-result fix-store"); \
+		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input update-info diff-update upgrade show check-syntax diff-flake"); \
+		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
+		print_cat("Git y Respaldo", "git-add git-commit git-push git-status save backup diff-config"); \
+		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs watch-rebuild logs-boot logs-errors logs-service"); \
+		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
+		print_cat("Formato, Linting y Estructura", "format lint tree phases"); \
+		print_cat("Reportes y Exportación", "changelog changelog-detailed packages version export-config export-minimal"); \
+		print_cat("Plantillas y Otros", "new-host new-module compare-hosts hardware-scan fix-permissions fix-git-permissions"); \
+		printf "\nWorkflows sugeridos:\n"; \
+		printf "  • Desarrollo diario:  make test → make switch → make rollback\n"; \
+		printf "  • Updates seguros:    make backup → make update → make diff-update → make validate → make test → make switch\n"; \
+		printf "  • Mantenimiento:      make health → make clean → make optimize → make generation-sizes\n"; \
+		printf "  • Multi-host:         make list-hosts → make switch HOSTNAME=laptop\n"; \
+		printf "\nAyuda rápida: make help | make help-examples | less MAKEFILE_TUTORIAL.md\n\n"; \
+	}' $(MAKEFILE_LIST)
 help-examples: ## Show commands with usage examples
 	@printf "$(CYAN)╔════════════════════════════════════════════════════╗\n$(NC)"
 	@printf "$(CYAN)║        NixOS Commands with Usage Examples          ║\n$(NC)"
@@ -135,7 +131,7 @@ help-examples: ## Show commands with usage examples
 	@printf "  make fix-store      → Repair nix store\n\n"
 	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 	@printf "$(YELLOW)For full command list:$(NC) make help\n"
-	@printf "$(YELLOW)For workflows:$(NC) make help-advanced\n"
+	@printf "$(YELLOW)For workflows:$(NC) make help\n"
 	@printf "$(YELLOW)For complete guide:$(NC) make tutorial\n"
 	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n\n"
 
@@ -531,13 +527,17 @@ test-network: ## Run comprehensive network diagnostics
 	@printf "\n$(GREEN)✅ Network diagnostics complete$(NC)\n"
 
 info: ## Show system information
-	@printf "$(CYAN)💻 System Information\n$(NC)"
-	@printf "===================\n"
-	@printf "$(BLUE)Hostname:$(NC) $(HOSTNAME)\n"
-	@printf "$(BLUE)NixOS Version:$(NC) $(shell nixos-version 2>/dev/null || echo 'N/A')\n"
-	@printf "$(BLUE)Current Generation:$(NC) $(shell sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 || echo 'N/A')\n"
-	@printf "$(BLUE)Flake Location:$(NC) $(PWD)\n"
-	@printf "$(BLUE)Store Size:$(NC) $(shell du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')\n"
+	@printf "$(YELLOW)⏳ Gathering system information, please wait...\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)           💻 System Information                    \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)Hostname:$(NC)             $(GREEN)$(HOSTNAME)$(NC)\n"
+	@printf "$(BLUE)NixOS Version:$(NC)        $(GREEN)$(shell nixos-version 2>/dev/null | cut -d' ' -f1 || echo 'N/A')$(NC)\n"
+	@GEN_INFO=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1 " (" $$2 " " $$3 ")"}' || echo 'N/A'); \
+	printf "$(BLUE)Current Generation:$(NC)   $(GREEN)$$GEN_INFO$(NC)\n"
+	@printf "$(BLUE)Flake Location:$(NC)       $(GREEN)$(PWD)$(NC)\n"
+	@printf "$(BLUE)Store Size:$(NC)           $(GREEN)$(shell du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')$(NC)\n"
+	@printf "\n"
 status: ## Show comprehensive system status
 	@printf "$(CYAN)╔══════════════════════════════════════╗\n$(NC)"
 	@printf "$(CYAN)║      SYSTEM STATUS OVERVIEW          ║\n$(NC)"
