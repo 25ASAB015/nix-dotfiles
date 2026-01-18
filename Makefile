@@ -42,16 +42,16 @@ help: ## Show this help message
 		} \
 	} \
 	END { \
-		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev readme tutorial"); \
+		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev"); \
 		print_cat("Gestión del Sistema (Rebuild/Switch)", "rebuild switch safe-switch test build dry-run boot validate debug quick emergency"); \
 		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean clean-generations gc optimize clean-result fix-store"); \
-		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input update-info diff-update upgrade show flake-check diff-flake"); \
+		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input diff-update upgrade show flake-check diff-flake"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save backup"); \
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs logs-boot logs-errors logs-service"); \
 		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed benchmark repl shell vm why-depends build-trace closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
-		print_cat("Reportes y Exportación", "git-log export-config export-minimal"); \
+		print_cat("Reportes y Exportación", "git-log"); \
 		print_cat("Plantillas y Otros", "new-host new-module hardware-scan fix-permissions fix-git-permissions"); \
 		printf "\nWorkflows sugeridos:\n"; \
 		printf "  • Desarrollo diario:  make test → make switch → make rollback\n"; \
@@ -129,7 +129,6 @@ help-examples: ## Show commands with usage examples
 	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 	@printf "$(YELLOW)For full command list:$(NC) make help\n"
 	@printf "$(YELLOW)For workflows:$(NC) make help\n"
-	@printf "$(YELLOW)For complete guide:$(NC) make tutorial\n"
 	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n\n"
 
 docs-local: ## Show local documentation files
@@ -181,19 +180,6 @@ docs-dev: ## Run Astro docs dev server locally
 	else \
 		printf "$(YELLOW)docs/ not found$(NC)\n"; \
 	fi
-readme: ## Show README in terminal
-	@if [ -f "README.md" ]; then \
-		less README.md; \
-	else \
-		printf "$(YELLOW)README.md not found$(NC)\n"; \
-	fi
-tutorial: ## Show Makefile tutorial
-	@if [ -f "MAKEFILE_TUTORIAL.md" ]; then \
-		less MAKEFILE_TUTORIAL.md; \
-	else \
-		printf "$(YELLOW)MAKEFILE_TUTORIAL.md not found$(NC)\n"; \
-	fi
-
 # === Gestión del Sistema (Rebuild/Switch) ===
 
 rebuild: ## Full rebuild and switch (alias for switch)
@@ -364,16 +350,6 @@ update-input: ## Update specific flake input (use INPUT=name)
 	nix flake lock --update-input $(INPUT)
 	@printf "$(GREEN)✅ Input '$(INPUT)' updated\n$(NC)"
 	@printf "$(YELLOW)Run 'make diff-update' to see changes$(NC)\n"
-update-info: ## Show current flake input information
-	@printf "$(CYAN)📦 Current Flake Inputs\n$(NC)"
-	@printf "======================\n"
-	@nix flake metadata --json | \
-		grep -E '"(url|lastModified)"' | \
-		sed 's/"//g' | \
-		sed 's/,//g' | \
-		awk '{print $$1, $$2}'
-	@printf "\n$(BLUE)To update:$(NC) make update\n"
-	@printf "$(BLUE)To update specific input:$(NC) make update-input INPUT=<name>\n"
 diff-update: ## Show changes in flake.lock after update
 	@printf "$(CYAN)📊 Flake Lock Differences\n$(NC)"
 	@printf "=========================\n"
@@ -1053,30 +1029,6 @@ git-log: ## Show recent changes from git log
 		printf "\n$(YELLOW)Not a git repository$(NC)\n"; \
 	fi
 	@printf "\n"
-
-export-config: ## Export configuration to timestamped tarball
-	@printf "$(BLUE)📦 Exporting configuration...\n$(NC)"
-	@EXPORT_NAME="nixos-config-$$(date +%Y%m%d-%H%M%S).tar.gz"; \
-	tar -czf $$EXPORT_NAME \
-		--exclude='.git' \
-		--exclude='result' \
-		--exclude='*.tar.gz' \
-		--exclude='.direnv' \
-		. ; \
-	printf "$(GREEN)✅ Exported to: $$EXPORT_NAME\n$(NC)"; \
-	printf "$(BLUE)Size: $$(du -h $$EXPORT_NAME | cut -f1)\n$(NC)"
-export-minimal: ## Export only essential files (flake.nix, hosts/, modules/)
-	@printf "$(BLUE)📦 Exporting minimal configuration...\n$(NC)"
-	@EXPORT_NAME="nixos-config-minimal-$$(date +%Y%m%d).tar.gz"; \
-	tar -czf $$EXPORT_NAME \
-		flake.nix \
-		flake.lock \
-		hosts/ \
-		modules/ \
-		Makefile \
-		README.md 2>/dev/null; \
-	printf "$(GREEN)✅ Minimal config exported to: $$EXPORT_NAME\n$(NC)"; \
-	printf "$(BLUE)Size: $$(du -h $$EXPORT_NAME | cut -f1)\n$(NC)"
 
 # === Plantillas y Otros ===
 

@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-01-11  
 **Objetivo:** Probar todos los comandos del Makefile de forma sistemática y segura  
-**Total de comandos:** 87
+**Total de comandos:** 82
 
 ---
 
@@ -258,36 +258,14 @@ echo "✅ NIVEL 5 COMPLETADO (3/3)"
 ```bash
 echo "=== NIVEL 6: Export y Documentación ==="
 
-# 34. make export-config
-make export-config
-echo "✓ make export-config funciona"
-ls -lh nixos-config-*.tar.gz
-
-# 35. make export-minimal
-make export-minimal
-echo "✓ make export-minimal funciona"
-ls -lh nixos-config-minimal-*.tar.gz
-
-# 36. make readme
-echo "q" | make readme
-echo "✓ make readme funciona"
-
-# 37. make tutorial
-echo "q" | make tutorial
-echo "✓ make tutorial funciona"
-
-# 38. make docs-dev (SKIP - corre servidor)
+# 34. make docs-dev (SKIP - corre servidor)
 echo "⊘ make docs-dev SKIPPED (servidor interactivo)"
 
-# 39. make update-info
-make update-info
-echo "✓ make update-info funciona"
-
-# 40. make diff-update
+# 35. make diff-update
 make diff-update
 echo "✓ make diff-update funciona"
 
-echo "✅ NIVEL 6 COMPLETADO (6/7 - 1 skipped por interactivo)"
+echo "✅ NIVEL 6 COMPLETADO (1/2 - 1 skipped por interactivo)"
 ```
 
 **Verificación:** ¿Se crearon los archivos exportados correctamente?
@@ -533,14 +511,14 @@ echo "   y en el orden que consideres apropiado."
 
 ## 📝 RESUMEN DE TESTING
 
-### Comandos Seguros que se Pueden Probar (≈49 comandos):
+### Comandos Seguros que se Pueden Probar (≈44 comandos):
 - ✅ Sistema de ayuda (3)
 - ✅ Información (17)
 - ✅ Búsqueda (2)
 - ✅ Diff (5)
 - ✅ Logs + network (4)
 - ✅ Validación (3)
-- ✅ Export/Docs (6)
+- ✅ Export/Docs (1)
 - ✅ Templates (2)
 - ✅ Git status (1)
 - ✅ Backup (1)
@@ -548,7 +526,7 @@ echo "   y en el orden que consideres apropiado."
 - ✅ Cleanup (1)
 - ✅ Lint (1)
 
-**Total testeables automáticamente: 49 comandos**
+**Total testeables automáticamente: 44 comandos**
 
 ### Comandos a Probar Manualmente (según necesidad):
 - ⊘ Interactivos (5): watch-logs, docs-dev, repl, shell, vm
@@ -582,7 +560,7 @@ Marca cada nivel conforme lo completes:
 - [ ] Nivel 3: Diff (5)
 - [ ] Nivel 4: Logs (4)
 - [ ] Nivel 5: Validación (3)
-- [ ] Nivel 6: Export (6)
+- [ ] Nivel 6: Export (1)
 - [ ] Nivel 7: Templates (2)
 - [ ] Nivel 8: Git Read (1)
 - [ ] Nivel 9: Backup (1)
@@ -594,7 +572,7 @@ Marca cada nivel conforme lo completes:
 - [ ] Nivel 15: Updates Info (done)
 - [ ] Nivel 16: Lint (1)
 
-**Total Testeado Automáticamente: 49/87 comandos**
+**Total Testeado Automáticamente: 44/82 comandos**
 
 ---
 
@@ -647,7 +625,6 @@ Marca cada comando conforme lo verifiques manualmente:
 - [ ] update-nixpkgs
 - [ ] update-hydenix
 - [ ] update-input
-- [ ] update-info
 - [ ] diff-update
 - [ ] upgrade
 
@@ -709,14 +686,11 @@ Marca cada comando conforme lo verifiques manualmente:
 - [ ] packages
 
 ### Export/Import
-- [ ] export-config
-- [ ] export-minimal
+(removed - use Git directly)
 
 ### Documentación
 - [ ] docs-local
 - [ ] docs-dev
-- [ ] readme
-- [ ] tutorial
 
 ### Templates
 - [ ] new-host

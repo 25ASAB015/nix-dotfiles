@@ -213,7 +213,7 @@ make help-examples
 make help
 
 # ¿Necesitas documentación completa?
-make tutorial   # (este archivo)
+# Visita la documentación web con: make docs-dev
 ```
 
 ---
@@ -994,15 +994,6 @@ make update-input INPUT=hydenix
 
 ---
 
-#### `make update-info`
-Muestra información sobre los inputs actuales del flake.
-
-```bash
-make update-info
-# Ve las versiones actuales de nixpkgs, hydenix, etc
-```
-
----
 
 #### `make diff-update`
 Muestra cambios en flake.lock después de un update.
@@ -1878,29 +1869,6 @@ make vm
 <a id="cmd-export"></a>
 ### 📤 Export/Import
 
-#### `make export-config`
-Exporta toda la configuración a un tarball con timestamp.
-
-```bash
-make export-config
-# ✅ Exported to: nixos-config-20260111-143000.tar.gz
-# Size: 2.3M
-```
-
-**Qué incluye:**
-- Todos los archivos de configuración
-- Excluye: .git, result, .direnv, *.tar.gz
-
-#### `make export-minimal`
-Exporta solo archivos esenciales (más pequeño).
-
-```bash
-make export-minimal
-# Incluye solo: flake.nix, flake.lock, hosts/, modules/, Makefile, README.md
-# Perfecto para compartir o backup ligero
-```
-
----
 
 <a id="cmd-docs"></a>
 ### 📚 Documentación
@@ -1933,7 +1901,7 @@ make docs-local
 
 3. **Navegación eficiente:** Te indica dónde están los archivos de documentación, especialmente útil si hay documentación distribuida en diferentes ubicaciones (raíz del proyecto, directorio `docs/`, `legacydocs/`, etc.).
 
-4. **Workflow de lectura:** Junto con comandos como `make readme` o `make tutorial`, forma parte de un flujo de trabajo para acceder rápidamente a la documentación desde la terminal sin necesidad de abrir un navegador o editor.
+4. **Workflow de lectura:** Permite acceder rápidamente a la documentación desde la terminal sin necesidad de abrir un navegador o editor.
 
 **Cuándo usarlo:**
 - Cuando necesitas encontrar documentación específica pero no recuerdas dónde está
@@ -1942,25 +1910,7 @@ make docs-local
 - Como punto de partida para entender la estructura de documentación del proyecto
 
 **Relación con otros comandos:**
-- `make readme` - Abre el README directamente
-- `make tutorial` - Abre el tutorial del Makefile
 - `make docs-dev` - Inicia el servidor de desarrollo de la documentación web
-
-#### `make readme`
-Abre el README en el terminal con `less`.
-
-```bash
-make readme
-# Lectura rápida del README sin salir del terminal
-```
-
-#### `make tutorial`
-Abre este tutorial en el terminal con `less`.
-
-```bash
-make tutorial
-# ¡Estás aquí! 😉
-```
 
 ---
 
@@ -2719,7 +2669,6 @@ echo "## $(date +%Y-%m-%d) - Configuración inicial kitty" >> CHANGELOG.md
 make help              # Lista de todos los comandos
 make help-examples     # Comandos con ejemplos de uso ⭐
 make help            # Workflows completos
-make tutorial          # Esta guía completa
 
 # Uso Diario
 make switch            # Aplicar cambios
@@ -2872,11 +2821,8 @@ make switch HOSTNAME=laptop    # Aplicar a laptop
 # Ver qué documentación tienes
 make docs-local
 
-# Leer el tutorial
-make tutorial
-
-# Leer el README
-make readme
+# Ver documentación web
+make docs-dev
 ```
 
 ---
@@ -2904,11 +2850,8 @@ make logs-service SVC=docker
 # Backup completo antes de cambios grandes
 make backup
 
-# Export para compartir o guardar en otro lugar
-make export-config
-
-# Export mínimo para compartir solo lo esencial
-make export-minimal
+# Para exportar configuración, usa Git directamente
+git archive --format=tar.gz -o config-backup.tar.gz HEAD
 ```
 
 ---
@@ -3078,8 +3021,8 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Limpieza y Optimización (9)
 `clean`, `clean-week`, `clean-conservative`, `deep-clean`, `clean-generations`, `gc`, `optimize`, `clean-result`, `fix-store`
 
-### Actualizaciones y Flakes (10)
-`update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `update-info`, `diff-update`, `upgrade`, `show`, `flake-check`, `diff-flake`
+### Actualizaciones y Flakes (9)
+`update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `diff-update`, `upgrade`, `show`, `flake-check`, `diff-flake`
 
 ### Generaciones y Rollback (6)
 `list-generations`, `rollback`, `diff-generations`, `diff-gen`, `generation-sizes`, `current-generation`
@@ -3096,8 +3039,8 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Formato, Linting y Estructura (4)
 `format`, `lint`, `tree`
 
-### Reportes y Exportación (4)
-`git-log`, `export-config`, `export-minimal`
+### Reportes y Exportación (1)
+`git-log`
 
 ### Plantillas y Otros (6)
 `new-host`, `new-module`, `hardware-scan`, `fix-permissions`, `fix-git-permissions`
