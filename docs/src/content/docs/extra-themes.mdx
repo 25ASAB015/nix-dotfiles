@@ -1,6 +1,38 @@
 ---
 title: Extra themes
-description: Placeholder page.
+description: Como instalar temas adicionales en HyDE/Hydenix.
 ---
 
 # Extra themes
+
+Para descargar temas adicionales, este es el flujo recomendado: usar `hydectl`
+y la galeria oficial de temas.
+oficial de temas. [HyDE Project - hyde-gallery](https://github.com/HyDE-Project/hyde-gallery.git)
+
+Requisitos: tener HyDE y `hydectl` instalados.
+
+## Importar un tema desde la galeria
+
+1. Ejecuta el importador:
+
+```bash
+hydectl theme import
+```
+
+2. Selecciona el tema en el selector.
+
+## Importar desde URL o ruta local
+
+```bash
+hydectl theme import --name "Theme-Name" --url "/ruta/al/tema"
+hydectl theme import --name "Theme Name" --url "https://github.com/User/Repository"
+hydectl theme import --name "Theme-Name" --url "https://github.com/User/Repository/tree/branch"
+```
+
+Si necesitas forzar la actualizacion de iconos/cursores/fuentes:
+
+```bash
+export FORCE_THEME_UPDATE=true
+```
+
+Mas detalles en la documentacion del repositorio. [HyDE Project - hyde-gallery](https://github.com/HyDE-Project/hyde-gallery.git)

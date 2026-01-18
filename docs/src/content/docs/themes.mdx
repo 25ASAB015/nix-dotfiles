@@ -1,6 +1,147 @@
 ---
 title: Themes
-description: Placeholder page.
+description: Cambiar temas, wallpapers y opciones del menu de HyDE.
 ---
 
 # Themes
+
+Esta seccion documenta el menu de HyDE en Waybar y como cambiar temas,
+wallpapers y layouts de Waybar, siguiendo el estilo de la guia de Omarchy.
+La idea es similar: un tema aplica un estilo coherente al entorno completo,
+incluyendo aplicaciones y componentes del escritorio. [Omarchy Themes](https://learn.omacom.io/2/the-omarchy-manual/52/themes)
+
+## Menu de HyDE en Waybar
+
+El menu de HyDE aparece en Waybar (icono del menu). Estas son las opciones
+principales y los atajos disponibles en tus dotfiles:
+
+| Opcion | Que cambia | Atajos |
+| --- | --- | --- |
+| Animations | Animaciones de Hyprland | Sin atajo definido |
+| Wallpaper | Seleccion y rotacion de fondos | `Super + W`, `Super + .`, `Super + ,` |
+| Theme | Selector de temas | `Super + T` |
+| Waybar | Layouts y visibilidad de la barra | `Super + Ctrl + .`, `Super + Ctrl + ,`, `Alt derecho + Ctrl derecho` |
+| Workflows | Perfiles o flujos del entorno | Sin atajo definido |
+| Lockscreen | Configuracion del bloqueo | `Super + X` |
+| Shaders | Filtros/efectos visuales | Sin atajo definido |
+| Keybinds | Ayuda de keybindings | `Super + /` |
+| About | Informacion de HyDE | Sin atajo definido |
+
+## hydectl (general)
+
+`hydectl` es la CLI oficial de HyDE. Comandos disponibles hoy:
+
+| Comando | Que hace |
+| --- | --- |
+| `hydectl completion` | Autocompletado para tu shell |
+| `hydectl config` | Editor interactivo de configuracion |
+| `hydectl dispatch` | Ejecuta comandos de plugins |
+| `hydectl reload` | Recarga configuracion de HyDE |
+| `hydectl select` | Selector de items (menus) |
+| `hydectl tabs` | Agrupar/desagrupar ventanas del workspace |
+| `hydectl theme` | Gestion de temas |
+| `hydectl wallpaper` | Gestion de wallpapers |
+| `hydectl zoom` | Zoom in/out en Hyprland |
+| `hydectl version` | Version de hydectl |
+
+## Cambiar tema
+
+- Desde el menu: `Theme`.
+- Atajo directo: `Super + T`.
+
+Los temas en HyDE/Hydenix buscan mantener una estetica coherente entre
+escritorio, terminal, Neovim, notificaciones, Waybar, launcher y lockscreen,
+de forma parecida a lo descrito en Omarchy. [Omarchy Themes](https://learn.omacom.io/2/the-omarchy-manual/52/themes)
+
+## hydectl (themes)
+
+Comandos actuales para temas:
+
+| Comando | Que hace |
+| --- | --- |
+| `hydectl theme select` | Selector de temas |
+| `hydectl theme next` | Siguiente tema |
+| `hydectl theme prev` | Tema anterior |
+| `hydectl theme set <nombre>` | Aplicar tema por nombre |
+| `hydectl theme import` | Importar temas adicionales |
+
+Para instalar temas extra, revisa `Extra themes`.
+
+## Wallpapers del tema
+
+Si el tema incluye multiples fondos, puedes rotarlos con:
+
+- `Super + .` siguiente wallpaper global
+- `Super + ,` wallpaper global anterior
+
+## Galeria de temas (seleccion)
+
+Capturas tomadas del repositorio `hyde-gallery`. [HyDE Project - hyde-gallery](https://github.com/HyDE-Project/hyde-gallery.git)
+
+| Tema | Vista previa |
+| --- | --- |
+| 1-Bit | ![1-Bit](/nix-dotfiles/hyde-gallery/1-bit.png) |
+| Abyssal-Wave | ![Abyssal-Wave](/nix-dotfiles/hyde-gallery/abyssal-wave.png) |
+| AbyssGreen | ![AbyssGreen](/nix-dotfiles/hyde-gallery/abyssgreen.png) |
+| Amethyst-Aura | ![Amethyst-Aura](/nix-dotfiles/hyde-gallery/amethyst-aura.png) |
+| AncientAliens | ![AncientAliens](/nix-dotfiles/hyde-gallery/ancientaliens.png) |
+| Another World | ![Another World](/nix-dotfiles/hyde-gallery/another-world.png) |
+| Bad Blood | ![Bad Blood](/nix-dotfiles/hyde-gallery/bad-blood.png) |
+| BlueSky | ![BlueSky](/nix-dotfiles/hyde-gallery/bluesky.png) |
+| Breezy Autumn | ![Breezy Autumn](/nix-dotfiles/hyde-gallery/breezy-autumn.gif) |
+| Cat Latte | ![Cat Latte](/nix-dotfiles/hyde-gallery/cat-latte.png) |
+| Catppuccin Latte | ![Catppuccin Latte](/nix-dotfiles/hyde-gallery/catppuccin-latte.png) |
+| Catppuccin Mocha | ![Catppuccin Mocha](/nix-dotfiles/hyde-gallery/catppuccin-mocha.png) |
+| Catppuccin-Macchiato | ![Catppuccin-Macchiato](/nix-dotfiles/hyde-gallery/catppuccin-macchiato.png) |
+| Code Garden | ![Code Garden](/nix-dotfiles/hyde-gallery/code-garden.png) |
+| Cosmic Blue | ![Cosmic Blue](/nix-dotfiles/hyde-gallery/cosmic-blue.gif) |
+| Crimson Blade | ![Crimson Blade](/nix-dotfiles/hyde-gallery/crimson-blade.png) |
+| Crimson-Blue | ![Crimson-Blue](/nix-dotfiles/hyde-gallery/crimson-blue.png) |
+| Decay Green | ![Decay Green](/nix-dotfiles/hyde-gallery/decay-green.png) |
+| DoomBringers | ![DoomBringers](/nix-dotfiles/hyde-gallery/doombringers.png) |
+| Dracula | ![Dracula](/nix-dotfiles/hyde-gallery/dracula.png) |
+| Edge Runner | ![Edge Runner](/nix-dotfiles/hyde-gallery/edge-runner.png) |
+| Electra | ![Electra](/nix-dotfiles/hyde-gallery/electra.png) |
+| Eternal Arctic | ![Eternal Arctic](/nix-dotfiles/hyde-gallery/eternal-arctic.png) |
+| Ever Blushing | ![Ever Blushing](/nix-dotfiles/hyde-gallery/ever-blushing.jpg) |
+| Frosted Glass | ![Frosted Glass](/nix-dotfiles/hyde-gallery/frosted-glass.png) |
+| Graphite Mono | ![Graphite Mono](/nix-dotfiles/hyde-gallery/graphite-mono.png) |
+| Green Lush | ![Green Lush](/nix-dotfiles/hyde-gallery/green-lush.png) |
+| Greenify | ![Greenify](/nix-dotfiles/hyde-gallery/greenify.png) |
+| Grukai | ![Grukai](/nix-dotfiles/hyde-gallery/grukai.png) |
+| Gruvbox Retro | ![Gruvbox Retro](/nix-dotfiles/hyde-gallery/gruvbox-retro.png) |
+| Hack the Box | ![Hack the Box](/nix-dotfiles/hyde-gallery/hack-the-box.png) |
+| Ice Age | ![Ice Age](/nix-dotfiles/hyde-gallery/ice-age.png) |
+| Joker | ![Joker](/nix-dotfiles/hyde-gallery/joker.png) |
+| LimeFrenzy | ![LimeFrenzy](/nix-dotfiles/hyde-gallery/limefrenzy.png) |
+| Mac OS | ![Mac OS](/nix-dotfiles/hyde-gallery/mac-os.png) |
+| Material Sakura | ![Material Sakura](/nix-dotfiles/hyde-gallery/material-sakura.png) |
+| Monokai | ![Monokai](/nix-dotfiles/hyde-gallery/monokai.png) |
+| Monterey Frost | ![Monterey Frost](/nix-dotfiles/hyde-gallery/monterey-frost.png) |
+| Moonlight | ![Moonlight](/nix-dotfiles/hyde-gallery/moonlight.gif) |
+| Nier | ![Nier](/nix-dotfiles/hyde-gallery/nier.gif) |
+| Nightbrew | ![Nightbrew](/nix-dotfiles/hyde-gallery/nightbrew.png) |
+| Nordic Blue | ![Nordic Blue](/nix-dotfiles/hyde-gallery/nordic-blue.png) |
+| Obsidian-Purple | ![Obsidian-Purple](/nix-dotfiles/hyde-gallery/obsidian-purple.png) |
+| One Dark | ![One Dark](/nix-dotfiles/hyde-gallery/one-dark.png) |
+| Oregairu | ![Oregairu](/nix-dotfiles/hyde-gallery/oregairu.png) |
+| Oxo Carbon | ![Oxo Carbon](/nix-dotfiles/hyde-gallery/oxo-carbon.png) |
+| Paranoid Sweet | ![Paranoid Sweet](/nix-dotfiles/hyde-gallery/paranoid-sweet.png) |
+| Peace Of Mind | ![Peace Of Mind](/nix-dotfiles/hyde-gallery/peace-of-mind.gif) |
+| Pixel Dream | ![Pixel Dream](/nix-dotfiles/hyde-gallery/pixel-dream.png) |
+| Rain Dark | ![Rain Dark](/nix-dotfiles/hyde-gallery/rain-dark.png) |
+| Red Stone | ![Red Stone](/nix-dotfiles/hyde-gallery/red-stone.png) |
+| Rose Pine | ![Rose Pine](/nix-dotfiles/hyde-gallery/rose-pine.png) |
+| Scarlet Night | ![Scarlet Night](/nix-dotfiles/hyde-gallery/scarlet-night.png) |
+| Sci-fi | ![Sci-fi](/nix-dotfiles/hyde-gallery/sci-fi.png) |
+| Solarized Dark | ![Solarized Dark](/nix-dotfiles/hyde-gallery/solarized-dark.png) |
+| Soulsborne | ![Soulsborne](/nix-dotfiles/hyde-gallery/soulsborne.png) |
+| Synth Wave | ![Synth Wave](/nix-dotfiles/hyde-gallery/synth-wave.png) |
+| Timeless Dream | ![Timeless Dream](/nix-dotfiles/hyde-gallery/timeless-dream.gif) |
+| Tokyo Night | ![Tokyo Night](/nix-dotfiles/hyde-gallery/tokyo-night.png) |
+| Tundra | ![Tundra](/nix-dotfiles/hyde-gallery/tundra.png) |
+| Vanta Black | ![Vanta Black](/nix-dotfiles/hyde-gallery/vanta-black.png) |
+| Virtual-Witches | ![Virtual-Witches](/nix-dotfiles/hyde-gallery/virtual-witches.jpg) |
+| Windows 11 | ![Windows 11](/nix-dotfiles/hyde-gallery/windows-11.png) |
+
+Para mas temas y captura completa, revisa `Extra themes`.
