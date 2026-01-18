@@ -418,13 +418,16 @@ generation-sizes: ## Show disk usage per generation
 	fi
 
 current-generation: ## Show current generation details
-	@printf "$(CYAN)📍 Current Generation\n$(NC)"
-	@printf "====================\n"
-	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | tail -1
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)        📍 Current Generation Details              \n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | tail -1 | sed 's/^/  /'
 	@printf "\n$(BLUE)Activation date:$(NC) "
 	@stat -c %y /run/current-system 2>/dev/null | cut -d'.' -f1 || echo "N/A"
 	@printf "$(BLUE)Closure size:$(NC) "
 	@nix path-info -Sh /run/current-system 2>/dev/null | awk '{print $$2}' || echo "N/A"
+	@printf "\n"
 
 # === Git y Respaldo ===
 
