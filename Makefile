@@ -99,7 +99,7 @@ help-examples: ## Show commands with usage examples
 	@printf "$(BLUE)Information:$(NC)\n"
 	@printf "  make status         → System overview\n"
 	@printf "  make health         → Health check\n"
-	@printf "  make version        → System versions\n"
+	@printf "  make info           → System information (includes versions)\n"
 	@printf "  make list-hosts     → Show available hosts\n"
 	@printf "  make git-log        → Recent changes\n\n"
 	@printf "$(BLUE)Maintenance:$(NC)\n"
