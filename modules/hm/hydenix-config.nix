@@ -18,7 +18,7 @@
     lfs.enable = true;                   # Git LFS para archivos grandes
     # GPG signing
     gpg.enable = true;
-    gpg.signingKey = "7D54AEC4";
+    gpg.signingKey = "E16C7206";
   };
 
   # ════════════════════════════════════════════════════════════════════════════
