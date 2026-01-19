@@ -353,34 +353,103 @@ make rebuild
 ---
 
 #### `make test`
-Prueba tu configuración sin activarla permanentemente.
+Prueba tu configuración compilándola y activándola temporalmente sin crear una generación permanente.
 
 ```bash
 make test
 ```
 
 **Qué hace:**
-- Compila y activa temporalmente
-- Los cambios se pierden al reiniciar
-- Útil para experimentar
+- ✅ Compila la configuración completa
+- ✅ Activa la configuración **TEMPORALMENTE** en tu sesión actual
+- ⚠️ Los cambios se **PIERDEN al reiniciar** el sistema
+- ❌ **NO crea** una nueva generación permanente
+
+**¿Por qué es útil?**
+- **Testing seguro:** Permite probar configuraciones experimentales sin riesgo
+- **Sin rollback necesario:** Si algo falla, simplemente reinicias y vuelves a la normalidad
+- **Sin generaciones:** Puedes probar múltiples cambios sin llenar de generaciones el sistema
+- **Verificación rápida:** Comprueba que compila y funciona antes de hacer permanente
 
 **Cuándo usarlo:**
-- Probar configuraciones experimentales
-- Verificar que compila antes de commitear
-- Testing de cambios grandes
+- Probar configuraciones experimentales sin riesgo
+- Verificar que compila antes de commitear cambios importantes
+- Testing de cambios grandes antes de hacerlos permanentes
+- Experimentar con nuevas configuraciones sin consecuencias
+- Probar múltiples variaciones de configuración
 
-**Comparación:**
-```
-make test   → cambios temporales (se pierden al reiniciar)
-make switch → cambios permanentes (nueva generación)
-make boot   → cambios aplicados en próximo boot
-```
+**Comparación con otros comandos:**
+
+| Comando | Compila | Activa | Persiste | Generación |
+|---------|---------|--------|----------|------------|
+| `make build` | ✅ | ❌ | N/A | ❌ |
+| `make test` | ✅ | ✅ | Solo sesión | ❌ |
+| `make switch` | ✅ | ✅ | Permanente | ✅ |
+| `make boot` | ✅ | ✅ | Próximo boot | ✅ |
 
 **Flujo recomendado (rápido y seguro):**
-```
+```bash
+# 1. Probar primero (seguro, temporal)
 make test
+
+# 2. Si funciona bien, hacer permanente
 make switch
+
+# 3. Si algo falla, simplemente reinicia
+# Los cambios de 'test' se pierden automáticamente
 ```
+
+**Casos de uso reales:**
+
+**Ejemplo 1: Probar nueva configuración de Hyprland**
+```bash
+# Editas la configuración
+nvim modules/hm/programs/hyprland.nix
+
+# Pruebas sin riesgo
+make test
+
+# Si funciona bien:
+make switch        # Hace permanente
+
+# Si falla:
+# Solo reinicia, los cambios se pierden automáticamente
+```
+
+**Ejemplo 2: Verificar antes de commit**
+```bash
+# Haces cambios importantes
+nvim flake.nix
+
+# Verificas que compila y funciona
+make test
+
+# Ahora puedes commitear con confianza
+git commit -m "feat: nueva configuración"
+```
+
+**Ejemplo 3: Probar múltiples configuraciones**
+```bash
+# Prueba configuración A
+make test
+# Reinicia para volver a la normalidad
+
+# Prueba configuración B
+make test
+# Reinicia para volver a la normalidad
+
+# Cuando encuentres la mejor configuración:
+make switch        # Hace permanente
+```
+
+**Ventajas:**
+- ✅ Único comando que activa temporalmente (diferente de `make build`)
+- ✅ Permite experimentar sin riesgo
+- ✅ No requiere rollback manual si algo falla
+- ✅ Parte del flujo de trabajo recomendado
+- ✅ No crea generaciones innecesarias
+
+**Nota importante:** A diferencia de `make build` que solo compila sin activar, `make test` compila **Y activa** temporalmente. Esto te permite probar la configuración en un entorno real pero sin consecuencias permanentes.
 
 ---
 
