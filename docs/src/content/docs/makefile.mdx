@@ -96,7 +96,7 @@ target: dependencias ## Descripción (se muestra en help)
 ```
 
 **Componentes:**
-- **target**: nombre del comando (ejemplo: `rebuild`, `test`)
+- **target**: nombre del comando (ejemplo: `switch`, `test`)
 - **dependencias**: otros targets que deben ejecutarse primero (opcional)
 - **@**: suprime el echo del comando (sin @ verías el comando antes del resultado)
 - **##**: comentario especial que aparece en `make help`
@@ -135,7 +135,7 @@ Uso: `@printf "$(GREEN)✅ Éxito\n$(NC)"`
 ### 1. Declaraciones Iniciales
 
 ```makefile
-.PHONY: help rebuild switch test ...
+.PHONY: help switch test ...
 .DEFAULT_GOAL := help
 ```
 
@@ -169,7 +169,7 @@ Tu Makefile tiene un **sistema de ayuda híbrido** con tres niveles para diferen
 
 ### Nivel 1: `make help` - Referencia Rápida
 **¿Qué comandos existen?**
-- Lista completa de 69 comandos
+- Lista completa de 70 comandos
 - Descripción de una línea
 - Para escaneo rápido
 
@@ -256,7 +256,7 @@ make
 ```
 
 **Qué muestra:**
-- Lista completa de 69 comandos
+- Lista completa de 70 comandos
 - Descripción breve de cada uno
 - Organizado por sección
 - Vista rápida de referencia
@@ -338,44 +338,6 @@ make switch
 # 3. Si algo falla, revierte
 make rollback
 ```
-
----
-
-#### `make rebuild`
-Alias directo de `make switch` que reconstruye y aplica la configuración. Es funcionalmente idéntico a `make switch`.
-
-```bash
-make rebuild
-```
-
-**Qué hace:**
-- Ejecuta exactamente lo mismo que `make switch`
-- Compila la configuración completa
-- Aplica los cambios permanentemente
-- Crea una nueva generación del sistema
-
-**Output ejemplo:**
-```
-==================== Rebuild ====================
-🔄 Reconstruyendo configuración de NixOS...
-
-[output del rebuild...]
-
-==================== Completado ======================
-```
-
-**Cuándo usarlo:**
-- Cuando prefieres el nombre "rebuild" por claridad semántica
-- Scripts o alias que esperan el comando `rebuild`
-- Cuando quieres ser explícito sobre que estás reconstruyendo el sistema
-- Compatibilidad con convenciones de otros proyectos
-
-**Diferencias con `make switch`:**
-- **Funcionalmente:** Ninguna diferencia, hacen exactamente lo mismo
-- **Semánticamente:** `rebuild` enfatiza "reconstrucción", `switch` enfatiza "cambio"
-- **Uso:** `switch` es más común, `rebuild` puede ser más claro para algunos usuarios
-
-**Nota:** Este comando es un alias puro. Si necesitas funcionalidad adicional (como validación), usa `make safe-switch` en su lugar.
 
 ---
 
@@ -1645,59 +1607,6 @@ La salida de `nix store diff-closures` usa una notación específica:
 
 ---
 
-#### `make restore` ⚠️ NO IMPLEMENTADO
-Este comando **no está implementado** en el Makefile actual. Para restaurar versiones anteriores, usa las alternativas documentadas abajo.
-
-**Alternativas disponibles:**
-
-**Opción 1: Rollback a generación anterior del sistema**
-```bash
-make rollback
-```
-- Revierte la configuración del sistema a la generación anterior
-- Cambios disponibles inmediatamente
-- No afecta archivos de configuración editados manualmente
-
-**Opción 2: Restaurar archivos específicos con Git**
-```bash
-# Ver historial de cambios
-git log --oneline
-
-# Restaurar archivo específico de un commit anterior
-git checkout <commit-hash> -- path/to/file.nix
-
-# Aplicar cambios
-make switch
-```
-
-**Opción 3: Restaurar múltiples archivos**
-```bash
-# Restaurar todos los archivos de un commit anterior
-git checkout <commit-hash> -- .
-
-# Aplicar cambios
-make switch
-```
-
-**Opción 4: Seleccionar generación en GRUB**
-```bash
-# Listar generaciones disponibles
-make list-generations
-
-# Reiniciar y en GRUB seleccionar generación anterior
-# (más atrás que la inmediatamente anterior)
-```
-
-**¿Por qué no está implementado?**
-- `make rollback` cubre el caso más común (volver a generación anterior)
-- Git es más flexible para restaurar archivos específicos
-- Evita confusión sobre qué restaura exactamente
-- Mantiene el Makefile simple y enfocado
-
-**Recomendación:** Usa `make rollback` para revertir cambios del sistema, y Git para restaurar archivos de configuración específicos.
-
----
-
 <a id="cmd-git"></a>
 ### 🔧 Git Integration
 
@@ -1810,7 +1719,7 @@ Executing complete workflow:
   1. Stage changes
   2. Commit changes
   3. Push to remote
-  4. Rebuild and switch
+  4. Build and switch
 
 [ejecuta cada paso con su formato visual]
 
@@ -1823,7 +1732,7 @@ Executing complete workflow:
 1. `make git-add` - Stage cambios
 2. `make git-commit` - Commit con timestamp
 3. `make git-push` - Push al remoto
-4. `make switch` - Rebuild y switch
+4. `make switch` - Build y switch
 
 **⚠️ Úsalo con cuidado:** Es conveniente pero hace commits automáticos. Mejor para cambios pequeños.
 
@@ -2103,7 +2012,7 @@ Jan 18 13:29:23 hydenix ghostty[206074]: info(stream): OSC 1 received...
 **¿Para qué sirve?**
 - **Monitoreo en tiempo real:** Ver eventos del sistema conforme ocurren
 - **Debugging activo:** Identificar problemas mientras suceden
-- **Seguimiento durante rebuilds:** Observar logs mientras se ejecuta `make switch` o `make rebuild` en otra terminal
+- **Seguimiento durante builds:** Observar logs mientras se ejecuta `make switch` en otra terminal
 - **Análisis de servicios:** Ver cómo responden los servicios a cambios o eventos
 - **Troubleshooting interactivo:** Detectar patrones o errores repetitivos en tiempo real
 
@@ -2114,7 +2023,7 @@ Jan 18 13:29:23 hydenix ghostty[206074]: info(stream): OSC 1 received...
 - Instrucciones claras para salir (`Ctrl+C`)
 
 **Cuándo usarlo:**
-- Durante un `make switch` o `make rebuild` para ver qué está pasando
+- Durante un `make switch` para ver qué está pasando
 - Cuando un servicio no funciona correctamente y necesitas ver sus logs en vivo
 - Para monitorear el sistema después de hacer cambios de configuración
 - Cuando sospechas que hay actividad sospechosa o errores recurrentes
@@ -3631,8 +3540,8 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Ayuda y Documentación (10)
 `help`, `help-examples`, `docs-local`, `docs-dev`, `docs-build`, `docs-install`, `docs-clean`, `readme`, `tutorial`
 
-### Gestión del Sistema (Rebuild/Switch) (11)
-`rebuild`, `switch`, `safe-switch`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `quick`, `emergency`
+### Gestión del Sistema (Rebuild/Switch) (10)
+`switch`, `safe-switch`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `quick`, `emergency`
 
 ### Limpieza y Optimización (9)
 `clean`, `clean-week`, `clean-conservative`, `deep-clean`, `clean-generations`, `gc`, `optimize`, `clean-result`, `fix-store`
@@ -3661,7 +3570,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Plantillas y Otros (4)
 `hardware-scan`, `fix-permissions`, `fix-git-permissions`
 
-**Total: 72 comandos disponibles** 🎉
+**Total: 70 comandos disponibles** 🎉
 
 ---
 
@@ -3697,7 +3606,7 @@ Esto te permite encontrar información de diferentes formas según tu necesidad:
 
 *Última actualización: 2026-01-19*  
 *Versión: 5.2 - Comandos de Documentación Mejorados*  
-*Total de comandos: 72*  
+*Total de comandos: 70*  
 *Sistema de ayuda: 2 niveles (help, help-examples)*
 *Fases completadas: 100% (FASE 1, 2, 3 + extras + docs)*  
 *Mantenedor: ludus*  

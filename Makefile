@@ -1,7 +1,7 @@
 # NixOS Management Makefile
 # Place this in your flake directory (where flake.nix is located)
 
-.PHONY: help help-examples rebuild switch test build clean gc update check format lint restore test-network
+.PHONY: help help-examples switch test build clean gc update check format lint test-network
 
 # Default target
 .DEFAULT_GOAL := help
@@ -42,7 +42,7 @@ help: ## Show this help message
 	} \
 	END { \
 		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev docs-build docs-install docs-clean"); \
-		print_cat("Gestión del Sistema (Rebuild/Switch)", "rebuild switch safe-switch test build dry-run boot validate debug quick emergency"); \
+		print_cat("Gestión del Sistema (Rebuild/Switch)", "switch safe-switch test build dry-run boot validate debug quick emergency"); \
 		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean clean-generations gc optimize clean-result fix-store"); \
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input diff-update upgrade show flake-check diff-flake"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
@@ -234,13 +234,6 @@ docs-install: ## Install/update documentation dependencies
 
 # === Gestión del Sistema (Rebuild/Switch) ===
 
-rebuild: ## Full rebuild and switch (alias for switch)
-	@printf "\n$(BLUE)==================== Rebuild ====================\n$(NC)"
-	@printf "$(BLUE)🔄 Reconstruyendo configuración de NixOS...\n$(NC)"
-	@printf "\n"
-	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
-	@printf "\n$(GREEN)==================== Completado ======================\n$(NC)"
-	@printf "\n"
 switch: ## Build and switch to new configuration
 	@printf "\n$(BLUE)==================== Switch ====================\n$(NC)"
 	@printf "$(BLUE)🔄 Git add, build y switch...\n$(NC)"
@@ -737,7 +730,7 @@ git-status: ## Show git status with GitHub CLI
 		done; \
 	fi
 	@printf "\n"
-save: ## Quick save: add, commit, push, and rebuild
+save: ## Quick save: add, commit, push, and switch
 	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)              💾 Quick Save Workflow                \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -745,7 +738,7 @@ save: ## Quick save: add, commit, push, and rebuild
 	@printf "  1. Stage changes\n"
 	@printf "  2. Commit changes\n"
 	@printf "  3. Push to remote\n"
-	@printf "  4. Rebuild and switch\n"
+	@printf "  4. Build and switch\n"
 	@printf "\n"
 	@$(MAKE) --no-print-directory git-add
 	@$(MAKE) --no-print-directory git-commit
