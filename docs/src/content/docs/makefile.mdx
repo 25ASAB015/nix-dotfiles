@@ -650,18 +650,143 @@ make validate
 - Puede integrarse en scripts automatizados
 
 #### `make safe-switch`
-Combo: valida y luego hace switch (la opción más segura).
+Valida la configuración y luego aplica los cambios de forma segura. Es la opción más segura para aplicar cambios importantes.
 
 ```bash
 make safe-switch
-# Valida primero, solo hace switch si todo está bien
 ```
 
-**Diferencias con `make switch`:**
-- `make switch` → Aplica directo (rápido)
-- `make safe-switch` → Valida primero, luego aplica (seguro)
+**Qué hace:**
+1. ✅ Ejecuta `make validate` primero (3 chequeos):
+   - **1/3:** Verifica sintaxis del flake (`flake.nix`, `flake.lock`)
+   - **2/3:** Verifica evaluación de configuración NixOS
+   - **3/3:** Busca problemas comunes con `statix` (si está instalado)
 
-**Ver:** [Flujo de Trabajo Recomendado](#flujo-de-trabajo-recomendado-nuevo) para saber cuándo usar cada uno.
+2. ✅ Si `validate` pasa, ejecuta `make switch`:
+   - `git add .` - Staging de cambios
+   - Compila la configuración
+   - Activa permanentemente
+   - Crea nueva generación
+
+3. ⚠️ Si `validate` falla:
+   - **NO ejecuta** `switch`
+   - Muestra el error específico
+   - Te ahorra tiempo y problemas
+
+**¿Por qué es útil?**
+- **Seguridad automática:** Valida ANTES de aplicar automáticamente
+- **Prevención de errores:** Detecta problemas antes de compilar
+- **Ahorra tiempo:** Evita builds de minutos que fallarían por errores de sintaxis
+- **Conveniencia:** Todo-en-uno (valida + aplica en un comando)
+- **Mejores prácticas:** Enseña a validar antes de aplicar
+
+**Cuándo usarlo:**
+- Cambios importantes o complejos (módulos nuevos, múltiples archivos)
+- Después de `make update` (cuando hay cambios en `flake.lock`)
+- Cuando no estás 100% seguro de tus cambios
+- Imports nuevos o modificados
+- Modificaciones en archivos críticos del sistema
+
+**Comparación con otros comandos:**
+
+| Comando | Valida | Compila | Activa | Generación |
+|---------|--------|---------|--------|------------|
+| `make validate` | ✅ | ❌ | ❌ | ❌ |
+| `make switch` | ❌ | ✅ | ✅ | ✅ |
+| `make safe-switch` | ✅ | ✅ | ✅ | ✅ |
+
+**Diferencias con `make switch`:**
+
+**`make switch`:**
+- ✅ Más rápido (sin validación)
+- ✅ Para cambios pequeños y confiables
+- ❌ Puede fallar después de compilar
+- ❌ Requiere que ejecutes `validate` manualmente
+
+**`make safe-switch`:**
+- ✅ Más seguro (valida primero)
+- ✅ Detecta errores antes de compilar
+- ✅ Todo-en-uno (un solo comando)
+- ✅ Perfecto para cambios importantes
+- ⚠️ Un poco más lento (ejecuta `validate` primero)
+
+**Casos de uso reales:**
+
+**Ejemplo 1: Después de actualizar flake inputs**
+```bash
+# Actualizas los inputs del flake
+make update
+
+# Valida cambios + aplica de forma segura
+make safe-switch
+# Si hay incompatibilidades, validate las detecta
+# antes de intentar compilar
+```
+
+**Ejemplo 2: Agregar nuevo módulo completo**
+```bash
+# Creas un nuevo módulo
+nvim modules/hm/programs/nuevo-programa.nix
+
+# Agregas el import en flake.nix
+nvim flake.nix
+
+# Valida sintaxis + aplica
+make safe-switch
+# Detecta si el módulo tiene errores antes de aplicar
+```
+
+**Ejemplo 3: Cambios en múltiples archivos**
+```bash
+# Editas varios archivos relacionados
+nvim flake.nix
+nvim hosts/hydenix/configuration.nix
+nvim modules/hm/default.nix
+
+# Valida que todos los cambios son compatibles + aplica
+make safe-switch
+```
+
+**Ejemplo 4: Cuando no estás seguro**
+```bash
+# Hiciste cambios pero no estás 100% seguro
+make safe-switch
+# Más seguro que switch directo
+# Si hay problemas, validate los detecta primero
+```
+
+**Flujos de trabajo:**
+
+**Flujo 1: Desarrollo Iterativo (más rápido)**
+```bash
+make validate    # Validar primero
+make switch      # Aplicar si pasa
+```
+
+**Flujo 2: Cambios Importantes (más seguro) ⭐ RECOMENDADO**
+```bash
+make safe-switch # Todo-en-uno: valida + aplica
+```
+
+**Flujo 3: Testing antes de permanente**
+```bash
+make test        # Probar temporalmente
+make safe-switch # Si funciona, hacer permanente
+```
+
+**Ventajas:**
+- ✅ Seguridad automática sin pasos adicionales
+- ✅ Conveniencia: un solo comando en lugar de dos
+- ✅ Previene errores antes de aplicar cambios
+- ✅ Ahorra tiempo detectando problemas temprano
+- ✅ Sigue mejores prácticas de desarrollo
+- ✅ No aplica si hay errores (fail-safe)
+
+**Recomendación de uso:**
+- **`make switch`** → Para cambios pequeños y frecuentes (desarrollo iterativo)
+- **`make safe-switch`** → Para cambios importantes o cuando no estás seguro
+
+**Ver también:** [Flujo de Trabajo Recomendado](#flujo-recomendado) para más detalles sobre cuándo usar cada comando.
 
 #### `make health`
 Chequeo rápido de salud del sistema que verifica aspectos críticos sin operaciones costosas.
