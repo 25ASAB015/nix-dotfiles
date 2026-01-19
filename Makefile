@@ -1,7 +1,7 @@
 # NixOS Management Makefile
 # Place this in your flake directory (where flake.nix is located)
 
-.PHONY: help help-examples switch test build clean gc update check format lint test-network
+.PHONY: help help-examples switch test build clean update check format lint test-network
 
 # Default target
 .DEFAULT_GOAL := help
@@ -43,7 +43,7 @@ help: ## Show this help message
 	END { \
 		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev docs-build docs-install docs-clean"); \
 		print_cat("Gestión del Sistema (Rebuild/Switch)", "switch safe-switch test build dry-run boot validate debug quick emergency"); \
-		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean clean-generations gc optimize clean-result fix-store"); \
+		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean optimize clean-result fix-store"); \
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input diff-update upgrade show flake-check diff-flake"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save"); \
@@ -422,24 +422,6 @@ deep-clean: ## Aggressive cleanup (removes ALL old generations)
 	else \
 		printf "$(BLUE)ℹ️  Deep cleanup cancelled\n$(NC)"; \
 	fi
-clean-generations: ## Remove system generations older than 14 days (keeps ability to rollback recent changes)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🗑️  Limpieza de Generaciones (14 días)      \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@printf "$(BLUE)Eliminando generaciones del sistema mayores a 14 días...\n$(NC)"
-	@printf "$(GREEN)✓ Se mantienen las generaciones recientes para capacidad de rollback.\n$(NC)"
-	@printf "$(BLUE)Balance entre seguridad y espacio liberado.\n$(NC)"
-	@printf "\n"
-	sudo nix-env --delete-generations --profile /nix/var/nix/profiles/system +14
-	sudo nix-collect-garbage
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Generaciones antiguas limpiadas (mantenidos últimos 14 días)\n$(NC)"
-	@printf "$(BLUE)Usa 'make list-generations' para ver las generaciones restantes\n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-gc: ## Garbage collect (alias for clean)
-	@$(MAKE) --no-print-directory clean
 optimize: ## Optimize nix store
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🚀 Optimización del Nix Store             \n$(NC)"

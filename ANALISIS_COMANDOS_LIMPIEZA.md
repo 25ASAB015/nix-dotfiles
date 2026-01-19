@@ -2,7 +2,7 @@
 
 ## Resumen Ejecutivo
 
-Los comandos de limpieza (`clean`, `clean-week`, `clean-conservative`, `clean-generations`, `gc`, `optimize`) son **fundamentales** para mantener un sistema NixOS saludable, eficiente y funcional. Sin ellos, el sistema acumularía indefinidamente generaciones y paquetes, consumiendo espacio en disco y degradando el rendimiento.
+Los comandos de limpieza (`clean`, `clean-week`, `clean-conservative`, `optimize`) son **fundamentales** para mantener un sistema NixOS saludable, eficiente y funcional. Sin ellos, el sistema acumularía indefinidamente generaciones y paquetes, consumiendo espacio en disco y degradando el rendimiento.
 
 ---
 
@@ -67,7 +67,6 @@ Los comandos de limpieza (`clean`, `clean-week`, `clean-conservative`, `clean-ge
 **Solución:** Múltiples comandos para diferentes necesidades:
 - `clean-conservative` (90 días) - Máxima seguridad
 - `clean` (30 días) - Balance general
-- `clean-generations` (14 días) - Balance espacio/seguridad
 - `clean-week` (7 días) - Más agresivo
 - `optimize` - Optimización sin pérdida de datos
 
@@ -134,29 +133,6 @@ Los comandos de limpieza (`clean`, `clean-week`, `clean-conservative`, `clean-ge
 - Sistemas de producción
 - Primera limpieza del sistema
 - Cuando la estabilidad es prioritaria sobre espacio
-
----
-
-### `make clean-generations` (14 días) - ⭐⭐⭐⭐
-
-**Importancia:** MEDIA-ALTA
-- Balance excelente entre espacio y seguridad
-- 14 días cubre la mayoría de necesidades de rollback
-- Más espacio que conservative, más seguro que week
-
-**Cuándo es crítico:**
-- Mantenimiento regular en sistemas personales
-- Después de estabilizar cambios importantes
-- Cuando quieres balance óptimo
-
----
-
-### `make gc` (alias) - ⭐⭐⭐⭐
-
-**Importancia:** ALTA (por ser alias común)
-- Proporciona nombre familiar para usuarios de otros sistemas
-- Mismo poder que `make clean`
-- Facilita adopción para nuevos usuarios
 
 ---
 

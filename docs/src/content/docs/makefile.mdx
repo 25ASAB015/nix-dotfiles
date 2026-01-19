@@ -1167,17 +1167,6 @@ make optimize
 
 ---
 
-#### `make gc`
-Alias de `make clean` (garbage collection estándar). Mismo comportamiento que `make clean`.
-
-```bash
-make gc
-```
-
-**Nota:** `gc` es un alias común en sistemas Unix para "garbage collection". Este comando simplemente llama a `make clean` internamente.
-
----
-
 #### `make clean-week`
 Limpieza más agresiva - mantiene solo últimos 7 días de historial.
 
@@ -1245,42 +1234,6 @@ make clean-conservative
 
 ---
 
-#### `make clean-generations`
-Elimina generaciones específicas del sistema, mantiene últimos 14 días.
-
-```bash
-make clean-generations
-```
-
-**Qué hace:**
-- Elimina generaciones del sistema mayores a 14 días
-- Mantiene las generaciones recientes para rollback
-- Ejecuta garbage collection después de eliminar generaciones
-
-**Balance perfecto:**
-- Más espacio que `clean-conservative` (90 días)
-- Más seguridad que `clean-week` (7 días)
-- 14 días es suficiente para la mayoría de casos de uso
-
-**Cuándo usarlo:**
-- **Mantenimiento regular**: Cuando quieres un balance entre espacio y seguridad
-- **Después de estabilizar cambios**: Cuando has probado cambios y quieres limpiar generaciones de prueba antiguas
-- **Sistema personal**: Donde 14 días de historial es suficiente
-
-**Ver generaciones antes de limpiar:**
-```bash
-# Ver qué generaciones tienes
-make list-generations
-
-# Limpiar generaciones antiguas
-make clean-generations
-
-# Verificar qué quedó
-make list-generations
-```
-
----
-
 #### `make optimize`
 Optimiza el Nix store encontrando archivos duplicados y convirtiéndolos en hardlinks.
 
@@ -1332,7 +1285,6 @@ make info
 |---------|----------------|------------------|-----------|----------------|
 | `make clean-conservative` | 90 días | 2-10 GB | ⭐⭐⭐⭐⭐ Máxima | Producción, primera vez |
 | `make clean` | 30 días | 5-20 GB | ⭐⭐⭐⭐ Alta | Uso general, rutina mensual |
-| `make clean-generations` | 14 días | Variable | ⭐⭐⭐ Media-Alta | Balance espacio/seguridad |
 | `make clean-week` | 7 días | 10-40 GB | ⭐⭐ Media | Desarrollo, poco espacio |
 | `make optimize` | N/A (no elimina) | 1-5 GB | ⭐⭐⭐⭐⭐ Seguro | Después de limpieza, rutina |
 
@@ -1416,12 +1368,6 @@ make clean-week
 
 # Limpieza conservadora (90 días) - más segura
 make clean-conservative
-
-# Limpieza de generaciones (14 días) - balance
-make clean-generations
-
-# Garbage collection (alias de clean)
-make gc
 
 # Optimizar store (no elimina, solo optimiza)
 make optimize
@@ -3744,8 +3690,8 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Gestión del Sistema (Rebuild/Switch) (10)
 `switch`, `safe-switch`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `quick`, `emergency`
 
-### Limpieza y Optimización (9)
-`clean`, `clean-week`, `clean-conservative`, `deep-clean`, `clean-generations`, `gc`, `optimize`, `clean-result`, `fix-store`
+### Limpieza y Optimización (7)
+`clean`, `clean-week`, `clean-conservative`, `deep-clean`, `optimize`, `clean-result`, `fix-store`
 
 ### Actualizaciones y Flakes (9)
 `update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `diff-update`, `upgrade`, `show`, `flake-check`, `diff-flake`
