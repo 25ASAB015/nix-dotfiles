@@ -362,20 +362,53 @@ emergency: ## Emergency rebuild with maximum verbosity
 # === Limpieza y Optimización ===
 
 clean: ## Clean build artifacts older than 30 days
-	@printf "$(YELLOW)🧹 Cleaning build artifacts older than 30 days...\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🧹 Limpieza Estándar (30 días)            \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Limpiando artefactos de construcción mayores a 30 días...\n$(NC)"
+	@printf "$(YELLOW)Esto eliminará generaciones del sistema y paquetes no referenciados.\n$(NC)"
+	@printf "$(BLUE)Se mantendrán las generaciones de los últimos 30 días para rollback.\n$(NC)"
+	@printf "\n"
 	sudo nix-collect-garbage --delete-older-than 30d
 	nix-collect-garbage --delete-older-than 30d
-	@printf "$(GREEN)✅ Cleanup complete (kept last 30 days)\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Limpieza completada (mantenidos últimos 30 días)\n$(NC)"
+	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 clean-week: ## Clean build artifacts older than 7 days
-	@printf "$(YELLOW)🧹 Cleaning build artifacts older than 7 days...\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🧹 Limpieza Semanal (7 días)              \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Limpiando artefactos de construcción mayores a 7 días...\n$(NC)"
+	@printf "$(YELLOW)⚠️  Solo podrás hacer rollback a generaciones de la última semana.\n$(NC)"
+	@printf "$(BLUE)Útil cuando necesitas liberar espacio rápidamente.\n$(NC)"
+	@printf "\n"
 	sudo nix-collect-garbage --delete-older-than 7d
 	nix-collect-garbage --delete-older-than 7d
-	@printf "$(GREEN)✅ Cleanup complete (kept last 7 days)\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Limpieza completada (mantenidos últimos 7 días)\n$(NC)"
+	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 clean-conservative: ## Clean build artifacts older than 90 days (very safe)
-	@printf "$(YELLOW)🧹 Conservative cleanup - removing items older than 90 days...\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🧹 Limpieza Conservadora (90 días)         \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Limpiando artefactos de construcción mayores a 90 días...\n$(NC)"
+	@printf "$(GREEN)✓ Esta es la opción más segura - mantiene 90 días de historial.\n$(NC)"
+	@printf "$(BLUE)Recomendado para sistemas de producción o primera limpieza.\n$(NC)"
+	@printf "\n"
 	sudo nix-collect-garbage --delete-older-than 90d
 	nix-collect-garbage --delete-older-than 90d
-	@printf "$(GREEN)✅ Conservative cleanup complete (kept last 90 days)\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Limpieza conservadora completada (mantenidos últimos 90 días)\n$(NC)"
+	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 deep-clean: ## Aggressive cleanup (removes ALL old generations)
 	@printf "$(RED)🗑️  Performing deep cleanup...\n$(NC)"
 	@printf "$(YELLOW)⚠️  WARNING: This will remove ALL old system generations!\n$(NC)"
@@ -390,17 +423,39 @@ deep-clean: ## Aggressive cleanup (removes ALL old generations)
 		printf "$(BLUE)ℹ️  Deep cleanup cancelled\n$(NC)"; \
 	fi
 clean-generations: ## Remove system generations older than 14 days (keeps ability to rollback recent changes)
-	@printf "$(YELLOW)🗑️  Removing system generations older than 14 days...\n$(NC)"
-	@printf "$(BLUE)ℹ️  This keeps recent generations for rollback capability\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🗑️  Limpieza de Generaciones (14 días)      \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Eliminando generaciones del sistema mayores a 14 días...\n$(NC)"
+	@printf "$(GREEN)✓ Se mantienen las generaciones recientes para capacidad de rollback.\n$(NC)"
+	@printf "$(BLUE)Balance entre seguridad y espacio liberado.\n$(NC)"
+	@printf "\n"
 	sudo nix-env --delete-generations --profile /nix/var/nix/profiles/system +14
 	sudo nix-collect-garbage
-	@printf "$(GREEN)✅ Old generations cleaned (kept last 14 days)\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Generaciones antiguas limpiadas (mantenidos últimos 14 días)\n$(NC)"
+	@printf "$(BLUE)Usa 'make list-generations' para ver las generaciones restantes\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 gc: ## Garbage collect (alias for clean)
-	@make clean
+	@$(MAKE) --no-print-directory clean
 optimize: ## Optimize nix store
-	@printf "$(BLUE)🚀 Optimizing nix store...\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🚀 Optimización del Nix Store             \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Optimizando el Nix store...\n$(NC)"
+	@printf "$(YELLOW)Esto encontrará archivos idénticos y los convertirá en hardlinks.\n$(NC)"
+	@printf "$(BLUE)Ahorra espacio sin eliminar nada - proceso seguro.\n$(NC)"
+	@printf "$(YELLOW)⏱️  Esto puede tomar de 5 a 30 minutos dependiendo del tamaño del store.\n$(NC)"
+	@printf "\n"
 	sudo nix-store --optimise
-	@printf "$(GREEN)✅ Store optimization complete\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Optimización del store completada\n$(NC)"
+	@printf "$(BLUE)Usa 'make info' para verificar el espacio ahorrado\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 clean-result: ## Remove result symlinks
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🧹 Clean Result Symlinks                  \n$(NC)"

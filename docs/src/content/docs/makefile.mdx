@@ -1113,123 +1113,324 @@ make test-network
 <a id="cmd-maintenance"></a>
 ### 🧹 Maintenance and Cleanup
 
-NixOS guarda **TODAS** las versiones antiguas. Esto permite rollbacks pero consume espacio.
+Los comandos de limpieza son **esenciales** para mantener tu sistema NixOS funcionando de manera eficiente. NixOS guarda **TODAS** las versiones antiguas de paquetes y configuraciones, lo que permite rollbacks increíblemente útiles pero consume espacio en disco.
+
+#### ¿Por qué son importantes estos comandos?
+
+1. **Gestión de espacio en disco**: NixOS acumula generaciones y paquetes que pueden ocupar decenas o cientos de GB
+2. **Rendimiento del sistema**: Un store grande puede ralentizar operaciones de búsqueda y construcción
+3. **Mantenimiento preventivo**: Limpieza regular previene problemas de espacio antes de que ocurran
+4. **Optimización**: Los comandos de optimización mejoran el uso del espacio sin perder funcionalidad
+5. **Flexibilidad**: Diferentes niveles de limpieza permiten balancear seguridad vs espacio según necesidades
+
+---
 
 #### `make clean`
-Limpieza estándar - elimina generaciones de más de 30 días.
+Limpieza estándar - elimina generaciones y paquetes de más de 30 días.
 
 ```bash
 make clean
 ```
 
 **Qué elimina:**
-- System generations > 30 días
-- User generations > 30 días
-- Packages no referenciados
+- Generaciones del sistema mayores a 30 días
+- Generaciones de usuario mayores a 30 días
+- Paquetes no referenciados por ninguna generación activa
+- Build artifacts antiguos
 
-**Espacio liberado típico:** 5-20 GB
+**Espacio liberado típico:** 5-20 GB (depende del uso del sistema)
+
+**Qué mantiene:**
+- Últimas 30 días de generaciones (permite rollback reciente)
+- Todos los paquetes referenciados por generaciones activas
 
 **Cuándo usarlo:**
-- Una vez al mes
-- Cuando `/nix/store` está grande (ver con `make info`)
-- Mantenimiento rutinario
+- **Rutina mensual**: Como parte del mantenimiento regular del sistema
+- **Antes de actualizaciones grandes**: Libera espacio para nuevas construcciones
+- **Cuando `/nix/store` está grande**: Verifica con `make info` el tamaño del store
+- **Después de muchas instalaciones**: Limpia paquetes temporales y artefactos
+
+**Flujo recomendado:**
+```bash
+# Ver estado actual
+make info
+
+# Limpiar
+make clean
+
+# Verificar espacio liberado
+make info
+
+# Opcional: optimizar después de limpiar
+make optimize
+```
 
 ---
 
 #### `make gc`
-Alias de `make clean` (garbage collection estándar).
+Alias de `make clean` (garbage collection estándar). Mismo comportamiento que `make clean`.
 
 ```bash
 make gc
 ```
 
+**Nota:** `gc` es un alias común en sistemas Unix para "garbage collection". Este comando simplemente llama a `make clean` internamente.
+
 ---
 
 #### `make clean-week`
-Limpieza más agresiva - mantiene solo últimos 7 días.
+Limpieza más agresiva - mantiene solo últimos 7 días de historial.
 
 ```bash
 make clean-week
 ```
 
-**⚠️ Cuidado:** Solo podrás hacer rollback a generaciones de última semana.
+**Qué elimina:**
+- Generaciones mayores a 7 días
+- Paquetes no referenciados
+- Build artifacts antiguos
+
+**Espacio liberado típico:** 10-40 GB (más que `make clean`)
+
+**⚠️ Cuidado importante:**
+- Solo podrás hacer rollback a generaciones de la última semana
+- Si necesitas volver a una configuración de hace más de 7 días, no podrás
+- Útil cuando necesitas espacio rápidamente pero mantienes algo de seguridad
 
 **Cuándo usarlo:**
-- Poco espacio en disco
-- Has hecho muchos rebuilds recientes
-- Testing intensivo
+- **Poco espacio en disco**: Necesitas liberar espacio rápidamente
+- **Muchos rebuilds recientes**: Has estado experimentando y tienes muchas generaciones nuevas
+- **Testing intensivo**: Has hecho muchas pruebas y las generaciones antiguas no son críticas
+- **Sistema de desarrollo**: Donde la estabilidad a largo plazo no es crítica
+
+**Ejemplo de uso:**
+```bash
+# Verificar espacio antes
+make info
+
+# Limpieza semanal
+make clean-week
+
+# Verificar espacio liberado
+make info
+```
 
 ---
 
 #### `make clean-conservative`
-Limpieza muy segura - mantiene últimos 90 días.
+Limpieza muy segura - mantiene últimos 90 días de historial.
 
 ```bash
 make clean-conservative
 ```
 
-**Cuándo usarlo:**
-- Primera vez que limpias
-- Quieres máxima seguridad
-- Sistema de producción crítico
+**Qué elimina:**
+- Solo generaciones y paquetes mayores a 90 días
+- Mantiene 3 meses completos de historial
 
----
+**Espacio liberado típico:** 2-10 GB (menos que `make clean` pero más seguro)
 
-#### `make deep-clean`
-Elimina **TODAS** las generaciones antiguas. ⚠️ **IRREVERSIBLE**
-
-```bash
-make deep-clean
-# Pedirá confirmación: escribir "yes"
-```
-
-**⚠️ ADVERTENCIA:**
-- No podrás hacer rollback a NINGUNA generación anterior
-- Libera máximo espacio posible
-- Solo si estás 100% seguro de configuración actual
+**Ventajas:**
+- Máxima seguridad para rollback
+- Permite volver a configuraciones de hasta 3 meses atrás
+- Ideal para sistemas donde la estabilidad es crítica
 
 **Cuándo usarlo:**
-- Emergencia de espacio en disco
-- Después de migración exitosa
-- Sistema funcionando perfectamente y sin cambios recientes
+- **Primera vez que limpias**: Si nunca has limpiado antes, empieza con esto
+- **Sistema de producción crítico**: Donde necesitas máxima capacidad de rollback
+- **Quieres máxima seguridad**: Prefieres mantener más historial que liberar espacio
+- **Después de cambios importantes**: Cuando quieres mantener un historial largo por seguridad
+
+**Recomendación:** Si no estás seguro de qué comando usar, empieza con `make clean-conservative`.
 
 ---
 
 #### `make clean-generations`
-Elimina generaciones específicas, mantiene últimos 14 días.
+Elimina generaciones específicas del sistema, mantiene últimos 14 días.
 
 ```bash
 make clean-generations
 ```
 
-Balance entre seguridad y espacio.
+**Qué hace:**
+- Elimina generaciones del sistema mayores a 14 días
+- Mantiene las generaciones recientes para rollback
+- Ejecuta garbage collection después de eliminar generaciones
+
+**Balance perfecto:**
+- Más espacio que `clean-conservative` (90 días)
+- Más seguridad que `clean-week` (7 días)
+- 14 días es suficiente para la mayoría de casos de uso
+
+**Cuándo usarlo:**
+- **Mantenimiento regular**: Cuando quieres un balance entre espacio y seguridad
+- **Después de estabilizar cambios**: Cuando has probado cambios y quieres limpiar generaciones de prueba antiguas
+- **Sistema personal**: Donde 14 días de historial es suficiente
+
+**Ver generaciones antes de limpiar:**
+```bash
+# Ver qué generaciones tienes
+make list-generations
+
+# Limpiar generaciones antiguas
+make clean-generations
+
+# Verificar qué quedó
+make list-generations
+```
 
 ---
 
 #### `make optimize`
-Optimiza el Nix store (hardlinks de archivos duplicados).
+Optimiza el Nix store encontrando archivos duplicados y convirtiéndolos en hardlinks.
 
 ```bash
 make optimize
 ```
 
 **Qué hace:**
-- Encuentra archivos idénticos en `/nix/store`
-- Los convierte en hardlinks
-- Ahorra espacio sin eliminar nada
+- Escanea todo el `/nix/store` buscando archivos idénticos
+- Convierte duplicados en hardlinks (mismo archivo, múltiples referencias)
+- **No elimina nada** - solo optimiza el uso del espacio
+- Proceso completamente seguro y reversible
 
-**Tiempo:** 5-30 minutos dependiendo del tamaño del store
+**Espacio ahorrado típico:** 1-5 GB (depende de cuántos paquetes compartan archivos)
+
+**Tiempo de ejecución:** 
+- 5-15 minutos en sistemas pequeños (< 50 GB)
+- 15-30 minutos en sistemas medianos (50-150 GB)
+- 30-60+ minutos en sistemas grandes (> 150 GB)
 
 **Cuándo usarlo:**
-- Después de muchas instalaciones
-- Una vez al mes
-- Complemento de `make clean`
+- **Después de muchas instalaciones**: Cuando has instalado muchos paquetes nuevos
+- **Rutina mensual**: Como parte del mantenimiento regular
+- **Complemento de limpieza**: Después de `make clean` para maximizar espacio
+- **Antes de hacer backup**: Optimiza antes de respaldar el store
 
-**Ejemplo de uso combinado:**
+**Ejemplo de flujo completo:**
 ```bash
-make clean      # Elimina generaciones antiguas
-make optimize   # Optimiza lo que queda
-make info       # Verifica espacio liberado
+# 1. Ver estado inicial
+make info
+
+# 2. Limpiar generaciones antiguas
+make clean
+
+# 3. Optimizar lo que queda
+make optimize
+
+# 4. Verificar espacio final
+make info
+```
+
+**Nota importante:** Este proceso puede tomar tiempo, especialmente en stores grandes. Es seguro ejecutarlo en segundo plano, pero puede ralentizar otras operaciones de Nix mientras se ejecuta.
+
+---
+
+## Comparación de Comandos de Limpieza
+
+| Comando | Días mantenidos | Espacio liberado | Seguridad | Uso recomendado |
+|---------|----------------|------------------|-----------|----------------|
+| `make clean-conservative` | 90 días | 2-10 GB | ⭐⭐⭐⭐⭐ Máxima | Producción, primera vez |
+| `make clean` | 30 días | 5-20 GB | ⭐⭐⭐⭐ Alta | Uso general, rutina mensual |
+| `make clean-generations` | 14 días | Variable | ⭐⭐⭐ Media-Alta | Balance espacio/seguridad |
+| `make clean-week` | 7 días | 10-40 GB | ⭐⭐ Media | Desarrollo, poco espacio |
+| `make optimize` | N/A (no elimina) | 1-5 GB | ⭐⭐⭐⭐⭐ Seguro | Después de limpieza, rutina |
+
+---
+
+## Flujos de Trabajo Recomendados
+
+### Flujo de Mantenimiento Mensual (Recomendado)
+
+```bash
+# 1. Verificar estado actual
+make info
+
+# 2. Limpiar generaciones antiguas
+make clean
+
+# 3. Optimizar el store
+make optimize
+
+# 4. Verificar espacio liberado
+make info
+
+# 5. Opcional: Ver generaciones restantes
+make list-generations
+```
+
+### Flujo de Emergencia (Poco Espacio)
+
+```bash
+# 1. Verificar espacio crítico
+make info
+
+# 2. Limpieza agresiva pero segura
+make clean-week
+
+# 3. Optimizar
+make optimize
+
+# 4. Si aún necesitas más espacio (¡cuidado!)
+# make deep-clean  # Solo si estás 100% seguro
+```
+
+### Flujo Conservador (Máxima Seguridad)
+
+```bash
+# 1. Verificar estado
+make info
+
+# 2. Limpieza conservadora
+make clean-conservative
+
+# 3. Optimizar
+make optimize
+
+# 4. Verificar
+make info
+```
+
+---
+
+## Mejores Prácticas
+
+1. **Limpia regularmente**: Ejecuta `make clean` al menos una vez al mes
+2. **Verifica antes y después**: Usa `make info` para ver el impacto
+3. **Combina con optimize**: Después de limpiar, optimiza para maximizar espacio
+4. **Mantén generaciones importantes**: Si sabes que una generación es importante, no la elimines
+5. **Usa Git para historial**: Los comandos de limpieza no afectan tu historial de Git
+6. **Empieza conservador**: Si es tu primera vez, usa `make clean-conservative`
+7. **Monitorea el espacio**: Revisa periódicamente con `make info` o `df -h /nix/store`
+
+---
+
+## Resumen Rápido
+
+```bash
+# Limpieza estándar (30 días)
+make clean
+
+# Limpieza semanal (7 días) - más agresiva
+make clean-week
+
+# Limpieza conservadora (90 días) - más segura
+make clean-conservative
+
+# Limpieza de generaciones (14 días) - balance
+make clean-generations
+
+# Garbage collection (alias de clean)
+make gc
+
+# Optimizar store (no elimina, solo optimiza)
+make optimize
+
+# Ver estado del sistema
+make info
+
+# Ver generaciones disponibles
+make list-generations
 ```
 
 ---
