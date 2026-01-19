@@ -353,11 +353,37 @@ debug: ## Rebuild with verbose output and trace
 	@printf "$(RED)🐛 Debug rebuild with full trace...\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose
 quick: ## Quick rebuild (skip checks)
-	@printf "$(BLUE)⚡ Quick rebuild...\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          ⚡ Rebuild Rápido (Sin Checks)              \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Ejecutando rebuild rápido omitiendo verificaciones...\n$(NC)"
+	@printf "$(YELLOW)⚠️  Este comando omite validaciones de seguridad para acelerar el proceso.\n$(NC)"
+	@printf "$(BLUE)Útil cuando estás seguro de tu configuración y necesitas velocidad.\n$(NC)"
+	@printf "\n"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --fast
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Rebuild rápido completado\n$(NC)"
+	@printf "$(BLUE)Configuración aplicada sin verificaciones previas\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 emergency: ## Emergency rebuild with maximum verbosity
-	@printf "$(RED)🚨 Emergency rebuild with full debugging...\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🚨 Rebuild de Emergencia (Debug Extremo)   \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(RED)⚠️  MODO DE EMERGENCIA ACTIVADO\n$(NC)"
+	@printf "$(YELLOW)Este comando ejecuta rebuild con máxima verbosidad y debugging.\n$(NC)"
+	@printf "$(YELLOW)Desactiva caché de evaluación para forzar reconstrucción completa.\n$(NC)"
+	@printf "$(BLUE)Útil cuando el sistema no arranca o hay problemas críticos.\n$(NC)"
+	@printf "$(RED)⚠️  Este proceso puede tomar mucho más tiempo que un rebuild normal.\n$(NC)"
+	@printf "\n"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose --option eval-cache false
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Rebuild de emergencia completado\n$(NC)"
+	@printf "$(BLUE)Revisa el output arriba para diagnosticar problemas\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 # === Limpieza y Optimización ===
 
@@ -410,17 +436,39 @@ clean-conservative: ## Clean build artifacts older than 90 days (very safe)
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 deep-clean: ## Aggressive cleanup (removes ALL old generations)
-	@printf "$(RED)🗑️  Performing deep cleanup...\n$(NC)"
-	@printf "$(YELLOW)⚠️  WARNING: This will remove ALL old system generations!\n$(NC)"
-	@printf "$(YELLOW)This is irreversible and you won't be able to rollback!\n$(NC)"
-	@printf "Type 'yes' to continue: "; \
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🗑️  Limpieza Profunda (IRREVERSIBLE)        \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(RED)⚠️  ADVERTENCIA CRÍTICA ⚠️\n$(NC)"
+	@printf "$(RED)Este comando eliminará TODAS las generaciones antiguas del sistema.\n$(NC)"
+	@printf "$(RED)Esta acción es IRREVERSIBLE y NO podrás hacer rollback.\n$(NC)"
+	@printf "\n"
+	@printf "$(YELLOW)¿Qué se eliminará?\n$(NC)"
+	@printf "$(YELLOW)  • TODAS las generaciones del sistema (excepto la actual)\n$(NC)"
+	@printf "$(YELLOW)  • TODAS las generaciones de usuario\n$(NC)"
+	@printf "$(YELLOW)  • TODOS los paquetes no referenciados\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Espacio que se liberará: Máximo posible (típicamente 20-100+ GB)\n$(NC)"
+	@printf "\n"
+	@printf "$(RED)¿Estás ABSOLUTAMENTE seguro? Escribe 'yes' para continuar: $(NC)"; \
 	read -r REPLY; \
 	if [ "$$REPLY" = "yes" ]; then \
+		printf "\n$(YELLOW)Ejecutando limpieza profunda...\n$(NC)\n"; \
 		sudo nix-collect-garbage -d; \
 		nix-collect-garbage -d; \
-		printf "$(GREEN)✅ Deep cleanup complete (ALL generations removed)\n$(NC)"; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(GREEN)✅ Limpieza profunda completada\n$(NC)"; \
+		printf "$(RED)⚠️  TODAS las generaciones antiguas han sido eliminadas\n$(NC)"; \
+		printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n"; \
 	else \
-		printf "$(BLUE)ℹ️  Deep cleanup cancelled\n$(NC)"; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(BLUE)ℹ️  Limpieza profunda cancelada\n$(NC)"; \
+		printf "$(GREEN)✓ No se realizaron cambios en el sistema\n$(NC)"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n"; \
 	fi
 optimize: ## Optimize nix store
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"

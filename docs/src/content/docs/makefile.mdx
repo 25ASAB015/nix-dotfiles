@@ -1286,6 +1286,7 @@ make info
 | `make clean-conservative` | 90 días | 2-10 GB | ⭐⭐⭐⭐⭐ Máxima | Producción, primera vez |
 | `make clean` | 30 días | 5-20 GB | ⭐⭐⭐⭐ Alta | Uso general, rutina mensual |
 | `make clean-week` | 7 días | 10-40 GB | ⭐⭐ Media | Desarrollo, poco espacio |
+| `make deep-clean` | 0 días (TODO) | 20-100+ GB | ⭐ Mínima | Emergencias únicamente |
 | `make optimize` | N/A (no elimina) | 1-5 GB | ⭐⭐⭐⭐⭐ Seguro | Después de limpieza, rutina |
 
 ---
@@ -2068,36 +2069,177 @@ make search-installed PKG=kitty
 <a id="cmd-quick-actions"></a>
 ### ⚡ Quick Actions
 
+Estos comandos están diseñados para situaciones específicas donde los comandos estándar no son suficientes. Cada uno tiene un propósito único y no son redundantes.
+
+---
+
 #### `make quick`
-Rebuild rápido, salta algunas verificaciones.
+Rebuild rápido omitiendo verificaciones de seguridad para acelerar el proceso.
 
 ```bash
 make quick
 ```
 
-**⚠️ Solo para:**
-- Cambios muy pequeños
-- Debugging rápido
-- Iteración rápida
+**Qué hace:**
+- Ejecuta `nixos-rebuild switch` con la opción `--fast`
+- Omite verificaciones y validaciones previas
+- Aplica cambios directamente sin checks de seguridad
+- Más rápido que `make switch` estándar
 
-**No usar para:**
-- Cambios importantes
-- Updates
-- Producción
+**⚠️ Advertencias:**
+- No valida la configuración antes de aplicar
+- No muestra qué se construirá antes de hacerlo
+- Puede fallar si hay errores en la configuración
+- Úsalo solo cuando estés 100% seguro de tus cambios
+
+**Cuándo usarlo:**
+- **Desarrollo iterativo rápido**: Cuando estás haciendo cambios pequeños y frecuentes
+- **Ya validaste antes**: Después de `make validate` o `make test` exitosos
+- **Cambios triviales**: Modificaciones que sabes que funcionarán (ej: cambiar un color)
+- **Necesitas velocidad**: Cuando el tiempo es crítico y confías en tu configuración
+
+**Cuándo NO usarlo:**
+- Primera vez que modificas algo
+- Cambios complejos o importantes
+- No has probado la configuración antes
+- Sistema de producción
+
+**Comparación con otros comandos:**
+- `make switch` - Incluye verificaciones básicas, más seguro
+- `make safe-switch` - Valida antes de aplicar, más seguro aún
+- `make quick` - Sin verificaciones, más rápido pero menos seguro
+
+**Ejemplo de uso:**
+```bash
+# 1. Validar primero (una vez)
+make validate
+
+# 2. Cambio pequeño (ej: ajustar un color)
+# Editar configuración...
+
+# 3. Aplicar rápido (confías que funcionará)
+make quick
+
+# Si algo falla, siempre puedes hacer rollback
+make rollback
+```
 
 ---
 
 #### `make emergency`
-Rebuild con **MÁXIMA** verbosidad para debugging extremo.
+Rebuild con máxima verbosidad y debugging para diagnosticar problemas críticos.
 
 ```bash
 make emergency
 ```
 
+**Qué hace:**
+- Ejecuta `nixos-rebuild switch` con:
+  - `--show-trace` - Muestra trazas completas de evaluación
+  - `--verbose` - Output extremadamente detallado
+  - `--option eval-cache false` - Desactiva caché de evaluación (fuerza reconstrucción completa)
+- Proporciona información máxima para debugging
+- Útil cuando el sistema no arranca o hay problemas críticos
+
+**⚠️ Advertencias:**
+- **Muy lento**: Puede tomar 2-5x más tiempo que un rebuild normal
+- **Output masivo**: Genera muchísima información (puede ser abrumador)
+- **Desactiva caché**: Reconstruye todo desde cero, más lento pero más preciso
+
 **Cuándo usarlo:**
-- Nada más funciona
-- `make debug` no dio suficiente info
-- Reportar bugs
+- **Sistema no arranca**: Cuando el sistema falló al iniciar después de un switch
+- **Errores críticos**: Problemas que `make debug` no pudo resolver
+- **Reportar bugs**: Cuando necesitas información detallada para reportar un problema
+- **Problemas de evaluación**: Cuando sospechas que hay problemas en la evaluación de Nix
+- **Caché corrupta**: Cuando sospechas que el caché está causando problemas
+
+**Cuándo NO usarlo:**
+- Uso diario normal (es demasiado lento)
+- Cambios simples (usa `make switch` o `make quick`)
+- Cuando `make debug` es suficiente
+
+**Comparación con otros comandos:**
+- `make debug` - Verbosidad moderada, útil para la mayoría de casos
+- `make emergency` - Verbosidad máxima, solo para problemas críticos
+- `make switch` - Output normal, uso diario
+
+**Ejemplo de flujo de debugging:**
+```bash
+# 1. Intento normal
+make switch
+# → Falla con error críptico
+
+# 2. Más información
+make debug
+# → Aún no suficiente información
+
+# 3. Modo emergencia (máxima información)
+make emergency
+# → Output masivo con trazas completas
+# → Ahora puedes identificar el problema exacto
+```
+
+---
+
+#### `make deep-clean`
+Limpieza agresiva que elimina **TODAS** las generaciones antiguas. ⚠️ **IRREVERSIBLE**
+
+```bash
+make deep-clean
+# Pedirá confirmación: escribir "yes"
+```
+
+**Qué elimina:**
+- **TODAS** las generaciones del sistema (excepto la actual)
+- **TODAS** las generaciones de usuario
+- **TODOS** los paquetes no referenciados por la generación actual
+- Máxima liberación de espacio posible
+
+**Espacio liberado típico:** 20-100+ GB (depende del tamaño del store)
+
+**⚠️ ADVERTENCIAS CRÍTICAS:**
+- **IRREVERSIBLE**: No podrás hacer rollback a NINGUNA generación anterior
+- **Sin red de seguridad**: Si algo falla después, no hay vuelta atrás
+- **Solo la generación actual**: Solo podrás usar la configuración actual
+
+**Cuándo usarlo:**
+- **Emergencia de espacio**: Disco casi lleno y necesitas espacio inmediatamente
+- **Después de migración exitosa**: Cuando migraste a nuevo sistema y todo funciona perfecto
+- **Sistema funcionando perfectamente**: Configuración estable sin cambios recientes
+- **Último recurso**: Cuando otros comandos de limpieza no liberaron suficiente espacio
+
+**Cuándo NO usarlo:**
+- **Nunca en producción** sin razón crítica
+- Si hiciste cambios recientes importantes
+- Si no estás 100% seguro de que tu configuración actual funciona perfectamente
+- Como rutina de mantenimiento (usa `make clean` en su lugar)
+
+**Comparación con otros comandos de limpieza:**
+- `make clean` - Mantiene 30 días, seguro para uso regular
+- `make clean-week` - Mantiene 7 días, más agresivo pero seguro
+- `make clean-conservative` - Mantiene 90 días, máxima seguridad
+- `make deep-clean` - Elimina TODO, solo para emergencias
+
+**Flujo recomendado antes de usar:**
+```bash
+# 1. Verificar que el sistema funciona perfectamente
+make info
+
+# 2. Intentar limpieza normal primero
+make clean
+# o
+make clean-week
+
+# 3. Verificar espacio liberado
+make info
+
+# 4. Si aún necesitas más espacio Y estás seguro:
+make deep-clean
+# → Escribe "yes" para confirmar
+```
+
+**Proceso de confirmación:**
+El comando pedirá confirmación escribiendo "yes" exactamente. Esto previene ejecuciones accidentales.
 
 ---
 
