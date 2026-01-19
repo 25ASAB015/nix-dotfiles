@@ -1998,14 +1998,149 @@ make docs-local
 ---
 
 #### `make docs-dev`
-Inicia el servidor de documentación local con Astro (si existe `docs/`).
+Inicia el servidor de desarrollo de documentación con Astro con instalación automática de dependencias.
 
 ```bash
 make docs-dev
-# Internamente: cd docs && npm run dev
 ```
 
-**Cuándo usarlo:** Para previsualizar la documentación antes de publicar.
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📘 Servidor de Documentación              
+════════════════════════════════════════════════════
+
+📦 Instalando dependencias primero...
+[output de npm install si es necesario]
+
+Iniciando servidor de desarrollo Astro...
+La documentación estará disponible en http://localhost:4321
+```
+
+**Qué hace:**
+- Verifica automáticamente si las dependencias están instaladas
+- Si no existen `node_modules`, ejecuta `npm install` automáticamente
+- Inicia el servidor de desarrollo de Astro
+- La documentación estará disponible en `http://localhost:4321`
+
+**Cuándo usarlo:**
+- Previsualizar cambios en la documentación antes de publicar
+- Desarrollo de documentación en tiempo real
+- Ver cómo se ve la documentación en el navegador
+- Primera vez que usas la documentación (instala deps automáticamente)
+
+**Ventajas:**
+- ✅ Instalación automática de dependencias si no existen
+- ✅ Hot reload: los cambios se reflejan inmediatamente
+- ✅ No más errores de "command not found"
+- ✅ Funciona incluso después de clonar el repo
+
+---
+
+#### `make docs-build`
+Construye la documentación para producción con instalación automática de dependencias.
+
+```bash
+make docs-build
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📦 Construir Documentación                
+════════════════════════════════════════════════════
+
+Construyendo documentación para producción...
+[output del build de Astro]
+
+════════════════════════════════════════════════════
+✅ Documentación construida exitosamente
+Los archivos están en docs/dist/
+════════════════════════════════════════════════════
+```
+
+**Qué hace:**
+- Verifica automáticamente si las dependencias están instaladas
+- Si no existen `node_modules`, ejecuta `npm install` automáticamente
+- Construye la documentación optimizada para producción
+- Genera archivos estáticos en `docs/dist/`
+
+**Cuándo usarlo:**
+- Antes de deployar la documentación
+- Para generar archivos estáticos optimizados
+- Testing de build en CI/CD
+- Verificar que no hay errores de build
+
+---
+
+#### `make docs-install`
+Instala o actualiza manualmente las dependencias de la documentación.
+
+```bash
+make docs-install
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📦 Instalar Dependencias                  
+════════════════════════════════════════════════════
+
+Instalando dependencias de npm...
+[output de npm install]
+
+════════════════════════════════════════════════════
+✅ Dependencias instaladas
+La documentación está lista para usar.
+════════════════════════════════════════════════════
+```
+
+**Cuándo usarlo:**
+- Actualizar dependencias después de cambios en `package.json`
+- Forzar reinstalación de dependencias
+- Resolver problemas de dependencias corruptas
+- Después de cambiar de rama con diferentes versiones
+
+---
+
+#### `make docs-clean`
+Limpia las dependencias de la documentación (elimina `node_modules`).
+
+```bash
+make docs-clean
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🧹 Limpiar Dependencias                   
+════════════════════════════════════════════════════
+
+Limpiando dependencias de la documentación...
+
+════════════════════════════════════════════════════
+✅ Dependencias limpiadas
+Se liberó espacio eliminando node_modules/
+════════════════════════════════════════════════════
+```
+
+**Qué hace:**
+- Elimina completamente el directorio `docs/node_modules`
+- Libera espacio en disco
+- Útil para resolver problemas de dependencias
+
+**Cuándo usarlo:**
+- Problemas con dependencias corruptas o conflictivas
+- Liberar espacio en disco
+- Antes de reinstalar dependencias desde cero
+- Resolver errores extraños de npm
+
+**Flujo típico de resolución de problemas:**
+```bash
+make docs-clean      # Limpiar dependencias
+make docs-install    # Reinstalar desde cero
+make docs-dev        # Probar que funciona
+```
 
 ---
 
@@ -2894,11 +3029,51 @@ make switch HOSTNAME=laptop    # Aplicar a laptop
 <a id="flujo-docs"></a>
 ### Flujo de Documentación
 
+#### Desarrollo de Documentación
+
 ```bash
-# Ver qué documentación tienes
+# 1. Iniciar servidor de desarrollo (instala deps automáticamente)
+make docs-dev
+
+# 2. Editar archivos en docs/src/content/docs/
+# Los cambios se reflejan automáticamente en http://localhost:4321
+
+# 3. Construir para producción
+make docs-build
+```
+
+#### Actualizar Documentación después de Cambios en Makefile
+
+```bash
+# 1. Hacer cambios en el Makefile
+nvim Makefile
+
+# 2. Actualizar la documentación correspondiente
+nvim docs/src/content/docs/makefile.mdx
+
+# 3. Previsualizar cambios
+make docs-dev
+
+# 4. Verificar que el build funciona
+make docs-build
+```
+
+#### Resolver Problemas de Dependencias
+
+```bash
+# Si hay errores con npm o dependencias:
+make docs-clean      # Limpiar node_modules
+make docs-install    # Reinstalar dependencias
+make docs-dev        # Probar que funciona
+```
+
+#### Ver Documentación Local
+
+```bash
+# Ver qué documentación tienes (archivos markdown locales)
 make docs-local
 
-# Ver documentación web
+# Ver documentación web interactiva
 make docs-dev
 ```
 
@@ -3025,8 +3200,8 @@ make info
 
 Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acceso rápido antes de ir al detalle.
 
-### Ayuda y Documentación (8)
-`help`, `help-examples`, `docs-local`, `docs-dev`, `readme`, `tutorial`
+### Ayuda y Documentación (10)
+`help`, `help-examples`, `docs-local`, `docs-dev`, `docs-build`, `docs-install`, `docs-clean`, `readme`, `tutorial`
 
 ### Gestión del Sistema (Rebuild/Switch) (11)
 `rebuild`, `switch`, `safe-switch`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `quick`, `emergency`
@@ -3058,7 +3233,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Plantillas y Otros (4)
 `hardware-scan`, `fix-permissions`, `fix-git-permissions`
 
-**Total: 69 comandos disponibles** 🎉
+**Total: 72 comandos disponibles** 🎉
 
 ---
 
@@ -3092,11 +3267,11 @@ Esto te permite encontrar información de diferentes formas según tu necesidad:
 
 ---
 
-*Última actualización: 2026-01-11*  
-*Versión: 5.1 - Flujos de Trabajo Recomendados Añadidos*  
-*Total de comandos: 69*  
+*Última actualización: 2026-01-19*  
+*Versión: 5.2 - Comandos de Documentación Mejorados*  
+*Total de comandos: 72*  
 *Sistema de ayuda: 2 niveles (help, help-examples)*
-*Fases completadas: 100% (FASE 1, 2, 3 + extras)*  
+*Fases completadas: 100% (FASE 1, 2, 3 + extras + docs)*  
 *Mantenedor: ludus*  
-*Nueva sección: Flujo de Trabajo Recomendado (switch vs safe-switch)*
+*Nuevos comandos: docs-dev, docs-build, docs-install, docs-clean (con instalación automática)*
 

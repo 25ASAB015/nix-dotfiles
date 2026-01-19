@@ -41,7 +41,7 @@ help: ## Show this help message
 		} \
 	} \
 	END { \
-		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev"); \
+		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev docs-build docs-install docs-clean"); \
 		print_cat("Gestión del Sistema (Rebuild/Switch)", "rebuild switch safe-switch test build dry-run boot validate debug quick emergency"); \
 		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean clean-generations gc optimize clean-result fix-store"); \
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input diff-update upgrade show flake-check diff-flake"); \
@@ -159,13 +159,79 @@ docs-local: ## Show local documentation files
 	@printf "\n$(BLUE)💡 Tip:$(NC) Use $(GREEN)less <file>$(NC) or $(GREEN)cat <file>$(NC) to view documentation\n"
 	@printf "\n"
 docs-dev: ## Run Astro docs dev server locally
-	@printf "$(CYAN)📘 Astro Docs Dev Server\n$(NC)"
-	@printf "========================\n"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📘 Servidor de Documentación              \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 	@if [ -d "docs" ]; then \
+		if [ ! -d "docs/node_modules" ]; then \
+			printf "$(YELLOW)📦 Instalando dependencias primero...\n$(NC)"; \
+			cd docs && npm install; \
+			printf "\n"; \
+		fi; \
+		printf "$(BLUE)Iniciando servidor de desarrollo Astro...\n$(NC)"; \
+		printf "$(YELLOW)La documentación estará disponible en http://localhost:4321\n$(NC)"; \
+		printf "\n"; \
 		cd docs && npm run dev; \
 	else \
-		printf "$(YELLOW)docs/ not found$(NC)\n"; \
+		printf "$(RED)✗ Directorio docs/ no encontrado$(NC)\n"; \
+		printf "\n"; \
 	fi
+docs-build: ## Build Astro documentation for production
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📦 Construir Documentación                \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@if [ -d "docs" ]; then \
+		if [ ! -d "docs/node_modules" ]; then \
+			printf "$(YELLOW)📦 Instalando dependencias primero...\n$(NC)"; \
+			cd docs && npm install; \
+			printf "\n"; \
+		fi; \
+		printf "$(BLUE)Construyendo documentación para producción...\n$(NC)"; \
+		cd docs && npm run build; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(GREEN)✅ Documentación construida exitosamente\n$(NC)"; \
+		printf "$(BLUE)Los archivos están en docs/dist/\n$(NC)"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n"; \
+	else \
+		printf "$(RED)✗ Directorio docs/ no encontrado$(NC)\n"; \
+		printf "\n"; \
+	fi
+docs-clean: ## Clean documentation dependencies (node_modules)
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🧹 Limpiar Dependencias                   \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Limpiando dependencias de la documentación...\n$(NC)"
+	@if [ -d "docs/node_modules" ]; then \
+		rm -rf docs/node_modules; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(GREEN)✅ Dependencias limpiadas\n$(NC)"; \
+		printf "$(BLUE)Se liberó espacio eliminando node_modules/\n$(NC)"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+	else \
+		printf "$(YELLOW)⚠ No hay dependencias para limpiar\n$(NC)"; \
+	fi
+	@printf "\n"
+docs-install: ## Install/update documentation dependencies
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📦 Instalar Dependencias                  \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@if [ -d "docs" ]; then \
+		printf "$(BLUE)Instalando dependencias de npm...\n$(NC)"; \
+		cd docs && npm install; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(GREEN)✅ Dependencias instaladas\n$(NC)"; \
+		printf "$(BLUE)La documentación está lista para usar.\n$(NC)"; \
+		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+	else \
+		printf "$(RED)✗ Directorio docs/ no encontrado$(NC)\n"; \
+	fi
+	@printf "\n"
+
 # === Gestión del Sistema (Rebuild/Switch) ===
 
 rebuild: ## Full rebuild and switch (alias for switch)
