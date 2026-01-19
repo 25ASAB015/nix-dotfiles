@@ -466,7 +466,7 @@ update: ## Update flake inputs
 	@printf "$(BLUE)Actualizando todos los inputs del flake...\n$(NC)"
 	@printf "$(YELLOW)Esto actualizará nixpkgs, hydenix, home-manager y otros inputs.\n$(NC)"
 	@printf "\n"
-	nix flake update $(FLAKE_DIR)
+	nix flake update
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Inputs del flake actualizados\n$(NC)"
 	@printf "$(BLUE)Usa 'make diff-update' para ver los cambios en flake.lock\n$(NC)"
@@ -532,7 +532,7 @@ update-input: ## Update specific flake input (use INPUT=name)
 	@printf "$(BLUE)Actualizando input: $(INPUT)\n$(NC)"
 	@printf "$(YELLOW)Esto actualizará solo este input específico.\n$(NC)"
 	@printf "\n"
-	nix flake lock --update-input $(INPUT)
+	nix flake lock --update-input $(INPUT) $(FLAKE_DIR)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Input '$(INPUT)' actualizado\n$(NC)"
 	@printf "$(BLUE)Usa 'make diff-update' para ver los cambios\n$(NC)"
