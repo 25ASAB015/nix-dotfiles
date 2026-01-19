@@ -235,8 +235,12 @@ docs-install: ## Install/update documentation dependencies
 # === Gestión del Sistema (Rebuild/Switch) ===
 
 rebuild: ## Full rebuild and switch (alias for switch)
-	@printf "$(BLUE)🔄 Rebuilding NixOS configuration...\n$(NC)"
+	@printf "\n$(BLUE)==================== Rebuild ====================\n$(NC)"
+	@printf "$(BLUE)🔄 Reconstruyendo configuración de NixOS...\n$(NC)"
+	@printf "\n"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
+	@printf "\n$(GREEN)==================== Completado ======================\n$(NC)"
+	@printf "\n"
 switch: ## Build and switch to new configuration
 	@printf "\n$(BLUE)==================== Switch ====================\n$(NC)"
 	@printf "$(BLUE)🔄 Git add, build y switch...\n$(NC)"
@@ -302,8 +306,20 @@ dry-run: ## Show what would be built/changed
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 boot: ## Build and set as boot default (no immediate switch)
-	@printf "$(PURPLE)🥾 Setting configuration for next boot...\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🥾 Configurar para Próximo Arranque      \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Compilando y configurando para el próximo arranque...\n$(NC)"
+	@printf "$(YELLOW)Los cambios se aplicarán al reiniciar el sistema.\n$(NC)"
+	@printf "$(YELLOW)La sesión actual no se verá afectada.\n$(NC)"
+	@printf "\n"
 	sudo nixos-rebuild boot --flake $(FLAKE_DIR)#$(HOSTNAME)
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Configuración preparada para próximo arranque\n$(NC)"
+	@printf "$(BLUE)Reinicia el sistema para aplicar los cambios.\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 validate: ## Validate configuration before switching
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -522,8 +538,19 @@ list-generations: ## List system generations
 		sed 's/^/  /' || printf "  $(YELLOW)Unable to list generations$(NC)\n"
 	@printf "\n"
 rollback: ## Rollback to previous generation
-	@printf "$(YELLOW)⏪ Rolling back to previous generation...\n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          ⏪ Revertir a Generación Anterior         \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(YELLOW)Revirtiendo a la generación anterior...\n$(NC)"
+	@printf "$(BLUE)Esto restaurará la configuración del sistema anterior.\n$(NC)"
+	@printf "\n"
 	sudo nixos-rebuild switch --rollback
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Rollback completado\n$(NC)"
+	@printf "$(BLUE)El sistema ha vuelto a la generación anterior.\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 diff-generations: ## Compare current with previous generation
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Comparing Generations                  \n$(NC)"

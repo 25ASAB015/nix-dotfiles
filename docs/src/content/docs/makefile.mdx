@@ -342,13 +342,40 @@ make rollback
 ---
 
 #### `make rebuild`
-Alias directo de `make switch` (rebuild completo y switch).
+Alias directo de `make switch` que reconstruye y aplica la configuración. Es funcionalmente idéntico a `make switch`.
 
 ```bash
 make rebuild
 ```
 
-**Cuándo usarlo:** Cuando quieres un nombre más explícito o scripts que esperen `rebuild`.
+**Qué hace:**
+- Ejecuta exactamente lo mismo que `make switch`
+- Compila la configuración completa
+- Aplica los cambios permanentemente
+- Crea una nueva generación del sistema
+
+**Output ejemplo:**
+```
+==================== Rebuild ====================
+🔄 Reconstruyendo configuración de NixOS...
+
+[output del rebuild...]
+
+==================== Completado ======================
+```
+
+**Cuándo usarlo:**
+- Cuando prefieres el nombre "rebuild" por claridad semántica
+- Scripts o alias que esperan el comando `rebuild`
+- Cuando quieres ser explícito sobre que estás reconstruyendo el sistema
+- Compatibilidad con convenciones de otros proyectos
+
+**Diferencias con `make switch`:**
+- **Funcionalmente:** Ninguna diferencia, hacen exactamente lo mismo
+- **Semánticamente:** `rebuild` enfatiza "reconstrucción", `switch` enfatiza "cambio"
+- **Uso:** `switch` es más común, `rebuild` puede ser más claro para algunos usuarios
+
+**Nota:** Este comando es un alias puro. Si necesitas funcionalidad adicional (como validación), usa `make safe-switch` en su lugar.
 
 ---
 
@@ -587,16 +614,98 @@ building the system configuration...
 ---
 
 #### `make boot`
-Configura para el próximo arranque (no afecta la sesión actual).
+Compila la configuración y la prepara para el próximo arranque sin afectar la sesión actual.
 
 ```bash
 make boot
 ```
 
+**Qué hace:**
+- ✅ Compila la configuración completa
+- ✅ Configura la nueva generación como predeterminada para el próximo boot
+- ⚠️ **NO afecta** la sesión actual (los cambios se aplican al reiniciar)
+- ✅ Crea una nueva generación del sistema
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🥾 Configurar para Próximo Arranque      
+════════════════════════════════════════════════════
+
+Compilando y configurando para el próximo arranque...
+Los cambios se aplicarán al reiniciar el sistema.
+La sesión actual no se verá afectada.
+
+[output del build...]
+
+════════════════════════════════════════════════════
+✅ Configuración preparada para próximo arranque
+Reinicia el sistema para aplicar los cambios.
+════════════════════════════════════════════════════
+```
+
+**¿Por qué es útil?**
+- **Cambios que requieren reinicio:** Algunas configuraciones solo se aplican al arrancar
+- **Sin interrumpir trabajo:** Puedes seguir trabajando y reiniciar cuando sea conveniente
+- **Seguridad:** Compila antes de aplicar, detectando errores temprano
+- **Planificación:** Permite preparar cambios para aplicar más tarde
+
 **Cuándo usarlo:**
-- Cambios en el kernel o bootloader
-- Configuraciones que requieren reinicio
-- Cuando no quieres cerrar sesión ahora
+- Cambios en el kernel o bootloader (requieren reinicio obligatorio)
+- Configuraciones que requieren reinicio para funcionar correctamente
+- Cuando no quieres cerrar sesión ahora pero quieres preparar cambios
+- Cambios importantes que prefieres aplicar en el próximo arranque
+- Cuando estás trabajando y no puedes interrumpir tu sesión
+
+**Comparación con otros comandos:**
+
+| Comando | Afecta sesión actual | Requiere reinicio | Cuándo aplicar |
+|---------|---------------------|-------------------|----------------|
+| `make switch` | ✅ Sí (inmediato) | ❌ No | Ahora mismo |
+| `make boot` | ❌ No | ✅ Sí | Próximo arranque |
+| `make test` | ✅ Sí (temporal) | ❌ No | Solo esta sesión |
+
+**Casos de uso reales:**
+
+**Ejemplo 1: Cambio de kernel**
+```bash
+# Editas la configuración del kernel
+nvim hosts/hydenix/configuration.nix
+
+# Compilas y preparas para próximo boot
+make boot
+
+# Puedes seguir trabajando...
+# Cuando estés listo, reinicias y el nuevo kernel se aplicará
+```
+
+**Ejemplo 2: Cambios en bootloader**
+```bash
+# Modificas configuración de GRUB
+nvim hosts/hydenix/configuration.nix
+
+# Preparas para próximo arranque
+make boot
+
+# Reinicias cuando sea conveniente
+```
+
+**Ejemplo 3: Cambios que requieren reinicio**
+```bash
+# Cambios en servicios críticos que requieren reinicio
+make boot
+
+# Continúas trabajando...
+# Reinicias al final del día
+```
+
+**Ventajas:**
+- ✅ No interrumpe tu trabajo actual
+- ✅ Permite planificar cuándo aplicar cambios
+- ✅ Compila antes de aplicar (detecta errores temprano)
+- ✅ Útil para cambios que requieren reinicio obligatorio
+
+**Nota importante:** Después de `make boot`, debes reiniciar el sistema para que los cambios se apliquen. Si cambias de opinión antes de reiniciar, puedes usar `make switch` para aplicar cambios inmediatamente o `make rollback` si necesitas revertir.
 
 ---
 
@@ -1318,28 +1427,115 @@ All generations:
 ---
 
 #### `make rollback`
-Vuelve a la generación anterior inmediatamente.
+Revierte el sistema a la generación anterior inmediatamente. Es tu red de seguridad cuando algo sale mal.
 
 ```bash
 make rollback
 ```
 
 **Qué hace:**
-- Activa la generación anterior (N-1)
-- Cambios disponibles inmediatamente
-- No elimina la generación "mala"
+- ✅ Activa la generación anterior (N-1) inmediatamente
+- ✅ Cambios disponibles de forma instantánea
+- ✅ No elimina la generación "mala" (puedes volver a ella si quieres)
+- ✅ Restaura el estado del sistema que funcionaba antes
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          ⏪ Revertir a Generación Anterior         
+════════════════════════════════════════════════════
+
+Revirtiendo a la generación anterior...
+Esto restaurará la configuración del sistema anterior.
+
+[output del rollback...]
+
+════════════════════════════════════════════════════
+✅ Rollback completado
+El sistema ha vuelto a la generación anterior.
+════════════════════════════════════════════════════
+```
+
+**¿Por qué es útil?**
+- **Recuperación rápida:** Vuelve al estado anterior en segundos
+- **Sin pérdida de datos:** No elimina archivos ni configuraciones de usuario
+- **Seguridad:** Siempre puedes volver si algo sale mal
+- **Sin miedo:** Permite experimentar sabiendo que puedes revertir
 
 **Cuándo usarlo:**
 - Después de `make switch` que rompió algo
-- Sistema no funciona correctamente
-- Quieres deshacer último cambio
+- Sistema no funciona correctamente después de un cambio
+- Quieres deshacer el último cambio aplicado
+- Necesitas volver rápidamente a un estado conocido que funcionaba
+- Después de cambios experimentales que no funcionaron como esperabas
 
-**Ejemplo de flujo de recuperación:**
+**Casos de uso reales:**
+
+**Ejemplo 1: Recuperación después de cambio problemático**
 ```bash
-make switch          # Algo se rompe
-make rollback        # Vuelve a versión que funcionaba
-# Ahora investiga qué salió mal
-make debug           # Re-intenta con verbose output
+# Aplicas cambios
+make switch
+
+# Algo se rompe (servicios no inician, errores, etc.)
+# Revierte inmediatamente
+make rollback
+
+# El sistema vuelve a funcionar
+# Ahora investigas qué salió mal
+make debug
+```
+
+**Ejemplo 2: Deshacer cambio experimental**
+```bash
+# Pruebas una configuración nueva
+make switch
+
+# No funciona como esperabas
+make rollback
+
+# Vuelves a la normalidad y puedes intentar otra cosa
+```
+
+**Ejemplo 3: Flujo de trabajo seguro**
+```bash
+# 1. Aplicas cambios
+make switch
+
+# 2. Si algo falla, reviertes
+make rollback
+
+# 3. Investigas el problema
+make debug
+# o
+make validate
+
+# 4. Corriges y vuelves a intentar
+make switch
+```
+
+**Ventajas:**
+- ✅ Recuperación instantánea
+- ✅ No pierdes datos ni configuraciones
+- ✅ Permite experimentar con seguridad
+- ✅ No elimina la generación problemática (puedes investigarla después)
+- ✅ Cambios disponibles inmediatamente
+
+**Limitaciones:**
+- ⚠️ Solo revierte a la generación anterior (N-1)
+- ⚠️ Si necesitas volver más atrás, usa `make list-generations` y selecciona en GRUB
+- ⚠️ No restaura archivos de configuración editados manualmente (usa Git para eso)
+
+**Relación con otros comandos:**
+- `make list-generations` - Ver todas las generaciones disponibles
+- `make diff-generations` - Comparar generación actual con anterior
+- `make switch` - Aplicar cambios (puedes revertir con rollback)
+- Git - Para restaurar archivos de configuración específicos
+
+**Nota importante:** `make rollback` solo revierte la configuración del sistema. Si editaste archivos de configuración manualmente y quieres restaurarlos, usa Git:
+```bash
+# Restaurar archivo específico con Git
+git checkout HEAD~1 -- path/to/file.nix
+make switch
 ```
 
 ---
@@ -1449,18 +1645,56 @@ La salida de `nix store diff-closures` usa una notación específica:
 
 ---
 
-#### `make restore`
-En este Makefile, `restore` está listado como target, pero no está implementado.
-Para restaurar una versión anterior, usa Git o rollback:
+#### `make restore` ⚠️ NO IMPLEMENTADO
+Este comando **no está implementado** en el Makefile actual. Para restaurar versiones anteriores, usa las alternativas documentadas abajo.
 
+**Alternativas disponibles:**
+
+**Opción 1: Rollback a generación anterior del sistema**
 ```bash
-# Opción 1: Rollback a generación anterior del sistema
 make rollback
+```
+- Revierte la configuración del sistema a la generación anterior
+- Cambios disponibles inmediatamente
+- No afecta archivos de configuración editados manualmente
 
-# Opción 2: Restaurar archivos específicos con Git
-git checkout HEAD~1 -- path/to/file.nix
+**Opción 2: Restaurar archivos específicos con Git**
+```bash
+# Ver historial de cambios
+git log --oneline
+
+# Restaurar archivo específico de un commit anterior
+git checkout <commit-hash> -- path/to/file.nix
+
+# Aplicar cambios
 make switch
 ```
+
+**Opción 3: Restaurar múltiples archivos**
+```bash
+# Restaurar todos los archivos de un commit anterior
+git checkout <commit-hash> -- .
+
+# Aplicar cambios
+make switch
+```
+
+**Opción 4: Seleccionar generación en GRUB**
+```bash
+# Listar generaciones disponibles
+make list-generations
+
+# Reiniciar y en GRUB seleccionar generación anterior
+# (más atrás que la inmediatamente anterior)
+```
+
+**¿Por qué no está implementado?**
+- `make rollback` cubre el caso más común (volver a generación anterior)
+- Git es más flexible para restaurar archivos específicos
+- Evita confusión sobre qué restaura exactamente
+- Mantiene el Makefile simple y enfocado
+
+**Recomendación:** Usa `make rollback` para revertir cambios del sistema, y Git para restaurar archivos de configuración específicos.
 
 ---
 
