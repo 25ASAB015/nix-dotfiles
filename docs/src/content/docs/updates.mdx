@@ -1,6 +1,435 @@
 ---
 title: Updates
-description: Placeholder page.
+description: Guía completa para actualizar tu sistema NixOS usando los comandos del Makefile.
 ---
 
-# Updates
+# Actualizaciones del Sistema
+
+Esta guía explica cómo mantener tu sistema NixOS actualizado usando los comandos del Makefile. Los comandos de actualización te permiten mantener tus paquetes y configuraciones al día de forma segura y controlada.
+
+## Comandos de Actualización Disponibles
+
+Los comandos principales para actualizar tu sistema son:
+
+- `make update` - Actualiza todos los inputs del flake (actualiza `flake.lock`)
+- `make update-nixpkgs` - Actualiza solo el repositorio nixpkgs
+- `make update-hydenix` - Actualiza solo el framework hydenix
+- `make update-input INPUT=name` - Actualiza un input específico
+- `make upgrade` - Actualiza y aplica cambios en un solo comando
+
+---
+
+## `make update`
+
+Actualiza todas las inputs del flake y modifica el archivo `flake.lock` con las últimas versiones disponibles.
+
+```bash
+make update
+```
+
+### ¿Qué hace?
+
+Este comando ejecuta `nix flake update` que actualiza **todos** los inputs definidos en tu `flake.nix`, incluyendo:
+
+- `nixpkgs` - El repositorio principal de paquetes de NixOS
+- `hydenix` - El framework de configuración
+- `home-manager` - Gestor de configuración de usuario
+- Cualquier otro input que tengas definido
+
+### Cuándo usarlo
+
+- **Rutina semanal**: Para mantener tu sistema actualizado con las últimas versiones
+- **Antes de instalar software nuevo**: Asegura que tienes las versiones más recientes disponibles
+- **Cuando buscas nuevas características**: Las actualizaciones traen nuevas opciones y mejoras
+
+### ⚠️ Importante
+
+Después de ejecutar `make update`, el archivo `flake.lock` se modifica pero **los cambios no se aplican automáticamente**. Debes ejecutar `make switch` para aplicar las actualizaciones al sistema.
+
+### Flujo recomendado
+
+```bash
+# 1. Actualizar los inputs
+make update
+
+# 2. Ver qué cambiaría (opcional pero recomendado)
+make dry-run
+
+# 3. Probar la nueva configuración sin aplicar
+make test
+
+# 4. Si todo está bien, aplicar los cambios
+make switch
+
+# Si algo falla, puedes revertir:
+make rollback
+```
+
+### Ver los cambios
+
+Después de `make update`, puedes ver exactamente qué cambió usando:
+
+```bash
+make diff-update
+```
+
+Esto muestra las diferencias en `flake.lock` usando `git diff`.
+
+---
+
+## `make update-nixpkgs`
+
+Actualiza únicamente el repositorio `nixpkgs`, dejando los demás inputs sin cambios.
+
+```bash
+make update-nixpkgs
+```
+
+### ¿Qué hace?
+
+Ejecuta `nix flake lock --update-input nixpkgs`, actualizando solo el input de nixpkgs en `flake.lock`.
+
+### Cuándo usarlo
+
+- **Actualización selectiva**: Quieres nuevas versiones de paquetes pero prefieres mantener hydenix en su versión actual
+- **Debugging**: Cuando sospechas que una actualización de hydenix está causando problemas
+- **Control fino**: Necesitas actualizar solo los paquetes del sistema, no el framework
+
+### Ejemplo de uso
+
+```bash
+# Actualizar solo nixpkgs
+make update-nixpkgs
+
+# Ver qué cambió
+make diff-update
+
+# Aplicar cambios
+make switch
+```
+
+---
+
+## `make update-hydenix`
+
+Actualiza únicamente el framework hydenix, dejando nixpkgs y otros inputs sin cambios.
+
+```bash
+make update-hydenix
+```
+
+### ¿Qué hace?
+
+Ejecuta `nix flake lock --update-input hydenix`, actualizando solo el input de hydenix en `flake.lock`.
+
+### Cuándo usarlo
+
+- **Nueva versión disponible**: Cuando hay una nueva versión de hydenix con mejoras o correcciones
+- **Nuevas características**: Quieres probar nuevas funcionalidades del framework
+- **Correcciones de bugs**: Hydenix ha publicado fixes que necesitas
+
+### Ejemplo de uso
+
+```bash
+# Actualizar solo hydenix
+make update-hydenix
+
+# Ver los cambios
+make diff-update
+
+# Probar antes de aplicar
+make test
+
+# Aplicar si todo está bien
+make switch
+```
+
+---
+
+## `make update-input INPUT=name`
+
+Actualiza un input específico del flake. Útil cuando necesitas control granular sobre qué actualizar.
+
+```bash
+make update-input INPUT=hydenix
+make update-input INPUT=nixpkgs
+```
+
+### ¿Qué hace?
+
+Ejecuta `nix flake lock --update-input <nombre>`, actualizando solo el input especificado.
+
+### Inputs disponibles
+
+Los inputs comunes que puedes actualizar incluyen:
+
+- `nixpkgs` - Repositorio principal de paquetes
+- `hydenix` - Framework de configuración
+- `nixos-hardware` - Configuraciones específicas de hardware
+- `mynixpkgs` - Fork personalizado de nixpkgs (si lo tienes)
+- `opencode` - Input personalizado (si lo tienes)
+- `zen-browser-flake` - Flake del navegador Zen (si lo tienes)
+
+### Cuándo usarlo
+
+- **Actualización específica**: Necesitas actualizar solo un componente específico
+- **Debugging**: Aislar problemas actualizando inputs uno por uno
+- **Control preciso**: Quieres mantener algunos inputs fijos mientras actualizas otros
+
+### Ejemplos
+
+```bash
+# Actualizar solo hydenix
+make update-input INPUT=hydenix
+
+# Actualizar solo nixpkgs
+make update-input INPUT=nixpkgs
+
+# Actualizar otro input personalizado
+make update-input INPUT=zen-browser-flake
+
+# Ver los cambios después
+make diff-update
+
+# Aplicar cambios
+make switch
+```
+
+### Manejo de errores
+
+Si olvidas especificar el parámetro `INPUT`, el comando te mostrará un mensaje de error con la lista de inputs disponibles:
+
+```bash
+make update-input
+# Error: Variable INPUT requerida
+# Uso: make update-input INPUT=<nombre>
+# Inputs disponibles:
+#   - nixpkgs
+#   - hydenix
+#   ...
+```
+
+---
+
+## `make upgrade`
+
+Comando todo-en-uno que actualiza los inputs y aplica los cambios inmediatamente. **Equivalente a `make update` seguido de `make switch`**.
+
+```bash
+make upgrade
+```
+
+### ¿Qué hace?
+
+Este comando ejecuta automáticamente:
+
+1. `make update` - Actualiza todos los inputs del flake
+2. `make diff-update` - Muestra los cambios en `flake.lock`
+3. `make switch` - Aplica los cambios al sistema
+
+### ⚠️ Advertencia
+
+Este comando **aplica cambios inmediatamente** sin darte oportunidad de revisar o probar primero. Úsalo con precaución.
+
+### Cuándo usarlo
+
+- **Actualizaciones de rutina**: Cuando confías en que las actualizaciones serán seguras
+- **Sistemas de desarrollo**: En entornos donde puedes permitirte rollback fácil
+- **Actualizaciones menores**: Para cambios pequeños que no requieren revisión exhaustiva
+
+### Cuándo NO usarlo
+
+- **Cambios importantes**: Cuando hay actualizaciones mayores que podrían romper cosas
+- **Sistemas de producción**: En sistemas críticos donde la estabilidad es prioritaria
+- **Primera vez**: Cuando no estás seguro de qué cambios traerán las actualizaciones
+
+### Flujo más seguro (recomendado)
+
+En lugar de `make upgrade`, usa este flujo para mayor control:
+
+```bash
+# 1. Actualizar
+make update
+
+# 2. Ver qué cambiaría
+make dry-run
+
+# 3. Probar sin aplicar
+make test
+
+# 4. Si todo está bien, aplicar
+make switch
+
+# Si algo falla, revertir
+make rollback
+```
+
+---
+
+## Comparación de Comandos
+
+| Comando | Actualiza | Aplica cambios | Uso recomendado |
+|---------|-----------|----------------|------------------|
+| `make update` | Todos los inputs | ❌ No | Rutina semanal |
+| `make update-nixpkgs` | Solo nixpkgs | ❌ No | Actualización selectiva de paquetes |
+| `make update-hydenix` | Solo hydenix | ❌ No | Actualización del framework |
+| `make update-input INPUT=name` | Input específico | ❌ No | Control granular |
+| `make upgrade` | Todos los inputs | ✅ Sí | Actualizaciones rápidas de confianza |
+
+---
+
+## Flujos de Trabajo Recomendados
+
+### Flujo Seguro (Recomendado para producción)
+
+```bash
+# 1. Actualizar inputs
+make update
+
+# 2. Ver cambios
+make diff-update
+
+# 3. Ver qué se construiría/descargaría
+make dry-run
+
+# 4. Probar sin aplicar
+make test
+
+# 5. Si todo está bien, aplicar
+make switch
+
+# Si algo falla:
+make rollback
+```
+
+### Flujo Rápido (Para desarrollo)
+
+```bash
+# Actualización rápida cuando confías en los cambios
+make upgrade
+
+# Si algo falla:
+make rollback
+```
+
+### Flujo Selectivo (Actualizar solo un componente)
+
+```bash
+# Actualizar solo hydenix
+make update-input INPUT=hydenix
+make diff-update
+make test
+make switch
+```
+
+### Flujo Semanal de Mantenimiento
+
+```bash
+# Lunes por la mañana
+make update              # Actualizar inputs
+make diff-update         # Ver cambios
+make dry-run             # Ver qué cambiaría
+make test                # Probar
+make switch              # Aplicar si todo bien
+make clean               # Limpiar espacio
+make info                # Verificar estado
+```
+
+---
+
+## Ver Cambios Después de Actualizar
+
+Después de ejecutar cualquier comando de actualización, puedes ver qué cambió:
+
+```bash
+# Ver diferencias en flake.lock
+make diff-update
+
+# Ver diferencias en flake.nix y flake.lock
+make diff-flake
+
+# Ver estado de git (incluye cambios en flake.lock)
+make git-status
+```
+
+---
+
+## Resolución de Problemas
+
+### Si una actualización rompe algo
+
+```bash
+# Revertir inmediatamente
+make rollback
+
+# Ver qué generaciones tienes disponibles
+make list-generations
+
+# Comparar generaciones
+make diff-gen GEN1=30 GEN2=32
+```
+
+### Si quieres ver qué inputs están desactualizados
+
+```bash
+# Ver información del flake
+make show
+
+# Verificar el flake
+make flake-check
+```
+
+### Si necesitas volver a una versión específica
+
+```bash
+# Ver todas las generaciones
+make list-generations
+
+# Revertir a una generación específica
+sudo nixos-rebuild switch --rollback-to-generation <número>
+```
+
+---
+
+## Mejores Prácticas
+
+1. **Actualiza regularmente**: Ejecuta `make update` al menos una vez por semana
+2. **Revisa los cambios**: Usa `make diff-update` antes de aplicar
+3. **Prueba primero**: Usa `make test` antes de `make switch`
+4. **Mantén backups**: Usa Git para versionar tus cambios
+5. **Documenta problemas**: Si encuentras incompatibilidades, documenta qué input las causó
+6. **Usa rollback sin miedo**: Si algo falla, `make rollback` es tu amigo
+
+---
+
+## Resumen Rápido
+
+```bash
+# Actualizar todo
+make update
+
+# Actualizar solo nixpkgs
+make update-nixpkgs
+
+# Actualizar solo hydenix
+make update-hydenix
+
+# Actualizar input específico
+make update-input INPUT=nombre
+
+# Actualizar y aplicar (todo-en-uno)
+make upgrade
+
+# Ver cambios después de actualizar
+make diff-update
+
+# Aplicar cambios
+make switch
+
+# Revertir si algo falla
+make rollback
+```
+
+---
+
+Para más información sobre otros comandos del Makefile, consulta la [documentación completa del Makefile](/docs/makefile).
