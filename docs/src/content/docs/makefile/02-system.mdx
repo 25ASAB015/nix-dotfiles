@@ -1,0 +1,205 @@
+---
+title: Gestión del Sistema
+description: Comandos para compilar, aplicar y validar configuraciones de NixOS
+---
+
+# Gestión del Sistema
+
+Módulo: `make/system.mk`
+
+Comandos para compilar, probar, aplicar y validar configuraciones de NixOS. Estos son los comandos más usados en el día a día.
+
+## Comandos Principales
+
+### `make switch`
+**⭐ Comando más usado** - Compila y activa tu nueva configuración.
+
+```bash
+make switch
+```
+
+**Qué hace:**
+1. `git add .` - Staging de todos los cambios
+2. Compila la configuración
+3. Activa la nueva configuración (disponible inmediatamente)
+4. Crea una nueva generación del sistema
+
+**Cuándo usarlo:** Después de editar configuración y quieres aplicar cambios ahora mismo.
+
+---
+
+### `make test`
+Prueba tu configuración compilándola y activándola temporalmente sin crear una generación permanente.
+
+```bash
+make test
+```
+
+**Qué hace:**
+- ✅ Compila la configuración completa
+- ✅ Activa la configuración **TEMPORALMENTE** en tu sesión actual
+- ⚠️ Los cambios se **PIERDEN al reiniciar** el sistema
+- ❌ **NO crea** una nueva generación permanente
+
+**Cuándo usarlo:** Probar configuraciones experimentales sin riesgo.
+
+**Flujo recomendado:**
+```bash
+make test      # Probar primero (seguro, temporal)
+make switch    # Si funciona bien, hacer permanente
+# Si falla, simplemente reinicia
+```
+
+---
+
+### `make safe-switch`
+Valida la configuración y luego aplica los cambios de forma segura.
+
+```bash
+make safe-switch
+```
+
+**Qué hace:**
+1. Ejecuta `make validate` primero (3 chequeos)
+2. Si pasa, ejecuta `make switch`
+3. Si falla, NO ejecuta switch
+
+**Cuándo usarlo:** Cambios importantes o después de `make update`.
+
+---
+
+### `make build`
+Compila la configuración sin aplicar cambios al sistema.
+
+```bash
+make build
+```
+
+**Cuándo usarlo:** Verificar que no hay errores de compilación antes de aplicar cambios.
+
+---
+
+### `make dry-run`
+Muestra qué cambiaría sin hacer cambios reales.
+
+```bash
+make dry-run
+```
+
+**Cuándo usarlo:** Antes de `make switch` en cambios grandes.
+
+---
+
+### `make boot`
+Compila la configuración y la prepara para el próximo arranque sin afectar la sesión actual.
+
+```bash
+make boot
+```
+
+**Cuándo usarlo:** Cambios en el kernel o bootloader que requieren reinicio.
+
+---
+
+### `make validate`
+Valida la configuración antes de aplicarla mediante tres chequeos.
+
+```bash
+make validate
+```
+
+**Qué verifica:**
+1. Sintaxis del flake
+2. Evaluación de configuración
+3. Problemas comunes (con statix)
+
+---
+
+### `make debug`
+Rebuild con verbose output y trace completo.
+
+```bash
+make debug
+```
+
+**Cuándo usarlo:** Cuando un build falla y necesitas ver el error completo.
+
+---
+
+### `make quick`
+Quick rebuild (skip checks) - más rápido pero menos seguro.
+
+```bash
+make quick
+```
+
+**Cuándo usarlo:** Cambios pequeños y confiables donde quieres velocidad.
+
+---
+
+### `make emergency`
+Emergency rebuild con maximum verbosity.
+
+```bash
+make emergency
+```
+
+**Cuándo usarlo:** Cuando el sistema está roto y necesitas recuperarlo.
+
+---
+
+### `make fix-permissions`
+Arregla problemas comunes de permisos.
+
+```bash
+make fix-permissions
+```
+
+---
+
+### `make fix-git-permissions`
+Arregla ownership issues del repositorio git.
+
+```bash
+make fix-git-permissions
+```
+
+---
+
+### `make hardware-scan`
+Re-escanea la configuración de hardware.
+
+```bash
+make hardware-scan
+```
+
+**Qué hace:** Genera nuevo `hardware-configuration.nix`.
+
+---
+
+## Workflows Recomendados
+
+### Desarrollo Diario
+```bash
+make test → make switch → make rollback (si es necesario)
+```
+
+### Cambios Importantes
+```bash
+make validate → make safe-switch
+```
+
+### Debugging
+```bash
+make debug    # Ver errores completos
+make emergency # Último recurso
+```
+
+## Comparación de Comandos
+
+| Comando | Compila | Activa | Persiste | Generación |
+|---------|---------|--------|----------|------------|
+| `make build` | ✅ | ❌ | N/A | ❌ |
+| `make test` | ✅ | ✅ | Solo sesión | ❌ |
+| `make switch` | ✅ | ✅ | Permanente | ✅ |
+| `make boot` | ✅ | ✅ | Próximo boot | ✅ |

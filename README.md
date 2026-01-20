@@ -105,6 +105,28 @@ See `make help` for all 40+ commands!
 
 **Diagnóstico de red:** `make test-network` cuando notes lentitud.
 
+## 📂 Estructura Modular del Makefile
+
+El Makefile está organizado en módulos que coinciden con las categorías de comandos:
+
+```
+make/
+├── docs.mk          # Ayuda y Documentación (7 targets)
+├── system.mk        # Gestión del Sistema (12 targets)
+├── cleanup.mk       # Limpieza y Optimización (7 targets)
+├── updates.mk       # Actualizaciones y Flakes (9 targets)
+├── generations.mk   # Generaciones y Rollback (6 targets)
+├── git.mk           # Git y Respaldo (7 targets)
+├── logs.mk          # Diagnóstico y Logs (7 targets)
+├── dev.mk           # Análisis y Desarrollo (9 targets)
+├── format.mk        # Formato, Linting y Estructura (3 targets)
+├── reports.mk       # Reportes y Exportación (placeholder)
+└── templates.mk     # Plantillas y Otros (placeholder)
+```
+
+**Documentación modular:** La documentación web también está modularizada siguiendo la misma estructura. Ver [documentación completa](https://25ASAB015.github.io/nix-dotfiles/makefile/).
+
+
 ## 📦 Installed Software
 
 ### Terminal Tools

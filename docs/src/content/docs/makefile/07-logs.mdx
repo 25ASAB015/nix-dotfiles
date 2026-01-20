@@ -1,0 +1,145 @@
+---
+title: Diagnóstico y Logs
+description: Comandos para diagnóstico del sistema, salud y visualización de logs
+---
+
+# Diagnóstico y Logs
+
+Módulo: `make/logs.mk`
+
+Comandos para diagnóstico del sistema, health checks y visualización de logs.
+
+## Comandos Disponibles
+
+### `make health`
+Ejecuta health checks comprehensivos del sistema.
+
+```bash
+make health
+```
+
+**Qué verifica:**
+- Estado del sistema NixOS
+- Servicios críticos
+- Espacio en disco
+- Configuración de red
+
+---
+
+### `make test-network`
+Ejecuta diagnósticos comprehensivos de red.
+
+```bash
+make test-network
+```
+
+**Qué hace:**
+- Prueba conectividad
+- Verifica DNS
+- Muestra configuración de red
+- Diagnostica problemas comunes
+
+**Cuándo usarlo:** Cuando notes lentitud o problemas de conexión.
+
+---
+
+### `make info`
+Muestra información del sistema (incluyendo versiones).
+
+```bash
+make info
+```
+
+**Qué muestra:**
+- Versión de NixOS
+- Kernel
+- Hostname
+- Uptime
+- Información de hardware
+
+---
+
+### `make status`
+Muestra status comprehensivo del sistema (alias para git-status).
+
+```bash
+make status
+```
+
+---
+
+### `make watch-logs`
+Observa logs del sistema en tiempo real (follow mode).
+
+```bash
+make watch-logs
+```
+
+**Qué hace:** `journalctl -f` para ver logs en vivo.
+
+---
+
+### `make logs-boot`
+Muestra logs del último arranque.
+
+```bash
+make logs-boot
+```
+
+**Cuándo usarlo:** Diagnosticar problemas de arranque.
+
+---
+
+### `make logs-errors`
+Muestra logs de errores recientes.
+
+```bash
+make logs-errors
+```
+
+**Cuándo usarlo:** Investigar errores del sistema.
+
+---
+
+### `make logs-service`
+Muestra logs de un servicio específico.
+
+```bash
+make logs-service SVC=<service>
+```
+
+**Ejemplos:**
+```bash
+make logs-service SVC=sshd
+make logs-service SVC=docker
+make logs-service SVC=networkmanager
+```
+
+---
+
+## Workflow Recomendado
+
+### Diagnóstico General
+```bash
+make health        # Health check general
+make info          # Información del sistema
+```
+
+### Problemas de Red
+```bash
+make test-network  # Diagnóstico completo de red
+```
+
+### Investigar Errores
+```bash
+make logs-errors   # Ver errores recientes
+make logs-boot     # Ver logs de arranque
+make watch-logs    # Observar en tiempo real
+```
+
+### Debugging de Servicios
+```bash
+# Ver logs de un servicio específico
+make logs-service SVC=sshd
+make logs-service SVC=networkmanager
+```

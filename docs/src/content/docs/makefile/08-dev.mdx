@@ -1,0 +1,149 @@
+---
+title: Análisis y Desarrollo
+description: Comandos para búsqueda de paquetes, análisis y desarrollo
+---
+
+# Análisis y Desarrollo
+
+Módulo: `make/dev.mk`
+
+Comandos para búsqueda de paquetes, análisis del sistema y desarrollo.
+
+## Comandos Disponibles
+
+### `make list-hosts`
+Lista las configuraciones de hosts disponibles.
+
+```bash
+make list-hosts
+```
+
+**Qué muestra:** Hosts configurados en el flake (hydenix, laptop, vm, etc).
+
+---
+
+### `make hosts-info`
+Muestra información sobre todos los hosts configurados (alias para list-hosts).
+
+```bash
+make hosts-info
+```
+
+---
+
+### `make search`
+Busca paquetes en nixpkgs.
+
+```bash
+make search PKG=<name>
+```
+
+**Ejemplos:**
+```bash
+make search PKG=firefox
+make search PKG=neovim
+make search PKG=docker
+```
+
+**Cuándo usarlo:** Encontrar paquetes disponibles antes de instalarlos.
+
+---
+
+### `make search-installed`
+Busca en paquetes actualmente instalados.
+
+```bash
+make search-installed PKG=<name>
+```
+
+**Ejemplos:**
+```bash
+make search-installed PKG=kitty
+make search-installed PKG=docker
+```
+
+**Cuándo usarlo:** Verificar si un paquete ya está instalado.
+
+---
+
+### `make repl`
+Inicia nix repl con el flake.
+
+```bash
+make repl
+```
+
+**Cuándo usarlo:** Explorar configuración interactivamente o debuggear.
+
+---
+
+### `make shell`
+Entra en development shell.
+
+```bash
+make shell
+```
+
+**Cuándo usarlo:** Desarrollo con dependencias específicas.
+
+---
+
+### `make vm`
+Construye y ejecuta una VM con la configuración.
+
+```bash
+make vm
+```
+
+**Cuándo usarlo:** Probar configuración en VM antes de aplicarla.
+
+---
+
+### `make closure-size`
+Muestra el closure size del sistema actual.
+
+```bash
+make closure-size
+```
+
+**Qué muestra:** Tamaño total de todas las dependencias del sistema.
+
+**Cuándo usarlo:** Ver qué está usando espacio en disco.
+
+---
+
+## Workflow Recomendado
+
+### Buscar e Instalar Paquetes
+```bash
+# 1. Buscar paquete
+make search PKG=firefox
+
+# 2. Agregar a configuración
+nvim modules/system/packages.nix
+
+# 3. Aplicar
+make switch
+```
+
+### Multi-host
+```bash
+# Ver hosts disponibles
+make list-hosts
+
+# Aplicar a host específico
+make switch HOSTNAME=laptop
+```
+
+### Análisis de Espacio
+```bash
+make closure-size      # Ver tamaño total
+make generation-sizes  # Ver por generación
+```
+
+### Desarrollo
+```bash
+make repl   # Explorar configuración
+make shell  # Development environment
+make vm     # Probar en VM
+```

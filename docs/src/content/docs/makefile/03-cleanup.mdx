@@ -1,0 +1,154 @@
+---
+title: Limpieza y Optimización
+description: Comandos para limpiar generaciones antiguas y optimizar el sistema
+---
+
+# Limpieza y Optimización
+
+Módulo: `make/cleanup.mk`
+
+Comandos para limpiar generaciones antiguas, optimizar el store de Nix y liberar espacio en disco.
+
+## Comandos Disponibles
+
+### `make clean`
+Limpia build artifacts y generaciones más antiguas de 30 días.
+
+```bash
+make clean
+```
+
+**Qué hace:**
+- Elimina generaciones del sistema más antiguas de 30 días
+- Ejecuta garbage collection de Nix
+- Libera espacio en disco de forma segura
+
+**Cuándo usarlo:** Mantenimiento regular mensual.
+
+---
+
+### `make clean-week`
+Limpia build artifacts y generaciones más antiguas de 7 días.
+
+```bash
+make clean-week
+```
+
+**Más agresivo que `clean`** - Usa con precaución.
+
+---
+
+### `make clean-conservative`
+Limpia build artifacts y generaciones más antiguas de 90 días (muy seguro).
+
+```bash
+make clean-conservative
+```
+
+**Cuándo usarlo:** Primera vez que limpias o quieres ser muy conservador.
+
+---
+
+### `make deep-clean`
+Aggressive cleanup - elimina TODAS las generaciones antiguas.
+
+```bash
+make deep-clean
+```
+
+**⚠️ ADVERTENCIA:** Muy agresivo - solo mantiene la generación actual.
+
+**Cuándo usarlo:** Cuando necesitas liberar mucho espacio y estás seguro de la configuración actual.
+
+---
+
+### `make optimize`
+Optimiza el nix store (deduplicación y hard-linking).
+
+```bash
+make optimize
+```
+
+**Qué hace:**
+- Ejecuta `nix-store --optimise`
+- Deduplica archivos idénticos
+- Puede liberar varios GB de espacio
+
+**Cuándo usarlo:** Después de muchos builds o actualizaciones.
+
+---
+
+### `make clean-result`
+Elimina symlinks `result*` que quedan después de builds de Nix.
+
+```bash
+make clean-result
+```
+
+**Qué hace:**
+- Busca y elimina symlinks `result*` en el directorio actual
+- No afecta el store de Nix (solo limpia symlinks)
+
+**Cuándo usarlo:** Después de builds para mantener el directorio limpio.
+
+---
+
+### `make fix-store`
+Intenta reparar el nix store si está corrupto.
+
+```bash
+make fix-store
+```
+
+**Cuándo usarlo:** Cuando ves errores de corrupción en el store.
+
+---
+
+## Workflows Recomendados
+
+### Mantenimiento Regular
+```bash
+# Cada mes
+make clean
+make optimize
+make generation-sizes  # Ver cuánto espacio liberaste
+```
+
+### Liberar Espacio Urgente
+```bash
+# 1. Ver qué está usando espacio
+make generation-sizes
+make closure-size
+
+# 2. Limpiar conservadoramente
+make clean
+
+# 3. Si necesitas más espacio
+make clean-week
+
+# 4. Optimizar
+make optimize
+```
+
+### Limpieza Profunda (con precaución)
+```bash
+# Solo si estás seguro
+make deep-clean
+make optimize
+```
+
+## Comparación de Comandos de Limpieza
+
+| Comando | Antigüedad | Agresividad | Seguridad |
+|---------|-----------|-------------|-----------|
+| `clean-conservative` | 90 días | Baja | ✅✅✅ Muy seguro |
+| `clean` | 30 días | Media | ✅✅ Seguro |
+| `clean-week` | 7 días | Alta | ⚠️ Precaución |
+| `deep-clean` | Todas | Muy alta | ⚠️⚠️ Peligroso |
+
+## Tips
+
+- **Empieza conservador:** Usa `clean-conservative` la primera vez
+- **Optimiza regularmente:** `make optimize` puede liberar mucho espacio
+- **Verifica antes:** Usa `make generation-sizes` para ver qué limpiarás
+- **Backup primero:** Si vas a usar `deep-clean`, haz backup antes

@@ -10,8 +10,8 @@ con el nuevo layout y asegurar consistencia visual + verificabilidad.
 - [x] Paso 3 — Crear carpeta `make/` y archivos vacíos
 - [x] Paso 4 — Mover secciones del Makefile a módulos
 - [x] Paso 5 — Ajustar `Makefile` root (includes + orden)
-- [ ] Paso 6 — Verificar `make help` y `make help-examples`
-- [ ] Paso 7 — Actualizar documentación (estructura + sincronía)
+- [x] Paso 6 — Verificar `make help` y `make help-examples`
+- [x] Paso 7 — Actualizar documentación (estructura + sincronía)
 - [ ] Paso 8 — Añadir guía de tests y ejemplos de salida coherente
 - [ ] Paso 9 — Checklist final y criterios de aceptación
 
@@ -37,8 +37,8 @@ Reglas:
 - [x] Paso 3 — Fecha: 2026-01-19 | Nota: Creados 11 archivos .mk con cabeceras estándar en make/
 - [x] Paso 4 — Fecha: 2026-01-19 | Nota: Migrados 68 targets a 9 módulos activos (docs, system, cleanup, updates, generations, git, logs, dev, format)
 - [x] Paso 5 — Fecha: 2026-01-19 | Nota: Ajustado Makefile root con variables globales e includes de 11 módulos
-- [ ] Paso 6 — Fecha: ____ | Nota:
-- [ ] Paso 7 — Fecha: ____ | Nota:
+- [x] Paso 6 — Fecha: 2026-01-19 | Nota: Verificados make help y make help-examples. Todos los targets funcionan correctamente
+- [x] Paso 7 — Fecha: 2026-01-19 | Nota: Modularizada documentación en 12 archivos .mdx (index + 11 módulos). Actualizado sidebar en astro.config.mjs, README.md e index.mdx
 - [ ] Paso 8 — Fecha: ____ | Nota:
 - [ ] Paso 9 — Fecha: ____ | Nota:
 

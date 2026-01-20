@@ -1,0 +1,112 @@
+---
+title: Git y Respaldo
+description: Comandos para gestionar el repositorio git y hacer respaldos
+---
+
+# Git y Respaldo
+
+Módulo: `make/git.mk`
+
+Comandos para gestionar el repositorio git, hacer commits y respaldos.
+
+## Comandos Disponibles
+
+### `make git-add`
+Stage todos los cambios para git.
+
+```bash
+make git-add
+```
+
+**Equivalente a:** `git add .`
+
+---
+
+### `make git-commit`
+Quick commit con timestamp automático.
+
+```bash
+make git-commit
+```
+
+**Qué hace:** Crea commit con mensaje automático basado en la fecha/hora.
+
+---
+
+### `make git-push`
+Push al remote usando GitHub CLI.
+
+```bash
+make git-push
+```
+
+**Qué hace:** Push usando `gh` (GitHub CLI) con autenticación.
+
+---
+
+### `make git-status`
+Muestra git status usando GitHub CLI.
+
+```bash
+make git-status
+```
+
+---
+
+### `make git-diff`
+Muestra cambios uncommitted en archivos `.nix`.
+
+```bash
+make git-diff
+```
+
+**Qué muestra:** Solo cambios en archivos de configuración Nix.
+
+---
+
+### `make save`
+Quick save: add, commit, push, and switch (todo-en-uno).
+
+```bash
+make save
+```
+
+**Qué hace:**
+1. `git add .`
+2. `git commit` con timestamp
+3. `git push`
+4. `make switch`
+
+**Cuándo usarlo:** Workflow rápido para guardar y aplicar cambios.
+
+---
+
+### `make git-log`
+Muestra cambios recientes del git log.
+
+```bash
+make git-log
+```
+
+---
+
+## Workflow Recomendado
+
+### Guardar Cambios Manualmente
+```bash
+make git-add
+make git-commit
+make git-push
+```
+
+### Guardar y Aplicar (rápido)
+```bash
+make save  # add + commit + push + switch
+```
+
+### Ver Estado
+```bash
+make git-status  # Ver qué cambió
+make git-diff    # Ver diferencias
+make git-log     # Ver historial
+```

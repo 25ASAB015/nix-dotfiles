@@ -1,9 +1,64 @@
 ---
-title: Makefile
-description: Manual completo y actualizado de comandos para Hydenix.
+title: Makefile (Redirigido)
+description: Documentación del Makefile - ahora modularizada
 ---
 
-# Makefile: manual completo de uso
+# Makefile: Documentación Modular
+
+La documentación del Makefile ha sido modularizada para facilitar la navegación y el mantenimiento.
+
+**👉 [Ver documentación completa del Makefile](/nix-dotfiles/makefile/)**
+
+## Módulos Disponibles
+
+- [Overview](/nix-dotfiles/makefile/) - Introducción y navegación
+- [Ayuda y Documentación](/nix-dotfiles/makefile/01-docs/) - help, help-examples, docs-*
+- [Gestión del Sistema](/nix-dotfiles/makefile/02-system/) - switch, test, build, validate
+- [Limpieza y Optimización](/nix-dotfiles/makefile/03-cleanup/) - clean, optimize
+- [Actualizaciones y Flakes](/nix-dotfiles/makefile/04-updates/) - update, upgrade
+- [Generaciones y Rollback](/nix-dotfiles/makefile/05-generations/) - list-generations, rollback
+- [Git y Respaldo](/nix-dotfiles/makefile/06-git/) - git-*, save
+- [Diagnóstico y Logs](/nix-dotfiles/makefile/07-logs/) - health, test-network, logs-*
+- [Análisis y Desarrollo](/nix-dotfiles/makefile/08-dev/) - search, repl, vm
+- [Formato y Linting](/nix-dotfiles/makefile/09-format/) - format, lint, tree
+- [Reportes](/nix-dotfiles/makefile/10-reports/) - Placeholder
+- [Templates](/nix-dotfiles/makefile/11-templates/) - Placeholder
+
+## Estructura Modular
+
+La documentación ahora está organizada en módulos que coinciden con la estructura del código en `make/*.mk`:
+
+```
+make/
+├── docs.mk          # Ayuda y Documentación
+├── system.mk        # Gestión del Sistema
+├── cleanup.mk       # Limpieza y Optimización
+├── updates.mk       # Actualizaciones y Flakes
+├── generations.mk   # Generaciones y Rollback
+├── git.mk           # Git y Respaldo
+├── logs.mk          # Diagnóstico y Logs
+├── dev.mk           # Análisis y Desarrollo
+├── format.mk        # Formato y Linting
+├── reports.mk       # Reportes
+└── templates.mk     # Templates
+```
+
+## Ventajas de la Modularización
+
+- ✅ **Navegación mejorada** - Sidebar organizado por categorías
+- ✅ **Sincronización** - Código y documentación con la misma estructura
+- ✅ **Mantenimiento** - Más fácil actualizar documentación específica
+- ✅ **Escalabilidad** - Agregar nuevos módulos es simple
+
+## Inicio Rápido
+
+```bash
+make help            # Lista todos los comandos
+make help-examples   # Ejemplos de uso
+make test            # Prueba sin aplicar
+make switch          # Aplica cambios
+```
+
 
 El Makefile es la puerta de entrada a nuestros dotfiles. Centraliza todos los comandos que usamos para construir, validar, actualizar, mantener y depurar la configuración. Este manual explica **todos y cada uno** de esos comandos para que el proyecto sea sostenible.
 

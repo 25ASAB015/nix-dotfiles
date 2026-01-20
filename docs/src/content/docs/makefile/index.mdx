@@ -1,0 +1,126 @@
+---
+title: Makefile - Documentación Modular
+description: Guía completa del Makefile modular de Hydenix organizada por categorías
+---
+
+# Makefile: Documentación Modular
+
+El Makefile de Hydenix centraliza todos los comandos para construir, validar, actualizar, mantener y depurar la configuración de NixOS. Esta documentación está organizada en módulos que coinciden con la estructura del código en `make/*.mk`.
+
+## 🚀 Inicio Rápido
+
+```bash
+make help            # Lista todos los comandos disponibles
+make help-examples   # Ejemplos de uso con parámetros
+make test            # Prueba sin aplicar permanentemente
+make switch          # Aplica cambios
+make rollback        # Revierte a la generación anterior
+```
+
+## 📂 Estructura Modular
+
+El Makefile está organizado en 11 módulos que coinciden con las categorías de comandos:
+
+```
+make/
+├── docs.mk          # Ayuda y Documentación
+├── system.mk        # Gestión del Sistema
+├── cleanup.mk       # Limpieza y Optimización
+├── updates.mk       # Actualizaciones y Flakes
+├── generations.mk   # Generaciones y Rollback
+├── git.mk           # Git y Respaldo
+├── logs.mk          # Diagnóstico y Logs
+├── dev.mk           # Análisis y Desarrollo
+├── format.mk        # Formato, Linting y Estructura
+├── reports.mk       # Reportes y Exportación
+└── templates.mk     # Plantillas y Otros
+```
+
+## 📚 Módulos de Documentación
+
+### [Ayuda y Documentación](./01-docs)
+Comandos para obtener ayuda, ver ejemplos y gestionar la documentación web.
+- `help`, `help-examples`, `docs-local`, `docs-dev`, `docs-build`, `docs-install`, `docs-clean`
+
+### [Gestión del Sistema](./02-system)
+Comandos para compilar, aplicar y validar configuraciones de NixOS.
+- `switch`, `safe-switch`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `quick`, `emergency`, `fix-permissions`, `fix-git-permissions`, `hardware-scan`
+
+### [Limpieza y Optimización](./03-cleanup)
+Comandos para limpiar generaciones antiguas y optimizar el sistema.
+- `clean`, `clean-week`, `clean-conservative`, `deep-clean`, `optimize`, `clean-result`, `fix-store`
+
+### [Actualizaciones y Flakes](./04-updates)
+Comandos para actualizar inputs del flake y gestionar dependencias.
+- `update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `diff-update`, `upgrade`, `show`, `flake-check`, `diff-flake`
+
+### [Generaciones y Rollback](./05-generations)
+Comandos para gestionar generaciones del sistema y hacer rollback.
+- `list-generations`, `rollback`, `diff-generations`, `diff-gen`, `generation-sizes`, `current-generation`
+
+### [Git y Respaldo](./06-git)
+Comandos para gestionar el repositorio git y hacer respaldos.
+- `git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `save`, `git-log`
+
+### [Diagnóstico y Logs](./07-logs)
+Comandos para diagnóstico del sistema, salud y visualización de logs.
+- `health`, `test-network`, `info`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
+
+### [Análisis y Desarrollo](./08-dev)
+Comandos para búsqueda de paquetes, análisis y desarrollo.
+- `list-hosts`, `hosts-info`, `search`, `search-installed`, `repl`, `shell`, `vm`, `closure-size`
+
+### [Formato y Linting](./09-format)
+Comandos para formatear y validar código Nix.
+- `format`, `lint`, `tree`
+
+### [Reportes](./10-reports)
+Comandos para generar reportes y exportaciones (placeholder).
+
+### [Templates](./11-templates)
+Comandos para plantillas y utilidades (placeholder).
+
+## 🔄 Workflows Recomendados
+
+### Desarrollo Diario
+```bash
+make test → make switch → make rollback (si es necesario)
+```
+
+### Updates Seguros
+```bash
+make update → make diff-update → make validate → make test → make switch
+```
+
+### Mantenimiento
+```bash
+make health → make clean → make optimize → make generation-sizes
+```
+
+### Multi-host
+```bash
+make list-hosts → make switch HOSTNAME=laptop
+```
+
+## 💡 Sistema de Ayuda
+
+El Makefile tiene un sistema de ayuda en tres niveles:
+
+1. **`make help`** - Lista completa de comandos con descripciones
+2. **`make help-examples`** - Ejemplos de uso para comandos con parámetros
+3. **Esta documentación** - Guía completa con explicaciones detalladas
+
+## 🎯 Filosofía
+
+- **Comandos cortos y memorables** - Evita comandos largos de NixOS
+- **Documentación integrada** - Cada comando tiene descripción en `make help`
+- **Workflows documentados** - Secuencias de comandos para tareas comunes
+- **Estructura modular** - Código y documentación organizados por categorías
+
+## 📖 Navegación
+
+Usa el menú lateral para explorar cada módulo en detalle. Cada sección contiene:
+- Descripción de cada comando
+- Ejemplos de uso
+- Casos de uso reales
+- Notas importantes y advertencias

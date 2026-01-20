@@ -1,0 +1,107 @@
+---
+title: Generaciones y Rollback
+description: Comandos para gestionar generaciones del sistema y hacer rollback
+---
+
+# Generaciones y Rollback
+
+Módulo: `make/generations.mk`
+
+Comandos para listar, comparar y revertir generaciones del sistema.
+
+## Comandos Disponibles
+
+### `make list-generations`
+Lista todas las generaciones del sistema.
+
+```bash
+make list-generations
+```
+
+**Qué muestra:** Número de generación, fecha, y si es la actual.
+
+---
+
+### `make rollback`
+Revierte a la generación anterior del sistema.
+
+```bash
+make rollback
+```
+
+**Qué hace:** Activa la generación anterior inmediatamente.
+
+**Cuándo usarlo:** Cuando un `make switch` rompe algo.
+
+---
+
+### `make diff-generations`
+Compara la generación actual con la anterior.
+
+```bash
+make diff-generations
+```
+
+**Qué muestra:** Diferencias de paquetes entre generaciones.
+
+---
+
+### `make diff-gen`
+Compara dos generaciones específicas.
+
+```bash
+make diff-gen GEN1=<n> GEN2=<m>
+```
+
+**Ejemplos:**
+```bash
+make diff-gen GEN1=20 GEN2=25
+make diff-gen GEN1=184 GEN2=186
+```
+
+---
+
+### `make generation-sizes`
+Muestra el tamaño en disco de cada generación.
+
+```bash
+make generation-sizes
+```
+
+**Cuándo usarlo:** Antes de limpiar para ver qué generaciones ocupan más espacio.
+
+---
+
+### `make current-generation`
+Muestra detalles de la generación actual.
+
+```bash
+make current-generation
+```
+
+---
+
+## Workflow Recomendado
+
+### Rollback Rápido
+```bash
+# Si algo se rompió después de switch
+make rollback
+```
+
+### Investigar Cambios
+```bash
+# Ver qué cambió entre generaciones
+make list-generations
+make diff-generations
+
+# Comparar generaciones específicas
+make diff-gen GEN1=180 GEN2=185
+```
+
+### Mantenimiento
+```bash
+# Ver tamaños antes de limpiar
+make generation-sizes
+make clean  # Limpia generaciones antiguas
+```

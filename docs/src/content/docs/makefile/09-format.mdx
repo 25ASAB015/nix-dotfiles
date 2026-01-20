@@ -1,0 +1,72 @@
+---
+title: Formato y Linting
+description: Comandos para formatear y validar código Nix
+---
+
+# Formato y Linting
+
+Módulo: `make/format.mk`
+
+Comandos para formatear código Nix, linting y visualización de estructura.
+
+## Comandos Disponibles
+
+### `make format`
+Formatea archivos Nix en el proyecto.
+
+```bash
+make format
+```
+
+**Qué hace:** Formatea todos los archivos `.nix` con `nixpkgs-fmt` o `alejandra`.
+
+**Cuándo usarlo:** Antes de hacer commit para mantener código consistente.
+
+---
+
+### `make lint`
+Lint de archivos Nix (requiere statix).
+
+```bash
+make lint
+```
+
+**Qué hace:** Analiza código Nix en busca de problemas y anti-patrones.
+
+**Cuándo usarlo:** Verificar calidad de código antes de commit.
+
+---
+
+### `make tree`
+Muestra la estructura de configuración.
+
+```bash
+make tree
+```
+
+**Qué muestra:** Árbol de directorios del proyecto.
+
+**Cuándo usarlo:** Explorar organización del proyecto.
+
+---
+
+## Workflow Recomendado
+
+### Antes de Commit
+```bash
+make format  # Formatear código
+make lint    # Verificar problemas
+make validate # Validar configuración
+git commit   # Commitear
+```
+
+### Explorar Proyecto
+```bash
+make tree    # Ver estructura
+```
+
+## Tips
+
+- **Formatea siempre antes de commit** para mantener consistencia
+- **Lint detecta problemas** que pueden causar errores sutiles
+- **Tree es útil** para nuevos colaboradores

@@ -1,0 +1,143 @@
+---
+title: Actualizaciones y Flakes
+description: Comandos para actualizar inputs del flake y gestionar dependencias
+---
+
+# Actualizaciones y Flakes
+
+Módulo: `make/updates.mk`
+
+Comandos para actualizar inputs del flake, gestionar dependencias y ver cambios.
+
+## Comandos Disponibles
+
+### `make update`
+Actualiza todos los inputs del flake.
+
+```bash
+make update
+```
+
+**Qué hace:** Actualiza todos los inputs en `flake.lock` (nixpkgs, hydenix, etc).
+
+---
+
+### `make update-nixpkgs`
+Actualiza solo el input de nixpkgs.
+
+```bash
+make update-nixpkgs
+```
+
+---
+
+### `make update-hydenix`
+Actualiza solo el input de hydenix.
+
+```bash
+make update-hydenix
+```
+
+---
+
+### `make update-input`
+Actualiza un input específico del flake.
+
+```bash
+make update-input INPUT=<name>
+```
+
+**Ejemplos:**
+```bash
+make update-input INPUT=hydenix
+make update-input INPUT=nixpkgs
+make update-input INPUT=zen-browser-flake
+```
+
+---
+
+### `make diff-update`
+Muestra cambios en `flake.lock` después de actualizar.
+
+```bash
+make diff-update
+```
+
+**Cuándo usarlo:** Después de `make update` para ver qué cambió.
+
+---
+
+### `make upgrade`
+Update, show changes, and switch (workflow completo).
+
+```bash
+make upgrade
+```
+
+**Qué hace:**
+1. `make update`
+2. `make diff-update`
+3. `make switch`
+
+---
+
+### `make show`
+Muestra los outputs del flake.
+
+```bash
+make show
+```
+
+---
+
+### `make flake-check`
+Verifica la sintaxis del flake sin construir.
+
+```bash
+make flake-check
+```
+
+---
+
+### `make diff-flake`
+Muestra cambios en `flake.nix` y `flake.lock`.
+
+```bash
+make diff-flake
+```
+
+---
+
+## Workflow Recomendado
+
+### Update Seguro
+```bash
+# 1. Actualizar inputs
+make update
+
+# 2. Ver qué cambió
+make diff-update
+
+# 3. Validar configuración
+make validate
+
+# 4. Probar temporalmente
+make test
+
+# 5. Si funciona, aplicar permanentemente
+make switch
+```
+
+### Update Rápido (todo-en-uno)
+```bash
+make upgrade  # update + diff + switch
+```
+
+### Update Selectivo
+```bash
+# Solo actualizar un input específico
+make update-input INPUT=hydenix
+make diff-update
+make test
+make switch
+```
