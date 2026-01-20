@@ -101,9 +101,43 @@ info: ## Show system information
 		head -5 | sed 's/"lastModified"://' | sed 's/^/  /' || printf "  $(YELLOW)Unable to read$(NC)\n"
 	@printf "\n"
 
-# Show comprehensive system status (alias for git-status)
-# Displays git repository status and system overview
-status: git-status ## Show comprehensive system status (alias for git-status)
+# Show comprehensive NixOS system status including generations and flake state
+# Displays current generation, recent generations, and flake input status
+status: ## Show comprehensive system status (NixOS generations + flake state)
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📊 NixOS System Status                    \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@CURRENT_GEN_INFO=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1 " (" $$2 " " $$3 ")"}' || echo 'N/A'); \
+	CURRENT_GEN=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1}' || echo 'N/A'); \
+	TOTAL_GENS=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo 'N/A'); \
+	printf "$(BLUE)Current Generation:$(NC)   $(GREEN)%s$(NC)\n" "$$CURRENT_GEN_INFO"; \
+	printf "$(BLUE)Total Generations:$(NC)    $(GREEN)%s$(NC)\n" "$$TOTAL_GENS"
+	@printf "\n$(BLUE)📋 Recent Generations (last 5):$(NC)\n"
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -5 | sed 's/^/  /' || printf "  $(YELLOW)None$(NC)\n"
+	@printf "\n$(BLUE)🔄 Flake Status:$(NC)\n"
+	@if git diff-index --quiet HEAD -- 2>/dev/null; then \
+		printf "  $(GREEN)✓ Clean$(NC) - No uncommitted changes\n"; \
+	else \
+		printf "  $(YELLOW)⚠ Uncommitted changes$(NC)\n"; \
+	fi
+	@printf "$(BLUE)Flake Location:$(NC)       $(GREEN)$(PWD)$(NC)\n"
+	@printf "\n$(BLUE)💾 Storage:$(NC)\n"
+	@DISK_USAGE=$$(df -h /nix 2>/dev/null | tail -1 | awk '{print $$5 " used (" $$4 " free)"}' || echo 'N/A'); \
+	printf "  /nix: $(GREEN)%s$(NC)\n" "$$DISK_USAGE"
+	@printf "\n$(BLUE)🔧 Failed Services:$(NC) "
+	@FAILED=$$(systemctl --failed --no-legend 2>/dev/null | wc -l); \
+	if [ $$FAILED -eq 0 ]; then \
+		printf "$(GREEN)✓ None$(NC)\n"; \
+	else \
+		printf "$(RED)✗ $$FAILED failed$(NC)\n"; \
+		printf "$(YELLOW)  Run 'systemctl --failed' for details$(NC)\n"; \
+	fi
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ System status complete$(NC)\n"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+
 
 # Monitor system logs in real-time using journalctl follow mode
 # Continuously displays new log entries as they are written

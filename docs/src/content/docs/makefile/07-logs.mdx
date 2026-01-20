@@ -60,11 +60,46 @@ make info
 ---
 
 ### `make status`
-Muestra status comprehensivo del sistema (alias para git-status).
+
+Muestra el estado completo del sistema NixOS incluyendo generaciones y estado del flake.
 
 ```bash
 make status
 ```
+
+**Información mostrada:**
+- Generación actual y total de generaciones
+- Últimas 5 generaciones con fechas
+- Estado del flake (cambios sin commitear)
+- Uso de almacenamiento en `/nix`
+- Servicios systemd fallidos
+
+**Salida esperada:**
+```
+════════════════════════════════════════════════════
+          📊 NixOS System Status                    
+════════════════════════════════════════════════════
+
+Current Generation:   186 (2026-01-19 20:00)
+Total Generations:    186
+
+📋 Recent Generations (last 5):
+  182   2026-01-18 15:30:00
+  183   2026-01-18 18:45:00
+  184   2026-01-19 10:15:00
+  185   2026-01-19 16:20:00
+  186   2026-01-19 20:00:00   (current)
+
+🔄 Flake Status:
+  ✓ Clean - No uncommitted changes
+
+💾 Storage:
+  /nix: 45% used (120G free)
+
+🔧 Failed Services: ✓ None
+```
+
+**Cuándo usarlo:** Para obtener un resumen rápido del estado del sistema NixOS.
 
 ---
 
