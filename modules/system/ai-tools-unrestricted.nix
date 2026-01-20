@@ -71,7 +71,9 @@
   # ══════════════════════════════════════════════════════════════════════════
   security.sudo = {
     enable = true;
-    wheelNeedsPassword = true; # Por defecto requiere contraseña
+    wheelNeedsPassword = false; # ⚠️ WARNING: Unrestricted sudo access
+    # extraRules commented out as they are redundant when wheelNeedsPassword = false
+    /*
     extraRules = [
       {
         users = [ "ludus" ];
@@ -98,6 +100,7 @@
         ];
       }
     ];
+    */
     extraConfig = ''
       # Mantener variables de entorno importantes
       Defaults env_keep += "SSH_AUTH_SOCK"

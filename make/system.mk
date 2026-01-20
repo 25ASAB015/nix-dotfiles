@@ -14,9 +14,9 @@ sys-apply: ## Build and switch to new configuration
 	@printf "\n$(BLUE)==================== Apply ====================\n$(NC)"
 	@printf "$(BLUE)🔄 Git add, build y switch (apply)...\n$(NC)"
 	@$(MAKE) --no-print-directory sys-fix-git
-	@if [ "$(id -u)" -eq 0 ]; then \
-		if [ -n "$SUDO_USER" ]; then \
-			sudo -u "$SUDO_USER" git add .; \
+	@if [ "$$(id -u)" -eq 0 ]; then \
+		if [ -n "$$SUDO_USER" ]; then \
+			sudo -u "$$SUDO_USER" git add .; \
 		else \
 			printf "$(RED)✗ Do not run 'make sys-apply' as root (no SUDO_USER)\n$(NC)"; \
 			exit 1; \

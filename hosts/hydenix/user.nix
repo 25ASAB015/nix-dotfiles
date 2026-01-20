@@ -25,6 +25,7 @@
       # Use khanelivim as neovim package (replaces default nvim)
       home.packages = [
         inputs.khanelivim.packages.${pkgs.stdenv.hostPlatform.system}.default
+        inputs.openspec.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
       
       # Set as default editor

@@ -52,6 +52,12 @@
       url = "github:khaneliman/khanelivim";
       # No seguimos nixpkgs para evitar conflictos con la configuración interna
     };
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # OPENSPEC - Spec-driven development for AI coding assistants
+    # Documentación: https://github.com/Fission-AI/OpenSpec
+    # ══════════════════════════════════════════════════════════════════════════
+    openspec.url = "github:Fission-AI/OpenSpec";
   };
 
   outputs =
