@@ -118,19 +118,33 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
 ## 🔄 Workflows Recomendados
 
 <Tabs>
-  <TabItem label="Desarrollo Diario">
+  <TabItem label="Flujo Pro">
     <Steps>
-    1. **Probar cambios** sin aplicarlos permanentemente
+    1. **Formatear** archivos Nix
        ```bash
-       make test
+       make format
        ```
     
-    2. **Aplicar configuración** si todo funciona bien
+    2. **Validar** sintaxis y evaluación
+       ```bash
+       make validate
+       ```
+    
+    3. **Aplicar configuración** permanentemente
        ```bash
        make switch
        ```
-    
-    3. **Revertir** si algo sale mal
+    </Steps>
+  </TabItem>
+
+  <TabItem label="Flujo Recuperación">
+    <Steps>
+    1. **Listar** generaciones disponibles
+       ```bash
+       make list-generations
+       ```
+
+    2. **Revertir** a la generación anterior
        ```bash
        make rollback
        ```
@@ -144,9 +158,9 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
        make update
        ```
     
-    2. **Ver cambios** en flake.lock
+    2. **Ver cambios** en archivos del flake
        ```bash
-       make diff-update
+       make flake-diff
        ```
     
     3. **Validar** configuración
@@ -154,12 +168,7 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
        make validate
        ```
     
-    4. **Probar** antes de aplicar
-       ```bash
-       make test
-       ```
-    
-    5. **Aplicar** cambios
+    4. **Aplicar** cambios
        ```bash
        make switch
        ```

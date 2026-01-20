@@ -183,17 +183,26 @@ make hardware-scan
 
 ## Workflows Recomendados
 
-### Desarrollo Diario
+### Flujo Pro (Desarrollo Seguro)
 ```bash
-make test → make switch → make rollback (si es necesario)
+make format → make validate → make switch
 ```
 
-### Cambios Importantes
+**Beneficios:** Asegura código limpio y válido antes de aplicar cambios permanentemente.
+
+### Flujo Recuperación
 ```bash
-make validate → make safe-switch
+make list-generations → make rollback
 ```
 
-### Debugging
+**Cuándo usarlo:** Cuando un cambio introdujo errores y necesitas volver rápidamente al estado anterior.
+
+---
+
+### Updates del Sistema
+```bash
+make update → make flake-diff → make validate → make switch
+```
 ```bash
 make debug    # Ver errores completos
 make emergency # Último recurso

@@ -3027,21 +3027,20 @@ Elige el flujo según el tipo de cambio que estás haciendo:
 
 #### **Desarrollo Iterativo** (cambios frecuentes y pequeños)
 
-Para cuando estás probando cosas y haciendo cambios rápidos:
+#### **Flujo Pro (Desarrollo Diario)**
+Para cuando estás iterando y quieres asegurar la máxima calidad:
 
 ```bash
-# 1. Hacer cambios
-nano modules/hm/hydenix-config.nix
+# 1. Aplicar formato (estético)
+make format
 
-# 2. Validar (rápido, sin aplicar)
+# 2. Validar (funcional/sintáctico)
 make validate
 
-# 3. Si pasa, aplicar
+# 3. Si todo está ok, aplicar
 make switch
-
-# 4. Si falla algo, rollback
-make rollback
 ```
+
 
 **Ventajas:**
 - ⚡ Rápido (validate es más rápido que safe-switch)
@@ -3108,33 +3107,34 @@ make safe-switch
 
 ---
 
-<a id="flujo-diario"></a>
-### 📅 Flujo Diario Básico
+<a id="flujo-recuperacion"></a>
+### 🛠️ Flujo de Recuperación
+Si algo falló o el sistema no se comporta como esperabas:
 
 ```bash
-# 1. Haces cambios en configuración
-nvim modules/hm/programs/terminal/fish.nix
+# 1. Listar para saber a dónde volver
+make list-generations
 
-# 2. Aplicas
-make switch
+# 2. Ver qué cambió (opcional)
+make diff-generations
 
-# 3. Si hay problemas
+# 3. Revertir
 make rollback
 ```
 
 ---
 
-<a id="flujo-semanal"></a>
-### 📅 Flujo Semanal de Mantenimiento
+<a id="flujo-mantenimiento"></a>
+### 📅 Flujo de Mantenimiento Semanal
 
 ```bash
-# Lunes por la mañana:
-make update              # Actualizar inputs
-make dry-run             # Ver qué cambiaría
-make test                # Probar
-make switch              # Aplicar si todo bien
-make clean               # Limpiar
-make info                # Verificar estado
+# Rutina recomendada para mantener el sistema al día:
+make update              # Actualizar entradas
+make flake-diff          # Ver qué paquetes cambiarán
+make validate            # Verificar compatibilidad
+make switch              # Aplicar
+make clean               # Liberar espacio
+make optimize            # Deduplicar store
 ```
 
 ---

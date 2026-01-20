@@ -39,10 +39,10 @@ help: ## Show this help message
 		print_cat("Análisis y Desarrollo", "list-hosts search search-installed repl shell vm closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
 		printf "\nWorkflows sugeridos:\n"; \
-		printf "  • Desarrollo diario:  make test → make switch → make rollback\n"; \
-		printf "  • Updates seguros:    make update → make diff-update → make validate → make test → make switch\n"; \
-		printf "  • Mantenimiento:      make health → make clean → make optimize → make generation-sizes\n"; \
-		printf "  • Multi-host:         make list-hosts → make switch HOSTNAME=laptop\n"; \
+		printf "  • Flujo Pro:          make format → make validate → make switch\n"; \
+		printf "  • Updates seguros:    make update → make flake-diff → make validate → make switch\n"; \
+		printf "  • Mantenimiento:      make health → make clean → make optimize\n"; \
+		printf "  • Recuperación:       make list-generations → make rollback\n"; \
 		printf "\nAyuda rápida: make help | make help-examples | less MAKEFILE_TUTORIAL.md\n\n"; \
 	}' $(MAKEFILE_LIST)
 
