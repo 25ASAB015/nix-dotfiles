@@ -19,7 +19,7 @@ make rollback        # Revierte a la generación anterior
 
 ## 📂 Estructura Modular
 
-El Makefile está organizado en 11 módulos que coinciden con las categorías de comandos:
+El Makefile está organizado en 9 módulos que coinciden con las categorías de comandos:
 
 ```
 make/
@@ -31,9 +31,7 @@ make/
 ├── git.mk           # Git y Respaldo
 ├── logs.mk          # Diagnóstico y Logs
 ├── dev.mk           # Análisis y Desarrollo
-├── format.mk        # Formato, Linting y Estructura
-├── reports.mk       # Reportes y Exportación
-└── templates.mk     # Plantillas y Otros
+└── format.mk        # Formato, Linting y Estructura
 ```
 
 ## 📚 Módulos de Documentación
@@ -74,17 +72,12 @@ Comandos para búsqueda de paquetes, análisis y desarrollo.
 Comandos para formatear y validar código Nix.
 - `format`, `lint`, `tree`
 
-### [Reportes](./10-reports)
-Comandos para generar reportes y exportaciones (placeholder).
-
-### [Templates](./11-templates)
-Comandos para plantillas y utilidades (placeholder).
-
 ### [Pruebas y Validación](./12-testing)
 Guía completa de pruebas para validar el Makefile modular.
 - Comandos de validación no destructivos
 - Ejemplos de salida esperada
 - Checklist de aceptación
+
 
 
 ## 🔄 Workflows Recomendados

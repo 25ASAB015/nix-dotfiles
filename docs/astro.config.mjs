@@ -54,8 +54,7 @@ export default defineConfig({
 								{ label: 'Diagnóstico y Logs', slug: 'makefile/07-logs' },
 								{ label: 'Análisis y Desarrollo', slug: 'makefile/08-dev' },
 								{ label: 'Formato y Linting', slug: 'makefile/09-format' },
-								{ label: 'Reportes', slug: 'makefile/10-reports' },
-								{ label: 'Templates', slug: 'makefile/11-templates' },
+
 								{ label: 'Pruebas y Validación', slug: 'makefile/12-testing' },
 							],
 						},

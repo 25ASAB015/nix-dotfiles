@@ -15,10 +15,10 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 | Métrica | Valor | Estado |
 |---------|-------|--------|
 | **Targets totales** | 68 | ✅ Completo |
-| **Módulos creados** | 11 | ✅ Completo |
+| **Módulos creados** | 9 | ✅ Completo |
 | **Categorías** | 9 | ✅ Orden preservado |
 | **Variables globales** | 10 | ✅ Funcionando |
-| **Archivos de documentación** | 13 | ✅ Sincronizados |
+| **Archivos de documentación** | 11 | ✅ Sincronizados |
 | **Targets perdidos** | 0 | ✅ Ninguno |
 | **Targets duplicados** | 0 | ✅ Ninguno |
 
@@ -161,8 +161,6 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 | Diagnóstico y Logs | `make/logs.mk` | `07-logs.mdx` | ✅ Sincronizado |
 | Análisis y Desarrollo | `make/dev.mk` | `08-dev.mdx` | ✅ Sincronizado |
 | Formato y Linting | `make/format.mk` | `09-format.mdx` | ✅ Sincronizado |
-| Reportes | `make/reports.mk` | `10-reports.mdx` | ✅ Sincronizado |
-| Templates | `make/templates.mk` | `11-templates.mdx` | ✅ Sincronizado |
 | **Pruebas y Validación** | N/A | `12-testing.mdx` | ✅ Creado (Paso 8) |
 | **Overview** | N/A | `index.mdx` | ✅ Actualizado |
 
@@ -254,13 +252,11 @@ make/
 ├── generations.mk   (8,818 bytes)
 ├── git.mk          (10,722 bytes)
 ├── logs.mk         (12,866 bytes)
-├── reports.mk         (514 bytes)
 ├── system.mk       (15,593 bytes)
-├── templates.mk       (521 bytes)
 └── updates.mk      (12,427 bytes)
 ```
 
-✅ **Total:** 11 módulos creados  
+✅ **Total:** 9 módulos creados  
 ✅ **Tamaño total:** ~103 KB
 
 ### Cabeceras Estándar

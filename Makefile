@@ -28,5 +28,3 @@ include make/git.mk
 include make/logs.mk
 include make/dev.mk
 include make/format.mk
-include make/reports.mk
-include make/templates.mk
