@@ -7,7 +7,7 @@ con el nuevo layout y asegurar consistencia visual + verificabilidad.
 
 - [x] Paso 1 — Inventariar targets y variables actuales
 - [x] Paso 2 — Definir estructura de módulos `make/*.mk`
-- [ ] Paso 3 — Crear carpeta `make/` y archivos vacíos
+- [x] Paso 3 — Crear carpeta `make/` y archivos vacíos
 - [ ] Paso 4 — Mover secciones del Makefile a módulos
 - [ ] Paso 5 — Ajustar `Makefile` root (includes + orden)
 - [ ] Paso 6 — Verificar `make help` y `make help-examples`
@@ -34,7 +34,7 @@ Reglas:
 
 - [x] Paso 1 — Fecha: 2026-01-19 | Nota: Inventariados 68 targets, 10 variables, 11 secciones. Documento en inventario_makefile.md
 - [x] Paso 2 — Fecha: 2026-01-19 | Nota: Definida estructura de 11 módulos .mk. Documento en estructura_modulos.md
-- [ ] Paso 3 — Fecha: ____ | Nota:
+- [x] Paso 3 — Fecha: 2026-01-19 | Nota: Creados 11 archivos .mk con cabeceras estándar en make/
 - [ ] Paso 4 — Fecha: ____ | Nota:
 - [ ] Paso 5 — Fecha: ____ | Nota:
 - [ ] Paso 6 — Fecha: ____ | Nota:
