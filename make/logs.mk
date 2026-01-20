@@ -42,7 +42,7 @@ health: ## Dashboard rápido de salud del sistema
 		printf "$(YELLOW)⚠ Pendiente$(NC)\n"; \
 	fi
 	@printf "  $(BLUE)Generaciones:$(NC)       "
-	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l | awk '{print $$1}'
+	@ls /nix/var/nix/profiles/system-*-link 2>/dev/null | wc -l
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Verificación completada$(NC)\n"
 	@printf "\n"
@@ -85,16 +85,22 @@ status: ## Reporte completo del sistema (NixOS, Hardware, Flake)
 	@printf "  $(BLUE)Hostname:$(NC)     $(GREEN)$(HOSTNAME)$(NC)\n"
 	@printf "  $(BLUE)NixOS:$(NC)        $(GREEN)$$(nixos-version 2>/dev/null | cut -d' ' -f1 || echo 'N/A')$(NC)\n"
 	@printf "  $(BLUE)Flake:$(NC)        $(GREEN)$(PWD)$(NC)\n"
-	@printf "  $(BLUE)Store Size:$(NC)   $(GREEN)$$(du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')$(NC)\n"
+	@STORE_SIZE=$$(df -h /nix 2>/dev/null | tail -1 | awk '{print $$3}' || echo 'N/A'); \
+	printf "  $(BLUE)Store Size:$(NC)   $(GREEN)%s (partition used)$(NC)\n" "$$STORE_SIZE"
 	@printf "\n$(PURPLE)💾 Almacenamiento y Generaciones$(NC)\n"
 	@DISK=$$(df -h /nix 2>/dev/null | tail -1 | awk '{print $$5 " usado (" $$4 " libre)"}' || echo 'N/A'); \
 	printf "  $(BLUE)Disco (/nix):$(NC) $(GREEN)%s$(NC)\n" "$$DISK"; \
-	TOTAL_GENS=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo '0'); \
-	CURRENT_GEN=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1 " (" $$2 " " $$3 ")"}' || echo 'N/A'); \
-	printf "  $(BLUE)Total Gens:$(NC)   $(GREEN)%s$(NC)\n" "$$TOTAL_GENS"; \
-	printf "  $(BLUE)Generación:$(NC)   $(GREEN)%s$(NC)\n" "$$CURRENT_GEN"; \
-	printf "\n$(BLUE)  Últimas 5 generaciones:$(NC)\n"
-	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -5 | sed 's/^/    /' || printf "    $(YELLOW)N/A$(NC)\n"
+	GENS_OUT=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null); \
+	if [ -z "$$GENS_OUT" ]; then \
+		printf "  $(BLUE)Total Gens:$(NC)   $(YELLOW)Sin acceso (requiere sudo)$(NC)\n"; \
+	else \
+		TOTAL_GENS=$$(echo "$$GENS_OUT" | grep -c . || echo '0'); \
+		CURRENT_GEN=$$(echo "$$GENS_OUT" | tail -1 | awk '{print $$1 " (" $$2 " " $$3 ")"}' || echo 'N/A'); \
+		printf "  $(BLUE)Total Gens:$(NC)   $(GREEN)%s$(NC)\n" "$$TOTAL_GENS"; \
+		printf "  $(BLUE)Generación:$(NC)   $(GREEN)%s$(NC)\n" "$$CURRENT_GEN"; \
+		printf "\n$(BLUE)  Últimas 5 generaciones:$(NC)\n"; \
+		echo "$$GENS_OUT" | tail -5 | sed 's/^/    /' || true; \
+	fi
 	@printf "\n$(PURPLE)🔄 Estado de Componentes$(NC)\n"
 	@printf "  $(BLUE)Git Repo:$(NC)     "
 	@if git diff-index --quiet HEAD -- 2>/dev/null; then \
