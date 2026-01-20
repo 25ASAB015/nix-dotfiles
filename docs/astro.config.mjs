@@ -44,7 +44,7 @@ export default defineConfig({
 							label: 'Makefile',
 							collapsed: false,
 							items: [
-								{ label: 'Overview', slug: 'makefile/index' },
+								{ label: 'Overview', slug: 'makefile' },
 								{ label: 'Ayuda y Documentación', slug: 'makefile/01-docs' },
 								{ label: 'Gestión del Sistema', slug: 'makefile/02-system' },
 								{ label: 'Limpieza y Optimización', slug: 'makefile/03-cleanup' },
