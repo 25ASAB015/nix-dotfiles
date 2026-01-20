@@ -2,24 +2,23 @@
 # Gestión del Sistema
 # ============================================================================
 # Descripción: Targets para rebuild, switch, validación y gestión del sistema
-# Targets: 13 targets
+# Targets: 14 targets
 # ============================================================================
 
-.PHONY: switch switch-safe switch-fast test build dry-run boot validate debug emergency fix-permissions fix-git-permissions hardware-scan
+.PHONY: sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-doctor sys-fix-git sys-hw-scan sys-deploy
 
-# === Gestión del Sistema (Rebuild/Switch) ===
+# === Operaciones del Sistema ===
 
 # Build and activate new system configuration for the current hostname
-# Performs git add, rebuild, and switch to apply configuration changes
-switch: ## Build and switch to new configuration
-	@printf "\n$(BLUE)==================== Switch ====================\n$(NC)"
-	@printf "$(BLUE)🔄 Git add, build y switch...\n$(NC)"
-	@$(MAKE) --no-print-directory fix-git-permissions
-	@if [ "$$(id -u)" -eq 0 ]; then \
-		if [ -n "$$SUDO_USER" ]; then \
-			sudo -u "$$SUDO_USER" git add .; \
+sys-apply: ## Build and switch to new configuration
+	@printf "\n$(BLUE)==================== Apply ====================\n$(NC)"
+	@printf "$(BLUE)🔄 Git add, build y switch (apply)...\n$(NC)"
+	@$(MAKE) --no-print-directory sys-fix-git
+	@if [ "$(id -u)" -eq 0 ]; then \
+		if [ -n "$SUDO_USER" ]; then \
+			sudo -u "$SUDO_USER" git add .; \
 		else \
-			printf "$(RED)✗ Do not run 'make switch' as root (no SUDO_USER)\n$(NC)"; \
+			printf "$(RED)✗ Do not run 'make sys-apply' as root (no SUDO_USER)\n$(NC)"; \
 			exit 1; \
 		fi; \
 	else \
@@ -29,15 +28,13 @@ switch: ## Build and switch to new configuration
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
 	@printf "\n$(GREEN)==================== Done ======================\n$(NC)"
 
-# Validate configuration and then switch (recommended safe workflow)
-# Performs validation checks before applying configuration changes
-switch-safe: validate switch ## Validate then switch (safest option)
+# Validate configuration and then apply (recommended safe workflow)
+sys-apply-safe: sys-check sys-apply ## Validate then switch (safest option)
 
 # Fast rebuild skipping internal nixos-rebuild checks for speed
-# Applies configuration quickly when you trust your changes
-switch-fast: ## Quick rebuild (skip checks)
+sys-apply-fast: ## Quick rebuild (skip checks)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          ⚡ Rebuild Rápido (Switch Fast)            \n$(NC)"
+	@printf "$(CYAN)          ⚡ Rebuild Rápido (Apply Fast)            \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Ejecutando switch rápido omitiendo verificaciones...\n$(NC)"
@@ -52,14 +49,12 @@ switch-fast: ## Quick rebuild (skip checks)
 	@printf "\n"
 
 # Build and test configuration without activating it
-# Evaluates and builds the configuration but doesn't apply changes
-test: ## Build and test configuration (no switch)
+sys-test: ## Build and test configuration (no switch)
 	@printf "$(YELLOW)🧪 Testing configuration (no switch)...\n$(NC)"
 	sudo nixos-rebuild test --flake $(FLAKE_DIR)#$(HOSTNAME)
 
 # Build configuration without activating it and show build statistics
-# Compiles the configuration but doesn't apply changes, displays timing info
-build: ## Build configuration without switching
+sys-build: ## Build configuration without switching
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔨 Build Configuration                    \n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -67,23 +62,23 @@ build: ## Build configuration without switching
 	@printf "$(BLUE)Building configuration without applying changes...$(NC)\n"
 	@printf "$(YELLOW)This will compile but not activate the new generation.$(NC)\n"
 	@printf "\n"
-	@START=$$(date +%s); \
+	@START=$(date +%s); \
 	sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME); \
-	BUILD_EXIT=$$?; \
-	END=$$(date +%s); \
-	DURATION=$$((END - START)); \
-	MINUTES=$$((DURATION / 60)); \
-	SECONDS=$$((DURATION % 60)); \
+	BUILD_EXIT=$?; \
+	END=$(date +%s); \
+	DURATION=$((END - START)); \
+	MINUTES=$((DURATION / 60)); \
+	SECONDS=$((DURATION % 60)); \
 	printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-	if [ $$BUILD_EXIT -eq 0 ]; then \
+	if [ $BUILD_EXIT -eq 0 ]; then \
 		printf "$(GREEN)✅ Build completed successfully$(NC)\n"; \
 		printf "$(BLUE)Configuration compiled but not activated.$(NC)\n"; \
-		printf "$(YELLOW)Use 'make switch' to apply changes.$(NC)\n"; \
+		printf "$(YELLOW)Use 'make sys-apply' to apply changes.$(NC)\n"; \
 		printf "\n$(BLUE)Build Statistics:$(NC)\n"; \
-		if [ $$MINUTES -gt 0 ]; then \
-			printf "  $(GREEN)Build time:$(NC) $(YELLOW)$${MINUTES}m $${SECONDS}s$(NC) ($(YELLOW)$${DURATION}s$(NC) total)\n"; \
+		if [ $MINUTES -gt 0 ]; then \
+		printf "  $(GREEN)Build time:$(NC) $(YELLOW)${MINUTES}m $${SECONDS}s$(NC) ($(YELLOW)$${DURATION}s$(NC) total)\n"; \
 		else \
-			printf "  $(GREEN)Build time:$(NC) $(YELLOW)$${SECONDS}s$(NC)\n"; \
+		printf "  $(GREEN)Build time:$(NC) $(YELLOW)$${SECONDS}s$(NC)\n"; \
 		fi; \
 	else \
 		printf "$(RED)✗ Build failed$(NC)\n"; \
@@ -91,11 +86,10 @@ build: ## Build configuration without switching
 	fi; \
 	printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
 	printf "\n"; \
-	exit $$BUILD_EXIT
+	exit $BUILD_EXIT
 
 # Preview what would be built or changed without actually building
-# Shows package changes, additions, and removals that would occur
-dry-run: ## Show what would be built/changed
+sys-dry-run: ## Show what would be built/changed
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔍 Dry Run - Preview Changes             \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -107,8 +101,7 @@ dry-run: ## Show what would be built/changed
 	@printf "\n"
 
 # Build configuration and set it as default for next boot
-# Compiles and configures the system to activate changes on next reboot
-boot: ## Build and set as boot default (no immediate switch)
+sys-boot: ## Build and set as boot default (no immediate switch)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🥾 Configurar para Próximo Arranque      \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -125,10 +118,9 @@ boot: ## Build and set as boot default (no immediate switch)
 	@printf "\n"
 
 # Validate flake syntax and configuration before applying changes
-# Performs multiple checks: flake syntax, configuration evaluation, and linting
-validate: ## Validate configuration before switching
+sys-check: ## Validate configuration before applying
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🔍 Validation Checks                       \n$(NC)"
+	@printf "$(CYAN)          🔍 Validation Checks (sys-check)           \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)1/3 Checking flake syntax...$(NC) "
@@ -152,7 +144,7 @@ validate: ## Validate configuration before switching
 		if statix check . >/dev/null 2>&1; then \
 			printf "$(GREEN)✓$(NC)\n"; \
 		else \
-			printf "$(YELLOW)⚠$(NC) (warnings found, see 'make lint')\n"; \
+			printf "$(YELLOW)⚠$(NC) (warnings found, see 'make fmt-lint')\n"; \
 		fi \
 	else \
 		printf "$(YELLOW)⊘$(NC) (statix not installed)\n"; \
@@ -163,21 +155,17 @@ validate: ## Validate configuration before switching
 	@printf "\n"
 
 # Rebuild with maximum verbosity and debug tracing enabled
-# Shows detailed output for troubleshooting build issues
-debug: ## Rebuild with verbose output and trace
+sys-debug: ## Rebuild with verbose output and trace
 	@printf "$(RED)🐛 Debug rebuild with full trace...\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose
 
-
-
 # Emergency rebuild with maximum debugging and cache disabled
-# Used for critical system issues requiring full rebuild and tracing
-emergency: ## Emergency rebuild with maximum verbosity
+sys-force: ## Emergency rebuild with maximum verbosity
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🚨 Rebuild de Emergencia (Debug Extremo)   \n$(NC)"
+	@printf "$(CYAN)          🚨 Rebuild Forzado (Debug Extremo)         \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	@printf "$(RED)⚠️  MODO DE EMERGENCIA ACTIVADO\n$(NC)"
+	@printf "$(RED)⚠️  MODO DE RECONSTRUCCIÓN FORZADA ACTIVADO\n$(NC)"
 	@printf "$(YELLOW)Este comando ejecuta rebuild con máxima verbosidad y debugging.\n$(NC)"
 	@printf "$(YELLOW)Desactiva caché de evaluación para forzar reconstrucción completa.\n$(NC)"
 	@printf "$(BLUE)Útil cuando el sistema no arranca o hay problemas críticos.\n$(NC)"
@@ -185,16 +173,35 @@ emergency: ## Emergency rebuild with maximum verbosity
 	@printf "\n"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose --option eval-cache false
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Rebuild de emergencia completado\n$(NC)"
+	@printf "$(GREEN)✅ Rebuild forzado completado\n$(NC)"
 	@printf "$(BLUE)Revisa el output arriba para diagnosticar problemas\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
-# === Plantillas y Otros ===
+# Complete workflow: stage, commit, push, and apply (deploy)
+sys-deploy: ## Total sync (add + commit + push + apply)
+	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)              🔄 Total Deployment (Ship it!)         \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(PURPLE)Executing complete deployment workflow:$(NC)\n"
+	@printf "  1. Stage changes (git add)\n"
+	@printf "  2. Commit changes (timestamped)\n"
+	@printf "  3. Push to remote (git push)\n"
+	@printf "  4. Build and apply (sys-apply)\n"
+	@printf "\n"
+	@$(MAKE) --no-print-directory git-add
+	@$(MAKE) --no-print-directory git-commit
+	@$(MAKE) --no-print-directory git-push
+	@$(MAKE) --no-print-directory sys-apply
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Deployment completed successfully!$(NC)\n"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+
+# === Mantenimiento y Otros ===
 
 # Generate new hardware configuration for the current hostname
-# Scans current hardware and creates updated hardware-configuration.nix
-hardware-scan: ## Re-scan hardware configuration
+sys-hw-scan: ## Re-scan hardware configuration
 	@printf "$(BLUE)🔧 Scanning hardware configuration for $(HOSTNAME)...\n$(NC)"
 	@sudo nixos-generate-config --show-hardware-config > hosts/$(HOSTNAME)/hardware-configuration-new.nix
 	@printf "$(YELLOW)New hardware config saved as:\n$(NC)"
@@ -204,44 +211,41 @@ hardware-scan: ## Re-scan hardware configuration
 	@printf "$(CYAN)To apply:\n$(NC)"
 	@printf "  mv hosts/$(HOSTNAME)/hardware-configuration-new.nix hosts/$(HOSTNAME)/hardware-configuration.nix\n"
 
-
 # Fix common permission issues in user directories and git repository
-# Corrects ownership of ~/.config, ~/.local, and flake git repository
-fix-permissions: ## Fix common permission issues
+sys-doctor: ## Fix common permission issues (doctor)
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🔧 Fix Permissions                        \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          👨‍⚕️ System Doctor (Permissions)           \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Fixing common permission issues...$(NC)\n"
 	@printf "$(YELLOW)This requires sudo privileges.$(NC)\n"
 	@printf "\n"
 	@printf "$(BLUE)1. Fixing ~/.config permissions...$(NC) "
-	@if sudo chown -R $$USER:users ~/.config 2>/dev/null; then \
+	@if sudo chown -R $USER:users ~/.config 2>/dev/null; then \
 		printf "$(GREEN)✓$(NC)\n"; \
 	else \
 		printf "$(YELLOW)⚠️  (skipped)$(NC)\n"; \
 	fi
 	@printf "$(BLUE)2. Fixing ~/.local permissions...$(NC) "
-	@if sudo chown -R $$USER:users ~/.local 2>/dev/null; then \
+	@if sudo chown -R $USER:users ~/.local 2>/dev/null; then \
 		printf "$(GREEN)✓$(NC)\n"; \
 	else \
 		printf "$(YELLOW)⚠️  (skipped)$(NC)\n"; \
 	fi
 	@printf "$(BLUE)3. Fixing git repository permissions...$(NC)\n"
-	@$(MAKE) --no-print-directory fix-git-permissions
+	@$(MAKE) --no-print-directory sys-fix-git
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Permissions fixed$(NC)\n"
+	@printf "$(GREEN)✅ Doctor: Permissions fixed$(NC)\n"
 	@printf "$(BLUE)Common permission issues have been resolved.$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
 # Fix git repository ownership issues in the flake directory
-# Corrects permissions on .git directory to allow proper git operations
-fix-git-permissions: ## Fix git repo ownership issues in flake dir
+sys-fix-git: ## Fix git repo ownership issues in flake dir
 	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \
-		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $$USER 2>/dev/null | grep -q .; then \
+		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $USER 2>/dev/null | grep -q .; then \
 			printf "  $(YELLOW)Fixing ownership in $(FLAKE_DIR)/.git...$(NC) "; \
-			if sudo chown -R $$USER:users "$(FLAKE_DIR)/.git" 2>/dev/null; then \
+			if sudo chown -R $USER:users "$(FLAKE_DIR)/.git" 2>/dev/null; then \
 				printf "$(GREEN)✓$(NC)\n"; \
 			else \
 				printf "$(RED)✗$(NC)\n"; \

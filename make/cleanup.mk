@@ -2,17 +2,17 @@
 # Limpieza y Optimización
 # ============================================================================
 # Descripción: Targets para limpiar generaciones antiguas y optimizar el store
-# Targets: 7 targets
+# Targets: 5 targets
 # ============================================================================
 
-.PHONY: clean deep-clean optimize clean-result fix-store
+.PHONY: sys-gc sys-purge sys-optimize sys-clean-result sys-fix-store
 
-# === Limpieza y Optimización ===
+# === Mantenimiento y Espacio ===
 
 # Flexible cleanup - removes generations older than specified days (default: 30)
-# Usage: make clean [DAYS=n]
+# Usage: make sys-gc [DAYS=n]
 DAYS ?= 30
-clean: ## Clean build artifacts older than specified days (default: 30)
+sys-gc: ## Clean build artifacts older than specified days (default: 30)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@if [ "$(DAYS)" -eq 7 ]; then \
 		printf "$(CYAN)          🧹 Limpieza Semanal (7 días)              \n$(NC)"; \
@@ -36,16 +36,16 @@ clean: ## Clean build artifacts older than specified days (default: 30)
 	nix-collect-garbage --delete-older-than $(DAYS)d
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Limpieza completada (mantenidos últimos $(DAYS) días)\n$(NC)"
-	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
+	@printf "$(BLUE)Usa 'make sys-status' para verificar el espacio liberado\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
 
 # Deep clean - removes ALL old generations (IRREVERSIBLE!)
 # Use with extreme caution - requires confirmation
-deep-clean: ## Aggressive cleanup (removes ALL old generations)
+sys-purge: ## Aggressive cleanup (removes ALL old generations)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🗑️  Limpieza Profunda (IRREVERSIBLE)        \n$(NC)"
+	@printf "$(CYAN)          🗑️  Purga Profunda (IRREVERSIBLE)           \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(RED)⚠️  ADVERTENCIA CRÍTICA ⚠️\n$(NC)"
@@ -61,27 +61,26 @@ deep-clean: ## Aggressive cleanup (removes ALL old generations)
 	@printf "\n"
 	@printf "$(RED)¿Estás ABSOLUTAMENTE seguro? Escribe 'yes' para continuar: $(NC)"; \
 	read -r REPLY; \
-	if [ "$$REPLY" = "yes" ]; then \
-		printf "\n$(YELLOW)Ejecutando limpieza profunda...\n$(NC)\n"; \
+	if [ "$REPLY" = "yes" ]; then \
+		printf "\n$(YELLOW)Ejecutando purga profunda...\n$(NC)\n"; \
 		sudo nix-collect-garbage -d; \
 		nix-collect-garbage -d; \
 		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-		printf "$(GREEN)✅ Limpieza profunda completada\n$(NC)"; \
+		printf "$(GREEN)✅ Purga profunda completada\n$(NC)"; \
 		printf "$(RED)⚠️  TODAS las generaciones antiguas han sido eliminadas\n$(NC)"; \
-		printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"; \
+		printf "$(BLUE)Usa 'make sys-status' para verificar el espacio liberado\n$(NC)"; \
 		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
 		printf "\n"; \
 	else \
 		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-		printf "$(BLUE)ℹ️  Limpieza profunda cancelada\n$(NC)"; \
+		printf "$(BLUE)ℹ️  Purga profunda cancelada\n$(NC)"; \
 		printf "$(GREEN)✓ No se realizaron cambios en el sistema\n$(NC)"; \
 		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
 		printf "\n"; \
 	fi
 
 # Optimize Nix store by creating hardlinks for identical files
-# Safe operation that saves space without deleting anything
-optimize: ## Optimize nix store
+sys-optimize: ## Optimize nix store
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🚀 Optimización del Nix Store             \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -94,13 +93,12 @@ optimize: ## Optimize nix store
 	sudo nix-store --optimise
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Optimización del store completada\n$(NC)"
-	@printf "$(BLUE)Usa 'make info' para verificar el espacio ahorrado\n$(NC)"
+	@printf "$(BLUE)Usa 'make sys-status' para verificar el espacio ahorrado\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
 # Remove result symlinks created by nix build commands
-# Safe cleanup of temporary build artifacts
-clean-result: ## Remove result symlinks
+sys-clean-result: ## Remove result symlinks
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🧹 Clean Result Symlinks                  \n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -108,24 +106,24 @@ clean-result: ## Remove result symlinks
 	@printf "$(BLUE)Searching for result symlinks...$(NC)\n"
 	@printf "$(YELLOW)These symlinks are created by Nix builds and can be safely removed.$(NC)\n"
 	@printf "\n"
-	@RESULT_LINKS=$$(find . -maxdepth 2 -name 'result*' -type l 2>/dev/null); \
-	if [ -z "$$RESULT_LINKS" ]; then \
+	@RESULT_LINKS=$(find . -maxdepth 2 -name 'result*' -type l 2>/dev/null); \
+	if [ -z "$RESULT_LINKS" ]; then \
 		printf "$(GREEN)✓ No result symlinks found$(NC)\n"; \
 	else \
-		COUNT=$$(echo "$$RESULT_LINKS" | wc -l); \
-		printf "$(BLUE)Found $(YELLOW)$$COUNT$(NC) $(BLUE)result symlink(s):$(NC)\n"; \
-		echo "$$RESULT_LINKS" | while read -r link; do \
-			TARGET=$$(readlink -f "$$link" 2>/dev/null || echo "broken"); \
-			printf "  $(YELLOW)$$link$(NC)"; \
-			if [ "$$TARGET" != "broken" ]; then \
-				printf " → $(GREEN)$$TARGET$(NC)\n"; \
+		COUNT=$(echo "$RESULT_LINKS" | wc -l); \
+		printf "$(BLUE)Found $(YELLOW)$COUNT$(NC) $(BLUE)result symlink(s):$(NC)\n"; \
+		echo "$RESULT_LINKS" | while read -r link; do \
+			TARGET=$(readlink -f "$link" 2>/dev/null || echo "broken"); \
+			printf "  $(YELLOW)$link$(NC)"; \
+			if [ "$TARGET" != "broken" ]; then \
+				printf " → $(GREEN)$TARGET$(NC)\n"; \
 			else \
 				printf " → $(RED)(broken link)$(NC)\n"; \
 			fi; \
 		done; \
 		printf "\n$(BLUE)Removing symlinks...$(NC)\n"; \
 		find . -maxdepth 2 -name 'result*' -type l -delete 2>/dev/null; \
-		printf "$(GREEN)✅ Removed $$COUNT symlink(s)$(NC)\n"; \
+		printf "$(GREEN)✅ Removed $COUNT symlink(s)$(NC)\n"; \
 	fi
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Cleanup complete$(NC)\n"
@@ -133,8 +131,7 @@ clean-result: ## Remove result symlinks
 	@printf "\n"
 
 # Verify and repair the Nix store for corruption
-# Use when experiencing store-related errors
-fix-store: ## Attempt to repair nix store
+sys-fix-store: ## Attempt to repair nix store
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔧 Repair Nix Store                       \n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"

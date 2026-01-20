@@ -5,66 +5,44 @@
 # Targets: 4 targets
 # ============================================================================
 
-.PHONY: format lint tree diff-config
+.PHONY: fmt-check fmt-lint fmt-tree fmt-diff
 
-# === Formato, Linting y Estructura ===
+# === Formateo y Estructura ===
 
-# Format all .nix files in the project using nixpkgs-fmt or alejandra
-# Automatically detects which formatter is available
-format: ## Format nix files
-	@printf "$(CYAN)💅 Formatting nix files...\n$(NC)"
-	@if command -v nixpkgs-fmt >/dev/null 2>&1; then \
-		find . -name "*.nix" -not -path "*/.*" -exec nixpkgs-fmt {} \; ; \
-		printf "$(GREEN)✅ Formatting complete\n$(NC)"; \
-	elif command -v alejandra >/dev/null 2>&1; then \
-		alejandra . ; \
-		printf "$(GREEN)✅ Formatting complete (alejandra)\n$(NC)"; \
+# Format all Nix files using nixpkgs-fmt or alejandra
+fmt-check: ## Format all nix files
+	@printf "$(BLUE)Formateando archivos Nix...\n$(NC)"
+	@if command -v alejandra >/dev/null 2>&1; then \
+		alejandra .; \
+	elif command -v nixpkgs-fmt >/dev/null 2>&1; then \
+		nixpkgs-fmt .; \
 	else \
-		printf "$(YELLOW)⚠️  No formatter found\n$(NC)"; \
-		printf "$(BLUE)Install with: nix-shell -p nixpkgs-fmt\n$(NC)"; \
-		printf "$(BLUE)Or use: nix fmt (if configured)\n$(NC)"; \
-		exit 1; \
+		printf "$(YELLOW)⚠ No se encontró formateador (alejandra o nixpkgs-fmt)$(NC)\n"; \
 	fi
 
-# Lint all .nix files using statix to find common issues
-# Helps catch potential problems before building
-lint: ## Lint nix files (requires statix)
-	@printf "$(CYAN)🔍 Linting nix files...\n$(NC)"
+# Lint Nix files for common issues using statix
+fmt-lint: ## Check nix files for common issues
+	@printf "$(BLUE)Analizando archivos Nix con statix...\n$(NC)"
 	@if command -v statix >/dev/null 2>&1; then \
-		statix check . ; \
-		if [ $$? -eq 0 ]; then \
-			printf "$(GREEN)✅ Linting complete - no issues found\n$(NC)"; \
-		else \
-			printf "$(YELLOW)⚠️  Linting found issues (see above)\n$(NC)"; \
-		fi \
+		statix check .; \
 	else \
-		printf "$(YELLOW)⚠️  statix not found\n$(NC)"; \
-		printf "$(BLUE)Install with: nix-shell -p statix\n$(NC)"; \
-		printf "$(BLUE)Or run directly: nix run nixpkgs#statix check .\n$(NC)"; \
-		exit 1; \
+		printf "$(YELLOW)⚠ No se encontró statix para linting$(NC)\n"; \
 	fi
 
-# Display the directory structure of the configuration
-# Uses eza or tree if available, falls back to find
-tree: ## Show configuration structure
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📁 Configuration Structure                 \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@if command -v eza >/dev/null 2>&1; then \
-		eza --tree --level=3 --icons --git-ignore --ignore-glob='result|*.tar.gz|node_modules' hosts/ modules/ resources/ 2>/dev/null || \
-		eza --tree --level=3 --icons --git-ignore hosts/ modules/ resources/ 2>/dev/null || true; \
-	elif command -v tree >/dev/null 2>&1; then \
-		tree -L 3 -I '.git|result|*.tar.gz|node_modules' --dirsfirst hosts/ modules/ resources/ 2>/dev/null || true; \
+# Show project structure tree
+fmt-tree: ## Show project structure tree
+	@printf "$(BLUE)Estructura del proyecto:\n$(NC)"
+	@if command -v tree >/dev/null 2>&1; then \
+		tree -L 2 -I "result*|node_modules|.git"; \
 	else \
-		printf "$(YELLOW)⚠ Install 'eza' or 'tree' for better output$(NC)\n"; \
-		find . -type d -not -path '*/\.*' -not -path '*/result*' -not -path '*/node_modules*' | \
-			grep -E '^(\./)?( hosts|modules|resources)' | \
-			head -50 | \
-			sed 's|[^/]*/| |g'; \
+		find . -maxdepth 2 -not -path '*/.*' -not -path './result*' -not -path './docs/node_modules*'; \
 	fi
-	@printf "\n"
 
-# Alias for git-diff (deprecated, use git-diff instead)
-# Kept for backwards compatibility
-diff-config: git-diff ## Alias for git-diff (deprecated, use git-diff)
+# Show diff between local and system config
+fmt-diff: ## Show diff between local and system config
+	@printf "$(BLUE)Diferencia con la configuración actual del sistema:\n$(NC)"
+	@if [ -d "/etc/nixos" ]; then \
+		diff -r . /etc/nixos --exclude=".git" --exclude="result*" || true; \
+	else \
+		printf "$(RED)✗ /etc/nixos no encontrado$(NC)\n"; \
+	fi
