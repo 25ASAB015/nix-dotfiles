@@ -9,23 +9,37 @@ Módulo: `make/logs.mk`
 
 Comandos para diagnóstico del sistema, health checks y visualización de logs.
 
+## Cuadro Comparativo: Health vs Status
+
+| Característica | `make health` (Dashboard) | `make status` (Reporte) |
+| :--- | :--- | :--- |
+| **Objetivo** | Verificación rápida "vuelo" (pasa/falla) | Snapshot completo del sistema |
+| **Velocidad** | Instantáneo (< 1s) | Detallado (~2-5s) |
+| **Uso** | Rutina, pre-commit, mantenimiento | Debugging, auditoría, telemetría |
+| **Contenido** | Estado crítico de componentes | Métricas, historial, metadatos |
+
 ## Comandos Disponibles
 
 ### `make health`
-Muestra un dashboard rápido con el estado de salud del sistema.
+Muestra un dashboard ultra-rápido con el estado vital del sistema.
 
 ```bash
 make health
 ```
 
 **Qué verifica:**
-- Sintaxis y evaluación del Flake
-- Espacio en disco en `/nix` (con alertas de color)
-- Servicios fallidos de systemd
-- Estado del repositorio Git
-- Contador de generaciones de NixOS
+- **Estructura Flake**: Validación instantánea de metadatos del Flake.
+- **Espacio en disco**: Uso de la partición `/nix` con alertas visuales.
+- **Servicios**: Lista detallada de servicios systemd fallidos (si los hay).
+- **Git Status**: Estado del repositorio (Clean/Pending).
+- **Generaciones**: Conteo preciso de generaciones activas.
 
-**Cuándo usarlo:** Como primer paso rápido para verificar que todo esté en orden.
+**Salida esperada (en caso de error):**
+```
+  Servicios:          ✗ 2 fallidos (sshd, boot-services.service)
+```
+
+**Cuándo usarlo:** Como primer paso rápido antes de cualquier cambio o después de una limpieza.
 
 ---
 

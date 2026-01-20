@@ -915,29 +915,21 @@ make switch-safe # Si funciona, hacer permanente
 **Ver también:** [Flujo de Trabajo Recomendado](#flujo-recomendado) para más detalles sobre cuándo usar cada comando.
 
 #### `make health`
-Chequeo rápido de salud del sistema que verifica aspectos críticos sin operaciones costosas.
+
+Muestra un dashboard ultra-rápido con el estado vital del sistema (Vuelo).
 
 ```bash
 make health
 ```
 
-**Output ejemplo:**
-```
-════════════════════════════════════════════════════
-          🏥 System Health Check                    
-════════════════════════════════════════════════════
+**Qué verifica:**
+- Estructura y metadatos del Flake
+- Espacio en disco en `/nix`
+- Servicios fallidos detallados
+- Estado de Git y Generaciones
 
-1. Flake validation: ✓ Passed
-2. Disk space (/nix): 47% used (250G free)
-3. Generations count: 33 generations
-4. Boot entries: 5 entries
-5. Failed services: ✓ None
-6. Git status: ✓ Clean
-
+**Cuándo usarlo:** Verificación rápida antes de cambios o Routine Check.
 ════════════════════════════════════════════════════
-✅ Health check complete
-════════════════════════════════════════════════════
-```
 
 **¿Por qué es necesario?**
 - **Monitoreo preventivo:** Detecta problemas antes de que se vuelvan críticos
@@ -3857,8 +3849,8 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Git y Respaldo (7)
 `git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `sync`, `git-log`
 
-### Diagnóstico y Logs (8)
-`health`, `test-network`, `info`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
+### Diagnóstico y Logs (7)
+`health`, `test-network`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
 
 ### Análisis y Desarrollo (11)
 `list-hosts`, `hosts-info`, `search`, `search-installed`, `repl`, `shell`, `vm`, `closure-size`

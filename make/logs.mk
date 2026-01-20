@@ -11,14 +11,14 @@
 
 health: ## Dashboard rápido de salud del sistema
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🏥 Dashboard de Salud                     \n$(NC)"
+	@printf "$(CYAN)          🏥 Dashboard de Salud (Vuelo)             \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	@printf "  $(BLUE)Sintaxis Flake:$(NC)    "
-	@if nix flake check . >/dev/null 2>&1; then \
-		printf "$(GREEN)✓ OK$(NC)\n"; \
+	@printf "  $(BLUE)Estructura Flake:$(NC)  "
+	@if nix flake metadata --json . >/dev/null 2>&1; then \
+		printf "$(GREEN)✓ OK (metadata)$(NC)\n"; \
 	else \
-		printf "$(RED)✗ FAIL$(NC)\n"; \
+		printf "$(RED)✗ ERROR$(NC)\n"; \
 	fi
 	@printf "  $(BLUE)Espacio /nix:$(NC)      "
 	@df -h /nix 2>/dev/null | tail -1 | awk '{ \
@@ -29,11 +29,13 @@ health: ## Dashboard rápido de salud del sistema
 		printf "%s%s usado (%s libre)$(NC)\n", color, $$5, $$4 \
 	}'
 	@printf "  $(BLUE)Servicios:$(NC)          "
-	@FAILED=$$(systemctl --failed --no-legend 2>/dev/null | wc -l); \
-	if [ $$FAILED -eq 0 ]; then \
+	@FAILED_COUNT=$$(systemctl --failed --no-legend 2>/dev/null | wc -l); \
+	if [ $$FAILED_COUNT -eq 0 ]; then \
 		printf "$(GREEN)✓ OK$(NC)\n"; \
 	else \
-		printf "$(RED)✗ $$FAILED fallidos$(NC)\n"; \
+		FAILED_LIST=$$(systemctl --failed --no-legend --plain 2>/dev/null | head -n 3 | awk '{print $$1}' | tr '\n' ' ' | sed 's/ $$//' | sed 's/ /, /g'); \
+		if [ $$FAILED_COUNT -gt 3 ]; then FAILED_LIST="$$FAILED_LIST..."; fi; \
+		printf "$(RED)✗ $$FAILED_COUNT fallidos ($$FAILED_LIST)$(NC)\n"; \
 	fi
 	@printf "  $(BLUE)Git Status:$(NC)         "
 	@if git diff-index --quiet HEAD -- 2>/dev/null; then \
@@ -42,7 +44,7 @@ health: ## Dashboard rápido de salud del sistema
 		printf "$(YELLOW)⚠ Pendiente$(NC)\n"; \
 	fi
 	@printf "  $(BLUE)Generaciones:$(NC)       "
-	@ls /nix/var/nix/profiles/system-*-link 2>/dev/null | wc -l
+	@find /nix/var/nix/profiles/ -maxdepth 1 -name "system-*-link" 2>/dev/null | wc -l
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Verificación completada$(NC)\n"
 	@printf "\n"
