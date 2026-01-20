@@ -56,33 +56,39 @@ make update-input INPUT=zen-browser-flake
 
 ---
 
-### `make diff-update`
-Muestra cambios en `flake.lock` después de actualizar.
+### `make flake-diff`
+
+Muestra diferencias inteligentes en los archivos del flake (`flake.nix` y `flake.lock`). Detecta automáticamente qué archivos han cambiado.
 
 ```bash
-make diff-update
+make flake-diff
 ```
 
-**Cuándo usarlo:** Después de `make update` para ver qué cambió.
+**Información mostrada:**
+- Cambios en la configuración (`flake.nix`)
+- Cambios en los inputs/versiones (`flake.lock`)
+- Advertencias si no hay cambios pendientes
 
 ---
 
 ### `make upgrade`
-Update, show changes, and switch (workflow completo).
+
+Flujo de trabajo completo recomendado: actualizar, revisar y aplicar.
 
 ```bash
 make upgrade
 ```
 
 **Qué hace:**
-1. `make update`
-2. `make diff-update`
-3. `make switch`
+1. `make update` (Actualiza todos los inputs)
+2. `make flake-diff` (Muestra los cambios para revisión)
+3. `make switch` (Aplica los cambios al sistema)
 
 ---
 
 ### `make show`
-Muestra los outputs del flake.
+
+Muestra los outputs definidos en el flake.
 
 ```bash
 make show
@@ -91,19 +97,11 @@ make show
 ---
 
 ### `make flake-check`
-Verifica la sintaxis del flake sin construir.
+
+Verifica la sintaxis del flake sin construir nada.
 
 ```bash
 make flake-check
-```
-
----
-
-### `make diff-flake`
-Muestra cambios en `flake.nix` y `flake.lock`.
-
-```bash
-make diff-flake
 ```
 
 ---
@@ -115,8 +113,8 @@ make diff-flake
 # 1. Actualizar inputs
 make update
 
-# 2. Ver qué cambió
-make diff-update
+# 2. Ver qué cambió de forma inteligente
+make flake-diff
 
 # 3. Validar configuración
 make validate
@@ -130,14 +128,15 @@ make switch
 
 ### Update Rápido (todo-en-uno)
 ```bash
-make upgrade  # update + diff + switch
+make upgrade  # update + flake-diff + switch
 ```
 
 ### Update Selectivo
 ```bash
 # Solo actualizar un input específico
 make update-input INPUT=hydenix
-make diff-update
+make flake-diff
 make test
 make switch
 ```
+

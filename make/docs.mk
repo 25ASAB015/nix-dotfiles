@@ -32,7 +32,7 @@ help: ## Show this help message
 		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev docs-build docs-install docs-clean"); \
 		print_cat("Gestión del Sistema (Rebuild/Switch)", "switch safe-switch test build dry-run boot validate debug quick emergency fix-permissions fix-git-permissions hardware-scan"); \
 		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean optimize clean-result fix-store"); \
-		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input diff-update upgrade show flake-check diff-flake"); \
+		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input flake-diff upgrade show flake-check"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save git-log"); \
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs logs-boot logs-errors logs-service"); \
