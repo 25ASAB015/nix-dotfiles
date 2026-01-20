@@ -46,7 +46,7 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 - `boot` - Build and set as boot default
 - `validate` - Validate configuration before switching
 - `debug` - Rebuild with verbose output and trace
-- `quick` - Quick rebuild (skip checks)
+- `switch-fast` - Quick rebuild (skip checks)
 - `emergency` - Emergency rebuild with maximum verbosity
 - `fix-permissions` - Fix common permission issues
 - `fix-git-permissions` - Fix git repo ownership issues
@@ -66,11 +66,10 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 - `update-nixpkgs` - Update only nixpkgs input
 - `update-hydenix` - Update only hydenix input
 - `update-input` - Update specific flake input
-- `diff-update` - Show changes in flake.lock after update
+- `flake-diff` - Show intelligent diffs for flake.nix/lock
 - `upgrade` - Update, show changes, and switch
 - `show` - Show flake outputs
 - `flake-check` - Check flake syntax without building
-- `diff-flake` - Show changes to flake.nix and flake.lock
 
 #### Generaciones y Rollback (6 targets)
 - `list-generations` - List system generations

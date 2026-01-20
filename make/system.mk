@@ -5,7 +5,7 @@
 # Targets: 13 targets
 # ============================================================================
 
-.PHONY: switch safe-switch test build dry-run boot validate debug quick emergency fix-permissions fix-git-permissions hardware-scan
+.PHONY: switch safe-switch switch-fast test build dry-run boot validate debug emergency fix-permissions fix-git-permissions hardware-scan
 
 # === Gestión del Sistema (Rebuild/Switch) ===
 
@@ -32,6 +32,24 @@ switch: ## Build and switch to new configuration
 # Validate configuration and then switch (recommended safe workflow)
 # Performs validation checks before applying configuration changes
 safe-switch: validate switch ## Validate then switch (safest option)
+
+# Fast rebuild skipping internal nixos-rebuild checks for speed
+# Applies configuration quickly when you trust your changes
+switch-fast: ## Quick rebuild (skip checks)
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          ⚡ Rebuild Rápido (Switch Fast)            \n$(NC)"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Ejecutando switch rápido omitiendo verificaciones...\n$(NC)"
+	@printf "$(YELLOW)⚠️  Este comando usa '--fast' para acelerar el proceso.\n$(NC)"
+	@printf "$(BLUE)Útil cuando estás seguro de tu configuración y necesitas velocidad.\n$(NC)"
+	@printf "\n"
+	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --fast
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Switch rápido completado\n$(NC)"
+	@printf "$(BLUE)Configuración aplicada exitosamente\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 # Build and test configuration without activating it
 # Evaluates and builds the configuration but doesn't apply changes
@@ -150,23 +168,7 @@ debug: ## Rebuild with verbose output and trace
 	@printf "$(RED)🐛 Debug rebuild with full trace...\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose
 
-# Fast rebuild skipping validation checks for speed
-# Applies configuration quickly when you trust your changes
-quick: ## Quick rebuild (skip checks)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          ⚡ Rebuild Rápido (Sin Checks)              \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@printf "$(BLUE)Ejecutando rebuild rápido omitiendo verificaciones...\n$(NC)"
-	@printf "$(YELLOW)⚠️  Este comando omite validaciones de seguridad para acelerar el proceso.\n$(NC)"
-	@printf "$(BLUE)Útil cuando estás seguro de tu configuración y necesitas velocidad.\n$(NC)"
-	@printf "\n"
-	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --fast
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Rebuild rápido completado\n$(NC)"
-	@printf "$(BLUE)Configuración aplicada sin verificaciones previas\n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
+
 
 # Emergency rebuild with maximum debugging and cache disabled
 # Used for critical system issues requiring full rebuild and tracing

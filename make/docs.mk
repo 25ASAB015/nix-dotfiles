@@ -30,7 +30,7 @@ help: ## Show this help message
 	} \
 	END { \
 		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev docs-build docs-install docs-clean"); \
-		print_cat("Gestión del Sistema (Rebuild/Switch)", "switch safe-switch test build dry-run boot validate debug quick emergency fix-permissions fix-git-permissions hardware-scan"); \
+		print_cat("Gestión del Sistema (Rebuild/Switch)", "switch safe-switch switch-fast test build dry-run boot validate debug emergency fix-permissions fix-git-permissions hardware-scan"); \
 		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean optimize clean-result fix-store"); \
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input flake-diff upgrade show flake-check"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
@@ -83,6 +83,7 @@ help-examples: ## Show commands with usage examples
 	@printf "$(BLUE)Everyday use:$(NC)\n"
 	@printf "  make sync           → Total sync (commit + push + switch)\n"
 	@printf "  make switch         → Apply configuration\n"
+	@printf "  make switch-fast    → Fast switch (skip checks)\n"
 	@printf "  make test           → Test without applying\n"
 	@printf "  make rollback       → Undo last change\n"
 	@printf "  make validate       → Check config before applying\n\n"

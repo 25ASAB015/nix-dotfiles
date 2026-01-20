@@ -2128,18 +2128,18 @@ Estos comandos están diseñados para situaciones específicas donde los comando
 
 ---
 
-#### `make quick`
-Rebuild rápido omitiendo verificaciones de seguridad para acelerar el proceso.
+#### `make switch-fast`
+Rebuild rápido (Switch Fast) omitiendo verificaciones internas de NixOS para acelerar el proceso.
 
 ```bash
-make quick
+make switch-fast
 ```
 
 **Qué hace:**
 - Ejecuta `nixos-rebuild switch` con la opción `--fast`
-- Omite verificaciones y validaciones previas
-- Aplica cambios directamente sin checks de seguridad
-- Más rápido que `make switch` estándar
+- Omite verificaciones internas del sistema (compilación más rápida)
+- Aplica cambios directamente
+- Más rápido que `make switch` estándar cuando el sistema ya tiene las dependencias en el store
 
 **⚠️ Advertencias:**
 - No valida la configuración antes de aplicar
@@ -2162,7 +2162,7 @@ make quick
 **Comparación con otros comandos:**
 - `make switch` - Incluye verificaciones básicas, más seguro
 - `make safe-switch` - Valida antes de aplicar, más seguro aún
-- `make quick` - Sin verificaciones, más rápido pero menos seguro
+- `make switch-fast` - Sin verificaciones, más rápido y omite verificaciones internas de nixos-rebuild
 
 **Ejemplo de uso:**
 ```bash
@@ -2173,7 +2173,7 @@ make validate
 # Editar configuración...
 
 # 3. Aplicar rápido (confías que funcionará)
-make quick
+make switch-fast
 
 # Si algo falla, siempre puedes hacer rollback
 make rollback
@@ -2210,7 +2210,7 @@ make emergency
 
 **Cuándo NO usarlo:**
 - Uso diario normal (es demasiado lento)
-- Cambios simples (usa `make switch` o `make quick`)
+- Cambios simples (usa `make switch` o `make switch-fast`)
 - Cuando `make debug` es suficiente
 
 **Comparación con otros comandos:**

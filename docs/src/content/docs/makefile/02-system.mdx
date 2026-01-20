@@ -67,6 +67,18 @@ make safe-switch
 **Cuándo usarlo:** Cambios importantes o después de `make update`.
 
 ---
+ 
+
+### `make switch-fast`
+Switch rápido (skip checks) - más rápido y omite verificaciones internas.
+
+```bash
+make switch-fast
+```
+
+**Cuándo usarlo:** Cambios pequeños y confiables donde quieres velocidad absoluta. Usa el flag `--fast` de NixOS.
+
+---
 
 ### `make build`
 Compila la configuración sin aplicar cambios al sistema.
@@ -126,16 +138,8 @@ make debug
 
 ---
 
-### `make quick`
-Quick rebuild (skip checks) - más rápido pero menos seguro.
-
-```bash
-make quick
-```
-
-**Cuándo usarlo:** Cambios pequeños y confiables donde quieres velocidad.
-
 ---
+
 
 ### `make emergency`
 Emergency rebuild con maximum verbosity.
