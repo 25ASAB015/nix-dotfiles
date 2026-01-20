@@ -13,7 +13,7 @@ con el nuevo layout y asegurar consistencia visual + verificabilidad.
 - [x] Paso 6 — Verificar `make help` y `make help-examples`
 - [x] Paso 7 — Actualizar documentación (estructura + sincronía)
 - [x] Paso 8 — Añadir guía de tests y ejemplos de salida coherente
-- [ ] Paso 9 — Checklist final y criterios de aceptación
+- [x] Paso 9 — Checklist final y criterios de aceptación
 
 ## Sistema de checks (control de avance)
 
@@ -40,7 +40,7 @@ Reglas:
 - [x] Paso 6 — Fecha: 2026-01-19 | Nota: Verificados make help y make help-examples. Todos los targets funcionan correctamente
 - [x] Paso 7 — Fecha: 2026-01-19 | Nota: Modularizada documentación en 12 archivos .mdx (index + 11 módulos). Actualizado sidebar en astro.config.mjs, README.md e index.mdx
 - [x] Paso 8 — Fecha: 2026-01-19 | Nota: Creada guía completa de pruebas y validación (12-testing.mdx) con comandos de validación, ejemplos de salida visual y criterios de aceptación
-- [ ] Paso 9 — Fecha: ____ | Nota:
+- [x] Paso 9 — Fecha: 2026-01-19 | Nota: Validación final completa. 68/68 targets verificados, orden preservado, documentación sincronizada. Documento VALIDACION_FINAL.md creado. Todos los criterios de aceptación cumplidos ✅
 
 ## Pasos atómicos
 
