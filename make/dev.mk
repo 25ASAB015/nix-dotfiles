@@ -5,7 +5,7 @@
 # Targets: 8 targets
 # ============================================================================
 
-.PHONY: list-hosts hosts-info search search-installed repl shell vm closure-size
+.PHONY: list-hosts search search-installed repl shell vm closure-size
 
 # === Análisis y Desarrollo ===
 
@@ -55,7 +55,6 @@ list-hosts: ## List available host configurations
 	@printf "$(BLUE)Example:$(NC) make switch HOSTNAME=laptop\n"
 	@printf "\n"
 
-hosts-info: list-hosts ## Show info about all configured hosts (alias for list-hosts)
 
 search: ## Search for packages in nixpkgs (use PKG=name)
 	@if [ -z "$(PKG)" ]; then \

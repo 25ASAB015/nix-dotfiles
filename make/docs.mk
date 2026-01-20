@@ -36,7 +36,7 @@ help: ## Show this help message
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save git-log"); \
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs logs-boot logs-errors logs-service"); \
-		print_cat("Análisis y Desarrollo", "list-hosts hosts-info search search-installed repl shell vm closure-size"); \
+		print_cat("Análisis y Desarrollo", "list-hosts search search-installed repl shell vm closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
 		printf "\nWorkflows sugeridos:\n"; \
 		printf "  • Desarrollo diario:  make test → make switch → make rollback\n"; \
