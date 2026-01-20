@@ -39,7 +39,7 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 
 #### Gestión del Sistema (13 targets)
 - `switch` - Build and switch to new configuration
-- `safe-switch` - Validate then switch (safest option)
+- `switch-safe` - Validate then switch (safest option)
 - `test` - Build and test configuration (no switch)
 - `build` - Build configuration without switching
 - `dry-run` - Show what would be built/changed

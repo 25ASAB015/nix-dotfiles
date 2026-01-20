@@ -52,11 +52,11 @@ make switch    # Si funciona bien, hacer permanente
 
 ---
 
-### `make safe-switch`
+### `make switch-safe`
 Valida la configuración y luego aplica los cambios de forma segura.
 
 ```bash
-make safe-switch
+make switch-safe
 ```
 
 **Qué hace:**
@@ -201,7 +201,7 @@ make list-generations → make rollback
 
 ### Updates del Sistema
 ```bash
-make update → make flake-diff → make validate → make switch
+make update → make flake-diff → make validate → make switch-safe
 ```
 ```bash
 make debug    # Ver errores completos
@@ -215,4 +215,5 @@ make emergency # Último recurso
 | `make build` | ✅ | ❌ | N/A | ❌ |
 | `make test` | ✅ | ✅ | Solo sesión | ❌ |
 | `make switch` | ✅ | ✅ | Permanente | ✅ |
+| `make switch-safe` | ✅ | ✅ | Permanente | ✅ |
 | `make boot` | ✅ | ✅ | Próximo boot | ✅ |

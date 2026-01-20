@@ -775,11 +775,11 @@ make validate
 - Proporciona feedback claro sobre qué está mal
 - Puede integrarse en scripts automatizados
 
-#### `make safe-switch`
+#### `make switch-safe`
 Valida la configuración y luego aplica los cambios de forma segura. Es la opción más segura para aplicar cambios importantes.
 
 ```bash
-make safe-switch
+make switch-safe
 ```
 
 **Qué hace:**
@@ -819,7 +819,7 @@ make safe-switch
 |---------|--------|---------|--------|------------|
 | `make validate` | ✅ | ❌ | ❌ | ❌ |
 | `make switch` | ❌ | ✅ | ✅ | ✅ |
-| `make safe-switch` | ✅ | ✅ | ✅ | ✅ |
+| `make switch-safe` | ✅ | ✅ | ✅ | ✅ |
 
 **Diferencias con `make switch`:**
 
@@ -829,7 +829,7 @@ make safe-switch
 - ❌ Puede fallar después de compilar
 - ❌ Requiere que ejecutes `validate` manualmente
 
-**`make safe-switch`:**
+**`make switch-safe`:**
 - ✅ Más seguro (valida primero)
 - ✅ Detecta errores antes de compilar
 - ✅ Todo-en-uno (un solo comando)
@@ -844,7 +844,7 @@ make safe-switch
 make update
 
 # Valida cambios + aplica de forma segura
-make safe-switch
+make switch-safe
 # Si hay incompatibilidades, validate las detecta
 # antes de intentar compilar
 ```
@@ -858,7 +858,7 @@ nvim modules/hm/programs/nuevo-programa.nix
 nvim flake.nix
 
 # Valida sintaxis + aplica
-make safe-switch
+make switch-safe
 # Detecta si el módulo tiene errores antes de aplicar
 ```
 
@@ -870,13 +870,13 @@ nvim hosts/hydenix/configuration.nix
 nvim modules/hm/default.nix
 
 # Valida que todos los cambios son compatibles + aplica
-make safe-switch
+make switch-safe
 ```
 
 **Ejemplo 4: Cuando no estás seguro**
 ```bash
 # Hiciste cambios pero no estás 100% seguro
-make safe-switch
+make switch-safe
 # Más seguro que switch directo
 # Si hay problemas, validate los detecta primero
 ```
@@ -891,13 +891,13 @@ make switch      # Aplicar si pasa
 
 **Flujo 2: Cambios Importantes (más seguro) ⭐ RECOMENDADO**
 ```bash
-make safe-switch # Todo-en-uno: valida + aplica
+make switch-safe # Todo-en-uno: valida + aplica
 ```
 
 **Flujo 3: Testing antes de permanente**
 ```bash
 make test        # Probar temporalmente
-make safe-switch # Si funciona, hacer permanente
+make switch-safe # Si funciona, hacer permanente
 ```
 
 **Ventajas:**
@@ -910,7 +910,7 @@ make safe-switch # Si funciona, hacer permanente
 
 **Recomendación de uso:**
 - **`make switch`** → Para cambios pequeños y frecuentes (desarrollo iterativo)
-- **`make safe-switch`** → Para cambios importantes o cuando no estás seguro
+- **`make switch-safe`** → Para cambios importantes o cuando no estás seguro
 
 **Ver también:** [Flujo de Trabajo Recomendado](#flujo-recomendado) para más detalles sobre cuándo usar cada comando.
 
@@ -2118,7 +2118,7 @@ make switch-fast
 
 **Comparación con otros comandos:**
 - `make switch` - Incluye verificaciones básicas, más seguro
-- `make safe-switch` - Valida antes de aplicar, más seguro aún
+- `make switch-safe` - Valida antes de aplicar, más seguro aún
 - `make switch-fast` - Sin verificaciones, más rápido y omite verificaciones internas de nixos-rebuild
 
 **Ejemplo de uso:**
@@ -3043,7 +3043,7 @@ make switch
 
 
 **Ventajas:**
-- ⚡ Rápido (validate es más rápido que safe-switch)
+- ⚡ Rápido (validate es más rápido que switch-safe)
 - 🔍 Ves exactamente qué validación falla
 - 🎯 Separas validación de aplicación
 
@@ -3063,7 +3063,7 @@ Para cambios que requieren más cuidado:
 nano modules/hm/programs/development/nix-tools.nix
 
 # 2. Validar + aplicar en un solo paso
-make safe-switch
+make switch-safe
 
 # 3. Listo! (o rollback si algo falla)
 ```
@@ -3091,7 +3091,7 @@ Para experimentar sin riesgo:
 make test
 
 # 2. Si funciona bien, hacer permanente
-make safe-switch
+make switch-safe
 ```
 
 **Ventajas:**
@@ -3632,7 +3632,7 @@ make git-status
 ```bash
 make validate       # Chequea sintaxis y config
 make test           # Prueba temporalmente  
-make safe-switch    # Valida y aplica
+make switch-safe    # Valida y aplica
 ```
 
 **Flujo de Health Check:**
@@ -3842,7 +3842,7 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 `help`, `help-examples`, `docs-local`, `docs-dev`, `docs-build`, `docs-install`, `docs-clean`
 
 ### Gestión del Sistema (Rebuild/Switch) (10)
-`switch`, `safe-switch`, `switch-fast`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `emergency`
+`switch`, `switch-safe`, `switch-fast`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `emergency`
 
 ### Limpieza y Optimización (5)
 `clean`, `deep-clean`, `optimize`, `clean-result`, `fix-store`

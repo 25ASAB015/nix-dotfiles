@@ -5,7 +5,7 @@
 # Targets: 13 targets
 # ============================================================================
 
-.PHONY: switch safe-switch switch-fast test build dry-run boot validate debug emergency fix-permissions fix-git-permissions hardware-scan
+.PHONY: switch switch-safe switch-fast test build dry-run boot validate debug emergency fix-permissions fix-git-permissions hardware-scan
 
 # === Gestión del Sistema (Rebuild/Switch) ===
 
@@ -31,7 +31,7 @@ switch: ## Build and switch to new configuration
 
 # Validate configuration and then switch (recommended safe workflow)
 # Performs validation checks before applying configuration changes
-safe-switch: validate switch ## Validate then switch (safest option)
+switch-safe: validate switch ## Validate then switch (safest option)
 
 # Fast rebuild skipping internal nixos-rebuild checks for speed
 # Applies configuration quickly when you trust your changes
