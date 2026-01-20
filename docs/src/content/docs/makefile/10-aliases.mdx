@@ -1,0 +1,54 @@
+---
+title: Compatibilidad y Aliases Legacy
+description: Guía de comandos antiguos y su equivalencia con el nuevo estándar
+---
+
+# Compatibilidad y Aliases
+
+Para mejorar la organización y escalabilidad del proyecto, hemos migrado a un sistema de comandos con prefijos (`sys-`, `upd-`, `log-`, etc.). Sin embargo, entendemos que la memoria muscular es fuerte, por lo que hemos centralizado todos los comandos antiguos en un módulo de compatibilidad.
+
+## Por qué el cambio?
+
+El uso de prefijos permite:
+1. **Autocompletado**: Escribe `make sys-` y pulsa `TAB` para ver todas las operaciones de sistema.
+2. **Claridad**: Sabes exactamente qué área afectará cada comando.
+3. **Escalabilidad**: Evitamos colisiones de nombres a medida que el proyecto crece.
+
+---
+
+## Tabla de Equivalencias (Cheat Sheet)
+
+| Categoría | Comando Original (Legacy) | Nuevo Comando Estándar | Acción |
+| :--- | :--- | :--- | :--- |
+| **Sistema** | `make switch` | **`make sys-apply`** | Aplicar configuración |
+| **Sistema** | `make validate` | **`make sys-check`** | Validar sintaxis y flake |
+| **Deployment**| `make sync` / `deploy` | **`make sys-deploy`** | Respaldo (Git) + Aplicar |
+| **Logs** | `make status` / `health`| **`make sys-status`** | Dashboard de salud |
+| **Logs** | `make test-network` | **`make log-net`** | Diagnóstico de red |
+| **Limpieza** | `make clean` | **`make sys-gc`** | Limpiar basura de Nix |
+| **Update** | `make update` | **`make upd-all`** | Actualizar inputs |
+| **Update** | `make upgrade` | **`make upd-upgrade`** | Actualizar + Aplicar |
+| **Dev** | `make search` | **`make dev-search`** | Buscar en nixpkgs |
+
+---
+
+## Uso de Aliases
+
+Todos los comandos de la columna **"Comando Original"** siguen funcionando gracias al archivo `make/aliases.mk`. Simplemente llaman internamente a su contraparte moderna.
+
+> [!TIP]
+> Te recomendamos empezar a usar los comandos con prefijo, ya que son los que aparecerán en la ayuda principal de `make help`.
+>
+> Puedes ver la lista completa de aliases en la terminal ejecutando:
+> ```bash
+> make help-aliases
+> ```
+
+---
+
+## Centralización en el Código
+
+En el repositorio, encontrarás todos estos redireccionamientos en:
+- [aliases.mk](file:///home/ludus/Dotfiles/make/aliases.mk)
+
+Este archivo se incluye en el `Makefile` principal para asegurar que el sistema sea siempre compatible con versiones anteriores.
