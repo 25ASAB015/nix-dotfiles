@@ -8,8 +8,8 @@ con el nuevo layout y asegurar consistencia visual + verificabilidad.
 - [x] Paso 1 — Inventariar targets y variables actuales
 - [x] Paso 2 — Definir estructura de módulos `make/*.mk`
 - [x] Paso 3 — Crear carpeta `make/` y archivos vacíos
-- [ ] Paso 4 — Mover secciones del Makefile a módulos
-- [ ] Paso 5 — Ajustar `Makefile` root (includes + orden)
+- [x] Paso 4 — Mover secciones del Makefile a módulos
+- [x] Paso 5 — Ajustar `Makefile` root (includes + orden)
 - [ ] Paso 6 — Verificar `make help` y `make help-examples`
 - [ ] Paso 7 — Actualizar documentación (estructura + sincronía)
 - [ ] Paso 8 — Añadir guía de tests y ejemplos de salida coherente
@@ -35,8 +35,8 @@ Reglas:
 - [x] Paso 1 — Fecha: 2026-01-19 | Nota: Inventariados 68 targets, 10 variables, 11 secciones. Documento en inventario_makefile.md
 - [x] Paso 2 — Fecha: 2026-01-19 | Nota: Definida estructura de 11 módulos .mk. Documento en estructura_modulos.md
 - [x] Paso 3 — Fecha: 2026-01-19 | Nota: Creados 11 archivos .mk con cabeceras estándar en make/
-- [ ] Paso 4 — Fecha: ____ | Nota:
-- [ ] Paso 5 — Fecha: ____ | Nota:
+- [x] Paso 4 — Fecha: 2026-01-19 | Nota: Migrados 68 targets a 9 módulos activos (docs, system, cleanup, updates, generations, git, logs, dev, format)
+- [x] Paso 5 — Fecha: 2026-01-19 | Nota: Ajustado Makefile root con variables globales e includes de 11 módulos
 - [ ] Paso 6 — Fecha: ____ | Nota:
 - [ ] Paso 7 — Fecha: ____ | Nota:
 - [ ] Paso 8 — Fecha: ____ | Nota:
