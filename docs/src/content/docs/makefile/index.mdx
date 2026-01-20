@@ -3,114 +3,227 @@ title: Makefile - Documentación Modular
 description: Guía completa del Makefile modular de Hydenix organizada por categorías
 ---
 
+import { Card, CardGrid, LinkCard, Aside, Badge, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
 # Makefile: Documentación Modular
 
 El Makefile de Hydenix centraliza todos los comandos para construir, validar, actualizar, mantener y depurar la configuración de NixOS. Esta documentación está organizada en módulos que coinciden con la estructura del código en `make/*.mk`.
 
-## 🚀 Inicio Rápido
-
+<Aside type="tip" title="Inicio Rápido">
+Si es tu primera vez, comienza con estos comandos esenciales:
 ```bash
 make help            # Lista todos los comandos disponibles
 make help-examples   # Ejemplos de uso con parámetros
 make test            # Prueba sin aplicar permanentemente
 make switch          # Aplica cambios
-make rollback        # Revierte a la generación anterior
 ```
+</Aside>
 
 ## 📂 Estructura Modular
 
-El Makefile está organizado en 9 módulos que coinciden con las categorías de comandos:
+El Makefile está organizado en **9 módulos activos** que coinciden con las categorías de comandos:
 
-```
-make/
-├── docs.mk          # Ayuda y Documentación
-├── system.mk        # Gestión del Sistema
-├── cleanup.mk       # Limpieza y Optimización
-├── updates.mk       # Actualizaciones y Flakes
-├── generations.mk   # Generaciones y Rollback
-├── git.mk           # Git y Respaldo
-├── logs.mk          # Diagnóstico y Logs
-├── dev.mk           # Análisis y Desarrollo
-└── format.mk        # Formato, Linting y Estructura
-```
+<CardGrid>
+  <Card title="📚 docs.mk" icon="document">
+    Ayuda y Documentación
+  </Card>
+  <Card title="🔧 system.mk" icon="setting">
+    Gestión del Sistema
+  </Card>
+  <Card title="🧹 cleanup.mk" icon="approve-check">
+    Limpieza y Optimización
+  </Card>
+  <Card title="📦 updates.mk" icon="rocket">
+    Actualizaciones y Flakes
+  </Card>
+  <Card title="💾 generations.mk" icon="list-format">
+    Generaciones y Rollback
+  </Card>
+  <Card title="🔄 git.mk" icon="github">
+    Git y Respaldo
+  </Card>
+  <Card title="📋 logs.mk" icon="information">
+    Diagnóstico y Logs
+  </Card>
+  <Card title="🔍 dev.mk" icon="magnifier">
+    Análisis y Desarrollo
+  </Card>
+  <Card title="✨ format.mk" icon="star">
+    Formato y Linting
+  </Card>
+</CardGrid>
 
 ## 📚 Módulos de Documentación
 
-### [Ayuda y Documentación](./01-docs)
-Comandos para obtener ayuda, ver ejemplos y gestionar la documentación web.
-- `help`, `help-examples`, `docs-local`, `docs-dev`, `docs-build`, `docs-install`, `docs-clean`
+<LinkCard
+  title="Ayuda y Documentación"
+  description="Comandos para obtener ayuda, ver ejemplos y gestionar la documentación web"
+  href="./01-docs"
+/>
 
-### [Gestión del Sistema](./02-system)
-Comandos para compilar, aplicar y validar configuraciones de NixOS.
-- `switch`, `safe-switch`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `quick`, `emergency`, `fix-permissions`, `fix-git-permissions`, `hardware-scan`
+<LinkCard
+  title="Gestión del Sistema"
+  description="Comandos para compilar, aplicar y validar configuraciones de NixOS"
+  href="./02-system"
+/>
 
-### [Limpieza y Optimización](./03-cleanup)
-Comandos para limpiar generaciones antiguas y optimizar el sistema.
-- `clean`, `clean-week`, `clean-conservative`, `deep-clean`, `optimize`, `clean-result`, `fix-store`
+<LinkCard
+  title="Limpieza y Optimización"
+  description="Comandos para limpiar generaciones antiguas y optimizar el sistema"
+  href="./03-cleanup"
+/>
 
-### [Actualizaciones y Flakes](./04-updates)
-Comandos para actualizar inputs del flake y gestionar dependencias.
-- `update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `diff-update`, `upgrade`, `show`, `flake-check`, `diff-flake`
+<LinkCard
+  title="Actualizaciones y Flakes"
+  description="Comandos para actualizar inputs del flake y gestionar dependencias"
+  href="./04-updates"
+/>
 
-### [Generaciones y Rollback](./05-generations)
-Comandos para gestionar generaciones del sistema y hacer rollback.
-- `list-generations`, `rollback`, `diff-generations`, `diff-gen`, `generation-sizes`, `current-generation`
+<LinkCard
+  title="Generaciones y Rollback"
+  description="Comandos para gestionar generaciones del sistema y hacer rollback"
+  href="./05-generations"
+/>
 
-### [Git y Respaldo](./06-git)
-Comandos para gestionar el repositorio git y hacer respaldos.
-- `git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `save`, `git-log`
+<LinkCard
+  title="Git y Respaldo"
+  description="Comandos para gestionar el repositorio git y hacer respaldos"
+  href="./06-git"
+/>
 
-### [Diagnóstico y Logs](./07-logs)
-Comandos para diagnóstico del sistema, salud y visualización de logs.
-- `health`, `test-network`, `info`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
+<LinkCard
+  title="Diagnóstico y Logs"
+  description="Comandos para diagnóstico del sistema, salud y visualización de logs"
+  href="./07-logs"
+/>
 
-### [Análisis y Desarrollo](./08-dev)
-Comandos para búsqueda de paquetes, análisis y desarrollo.
-- `list-hosts`, `hosts-info`, `search`, `search-installed`, `repl`, `shell`, `vm`, `closure-size`
+<LinkCard
+  title="Análisis y Desarrollo"
+  description="Comandos para búsqueda de paquetes, análisis y desarrollo"
+  href="./08-dev"
+/>
 
-### [Formato y Linting](./09-format)
-Comandos para formatear y validar código Nix.
-- `format`, `lint`, `tree`
+<LinkCard
+  title="Formato y Linting"
+  description="Comandos para formatear y validar código Nix"
+  href="./09-format"
+/>
 
-### [Pruebas y Validación](./12-testing)
-Guía completa de pruebas para validar el Makefile modular.
-- Comandos de validación no destructivos
-- Ejemplos de salida esperada
-- Checklist de aceptación
-
-
+<LinkCard
+  title="Pruebas y Validación"
+  description="Guía completa de pruebas para validar el Makefile modular"
+  href="./10-testing"
+/>
 
 ## 🔄 Workflows Recomendados
 
-### Desarrollo Diario
-```bash
-make test → make switch → make rollback (si es necesario)
-```
+<Tabs>
+  <TabItem label="Desarrollo Diario">
+    <Steps>
+    1. **Probar cambios** sin aplicarlos permanentemente
+       ```bash
+       make test
+       ```
+    
+    2. **Aplicar configuración** si todo funciona bien
+       ```bash
+       make switch
+       ```
+    
+    3. **Revertir** si algo sale mal
+       ```bash
+       make rollback
+       ```
+    </Steps>
+  </TabItem>
 
-### Updates Seguros
-```bash
-make update → make diff-update → make validate → make test → make switch
-```
+  <TabItem label="Updates Seguros">
+    <Steps>
+    1. **Actualizar** inputs del flake
+       ```bash
+       make update
+       ```
+    
+    2. **Ver cambios** en flake.lock
+       ```bash
+       make diff-update
+       ```
+    
+    3. **Validar** configuración
+       ```bash
+       make validate
+       ```
+    
+    4. **Probar** antes de aplicar
+       ```bash
+       make test
+       ```
+    
+    5. **Aplicar** cambios
+       ```bash
+       make switch
+       ```
+    </Steps>
+  </TabItem>
 
-### Mantenimiento
-```bash
-make health → make clean → make optimize → make generation-sizes
-```
+  <TabItem label="Mantenimiento">
+    <Steps>
+    1. **Verificar salud** del sistema
+       ```bash
+       make health
+       ```
+    
+    2. **Limpiar** generaciones antiguas
+       ```bash
+       make clean
+       ```
+    
+    3. **Optimizar** nix store
+       ```bash
+       make optimize
+       ```
+    
+    4. **Revisar** tamaños de generaciones
+       ```bash
+       make generation-sizes
+       ```
+    </Steps>
+  </TabItem>
 
-### Multi-host
-```bash
-make list-hosts → make switch HOSTNAME=laptop
-```
+  <TabItem label="Multi-host">
+    <Steps>
+    1. **Listar** hosts disponibles
+       ```bash
+       make list-hosts
+       ```
+    
+    2. **Aplicar** configuración a un host específico
+       ```bash
+       make switch HOSTNAME=laptop
+       ```
+    </Steps>
+  </TabItem>
+</Tabs>
 
 ## 💡 Sistema de Ayuda
 
-El Makefile tiene un sistema de ayuda en tres niveles:
-
-1. **`make help`** - Lista completa de comandos con descripciones
-2. **`make help-examples`** - Ejemplos de uso para comandos con parámetros
-3. **Esta documentación** - Guía completa con explicaciones detalladas
+<CardGrid stagger>
+  <Card title="make help" icon="open-book">
+    Lista completa de comandos con descripciones organizadas por categorías
+  </Card>
+  <Card title="make help-examples" icon="document">
+    Ejemplos de uso para comandos que requieren parámetros
+  </Card>
+  <Card title="Esta documentación" icon="star">
+    Guía completa con explicaciones detalladas, casos de uso y mejores prácticas
+  </Card>
+</CardGrid>
 
 ## 🎯 Filosofía
+
+<Aside type="note">
+El Makefile de Hydenix está diseñado con estos principios en mente:
+</Aside>
 
 - **Comandos cortos y memorables** - Evita comandos largos de NixOS
 - **Documentación integrada** - Cada comando tiene descripción en `make help`
@@ -120,7 +233,12 @@ El Makefile tiene un sistema de ayuda en tres niveles:
 ## 📖 Navegación
 
 Usa el menú lateral para explorar cada módulo en detalle. Cada sección contiene:
-- Descripción de cada comando
-- Ejemplos de uso
-- Casos de uso reales
-- Notas importantes y advertencias
+
+- ✅ Descripción de cada comando
+- ✅ Ejemplos de uso
+- ✅ Casos de uso reales
+- ✅ Notas importantes y advertencias
+
+<Aside type="caution" title="Importante">
+Algunos comandos son destructivos y pueden eliminar datos. Lee la documentación cuidadosamente antes de ejecutar comandos de limpieza o actualización.
+</Aside>
