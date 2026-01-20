@@ -31,7 +31,7 @@ help: ## Show this help message
 	END { \
 		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev docs-build docs-install docs-clean"); \
 		print_cat("Gestión del Sistema (Rebuild/Switch)", "switch safe-switch switch-fast test build dry-run boot validate debug emergency fix-permissions fix-git-permissions hardware-scan"); \
-		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean optimize clean-result fix-store"); \
+		print_cat("Limpieza y Optimización", "clean deep-clean optimize clean-result fix-store"); \
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input flake-diff upgrade show flake-check"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff sync git-log"); \
@@ -97,7 +97,8 @@ help-examples: ## Show commands with usage examples
 	@printf "  make clean          → Clean old (30 days)\n"
 	@printf "  make optimize       → Optimize store\n"
 	@printf "  make generation-sizes → Show generation sizes\n"
-	@printf "  make closure-size   → Show what uses space\n\n"
+	@printf "  make closure-size   → Show what uses space\n"
+	@printf "  make clean DAYS=7   → Garbage collect (7 days)\n\n"
 	@printf "$(BLUE)Troubleshooting:$(NC)\n"
 	@printf "  make debug          → Debug rebuild\n"
 	@printf "  make logs-errors    → Show errors\n"

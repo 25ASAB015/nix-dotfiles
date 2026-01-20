@@ -1222,70 +1222,27 @@ make optimize
 
 ---
 
-#### `make clean-week`
-Limpieza más agresiva - mantiene solo últimos 7 días de historial.
+#### `make clean DAYS=n`
+Limpieza personalizada - permite especificar cuántos días de historial mantener.
 
 ```bash
-make clean-week
+# Mantener solo los últimos 7 días
+make clean DAYS=7
 ```
 
-**Qué elimina:**
-- Generaciones mayores a 7 días
-- Paquetes no referenciados
-- Build artifacts antiguos
+**Parámetros:**
+- `DAYS=n`: Reemplaza `n` con el número de días que deseas conservar.
 
-**Espacio liberado típico:** 10-40 GB (más que `make clean`)
+**Qué hace:**
+- Elimina generaciones y paquetes mayores a `n` días
+- Útil para limpiezas rápidas (`DAYS=3`, `DAYS=7`) o muy seguras (`DAYS=90`, `DAYS=180`).
+- Si no se especifica, el valor por defecto es **30** días.
 
-**⚠️ Cuidado importante:**
-- Solo podrás hacer rollback a generaciones de la última semana
-- Si necesitas volver a una configuración de hace más de 7 días, no podrás
-- Útil cuando necesitas espacio rápidamente pero mantienes algo de seguridad
-
-**Cuándo usarlo:**
-- **Poco espacio en disco**: Necesitas liberar espacio rápidamente
-- **Muchos rebuilds recientes**: Has estado experimentando y tienes muchas generaciones nuevas
-- **Testing intensivo**: Has hecho muchas pruebas y las generaciones antiguas no son críticas
-- **Sistema de desarrollo**: Donde la estabilidad a largo plazo no es crítica
-
-**Ejemplo de uso:**
-```bash
-# Verificar espacio antes
-make info
-
-# Limpieza semanal
-make clean-week
-
-# Verificar espacio liberado
-make info
-```
 
 ---
 
-#### `make clean-conservative`
-Limpieza muy segura - mantiene últimos 90 días de historial.
+**Recomendación:** Si es tu primera vez o buscas máxima seguridad, usa `make clean DAYS=90`.
 
-```bash
-make clean-conservative
-```
-
-**Qué elimina:**
-- Solo generaciones y paquetes mayores a 90 días
-- Mantiene 3 meses completos de historial
-
-**Espacio liberado típico:** 2-10 GB (menos que `make clean` pero más seguro)
-
-**Ventajas:**
-- Máxima seguridad para rollback
-- Permite volver a configuraciones de hasta 3 meses atrás
-- Ideal para sistemas donde la estabilidad es crítica
-
-**Cuándo usarlo:**
-- **Primera vez que limpias**: Si nunca has limpiado antes, empieza con esto
-- **Sistema de producción crítico**: Donde necesitas máxima capacidad de rollback
-- **Quieres máxima seguridad**: Prefieres mantener más historial que liberar espacio
-- **Después de cambios importantes**: Cuando quieres mantener un historial largo por seguridad
-
-**Recomendación:** Si no estás seguro de qué comando usar, empieza con `make clean-conservative`.
 
 ---
 
@@ -1336,13 +1293,13 @@ make info
 
 ## Comparación de Comandos de Limpieza
 
-| Comando | Días mantenidos | Espacio liberado | Seguridad | Uso recomendado |
-|---------|----------------|------------------|-----------|----------------|
-| `make clean-conservative` | 90 días | 2-10 GB | ⭐⭐⭐⭐⭐ Máxima | Producción, primera vez |
-| `make clean` | 30 días | 5-20 GB | ⭐⭐⭐⭐ Alta | Uso general, rutina mensual |
-| `make clean-week` | 7 días | 10-40 GB | ⭐⭐ Media | Desarrollo, poco espacio |
-| `make deep-clean` | 0 días (TODO) | 20-100+ GB | ⭐ Mínima | Emergencias únicamente |
-| `make optimize` | N/A (no elimina) | 1-5 GB | ⭐⭐⭐⭐⭐ Seguro | Después de limpieza, rutina |
+| Comando | Parámetro | Días mantenidos | Seguridad |
+|---------|-----------|----------------|-----------|
+| `make clean` | `DAYS=90` | 90 días | ⭐⭐⭐⭐⭐ Máxima |
+| `make clean` | (Default) | 30 días | ⭐⭐⭐⭐ Alta |
+| `make clean` | `DAYS=7` | 7 días | ⭐⭐ Media |
+| `make deep-clean`| N/A | 0 días | ⭐ Mínima |
+| `make optimize` | N/A | N/A | ⭐⭐⭐⭐⭐ Seguro |
 
 ---
 
@@ -3885,10 +3842,10 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 `help`, `help-examples`, `docs-local`, `docs-dev`, `docs-build`, `docs-install`, `docs-clean`
 
 ### Gestión del Sistema (Rebuild/Switch) (10)
-`switch`, `safe-switch`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `quick`, `emergency`
+`switch`, `safe-switch`, `switch-fast`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `emergency`
 
-### Limpieza y Optimización (7)
-`clean`, `clean-week`, `clean-conservative`, `deep-clean`, `optimize`, `clean-result`, `fix-store`
+### Limpieza y Optimización (5)
+`clean`, `deep-clean`, `optimize`, `clean-result`, `fix-store`
 
 ### Actualizaciones y Flakes (8)
 `update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `flake-diff`, `upgrade`, `show`, `flake-check`
@@ -3911,10 +3868,10 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Reportes y Exportación (1)
 `git-log`
 
-### Plantillas y Otros (4)
+### Plantillas y Otros (3)
 `hardware-scan`, `fix-permissions`, `fix-git-permissions`
 
-**Total: 69 comandos disponibles** 🎉
+**Total: 66 comandos disponibles** 🎉
 
 ---
 

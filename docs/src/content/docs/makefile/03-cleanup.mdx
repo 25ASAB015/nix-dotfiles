@@ -12,42 +12,31 @@ Comandos para limpiar generaciones antiguas, optimizar el store de Nix y liberar
 ## Comandos Disponibles
 
 ### `make clean`
-Limpia build artifacts y generaciones más antiguas de 30 días.
+Limpia build artifacts y generaciones antiguas. Por defecto limpia generaciones de más de 30 días.
 
 ```bash
+# Limpieza estándar (30 días)
 make clean
+
+# Limpieza rápida (última semana)
+make clean DAYS=7
+
+# Limpieza conservadora (3 meses)
+make clean DAYS=90
 ```
 
+**Parámetros:**
+- `DAYS=n` (opcional) - Número de días de historial que quieres mantener. Por defecto es 30.
+
 **Qué hace:**
-- Elimina generaciones del sistema más antiguas de 30 días
+- Elimina generaciones del sistema más antiguas de `n` días
 - Ejecuta garbage collection de Nix
 - Libera espacio en disco de forma segura
 
-**Cuándo usarlo:** Mantenimiento regular mensual.
+**Cuándo usarlo:** Mantenimiento regular para liberar espacio sin perder capacidad de rollback reciente.
 
 ---
 
-### `make clean-week`
-Limpia build artifacts y generaciones más antiguas de 7 días.
-
-```bash
-make clean-week
-```
-
-**Más agresivo que `clean`** - Usa con precaución.
-
----
-
-### `make clean-conservative`
-Limpia build artifacts y generaciones más antiguas de 90 días (muy seguro).
-
-```bash
-make clean-conservative
-```
-
-**Cuándo usarlo:** Primera vez que limpias o quieres ser muy conservador.
-
----
 
 ### `make deep-clean`
 Aggressive cleanup - elimina TODAS las generaciones antiguas.
@@ -124,7 +113,7 @@ make closure-size
 make clean
 
 # 3. Si necesitas más espacio
-make clean-week
+make clean DAYS=7
 
 # 4. Optimizar
 make optimize
@@ -139,16 +128,16 @@ make optimize
 
 ## Comparación de Comandos de Limpieza
 
-| Comando | Antigüedad | Agresividad | Seguridad |
-|---------|-----------|-------------|-----------|
-| `clean-conservative` | 90 días | Baja | ✅✅✅ Muy seguro |
-| `clean` | 30 días | Media | ✅✅ Seguro |
-| `clean-week` | 7 días | Alta | ⚠️ Precaución |
-| `deep-clean` | Todas | Muy alta | ⚠️⚠️ Peligroso |
+| Comando | Parámetro | Antigüedad | Seguridad |
+|---------|-----------|-----------|-----------|
+| `clean` | `DAYS=90` | 3 meses | ✅✅✅ Muy seguro |
+| `clean` | (Default) | 30 días | ✅✅ Seguro |
+| `clean` | `DAYS=7` | 1 semana | ⚠️ Precaución |
+| `deep-clean` | N/A | Todas | ⚠️⚠️ Peligroso |
 
 ## Tips
 
-- **Empieza conservador:** Usa `clean-conservative` la primera vez
+- **Empieza conservador:** Usa `make clean DAYS=90` la primera vez
 - **Optimiza regularmente:** `make optimize` puede liberar mucho espacio
 - **Verifica antes:** Usa `make generation-sizes` para ver qué limpiarás
 - **Backup primero:** Si vas a usar `deep-clean`, haz backup antes

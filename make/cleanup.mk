@@ -5,66 +5,41 @@
 # Targets: 7 targets
 # ============================================================================
 
-.PHONY: clean clean-week clean-conservative deep-clean optimize clean-result fix-store
+.PHONY: clean deep-clean optimize clean-result fix-store
 
 # === Limpieza y Optimización ===
 
-# Standard cleanup - removes generations older than 30 days
-# Balances disk space recovery with rollback safety
-clean: ## Clean build artifacts older than 30 days
+# Flexible cleanup - removes generations older than specified days (default: 30)
+# Usage: make clean [DAYS=n]
+DAYS ?= 30
+clean: ## Clean build artifacts older than specified days (default: 30)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🧹 Limpieza Estándar (30 días)            \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@if [ "$(DAYS)" -eq 7 ]; then \
+		printf "$(CYAN)          🧹 Limpieza Semanal (7 días)              \n$(NC)"; \
+	elif [ "$(DAYS)" -eq 30 ]; then \
+		printf "$(CYAN)          🧹 Limpieza Estándar (30 días)            \n$(NC)"; \
+	elif [ "$(DAYS)" -eq 90 ]; then \
+		printf "$(CYAN)          🧹 Limpieza Conservadora (90 días)         \n$(NC)"; \
+	else \
+		printf "$(CYAN)          🧹 Limpieza del Sistema ($(DAYS) días)           \n$(NC)"; \
+	fi
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	@printf "$(BLUE)Limpiando artefactos de construcción mayores a 30 días...\n$(NC)"
-	@printf "$(YELLOW)Esto eliminará generaciones del sistema y paquetes no referenciados.\n$(NC)"
-	@printf "$(BLUE)Se mantendrán las generaciones de los últimos 30 días para rollback.\n$(NC)"
+	@printf "$(BLUE)Limpiando artefactos de construcción mayores a $(DAYS) días...\n$(NC)"
+	@if [ "$(DAYS)" -lt 15 ]; then \
+		printf "$(YELLOW)⚠️  Advertencia: Solo se mantendrán $(DAYS) días de historial para rollback.\n$(NC)"; \
+	else \
+		printf "$(BLUE)Se mantendrán las generaciones de los últimos $(DAYS) días.\n$(NC)"; \
+	fi
 	@printf "\n"
-	sudo nix-collect-garbage --delete-older-than 30d
-	nix-collect-garbage --delete-older-than 30d
+	sudo nix-collect-garbage --delete-older-than $(DAYS)d
+	nix-collect-garbage --delete-older-than $(DAYS)d
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Limpieza completada (mantenidos últimos 30 días)\n$(NC)"
+	@printf "$(GREEN)✅ Limpieza completada (mantenidos últimos $(DAYS) días)\n$(NC)"
 	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
-# Weekly cleanup - removes generations older than 7 days
-# More aggressive, use when you need to free space quickly
-clean-week: ## Clean build artifacts older than 7 days
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🧹 Limpieza Semanal (7 días)              \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@printf "$(BLUE)Limpiando artefactos de construcción mayores a 7 días...\n$(NC)"
-	@printf "$(YELLOW)⚠️  Solo podrás hacer rollback a generaciones de la última semana.\n$(NC)"
-	@printf "$(BLUE)Útil cuando necesitas liberar espacio rápidamente.\n$(NC)"
-	@printf "\n"
-	sudo nix-collect-garbage --delete-older-than 7d
-	nix-collect-garbage --delete-older-than 7d
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Limpieza completada (mantenidos últimos 7 días)\n$(NC)"
-	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-
-# Conservative cleanup - removes generations older than 90 days
-# Safest option, recommended for production systems
-clean-conservative: ## Clean build artifacts older than 90 days (very safe)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🧹 Limpieza Conservadora (90 días)         \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@printf "$(BLUE)Limpiando artefactos de construcción mayores a 90 días...\n$(NC)"
-	@printf "$(GREEN)✓ Esta es la opción más segura - mantiene 90 días de historial.\n$(NC)"
-	@printf "$(BLUE)Recomendado para sistemas de producción o primera limpieza.\n$(NC)"
-	@printf "\n"
-	sudo nix-collect-garbage --delete-older-than 90d
-	nix-collect-garbage --delete-older-than 90d
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Limpieza conservadora completada (mantenidos últimos 90 días)\n$(NC)"
-	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
 
 # Deep clean - removes ALL old generations (IRREVERSIBLE!)
 # Use with extreme caution - requires confirmation

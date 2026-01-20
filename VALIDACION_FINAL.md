@@ -14,7 +14,7 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 
 | Métrica | Valor | Estado |
 |---------|-------|--------|
-| **Targets totales** | 68 | ✅ Completo |
+| **Targets totales** | 66 | ✅ Completo |
 | **Módulos creados** | 9 | ✅ Completo |
 | **Categorías** | 9 | ✅ Orden preservado |
 | **Variables globales** | 10 | ✅ Funcionando |
@@ -26,7 +26,7 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 
 ## ✅ 1. Verificación de Targets
 
-### Inventario Completo (68 targets)
+### Inventario Completo (66 targets)
 
 #### Ayuda y Documentación (7 targets)
 - `help` - Show this help message
@@ -52,10 +52,8 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 - `fix-git-permissions` - Fix git repo ownership issues
 - `hardware-scan` - Re-scan hardware configuration
 
-#### Limpieza y Optimización (7 targets)
-- `clean` - Clean build artifacts older than 30 days
-- `clean-week` - Clean build artifacts older than 7 days
-- `clean-conservative` - Clean build artifacts older than 90 days
+#### Limpieza y Optimización (5 targets)
+- `clean` - Clean build artifacts older than specified days (default: 30)
 - `deep-clean` - Aggressive cleanup (removes ALL old generations)
 - `optimize` - Optimize nix store
 - `clean-result` - Remove result symlinks
