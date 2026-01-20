@@ -1,0 +1,349 @@
+---
+title: Pruebas y Validación
+description: Guía de pruebas para validar el Makefile modular
+---
+
+# Pruebas y Validación
+
+Esta guía documenta los comandos de prueba para validar el funcionamiento correcto del Makefile modular sin realizar cambios destructivos en el sistema.
+
+## 🎯 Filosofía de Pruebas
+
+El Makefile modular mantiene **exactamente el mismo comportamiento** que el Makefile original, preservando:
+
+- ✅ Orden de categorías y comandos
+- ✅ Formato visual (separadores, colores, emojis)
+- ✅ Validación de parámetros obligatorios
+- ✅ Mensajes de ayuda y ejemplos
+
+## 🧪 Comandos de Validación
+
+### Pruebas Básicas (No Destructivas)
+
+Estos comandos son **seguros** y no modifican el sistema:
+
+#### 1. Verificar Sistema de Ayuda
+
+```bash
+make help
+```
+
+**Validación esperada:**
+- Muestra todas las categorías en el orden correcto
+- Incluye todos los comandos con descripciones
+- Formato visual consistente con separadores `════════`
+- Workflows sugeridos al final
+
+**Salida esperada:**
+
+```
+════════════════════════════════════════════════════
+       Ayuda Avanzada y Workflows (Makefile)        
+ 
+════════════════════════════════════════════════════
+ 
+Ayuda y Documentación 
+  help                 Show this help message
+  help-examples        Show commands with usage examples
+  ...
+
+Gestión del Sistema (Rebuild/Switch) 
+  switch               Build and switch to new configuration
+  safe-switch          Validate then switch (safest option)
+  ...
+
+Workflows sugeridos:
+  • Desarrollo diario:  make test → make switch → make rollback
+  • Updates seguros:    make update → make diff-update → make validate → make test → make switch
+  ...
+```
+
+#### 2. Verificar Ejemplos de Uso
+
+```bash
+make help-examples
+```
+
+**Validación esperada:**
+- Muestra ejemplos con parámetros obligatorios
+- Formato con bordes decorativos `╔═══╗`
+- Categorías organizadas con emojis
+- Comandos comunes sin parámetros al final
+
+**Salida esperada:**
+
+```
+╔════════════════════════════════════════════════════╗
+ ║        NixOS Commands with Usage Examples          ║
+ ╚════════════════════════════════════════════════════╝
+ 
+💡 Tip: Commands without parameters can be run directly 
+   Commands with parameters are shown with examples below 
+
+═══ 🔨 Build & Deploy ═══ 
+switch HOSTNAME=<host> 
+  → make switch HOSTNAME=laptop
+
+═══ 🔍 Search & Discovery ═══ 
+search PKG=<name> 
+  → make search PKG=firefox
+  ...
+```
+
+#### 3. Listar Hosts Disponibles
+
+```bash
+make list-hosts
+```
+
+**Validación esperada:**
+- Muestra todos los hosts configurados
+- Indica el host actual con `(current)`
+- Formato con separadores `════════`
+- Información detallada de cada host
+
+**Salida esperada:**
+
+```
+════════════════════════════════════════════════════
+           📋 Available Hosts                         
+ 
+════════════════════════════════════════════════════
+ 
+Total hosts:  3 
+Configured:  3 
+
+Hosts overview: 
+  hydenix          ✓  configured (current) 
+  laptop           ✓  configured
+  vm               ✓  configured
+  ...
+```
+
+#### 4. Búsqueda de Paquetes
+
+```bash
+make search PKG=hello
+```
+
+**Validación esperada:**
+- Requiere parámetro `PKG`
+- Muestra encabezado con emoji 🔍
+- Ejecuta búsqueda en nixpkgs
+- Muestra resultados relevantes
+
+**Salida esperada:**
+
+```
+🔍 Searching for: hello
+================================
+evaluating 'legacyPackages.x86_64-linux'...
+...
+* legacyPackages.x86_64-linux.hello (2.12.1)
+  A program that produces a familiar, friendly greeting
+```
+
+#### 5. Información del Sistema
+
+```bash
+make info
+```
+
+**Validación esperada:**
+- Muestra información del sistema actual
+- Versiones de NixOS y componentes
+- No requiere permisos especiales
+- Salida formateada y legible
+
+### Pruebas Opcionales (Requieren Confirmación)
+
+Estos comandos son seguros pero pueden tardar más tiempo:
+
+#### 6. Dry Run (Simulación)
+
+```bash
+make dry-run
+```
+
+**Validación esperada:**
+- Muestra qué se construiría sin aplicar cambios
+- Útil para verificar sintaxis de configuración
+- No modifica el sistema
+- Puede tardar varios minutos
+
+#### 7. Validación de Configuración
+
+```bash
+make validate
+```
+
+**Validación esperada:**
+- Verifica sintaxis de archivos `.nix`
+- Ejecuta `nix flake check`
+- No aplica cambios
+- Reporta errores de configuración si existen
+
+### Pruebas de Parámetros Obligatorios
+
+Estos comandos **deben fallar** si no se proporciona el parámetro:
+
+```bash
+# Debe fallar con mensaje de error
+make search
+# Error esperado: ❌ Error: PKG parameter is required
+
+make update-input
+# Error esperado: ❌ Error: INPUT parameter is required
+
+make logs-service
+# Error esperado: ❌ Error: SVC parameter is required
+
+make diff-gen
+# Error esperado: ❌ Error: GEN1 and GEN2 parameters are required
+```
+
+## ⚠️ Comandos Destructivos (NO Ejecutar en Pruebas)
+
+Estos comandos **modifican el sistema** y NO deben ejecutarse durante validación:
+
+### 🚫 Gestión del Sistema
+- `make switch` - Aplica configuración permanentemente
+- `make test` - Aplica configuración temporalmente
+- `make boot` - Cambia configuración de arranque
+
+### 🚫 Limpieza
+- `make clean` - Elimina generaciones antiguas
+- `make deep-clean` - Limpieza agresiva
+- `make fix-store` - Repara el store de Nix
+
+### 🚫 Actualizaciones
+- `make update` - Actualiza inputs del flake
+- `make upgrade` - Actualiza y aplica cambios
+
+### 🚫 Git
+- `make git-push` - Sube cambios al repositorio
+- `make save` - Commit y push automático
+
+## ✅ Checklist de Validación
+
+Usa este checklist para verificar el Makefile modular:
+
+- [ ] `make help` muestra todas las categorías en orden correcto
+- [ ] `make help-examples` muestra ejemplos con formato correcto
+- [ ] `make list-hosts` muestra hosts configurados
+- [ ] `make search PKG=hello` ejecuta búsqueda correctamente
+- [ ] `make search` (sin PKG) falla con mensaje de error apropiado
+- [ ] `make info` muestra información del sistema
+- [ ] `make dry-run` simula construcción sin errores (opcional)
+- [ ] `make validate` verifica configuración sin errores (opcional)
+- [ ] Formato visual consistente (separadores, colores, emojis)
+- [ ] No hay targets perdidos o duplicados
+- [ ] Documentación sincronizada con comandos disponibles
+
+## 🎨 Validación Visual
+
+El Makefile usa un sistema consistente de formato visual:
+
+### Separadores
+
+```
+════════════════════════════════════════════════════
+```
+
+### Bordes Decorativos
+
+```
+╔════════════════════════════════════════════════════╗
+ ║                    Título                          ║
+ ╚════════════════════════════════════════════════════╝
+```
+
+### Colores (Variables)
+
+- `$(RED)` - Errores y advertencias
+- `$(GREEN)` - Éxitos y confirmaciones
+- `$(YELLOW)` - Advertencias y notas
+- `$(BLUE)` - Información general
+- `$(PURPLE)` - Títulos y encabezados
+- `$(CYAN)` - Comandos y ejemplos
+- `$(NC)` - Reset (sin color)
+
+### Emojis Consistentes
+
+- 📦 Actualizaciones y paquetes
+- 🔍 Búsqueda y análisis
+- ✅ Éxito y confirmación
+- ❌ Error y fallo
+- 💡 Tips y sugerencias
+- 📋 Listas e información
+- 🔨 Construcción y deploy
+- 🧹 Limpieza y mantenimiento
+
+## 🔄 Workflow de Validación Completo
+
+Secuencia recomendada para validar el Makefile modular:
+
+```bash
+# 1. Verificar sistema de ayuda
+make help
+make help-examples
+
+# 2. Verificar comandos informativos
+make list-hosts
+make info
+
+# 3. Verificar búsqueda
+make search PKG=hello
+
+# 4. Verificar validación de parámetros (deben fallar)
+make search          # Debe fallar
+make update-input    # Debe fallar
+
+# 5. Validación opcional (si el usuario lo permite)
+make dry-run
+make validate
+```
+
+## 📊 Criterios de Aceptación
+
+El Makefile modular es válido si cumple:
+
+1. ✅ **Funcionalidad completa** - Todos los targets funcionan igual que antes
+2. ✅ **Orden preservado** - Categorías y comandos en el mismo orden
+3. ✅ **Formato visual** - Separadores, colores y emojis consistentes
+4. ✅ **Validación de parámetros** - Errores apropiados para parámetros faltantes
+5. ✅ **Documentación sincronizada** - Docs reflejan comandos disponibles
+6. ✅ **Sin regresiones** - Ningún comando perdido o roto
+7. ✅ **Modularidad** - Código organizado en `make/*.mk`
+
+## 🐛 Troubleshooting
+
+### Problema: `make help` no muestra todos los comandos
+
+**Solución:** Verificar que todos los módulos estén incluidos en `Makefile`:
+
+```bash
+grep "include make/" Makefile
+```
+
+### Problema: Formato visual inconsistente
+
+**Solución:** Verificar variables de color en `Makefile`:
+
+```bash
+grep "^RED\|^GREEN\|^YELLOW" Makefile
+```
+
+### Problema: Comando no encontrado
+
+**Solución:** Verificar que el target esté en `.PHONY` y en el módulo correcto:
+
+```bash
+grep "^\.PHONY:" Makefile make/*.mk
+```
+
+## 📚 Referencias
+
+- [Estructura Modular](./index#estructura-modular) - Organización de módulos
+- [Ayuda y Documentación](./01-docs) - Sistema de ayuda
+- [Gestión del Sistema](./02-system) - Comandos de sistema

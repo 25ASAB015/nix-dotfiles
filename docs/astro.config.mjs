@@ -56,6 +56,7 @@ export default defineConfig({
 								{ label: 'Formato y Linting', slug: 'makefile/09-format' },
 								{ label: 'Reportes', slug: 'makefile/10-reports' },
 								{ label: 'Templates', slug: 'makefile/11-templates' },
+								{ label: 'Pruebas y Validación', slug: 'makefile/12-testing' },
 							],
 						},
 						{ label: 'Updates', slug: 'updates' },
