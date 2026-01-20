@@ -5,7 +5,7 @@ con el nuevo layout y asegurar consistencia visual + verificabilidad.
 
 ## Estado del plan
 
-- [ ] Paso 1 — Inventariar targets y variables actuales
+- [x] Paso 1 — Inventariar targets y variables actuales
 - [ ] Paso 2 — Definir estructura de módulos `make/*.mk`
 - [ ] Paso 3 — Crear carpeta `make/` y archivos vacíos
 - [ ] Paso 4 — Mover secciones del Makefile a módulos
@@ -32,7 +32,7 @@ Reglas:
 
 ## Registro de progreso
 
-- [ ] Paso 1 — Fecha: ____ | Nota:
+- [x] Paso 1 — Fecha: 2026-01-19 | Nota: Inventariados 68 targets, 10 variables, 11 secciones. Documento en inventario_makefile.md
 - [ ] Paso 2 — Fecha: ____ | Nota:
 - [ ] Paso 3 — Fecha: ____ | Nota:
 - [ ] Paso 4 — Fecha: ____ | Nota:
