@@ -5,7 +5,7 @@
 # Targets: 7 targets
 # ============================================================================
 
-.PHONY: git-add git-commit git-push git-status git-diff save git-log
+.PHONY: git-add git-commit git-push git-status git-diff sync git-log
 
 # === Git y Respaldo ===
 
@@ -109,22 +109,22 @@ git-status: ## Show git status with GitHub CLI
 
 # Complete workflow: stage, commit, push, and switch to new configuration
 # Automated sequence that performs all git operations and applies changes
-save: ## Quick save: add, commit, push, and switch
+sync: ## Total synchronization: add, commit, push, and switch
 	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)              💾 Quick Save Workflow                \n$(NC)"
+	@printf "$(CYAN)              🔄 Total Synchronization              \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n$(PURPLE)Executing complete workflow:$(NC)\n"
-	@printf "  1. Stage changes\n"
-	@printf "  2. Commit changes\n"
-	@printf "  3. Push to remote\n"
-	@printf "  4. Build and switch\n"
+	@printf "\n$(PURPLE)Executing complete sync workflow:$(NC)\n"
+	@printf "  1. Stage changes (git add)\n"
+	@printf "  2. Commit changes (timestamped)\n"
+	@printf "  3. Push to remote (git push)\n"
+	@printf "  4. Build and switch (nixos-rebuild)\n"
 	@printf "\n"
 	@$(MAKE) --no-print-directory git-add
 	@$(MAKE) --no-print-directory git-commit
 	@$(MAKE) --no-print-directory git-push
 	@$(MAKE) --no-print-directory switch
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Quick save completed successfully!$(NC)\n"
+	@printf "$(GREEN)✅ Synchronization completed successfully!$(NC)\n"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 

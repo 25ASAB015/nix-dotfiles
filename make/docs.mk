@@ -34,7 +34,7 @@ help: ## Show this help message
 		print_cat("Limpieza y Optimización", "clean clean-week clean-conservative deep-clean optimize clean-result fix-store"); \
 		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input flake-diff upgrade show flake-check"); \
 		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
-		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff save git-log"); \
+		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff sync git-log"); \
 		print_cat("Diagnóstico y Logs", "health test-network info status watch-logs logs-boot logs-errors logs-service"); \
 		print_cat("Análisis y Desarrollo", "list-hosts search search-installed repl shell vm closure-size"); \
 		print_cat("Formato, Linting y Estructura", "format lint tree"); \
@@ -81,6 +81,7 @@ help-examples: ## Show commands with usage examples
 	@printf "$(GREEN)═══ 📊 Diff & Compare ═══$(NC)\n"
 	@printf "$(GREEN)═══ 📚 Common Commands (No parameters needed) ═══$(NC)\n"
 	@printf "$(BLUE)Everyday use:$(NC)\n"
+	@printf "  make sync           → Total sync (commit + push + switch)\n"
 	@printf "  make switch         → Apply configuration\n"
 	@printf "  make test           → Test without applying\n"
 	@printf "  make rollback       → Undo last change\n"

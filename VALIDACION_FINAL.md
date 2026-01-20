@@ -86,7 +86,7 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 - `git-push` - Push to remote using GitHub CLI
 - `git-status` - Show git status with GitHub CLI
 - `git-diff` - Show uncommitted changes to .nix files
-- `save` - Quick save: add, commit, push, and switch
+- `sync` - Total synchronization: add, commit, push, and switch
 - `git-log` - Show recent changes from git log
 
 #### Diagnóstico y Logs (8 targets)

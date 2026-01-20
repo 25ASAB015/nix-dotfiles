@@ -64,20 +64,20 @@ make git-diff
 
 ---
 
-### `make save`
-Quick save: add, commit, push, and switch (todo-en-uno).
+### `make sync`
+Total synchronization: add, commit, push, and switch (todo-en-uno).
 
 ```bash
-make save
+make sync
 ```
 
 **Qué hace:**
-1. `git add .`
-2. `git commit` con timestamp
-3. `git push`
-4. `make switch`
+1. `git add .` (Stage de todos los cambios)
+2. `git commit` con timestamp automático
+3. `git push` (Sincroniza con el repositorio remoto)
+4. `make switch` (Aplica los cambios al sistema local)
 
-**Cuándo usarlo:** Workflow rápido para guardar y aplicar cambios.
+**Cuándo usarlo:** Cuando has hecho cambios finales y quieres que queden guardados en el repo, subidos a la nube y aplicados a tu sistema de un solo golpe.
 
 ---
 
@@ -99,9 +99,9 @@ make git-commit
 make git-push
 ```
 
-### Guardar y Aplicar (rápido)
+### Sincronización Total (rápido)
 ```bash
-make save  # add + commit + push + switch
+make sync  # add + commit + push + switch
 ```
 
 ### Ver Estado

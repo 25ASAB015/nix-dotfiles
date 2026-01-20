@@ -17,7 +17,7 @@ La documentación del Makefile ha sido modularizada para facilitar la navegació
 - [Limpieza y Optimización](/nix-dotfiles/makefile/03-cleanup/) - clean, optimize
 - [Actualizaciones y Flakes](/nix-dotfiles/makefile/04-updates/) - update, upgrade
 - [Generaciones y Rollback](/nix-dotfiles/makefile/05-generations/) - list-generations, rollback
-- [Git y Respaldo](/nix-dotfiles/makefile/06-git/) - git-*, save
+- [Git y Respaldo](/nix-dotfiles/makefile/06-git/) - git-*, sync
 - [Diagnóstico y Logs](/nix-dotfiles/makefile/07-logs/) - health, test-network, logs-*
 - [Análisis y Desarrollo](/nix-dotfiles/makefile/08-dev/) - search, repl, vm
 - [Formato y Linting](/nix-dotfiles/makefile/09-format/) - format, lint, tree
@@ -1905,17 +1905,17 @@ Pushing changes...
 
 ---
 
-#### `make save`
-**Comando ultra-rápido:** add + commit + push + rebuild todo en uno con workflow visual.
+#### `make sync`
+**Sincronización total:** add + commit + push + rebuild todo en uno con workflow visual.
 
 ```bash
-make save
+make sync
 ```
 
 **Output ejemplo:**
 ```
 ════════════════════════════════════════════════════
-              💾 Quick Save Workflow               
+              🔄 Total Synchronization              
 ════════════════════════════════════════════════════
 
 Executing complete workflow:
@@ -1927,7 +1927,7 @@ Executing complete workflow:
 [ejecuta cada paso con su formato visual]
 
 ════════════════════════════════════════════════════
-✅ Quick save completed successfully!
+✅ Synchronization completed successfully!
 ════════════════════════════════════════════════════
 ```
 
@@ -1985,7 +1985,7 @@ make git-log
 - `git-push` - Push al remoto
 - `git-diff` - Ver cambios sin commitear en archivos .nix
 - `git-log` - Ver historial de commits (últimos 15)
-- `save` - Workflow completo: add + commit + push + rebuild
+- `sync` - Workflow completo: add + commit + push + rebuild
 
 
 <a id="cmd-system-info"></a>
@@ -3890,14 +3890,14 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Limpieza y Optimización (7)
 `clean`, `clean-week`, `clean-conservative`, `deep-clean`, `optimize`, `clean-result`, `fix-store`
 
-### Actualizaciones y Flakes (9)
-`update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `diff-update`, `upgrade`, `show`, `flake-check`, `diff-flake`
+### Actualizaciones y Flakes (8)
+`update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `flake-diff`, `upgrade`, `show`, `flake-check`
 
 ### Generaciones y Rollback (6)
 `list-generations`, `rollback`, `diff-generations`, `diff-gen`, `generation-sizes`, `current-generation`
 
 ### Git y Respaldo (7)
-`git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `save`
+`git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `sync`, `git-log`
 
 ### Diagnóstico y Logs (8)
 `health`, `test-network`, `info`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
