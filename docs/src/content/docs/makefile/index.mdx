@@ -13,15 +13,16 @@ El Makefile de Hydenix centraliza todos los comandos para construir, validar, ac
 Si es tu primera vez, comienza con estos comandos esenciales:
 ```bash
 make help            # Lista todos los comandos disponibles
+make help-aliases    # Muestra comandos antiguos vs nuevos
 make help-examples   # Ejemplos de uso con parámetros
-make test            # Prueba sin aplicar permanentemente
-make switch          # Aplica cambios
+make sys-test        # Prueba sin aplicar permanentemente
+make sys-apply       # Aplica cambios
 ```
 </Aside>
 
 ## 📂 Estructura Modular
 
-El Makefile está organizado en **9 módulos activos** que coinciden con las categorías de comandos:
+El Makefile está organizado en módulos activos que coinciden con las categorías de comandos:
 
 <CardGrid>
   <Card title="📚 docs.mk" icon="document">
@@ -55,65 +56,67 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
 
 ## 📚 Módulos de Documentación
 
+<CardGrid>
 <LinkCard
   title="Ayuda y Documentación"
-  description="Comandos para obtener ayuda, ver ejemplos y gestionar la documentación web"
+  description="Obtener ayuda y gestionar la web de docs"
   href="./01-docs"
 />
 
 <LinkCard
   title="Gestión del Sistema"
-  description="Comandos para compilar, aplicar y validar configuraciones de NixOS"
+  description="Compilar, aplicar y validar configuraciones"
   href="./02-system"
 />
 
 <LinkCard
   title="Limpieza y Optimización"
-  description="Comandos para limpiar generaciones antiguas y optimizar el sistema"
+  description="Limpiar generaciones y optimizar el store"
   href="./03-cleanup"
 />
 
 <LinkCard
   title="Actualizaciones y Flakes"
-  description="Comandos para actualizar inputs del flake y gestionar dependencias"
+  description="Actualizar inputs y gestionar dependencias"
   href="./04-updates"
 />
 
 <LinkCard
   title="Generaciones y Rollback"
-  description="Comandos para gestionar generaciones del sistema y hacer rollback"
+  description="Gestionar versiones del sistema y revertir"
   href="./05-generations"
 />
 
 <LinkCard
   title="Git y Respaldo"
-  description="Comandos para gestionar el repositorio git y hacer respaldos"
+  description="Gestionar el repositorio y sincronización"
   href="./06-git"
 />
 
 <LinkCard
   title="Diagnóstico y Logs"
-  description="Comandos para diagnóstico del sistema, salud y visualización de logs"
+  description="Salud del sistema y visualización de logs"
   href="./07-logs"
 />
 
 <LinkCard
   title="Análisis y Desarrollo"
-  description="Comandos para búsqueda de paquetes, análisis y desarrollo"
+  description="Búsqueda de paquetes y herramientas dev"
   href="./08-dev"
 />
 
 <LinkCard
   title="Formato y Linting"
-  description="Comandos para formatear y validar código Nix"
+  description="Formatear y validar calidad del código code"
   href="./09-format"
 />
 
 <LinkCard
-  title="Pruebas y Validación"
-  description="Guía completa de pruebas para validar el Makefile modular"
-  href="./10-testing"
+  title="Compatibilidad (Aliases)"
+  description="Guía de comandos antiguos y legacy"
+  href="./10-aliases"
 />
+</CardGrid>
 
 ## 🔄 Workflows Recomendados
 
@@ -122,17 +125,17 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
     <Steps>
     1. **Formatear** archivos Nix
        ```bash
-       make format
+       make fmt-check
        ```
     
     2. **Validar** sintaxis y evaluación
        ```bash
-       make validate
+       make sys-check
        ```
     
     3. **Aplicar configuración** permanentemente
        ```bash
-       make switch
+       make sys-apply
        ```
     </Steps>
   </TabItem>
@@ -141,12 +144,12 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
     <Steps>
     1. **Listar** generaciones disponibles
        ```bash
-       make list-generations
+       make gen-list
        ```
 
     2. **Revertir** a la generación anterior
        ```bash
-       make rollback
+       make gen-rollback
        ```
     </Steps>
   </TabItem>
@@ -155,22 +158,22 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
     <Steps>
     1. **Actualizar** inputs del flake
        ```bash
-       make update
+       make upd-all
        ```
     
-    2. **Ver cambios** en archivos del flake
+    2. **Ver cambios** en versiones
        ```bash
-       make flake-diff
+       make upd-diff
        ```
     
     3. **Validar** configuración
        ```bash
-       make validate
+       make sys-check
        ```
     
     4. **Aplicar** cambios de forma segura
        ```bash
-       make switch-safe
+       make sys-apply-safe
        ```
     </Steps>
   </TabItem>
@@ -179,22 +182,22 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
     <Steps>
     1. **Verificar salud** del sistema
        ```bash
-       make health
+       make sys-status
        ```
     
     2. **Limpiar** generaciones antiguas
        ```bash
-       make clean
+       make sys-gc
        ```
     
     3. **Optimizar** nix store
        ```bash
-       make optimize
+       make sys-optimize
        ```
     
     4. **Revisar** tamaños de generaciones
        ```bash
-       make generation-sizes
+       make gen-sizes
        ```
     </Steps>
   </TabItem>
@@ -203,12 +206,12 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
     <Steps>
     1. **Listar** hosts disponibles
        ```bash
-       make list-hosts
+       make dev-hosts
        ```
     
     2. **Aplicar** configuración a un host específico
        ```bash
-       make switch HOSTNAME=laptop
+       make sys-apply HOSTNAME=laptop
        ```
     </Steps>
   </TabItem>
@@ -218,13 +221,13 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
 
 <CardGrid stagger>
   <Card title="make help" icon="open-book">
-    Lista completa de comandos con descripciones organizadas por categorías
+    Lista completa de comandos modernos con descripciones categorizadas
   </Card>
   <Card title="make help-examples" icon="document">
     Ejemplos de uso para comandos que requieren parámetros
   </Card>
-  <Card title="Esta documentación" icon="star">
-    Guía completa con explicaciones detalladas, casos de uso y mejores prácticas
+  <Card title="make help-aliases" icon="list-format">
+    [Equivalencias](../10-aliases) para usuarios acostumbrados a comandos clásicos
   </Card>
 </CardGrid>
 
@@ -234,20 +237,11 @@ El Makefile está organizado en **9 módulos activos** que coinciden con las cat
 El Makefile de Hydenix está diseñado con estos principios en mente:
 </Aside>
 
-- **Comandos cortos y memorables** - Evita comandos largos de NixOS
-- **Documentación integrada** - Cada comando tiene descripción en `make help`
-- **Workflows documentados** - Secuencias de comandos para tareas comunes
-- **Estructura modular** - Código y documentación organizados por categorías
-
-## 📖 Navegación
-
-Usa el menú lateral para explorar cada módulo en detalle. Cada sección contiene:
-
-- ✅ Descripción de cada comando
-- ✅ Ejemplos de uso
-- ✅ Casos de uso reales
-- ✅ Notas importantes y advertencias
+- **Nomenclatura Predictiva** - Prefijos claros (`sys-`, `upd-`, `gen-`, `git-`, `log-`, `dev-`, `fmt-`, `doc-`)
+- **Documentación Centralizada** - Cada módulo `.mk` tiene su contraparte `.mdx`
+- **Compatibilidad Extrema** - Todos los comandos antiguos funcionan como aliases centralizados
+- **Workflows Optimizados** - Secuencias predefinidas para tareas críticas
 
 <Aside type="caution" title="Importante">
-Algunos comandos son destructivos y pueden eliminar datos. Lee la documentación cuidadosamente antes de ejecutar comandos de limpieza o actualización.
+Los comandos clásicos (ej: `make switch`, `make clean`) siguen funcionando pero ya no son los recomendados. Se recomienda la transición a los nuevos estándares con prefijo.
 </Aside>

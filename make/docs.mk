@@ -5,7 +5,7 @@
 # Targets: 7 targets
 # ============================================================================
 
-.PHONY: help help-examples docs-local docs-dev docs-build docs-install docs-clean
+.PHONY: help help-examples docs-local doc-dev doc-build doc-install doc-clean
 
 # === Ayuda y Documentación ===
 
@@ -29,21 +29,21 @@ help: ## Show this help message
 		} \
 	} \
 	END { \
-		print_cat("Ayuda y Documentación", "help help-examples docs-local docs-dev docs-build docs-install docs-clean"); \
-		print_cat("Gestión del Sistema (Rebuild/Switch)", "switch switch-safe switch-fast test build dry-run boot validate debug emergency fix-permissions fix-git-permissions hardware-scan"); \
-		print_cat("Limpieza y Optimización", "clean deep-clean optimize clean-result fix-store"); \
-		print_cat("Actualizaciones y Flakes", "update update-nixpkgs update-hydenix update-input flake-diff upgrade show flake-check"); \
-		print_cat("Generaciones y Rollback", "list-generations rollback diff-generations diff-gen generation-sizes current-generation"); \
-		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff sync git-log"); \
-		print_cat("Diagnóstico y Logs", "health test-network status watch-logs logs-boot logs-errors logs-service"); \
-		print_cat("Análisis y Desarrollo", "list-hosts search search-installed repl shell vm closure-size"); \
-		print_cat("Formato, Linting y Estructura", "format lint tree"); \
+		print_cat("Ayuda y Documentación", "help help-examples help-aliases docs-local doc-dev doc-build doc-install doc-clean"); \
+		print_cat("Gestión del Sistema (Rebuild/Switch)", "sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-doctor sys-fix-git sys-hw-scan sys-deploy"); \
+		print_cat("Limpieza y Optimización", "sys-gc sys-purge sys-optimize sys-clean-result sys-fix-store"); \
+		print_cat("Actualizaciones y Flakes", "upd-all upd-nixpkgs upd-hydenix upd-input upd-diff upd-upgrade upd-show upd-check"); \
+		print_cat("Generaciones y Rollback", "gen-list gen-rollback gen-diff gen-diff-current gen-sizes gen-current"); \
+		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff git-log"); \
+		print_cat("Diagnóstico y Logs", "sys-status log-net log-watch log-boot log-err log-svc"); \
+		print_cat("Análisis y Desarrollo", "dev-hosts dev-search dev-search-inst dev-repl dev-shell dev-vm dev-size"); \
+		print_cat("Formato, Linting y Estructura", "fmt-check fmt-lint fmt-tree fmt-diff"); \
 		printf "\nWorkflows sugeridos:\n"; \
-		printf "  • Flujo Pro:          make format → make validate → make switch\n"; \
-		printf "  • Updates seguros:    make update → make flake-diff → make validate → make switch\n"; \
-		printf "  • Mantenimiento:      make health → make clean → make optimize\n"; \
-		printf "  • Recuperación:       make list-generations → make rollback\n"; \
-		printf "\nAyuda rápida: make help | make help-examples | less MAKEFILE_TUTORIAL.md\n\n"; \
+		printf "  • Flujo Pro:          make fmt-check → make sys-check → make sys-apply\n"; \
+		printf "  • Updates seguros:    make upd-all → make upd-diff → make sys-check → make sys-apply\n"; \
+		printf "  • Mantenimiento:      make sys-status → make sys-gc → make sys-optimize\n"; \
+		printf "  • Recuperación:       make gen-list → make gen-rollback\n"; \
+		printf "\nAyuda rápida: make help | make help-examples | make help-aliases | less README.md\n\n"; \
 	}' $(MAKEFILE_LIST)
 
 # Show detailed usage examples for commands that require parameters
@@ -55,55 +55,52 @@ help-examples: ## Show commands with usage examples
 	@printf "\n$(PURPLE)💡 Tip: Commands without parameters can be run directly$(NC)\n"
 	@printf "$(PURPLE)   Commands with parameters are shown with examples below$(NC)\n\n"
 	@printf "$(GREEN)═══ 🔨 Build & Deploy ═══$(NC)\n"
-	@printf "$(BLUE)switch HOSTNAME=<host>$(NC)\n"
-	@printf "  → make switch HOSTNAME=laptop\n\n"
+	@printf "$(BLUE)sys-apply HOSTNAME=<host>$(NC)\n"
+	@printf "  → make sys-apply HOSTNAME=laptop\n\n"
+	@printf "$(BLUE)sys-deploy$(NC)\n"
+	@printf "  → make sys-deploy\n\n"
 	@printf "$(GREEN)═══ 🔍 Search & Discovery ═══$(NC)\n"
-	@printf "$(BLUE)search PKG=<name>$(NC)\n"
-	@printf "  → make search PKG=firefox\n"
-	@printf "  → make search PKG=neovim\n\n"
-	@printf "$(BLUE)search-installed PKG=<name>$(NC)\n"
-	@printf "  → make search-installed PKG=kitty\n"
-	@printf "  → make search-installed PKG=docker\n\n"
+	@printf "$(BLUE)dev-search PKG=<name>$(NC)\n"
+	@printf "  → make dev-search PKG=firefox\n"
+	@printf "  → make dev-search PKG=neovim\n\n"
+	@printf "$(BLUE)dev-search-inst PKG=<name>$(NC)\n"
+	@printf "  → make dev-search-inst PKG=kitty\n"
+	@printf "  → make dev-search-inst PKG=docker\n\n"
 	@printf "$(GREEN)═══ 📦 Updates ═══$(NC)\n"
-	@printf "$(BLUE)update-input INPUT=<name>$(NC)\n"
-	@printf "  → make update-input INPUT=hydenix\n"
-	@printf "  → make update-input INPUT=nixpkgs\n"
-	@printf "  → make update-input INPUT=zen-browser-flake\n\n"
+	@printf "$(BLUE)upd-input INPUT=<name>$(NC)\n"
+	@printf "  → make upd-input INPUT=hydenix\n"
+	@printf "  → make upd-input INPUT=nixpkgs\n"
+	@printf "  → make upd-input INPUT=zen-browser-flake\n\n"
 	@printf "$(GREEN)═══ 💾 Generations ═══$(NC)\n"
-	@printf "$(BLUE)diff-gen GEN1=<n> GEN2=<m>$(NC)\n"
-	@printf "  → make diff-gen GEN1=20 GEN2=25\n"
-	@printf "  → make diff-gen GEN1=184 GEN2=186\n\n"
+	@printf "$(BLUE)gen-diff GEN1=<n> GEN2=<m>$(NC)\n"
+	@printf "  → make gen-diff GEN1=184 GEN2=186\n\n"
 	@printf "$(GREEN)═══ 📋 Logs & Monitoring ═══$(NC)\n"
-	@printf "$(BLUE)logs-service SVC=<service>$(NC)\n"
-	@printf "  → make logs-service SVC=sshd\n"
-	@printf "  → make logs-service SVC=docker\n"
-	@printf "  → make logs-service SVC=networkmanager\n\n"
-	@printf "$(GREEN)═══ 📊 Diff & Compare ═══$(NC)\n"
+	@printf "$(BLUE)log-svc SVC=<service>$(NC)\n"
+	@printf "  → make log-svc SVC=sshd\n"
+	@printf "  → make log-svc SVC=docker\n"
+	@printf "  → make log-svc SVC=networkmanager\n\n"
 	@printf "$(GREEN)═══ 📚 Common Commands (No parameters needed) ═══$(NC)\n"
 	@printf "$(BLUE)Everyday use:$(NC)\n"
-	@printf "  make sync           → Total sync (commit + push + switch)\n"
-	@printf "  make switch         → Apply configuration\n"
-	@printf "  make switch-fast    → Fast switch (skip checks)\n"
-	@printf "  make test           → Test without applying\n"
-	@printf "  make rollback       → Undo last change\n"
-	@printf "  make validate       → Check config before applying\n\n"
+	@printf "  make sys-deploy     → Total sync (add + commit + push + apply)\n"
+	@printf "  make sys-apply      → Apply configuration\n"
+	@printf "  make sys-apply-fast → Fast switch (skip checks)\n"
+	@printf "  make sys-test       → Test without applying\n"
+	@printf "  make gen-rollback   → Undo last change\n"
+	@printf "  make sys-check      → Check config before applying\n\n"
 	@printf "$(BLUE)Information:$(NC)\n"
-	@printf "  make status         → System overview\n"
-	@printf "  make health         → Health check\n"
-	@printf "  make info           → System information (includes versions)\n"
-	@printf "  make list-hosts     → Show available hosts\n"
+	@printf "  make sys-status     → System overview (Dashboard + Report)\n"
+	@printf "  make dev-hosts      → Show available hosts\n"
 	@printf "  make git-log        → Recent changes\n\n"
 	@printf "$(BLUE)Maintenance:$(NC)\n"
-	@printf "  make clean          → Clean old (30 days)\n"
-	@printf "  make optimize       → Optimize store\n"
-	@printf "  make generation-sizes → Show generation sizes\n"
-	@printf "  make closure-size   → Show what uses space\n"
-	@printf "  make clean DAYS=7   → Garbage collect (7 days)\n\n"
+	@printf "  make sys-gc         → Clean old (30 days)\n"
+	@printf "  make sys-optimize   → Optimize store\n"
+	@printf "  make gen-sizes      → Show generation sizes\n"
+	@printf "  make dev-size       → Show what uses space\n\n"
 	@printf "$(BLUE)Troubleshooting:$(NC)\n"
-	@printf "  make debug          → Debug rebuild\n"
-	@printf "  make logs-errors    → Show errors\n"
-	@printf "  make fix-permissions → Fix permission issues\n"
-	@printf "  make fix-store      → Repair nix store\n\n"
+	@printf "  make sys-debug      → Debug rebuild\n"
+	@printf "  make log-err        → Show errors\n"
+	@printf "  make sys-doctor     → Fix permission issues\n"
+	@printf "  make sys-fix-store  → Repair nix store\n\n"
 	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 	@printf "$(YELLOW)For full command list:$(NC) make help\n"
 	@printf "$(YELLOW)For workflows:$(NC) make help\n"
@@ -116,124 +113,29 @@ docs-local: ## Show local documentation files
 	@printf "$(CYAN)          📚 Local Documentation                    \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	@COUNT=0; \
-	if [ -f "README.md" ]; then \
-		printf "  $(GREEN)✓$(NC) $(BLUE)README.md$(NC)\n"; \
-		COUNT=$$((COUNT + 1)); \
-	fi; \
-	if [ -f "MAKEFILE_TUTORIAL.md" ]; then \
-		printf "  $(GREEN)✓$(NC) $(BLUE)MAKEFILE_TUTORIAL.md$(NC)\n"; \
-		COUNT=$$((COUNT + 1)); \
-	fi; \
-	if [ -f "MAKEFILE_IMPROVEMENTS_PLAN.md" ]; then \
-		printf "  $(GREEN)✓$(NC) $(BLUE)MAKEFILE_IMPROVEMENTS_PLAN.md$(NC)\n"; \
-		COUNT=$$((COUNT + 1)); \
-	fi; \
-	if [ -f "AGENTS.md" ]; then \
-		printf "  $(GREEN)✓$(NC) $(BLUE)AGENTS.md$(NC)\n"; \
-		COUNT=$$((COUNT + 1)); \
-	fi; \
-	if [ -d "docs/" ]; then \
-		printf "  $(GREEN)✓$(NC) $(BLUE)docs/$(NC)\n"; \
-		DOCS_COUNT=0; \
-		for doc in docs/*.md; do \
-			if [ -f "$$doc" ]; then \
-				printf "    ├─ $(PURPLE)$$doc$(NC)\n"; \
-				DOCS_COUNT=$$((DOCS_COUNT + 1)); \
-			fi; \
-		done; \
-		if [ $$DOCS_COUNT -eq 0 ]; then \
-			printf "    └─ $(YELLOW)No .md files found$(NC)\n"; \
-		fi; \
-		COUNT=$$((COUNT + 1)); \
-	fi; \
-	if [ $$COUNT -eq 0 ]; then \
-		printf "  $(YELLOW)⚠ No documentation files found$(NC)\n"; \
-	fi
-	@printf "\n$(BLUE)💡 Tip:$(NC) Use $(GREEN)less <file>$(NC) or $(GREEN)cat <file>$(NC) to view documentation\n"
+	@if [ -f "README.md" ]; then printf "  $(GREEN)✓$(NC) $(BLUE)README.md$(NC)\n"; fi
+	@if [ -d "docs/" ]; then printf "  $(GREEN)✓$(NC) $(BLUE)docs/$(NC)\n"; fi
+	@find docs/src/content/docs/makefile/ -name "*.mdx" | sed 's|^|    • |' || true
 	@printf "\n"
 
 # Start Astro documentation development server
 # Automatically installs dependencies if needed
-docs-dev: ## Run Astro docs dev server locally
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📘 Servidor de Documentación              \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@if [ -d "docs" ]; then \
-		if [ ! -d "docs/node_modules" ]; then \
-			printf "$(YELLOW)📦 Instalando dependencias primero...\n$(NC)"; \
-			cd docs && npm install; \
-			printf "\n"; \
-		fi; \
-		printf "$(BLUE)Iniciando servidor de desarrollo Astro...\n$(NC)"; \
-		printf "$(YELLOW)La documentación estará disponible en http://localhost:4321\n$(NC)"; \
-		printf "\n"; \
-		cd docs && npm run dev; \
-	else \
-		printf "$(RED)✗ Directorio docs/ no encontrado$(NC)\n"; \
-		printf "\n"; \
-	fi
+doc-dev: ## Run documentation dev server
+	@printf "$(BLUE)Iniciando servidor de desarrollo de docs...\n$(NC)"
+	@cd docs && npm run dev
 
-# Build documentation for production deployment
-# Creates optimized static files in docs/dist/
-docs-build: ## Build Astro documentation for production
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📦 Construir Documentación                \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@if [ -d "docs" ]; then \
-		if [ ! -d "docs/node_modules" ]; then \
-			printf "$(YELLOW)📦 Instalando dependencias primero...\n$(NC)"; \
-			cd docs && npm install; \
-			printf "\n"; \
-		fi; \
-		printf "$(BLUE)Construyendo documentación para producción...\n$(NC)"; \
-		cd docs && npm run build; \
-		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-		printf "$(GREEN)✅ Documentación construida exitosamente\n$(NC)"; \
-		printf "$(BLUE)Los archivos están en docs/dist/\n$(NC)"; \
-		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-		printf "\n"; \
-	else \
-		printf "$(RED)✗ Directorio docs/ no encontrado$(NC)\n"; \
-		printf "\n"; \
-	fi
+# Build static documentation site
+doc-build: ## Build documentation site
+	@printf "$(BLUE)Construyendo documentación estática...\n$(NC)"
+	@cd docs && npm run build
 
-# Remove node_modules to free up disk space
-# Run this if you need to clean up documentation dependencies
-docs-clean: ## Clean documentation dependencies (node_modules)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🧹 Limpiar Dependencias                   \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@printf "$(BLUE)Limpiando dependencias de la documentación...\n$(NC)"
-	@if [ -d "docs/node_modules" ]; then \
-		rm -rf docs/node_modules; \
-		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-		printf "$(GREEN)✅ Dependencias limpiadas\n$(NC)"; \
-		printf "$(BLUE)Se liberó espacio eliminando node_modules/\n$(NC)"; \
-		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-	else \
-		printf "$(YELLOW)⚠ No hay dependencias para limpiar\n$(NC)"; \
-	fi
-	@printf "\n"
-
-# Install or update npm dependencies for documentation
+# Install documentation dependencies
 # Run this before using docs-dev or docs-build
-docs-install: ## Install/update documentation dependencies
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📦 Instalar Dependencias                  \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@if [ -d "docs" ]; then \
-		printf "$(BLUE)Instalando dependencias de npm...\n$(NC)"; \
-		cd docs && npm install; \
-		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-		printf "$(GREEN)✅ Dependencias instaladas\n$(NC)"; \
-		printf "$(BLUE)La documentación está lista para usar.\n$(NC)"; \
-		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-	else \
-		printf "$(RED)✗ Directorio docs/ no encontrado$(NC)\n"; \
-	fi
-	@printf "\n"
+doc-install: ## Install documentation dependencies
+	@printf "$(BLUE)Instalando dependencias de docs...\n$(NC)"
+	@cd docs && npm install
+
+# Clean documentation build artifacts
+doc-clean: ## Clean documentation artifacts
+	@printf "$(BLUE)Limpiando artefactos de docs...\n$(NC)"
+	@rm -rf docs/dist docs/node_modules

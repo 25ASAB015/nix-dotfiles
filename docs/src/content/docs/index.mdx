@@ -13,15 +13,15 @@ This manual is the single source of truth for working with this system. It is wr
 
 ```bash
 make help
-make test
-make switch
+make sys-test
+make sys-apply
 ```
 
 ### Recommended flow
 
 ```bash
-make test
-make switch
+make sys-test
+make sys-apply
 ```
 
 ## 2. Repository structure
@@ -36,7 +36,7 @@ Dotfiles/
 ├── resources/
 ├── Makefile
 ├── make/               # Módulos del Makefile
-└── manual/
+└── docs/               # Documentación y manual
 ```
 
 Where to look:
@@ -45,7 +45,7 @@ Where to look:
 - `modules/`: reusable NixOS and Home Manager modules
 - `resources/`: mutable configs and scripts (edited directly)
 - `make/`: Makefile modules organized by category
-- `manual/`: this manual
+- `docs/`: this manual and web documentation
 
 ## 3. Hosts and machines
 
@@ -58,7 +58,7 @@ Hosts live under `hosts/`. Each host has:
 Example switch:
 
 ```bash
-make switch HOSTNAME=hydenix
+make sys-apply HOSTNAME=hydenix
 ```
 
 ## 4. Home Manager and modules
@@ -79,7 +79,7 @@ Some configs are intended to be edited directly without rebuild:
 - Kitty: `resources/config/kitty.conf`
 - Monitors: `resources/config/monitors.conf`
 
-After the first `make switch`, edits in `resources/` take effect immediately (no rebuild).
+After the first `make sys-apply`, edits in `resources/` take effect immediately (no rebuild).
 
 ## 6. Keybinds and scripts
 
@@ -104,7 +104,7 @@ Waybar is managed by upstream Hydenix/HyDE. Local overrides are intentionally di
 Use the built-in diagnostics target:
 
 ```bash
-make test-network
+make log-net
 ```
 
 ## 9. Updating and maintenance
@@ -112,15 +112,15 @@ make test-network
 Update inputs:
 
 ```bash
-make update
-make test
-make switch
+make upd-all
+make sys-test
+make sys-apply
 ```
 
 Clean old generations:
 
 ```bash
-make clean
+make sys-gc
 ```
 
 ## 10. Troubleshooting
@@ -128,9 +128,9 @@ make clean
 Common steps:
 
 ```bash
-make logs-errors
-make test-network
-make debug
+make log-err
+make log-net
+make sys-debug
 ```
 
 ## 11. Customization checklist

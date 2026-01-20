@@ -7,213 +7,130 @@ description: Comandos para compilar, aplicar y validar configuraciones de NixOS
 
 Módulo: `make/system.mk`
 
-Comandos para compilar, probar, aplicar y validar configuraciones de NixOS. Estos son los comandos más usados en el día a día.
+Comandos para compilar, probar, aplicar y validar configuraciones de NixOS. Estos son los comandos fundamentales para el mantenimiento del sistema.
+
+## Resumen de Comandos (Prefijo `sys-`)
+
+| Comando | Descripción | Acceso Rápido |
+| :--- | :--- | :--- |
+| **`make sys-apply`** | Aplicar configuración (Rebuild + Switch) | `make switch` |
+| **`make sys-deploy`** | Add + Commit + Push + Apply | `make sync` |
+| **`make sys-check`** | Validar sintaxis y flake | `make validate` |
+| **`make sys-status`** | Dashboard de salud del sistema | `make health` |
+
+> [!TIP]
+> Para ver la lista completa de comandos antiguos y su equivalencia, consulta la [Guía de Aliases](../10-aliases).
+
+---
 
 ## Comandos Principales
 
-### `make switch`
+### `make sys-apply`
 **⭐ Comando más usado** - Compila y activa tu nueva configuración.
 
 ```bash
-make switch
+make sys-apply
 ```
 
 **Qué hace:**
-1. `git add .` - Staging de todos los cambios
-2. Compila la configuración
-3. Activa la nueva configuración (disponible inmediatamente)
-4. Crea una nueva generación del sistema
-
-**Cuándo usarlo:** Después de editar configuración y quieres aplicar cambios ahora mismo.
+1. Git-fix (opcional) de permisos en el repositorio
+2. `git add .` - Staging de todos los cambios
+3. Compila la configuración del Flake
+4. Activa la nueva configuración inmediatamente
 
 ---
 
-### `make test`
-Prueba tu configuración compilándola y activándola temporalmente sin crear una generación permanente.
+### `make sys-deploy`
+**🚀 Sincronización Total** - Realiza el flujo completo de respaldo y aplicación.
 
 ```bash
-make test
+make sys-deploy
 ```
 
 **Qué hace:**
-- ✅ Compila la configuración completa
-- ✅ Activa la configuración **TEMPORALMENTE** en tu sesión actual
-- ⚠️ Los cambios se **PIERDEN al reiniciar** el sistema
-- ❌ **NO crea** una nueva generación permanente
+1. `make git-add` - Prepara todos los cambios
+2. `make git-commit` - Crea respaldo con timestamp
+3. `make git-push` - Sube cambios al repositorio remoto
+4. **`make sys-apply`** - Aplica la configuración localmente
 
-**Cuándo usarlo:** Probar configuraciones experimentales sin riesgo.
+**Propósito:** Asegurar que tu configuración esté respaldada en la nube y aplicada localmente en un solo paso.
 
-**Flujo recomendado:**
+---
+
+### `make sys-apply-safe`
+Valida la configuración y luego aplica los cambios solo si no hay errores.
+
 ```bash
-make test      # Probar primero (seguro, temporal)
-make switch    # Si funciona bien, hacer permanente
-# Si falla, simplemente reinicia
+make sys-apply-safe
+```
+
+**Qué hace:** Ejecuta `make sys-check` y, si es exitoso, procede con `make sys-apply`.
+
+---
+
+### `make sys-apply-fast`
+Aplica cambios omitiendo algunas verificaciones internas de NixOS para mayor velocidad.
+
+```bash
+make sys-apply-fast
 ```
 
 ---
 
-### `make switch-safe`
-Valida la configuración y luego aplica los cambios de forma segura.
+### `make sys-test`
+Prueba tu configuración compilándola y activándola temporalmente. Los cambios se perderán en el próximo reinicio y no se crea una generación de arranque.
 
 ```bash
-make switch-safe
-```
-
-**Qué hace:**
-1. Ejecuta `make validate` primero (3 chequeos)
-2. Si pasa, ejecuta `make switch`
-3. Si falla, NO ejecuta switch
-
-**Cuándo usarlo:** Cambios importantes o después de `make update`.
-
----
- 
-
-### `make switch-fast`
-Switch rápido (skip checks) - más rápido y omite verificaciones internas.
-
-```bash
-make switch-fast
-```
-
-**Cuándo usarlo:** Cambios pequeños y confiables donde quieres velocidad absoluta. Usa el flag `--fast` de NixOS.
-
----
-
-### `make build`
-Compila la configuración sin aplicar cambios al sistema.
-
-```bash
-make build
-```
-
-**Cuándo usarlo:** Verificar que no hay errores de compilación antes de aplicar cambios.
-
----
-
-### `make dry-run`
-Muestra qué cambiaría sin hacer cambios reales.
-
-```bash
-make dry-run
-```
-
-**Cuándo usarlo:** Antes de `make switch` en cambios grandes.
-
----
-
-### `make boot`
-Compila la configuración y la prepara para el próximo arranque sin afectar la sesión actual.
-
-```bash
-make boot
-```
-
-**Cuándo usarlo:** Cambios en el kernel o bootloader que requieren reinicio.
-
----
-
-### `make validate`
-Valida la configuración antes de aplicarla mediante tres chequeos.
-
-```bash
-make validate
-```
-
-**Qué verifica:**
-1. Sintaxis del flake
-2. Evaluación de configuración
-3. Problemas comunes (con statix)
-
----
-
-### `make debug`
-Rebuild con verbose output y trace completo.
-
-```bash
-make debug
-```
-
-**Cuándo usarlo:** Cuando un build falla y necesitas ver el error completo.
-
----
-
----
-
-
-### `make emergency`
-Emergency rebuild con maximum verbosity.
-
-```bash
-make emergency
-```
-
-**Cuándo usarlo:** Cuando el sistema está roto y necesitas recuperarlo.
-
----
-
-### `make fix-permissions`
-Arregla problemas comunes de permisos.
-
-```bash
-make fix-permissions
+make sys-test
 ```
 
 ---
 
-### `make fix-git-permissions`
-Arregla ownership issues del repositorio git.
+### `make sys-build`
+Compila la configuración sin aplicar cambios reales. Útil para verificar errores antes de un switch.
 
 ```bash
-make fix-git-permissions
+make sys-build
 ```
 
 ---
 
-### `make hardware-scan`
-Re-escanea la configuración de hardware.
+### `make sys-check`
+Realiza validaciones profundas (sintaxis, evaluación y linting).
 
 ```bash
-make hardware-scan
+make sys-check
 ```
-
-**Qué hace:** Genera nuevo `hardware-configuration.nix`.
 
 ---
 
-## Workflows Recomendados
+### `make sys-status`
+**🏥 Dashboard de Salud** - Muestra un resumen del estado del sistema, espacio en disco, servicios fallidos y estado de Git.
 
-### Flujo Pro (Desarrollo Seguro)
 ```bash
-make format → make validate → make switch
+make sys-status
 ```
-
-**Beneficios:** Asegura código limpio y válido antes de aplicar cambios permanentemente.
-
-### Flujo Recuperación
-```bash
-make list-generations → make rollback
-```
-
-**Cuándo usarlo:** Cuando un cambio introdujo errores y necesitas volver rápidamente al estado anterior.
 
 ---
 
-### Updates del Sistema
+### `make sys-doctor`
+Diagnóstico y reparación automática de permisos en directorios de configuración y el repositorio.
+
 ```bash
-make update → make flake-diff → make validate → make switch-safe
-```
-```bash
-make debug    # Ver errores completos
-make emergency # Último recurso
+make sys-doctor
 ```
 
-## Comparación de Comandos
+---
+
+## Comparación de Operaciones
 
 | Comando | Compila | Activa | Persiste | Generación |
 |---------|---------|--------|----------|------------|
-| `make build` | ✅ | ❌ | N/A | ❌ |
-| `make test` | ✅ | ✅ | Solo sesión | ❌ |
-| `make switch` | ✅ | ✅ | Permanente | ✅ |
-| `make switch-safe` | ✅ | ✅ | Permanente | ✅ |
-| `make boot` | ✅ | ✅ | Próximo boot | ✅ |
+| `make sys-build` | ✅ | ❌ | N/A | ❌ |
+| `make sys-test` | ✅ | ✅ | Solo sesión | ❌ |
+| `make sys-apply` | ✅ | ✅ | Permanente | ✅ |
+| `make sys-boot` | ✅ | ❌ | Próximo boot | ✅ |
+
+> [!TIP]
+> **Workflow recomendado para cambios seguros:**
+> `make sys-check` → `make sys-test` → `make sys-apply`

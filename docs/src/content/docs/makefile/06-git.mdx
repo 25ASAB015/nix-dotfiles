@@ -7,7 +7,7 @@ description: Comandos para gestionar el repositorio git y hacer respaldos
 
 Módulo: `make/git.mk`
 
-Comandos para gestionar el repositorio git, hacer commits y respaldos.
+Comandos para gestionar el repositorio git, asegurar la persistencia de cambios y sincronización remota.
 
 ## Comandos Disponibles
 
@@ -29,23 +29,19 @@ Quick commit con timestamp automático.
 make git-commit
 ```
 
-**Qué hace:** Crea commit con mensaje automático basado en la fecha/hora.
-
 ---
 
 ### `make git-push`
-Push al remote usando GitHub CLI.
+Sincroniza los cambios locales con el repositorio remoto.
 
 ```bash
 make git-push
 ```
 
-**Qué hace:** Push usando `gh` (GitHub CLI) con autenticación.
-
 ---
 
 ### `make git-status`
-Muestra git status usando GitHub CLI.
+Muestra el estado del repositorio de forma resumida.
 
 ```bash
 make git-status
@@ -54,35 +50,16 @@ make git-status
 ---
 
 ### `make git-diff`
-Muestra cambios uncommitted en archivos `.nix`.
+Muestra cambios pendientes en los archivos de configuración `.nix`.
 
 ```bash
 make git-diff
 ```
 
-**Qué muestra:** Solo cambios en archivos de configuración Nix.
-
----
-
-### `make sync`
-Total synchronization: add, commit, push, and switch (todo-en-uno).
-
-```bash
-make sync
-```
-
-**Qué hace:**
-1. `git add .` (Stage de todos los cambios)
-2. `git commit` con timestamp automático
-3. `git push` (Sincroniza con el repositorio remoto)
-4. `make switch` (Aplica los cambios al sistema local)
-
-**Cuándo usarlo:** Cuando has hecho cambios finales y quieres que queden guardados en el repo, subidos a la nube y aplicados a tu sistema de un solo golpe.
-
 ---
 
 ### `make git-log`
-Muestra cambios recientes del git log.
+Muestra el historial reciente de cambios en el repositorio.
 
 ```bash
 make git-log
@@ -90,23 +67,31 @@ make git-log
 
 ---
 
+## Despliegue (Deploy)
+
+Aunque el comando de despliegue involucra a Git, se considera una operación de sistema por su impacto.
+
+### `make sys-deploy`
+**🚀 Sincronización Total** - Respalda cambios en Git y los aplica al sistema.
+
+Consulta la sección de [Gestión del Sistema](../02-system) para ver detalles sobre el flujo de despliegue completo.
+
+---
+
 ## Workflow Recomendado
 
-### Guardar Cambios Manualmente
+### Flujo Manual (Control granular)
 ```bash
-make git-add
-make git-commit
-make git-push
+make git-diff    # Revisar cambios
+make git-add     # Preparar
+make git-commit  # Guardar local
+make git-push    # Subir a la nube
 ```
 
-### Sincronización Total (rápido)
+### Flujo Todo-en-Uno
 ```bash
-make sync  # add + commit + push + switch
+make sys-deploy  # Respaldo + Aplicación
 ```
 
-### Ver Estado
-```bash
-make git-status  # Ver qué cambió
-make git-diff    # Ver diferencias
-make git-log     # Ver historial
-```
+> [!NOTE]
+> Para ver los aliases antiguos (como `make sync`), consulta la [Guía de Aliases](../10-aliases).

@@ -7,159 +7,88 @@ description: Comandos para diagnóstico del sistema, salud y visualización de l
 
 Módulo: `make/logs.mk`
 
-Comandos para diagnóstico del sistema, health checks y visualización de logs.
-
-## Cuadro Comparativo: Health vs Status
-
-| Característica | `make health` (Dashboard) | `make status` (Reporte) |
-| :--- | :--- | :--- |
-| **Objetivo** | Verificación rápida "vuelo" (pasa/falla) | Snapshot completo del sistema |
-| **Velocidad** | Instantáneo (< 1s) | Detallado (~2-5s) |
-| **Uso** | Rutina, pre-commit, mantenimiento | Debugging, auditoría, telemetría |
-| **Contenido** | Estado crítico de componentes | Métricas, historial, metadatos |
+Comandos para diagnóstico del sistema, reportes de estado y visualización de logs.
 
 ## Comandos Disponibles
 
-### `make health`
-Muestra un dashboard ultra-rápido con el estado vital del sistema.
+### `make sys-status`
+Dashboard y reporte comprehensivo de salud del sistema. Este comando fusiona el anterior `health` con un reporte detallado.
 
 ```bash
-make health
+make sys-status
 ```
 
-**Qué verifica:**
-- **Estructura Flake**: Validación instantánea de metadatos del Flake.
-- **Espacio en disco**: Uso de la partición `/nix` con alertas visuales.
-- **Servicios**: Lista detallada de servicios systemd fallidos (si los hay).
-- **Git Status**: Estado del repositorio (Clean/Pending).
-- **Generaciones**: Conteo preciso de generaciones activas.
+**Información mostrada:**
+- **🏥 Dashboard de Salud (Vuelo):** Verificación instantánea de estructura Flake, espacio en `/nix`, servicios fallidos, estado de Git y conteo de generaciones.
+- **📍 Información de Base:** Hostname, Versión de NixOS, ubicación del Flake y tamaño del Nix Store.
+- **💾 Almacenamiento y Generaciones:** Uso detallado de `/nix` y resumen de las últimas 5 generaciones del sistema.
 
-**Salida esperada (en caso de error):**
-```
-  Servicios:          ✗ 2 fallidos (sshd, boot-services.service)
-```
-
-**Cuándo usarlo:** Como primer paso rápido antes de cualquier cambio o después de una limpieza.
+**Cuándo usarlo:** Como primer paso de rutina o cuando necesites un diagnóstico profundo del estado actual de tu sistema.
 
 ---
 
-### `make test-network`
+### `make log-net`
 Ejecuta diagnósticos comprehensivos de red.
 
 ```bash
-make test-network
+make log-net
 ```
 
 **Qué hace:**
-- Prueba conectividad
-- Verifica DNS
-- Muestra configuración de red
-- Diagnostica problemas comunes
+- Prueba conectividad y latencia (ping)
+- Verifica DNS (NM y resolvectl)
+- Mide throughput con Cloudflare
+- Ejecuta speedtest y mtr para calidad de ruta
 
 **Cuándo usarlo:** Cuando notes lentitud o problemas de conexión.
 
 ---
 
-### `make status`
-Reporte comprehensivo del sistema (Hardware, NixOS y Flake).
-
-```bash
-make status
-```
-
-**Información mostrada:**
-- **Base:** Hostname, Versión de NixOS, ubicación del Flake y tamaño del Nix Store.
-- **Almacenamiento:** Uso detallado de `/nix` y resumen de generaciones.
-- **Historial:** Listado de las últimas 5 generaciones del sistema.
-- **Componentes:** Estado de salud del repo Git y servicios del sistema.
-- **Metadata:** Versiones (timestamps) de los principales inputs del Flake.
-
-**Salida esperada:**
-```
-════════════════════════════════════════════════════
-          📊 Reporte de Estado del Sistema          
-════════════════════════════════════════════════════
-
-📍 Información de Base
-  Hostname:     hydenix
-  NixOS:        24.11.2026
-  Flake:        /home/ludus/Dotfiles
-  Store Size:   45G
-
-💾 Almacenamiento y Generaciones
-  Disco (/nix): 45% usado (120G libre)
-  Total Gens:   186
-  Generación:   186 (2026-01-19 20:00)
-
-  Últimas 5 generaciones:
-    182   2026-01-18 15:30:00
-    183   2026-01-18 18:45:00
-    184   2026-01-19 10:15:00
-    185   2026-01-19 16:20:00
-    186   2026-01-19 20:00:00
-
-🔄 Estado de Componentes
-  Git Repo:     ✓ Clean
-  Servicios:    ✓ OK
-
-📦 Flake Inputs (Top 5)
-    1737292800
-    1737292800
-    ...
-
-════════════════════════════════════════════════════
-✅ Reporte finalizado
-```
-
-**Cuándo usarlo:** Cuando necesites un diagnóstico profundo o detalles específicos de la configuración activa.
-
----
-
-### `make watch-logs`
+### `make log-watch`
 Observa logs del sistema en tiempo real (follow mode).
 
 ```bash
-make watch-logs
+make log-watch
 ```
 
-**Qué hace:** `journalctl -f` para ver logs en vivo.
+**Qué hace:** Acceso directo a `journalctl -f` para monitoreo en vivo.
 
 ---
 
-### `make logs-boot`
-Muestra logs del último arranque.
+### `make log-boot`
+Muestra logs del arranque actual centrado en errores.
 
 ```bash
-make logs-boot
+make log-boot
 ```
 
-**Cuándo usarlo:** Diagnosticar problemas de arranque.
+**Cuándo usarlo:** Investigar por qué un componente falló al iniciar el sistema.
 
 ---
 
-### `make logs-errors`
-Muestra logs de errores recientes.
+### `make log-err`
+Muestra los últimos 50 logs de error del sistema.
 
 ```bash
-make logs-errors
+make log-err
 ```
 
-**Cuándo usarlo:** Investigar errores del sistema.
+**Cuándo usarlo:** Diagnóstico rápido de fallos recientes sin navegar por todo el journal.
 
 ---
 
-### `make logs-service`
-Muestra logs de un servicio específico.
+### `make log-svc`
+Muestra logs de un servicio específico con filtrado inteligente (última hora, hoy, o histórico).
 
 ```bash
-make logs-service SVC=<service>
+make log-svc SVC=<service>
 ```
 
 **Ejemplos:**
 ```bash
-make logs-service SVC=sshd
-make logs-service SVC=docker
-make logs-service SVC=networkmanager
+make log-svc SVC=sshd
+make log-svc SVC=docker
+make log-svc SVC=networkmanager
 ```
 
 ---
@@ -168,25 +97,27 @@ make logs-service SVC=networkmanager
 
 ### Diagnóstico General
 ```bash
-make health        # Dashboard rápido de salud
-make status        # Reporte completo del sistema
+make sys-status      # Dashboard y reporte completo
 ```
 
 ### Problemas de Red
 ```bash
-make test-network  # Diagnóstico completo de red
+make log-net         # Diagnóstico completo de red
 ```
 
 ### Investigar Errores
 ```bash
-make logs-errors   # Ver errores recientes
-make logs-boot     # Ver logs de arranque
-make watch-logs    # Observar en tiempo real
+make log-err         # Ver errores recientes
+make log-boot        # Ver logs de arranque
+make log-watch       # Observar en tiempo real
 ```
 
 ### Debugging de Servicios
 ```bash
 # Ver logs de un servicio específico
-make logs-service SVC=sshd
-make logs-service SVC=networkmanager
+make log-svc SVC=sshd
+make log-svc SVC=networkmanager
 ```
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `health` o `watch-logs`), consulta la [Guía de Aliases](../10-aliases).

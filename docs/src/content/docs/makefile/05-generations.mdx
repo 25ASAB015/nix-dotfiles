@@ -11,72 +11,71 @@ Comandos para listar, comparar y revertir generaciones del sistema.
 
 ## Comandos Disponibles
 
-### `make list-generations`
+### `make gen-list`
 Lista todas las generaciones del sistema.
 
 ```bash
-make list-generations
+make gen-list
 ```
 
-**Qué muestra:** Número de generación, fecha, y si es la actual.
+**Qué muestra:** Número de generación, fecha de creación y marca de la generación actual.
 
 ---
 
-### `make rollback`
+### `make gen-rollback`
 Revierte a la generación anterior del sistema.
 
 ```bash
-make rollback
+make gen-rollback
 ```
 
-**Qué hace:** Activa la generación anterior inmediatamente.
+**Qué hace:** Activa la generación anterior inmediatamente. Requiere confirmación `yes`.
 
-**Cuándo usarlo:** Cuando un `make switch` rompe algo.
+**Cuándo usarlo:** Cuando una aplicación de configuración (`sys-apply`) resulta en un sistema inestable.
 
 ---
 
-### `make diff-generations`
-Compara la generación actual con la anterior.
-
-```bash
-make diff-generations
-```
-
-**Qué muestra:** Diferencias de paquetes entre generaciones.
-
----
-
-### `make diff-gen`
+### `make gen-diff`
 Compara dos generaciones específicas.
 
 ```bash
-make diff-gen GEN1=<n> GEN2=<m>
+make gen-diff GEN1=<n> GEN2=<m>
 ```
 
 **Ejemplos:**
 ```bash
-make diff-gen GEN1=20 GEN2=25
-make diff-gen GEN1=184 GEN2=186
+make gen-diff GEN1=184 GEN2=186
 ```
 
 ---
 
-### `make generation-sizes`
-Muestra el tamaño en disco de cada generación.
+### `make gen-diff-current`
+Compara la generación actual con la inmediatamente anterior.
 
 ```bash
-make generation-sizes
+make gen-diff-current
 ```
 
-**Cuándo usarlo:** Antes de limpiar para ver qué generaciones ocupan más espacio.
+**Qué muestra:** Diferencias detalladas de paquetes y versiones entre las dos últimas generaciones.
 
 ---
 
-### `make current-generation`
-Muestra detalles de la generación actual.
+### `make gen-sizes`
+Muestra el tamaño en disco de cada generación almacenada.
 
 ```bash
-make current-generation
+make gen-sizes
+```
+
+**Cuándo usarlo:** Para identificar qué generaciones están consumiendo más espacio antes de ejecutar una limpieza (`sys-gc`).
+
+---
+
+### `make gen-current`
+Muestra detalles de la generación que está activa actualmente.
+
+```bash
+make gen-current
 ```
 
 ---
@@ -85,23 +84,19 @@ make current-generation
 
 ### Rollback Rápido
 ```bash
-# Si algo se rompió después de switch
-make rollback
+# Si algo se rompió después de un cambio
+make gen-rollback
 ```
 
 ### Investigar Cambios
 ```bash
-# Ver qué cambió entre generaciones
-make list-generations
-make diff-generations
+# Ver qué cambió en la última actualización
+make gen-diff-current
 
-# Comparar generaciones específicas
-make diff-gen GEN1=180 GEN2=185
+# Comparar con una versión específica más antigua
+make gen-list
+make gen-diff GEN1=150 GEN2=186
 ```
 
-### Mantenimiento
-```bash
-# Ver tamaños antes de limpiar
-make generation-sizes
-make clean  # Limpia generaciones antiguas
-```
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `make rollback`), consulta la [Guía de Aliases](../10-aliases).

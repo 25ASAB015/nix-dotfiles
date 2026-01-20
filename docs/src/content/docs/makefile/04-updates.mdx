@@ -11,97 +11,87 @@ Comandos para actualizar inputs del flake, gestionar dependencias y ver cambios.
 
 ## Comandos Disponibles
 
-### `make update`
+### `make upd-all`
 Actualiza todos los inputs del flake.
 
 ```bash
-make update
+make upd-all
 ```
 
-**Qué hace:** Actualiza todos los inputs en `flake.lock` (nixpkgs, hydenix, etc).
+**Qué hace:** Actualiza todos los inputs en `flake.lock` (nixpkgs, hydenix, etc) a sus versiones más recientes.
 
 ---
 
-### `make update-nixpkgs`
+### `make upd-nixpkgs`
 Actualiza solo el input de nixpkgs.
 
 ```bash
-make update-nixpkgs
+make upd-nixpkgs
 ```
 
 ---
 
-### `make update-hydenix`
+### `make upd-hydenix`
 Actualiza solo el input de hydenix.
 
 ```bash
-make update-hydenix
+make upd-hydenix
 ```
 
 ---
 
-### `make update-input`
+### `make upd-input`
 Actualiza un input específico del flake.
 
 ```bash
-make update-input INPUT=<name>
+make upd-input INPUT=<name>
 ```
 
 **Ejemplos:**
 ```bash
-make update-input INPUT=hydenix
-make update-input INPUT=nixpkgs
-make update-input INPUT=zen-browser-flake
+make upd-input INPUT=hydenix
+make upd-input INPUT=nixpkgs
+make upd-input INPUT=zen-browser-flake
 ```
 
 ---
 
-### `make flake-diff`
-
-Muestra diferencias inteligentes en los archivos del flake (`flake.nix` y `flake.lock`). Detecta automáticamente qué archivos han cambiado.
+### `make upd-diff`
+Muestra diferencias en el archivo `flake.lock` para ver qué versiones han cambiado.
 
 ```bash
-make flake-diff
+make upd-diff
 ```
-
-**Información mostrada:**
-- Cambios en la configuración (`flake.nix`)
-- Cambios en los inputs/versiones (`flake.lock`)
-- Advertencias si no hay cambios pendientes
 
 ---
 
-### `make upgrade`
-
-Flujo de trabajo completo recomendado: actualizar, revisar y aplicar.
+### `make upd-upgrade`
+Flujo de trabajo completo: actualizar y aplicar.
 
 ```bash
-make upgrade
+make upd-upgrade
 ```
 
 **Qué hace:**
-1. `make update` (Actualiza todos los inputs)
-2. `make flake-diff` (Muestra los cambios para revisión)
-3. `make switch` (Aplica los cambios al sistema)
+1. `make upd-all` (Actualiza todos los inputs)
+2. `make sys-apply-safe` (Valida y aplica los cambios al sistema)
 
 ---
 
-### `make show`
-
-Muestra los outputs definidos en el flake.
+### `make upd-show`
+Muestra los metadatos y outputs definidos en el flake.
 
 ```bash
-make show
+make upd-show
 ```
 
 ---
 
-### `make flake-check`
-
-Verifica la sintaxis del flake sin construir nada.
+### `make upd-check`
+Verifica la consistencia y sintaxis del flake.
 
 ```bash
-make flake-check
+make upd-check
 ```
 
 ---
@@ -111,32 +101,28 @@ make flake-check
 ### Update Seguro
 ```bash
 # 1. Actualizar inputs
-make update
+make upd-all
 
-# 2. Ver qué cambió de forma inteligente
-make flake-diff
+# 2. Ver qué cambió en las versiones
+make upd-diff
 
-# 3. Validar configuración
-make validate
-
-# 4. Probar temporalmente
-make test
-
-# 5. Si funciona, aplicar permanentemente
-make switch
+# 3. Validar y aplicar de forma segura
+make sys-apply-safe
 ```
 
 ### Update Rápido (todo-en-uno)
 ```bash
-make upgrade  # update + flake-diff + switch
+make upd-upgrade  # update + apply-safe
 ```
 
 ### Update Selectivo
 ```bash
 # Solo actualizar un input específico
-make update-input INPUT=hydenix
-make flake-diff
-make test
-make switch
+make upd-input INPUT=hydenix
+make sys-test     # Probar
+make sys-apply    # Aplicar
 ```
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `make update`), consulta la [Guía de Aliases](../10-aliases).
 

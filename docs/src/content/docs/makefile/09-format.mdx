@@ -7,74 +7,70 @@ description: Comandos para formatear y validar código Nix
 
 Módulo: `make/format.mk`
 
-Comandos para formatear código Nix, linting y visualización de estructura.
+Comandos para asegurar la calidad, consistencia y legibilidad del código Nix en el proyecto.
 
 ## Comandos Disponibles
 
-### `make format`
-Formatea archivos Nix en el proyecto.
+### `make fmt-check`
+Aplica formato automático a todos los archivos Nix.
 
 ```bash
-make format
+make fmt-check
 ```
 
-**Qué hace:** Formatea todos los archivos `.nix` con `nixpkgs-fmt` o `alejandra`.
+**Qué hace:** Utiliza `alejandra` (preferido) o `nixpkgs-fmt` para normalizar el estilo del código en todo el repositorio.
 
-**Cuándo usarlo:** Antes de hacer commit para mantener código consistente.
+**Cuándo usarlo:** Antes de realizar commits o después de ediciones extensas para mantener un estándar visual.
 
 ---
 
-### `make lint`
-Lint de archivos Nix (requiere statix).
+### `make fmt-lint`
+Analiza los archivos Nix en busca de errores comunes y anti-patrones.
 
 ```bash
-make lint
+make fmt-lint
 ```
 
-**Qué hace:** Analiza código Nix en busca de problemas y anti-patrones.
-
-**Cuándo usarlo:** Verificar calidad de código antes de commit.
+**Qué hace:** Ejecuta `statix` para detectar sugerencias de optimización y posibles bugs en las expresiones Nix.
 
 ---
 
-### `make tree`
-Muestra la estructura de configuración.
+### `make fmt-tree`
+Muestra una representación visual de la estructura de directorios del proyecto.
 
 ```bash
-make tree
+make fmt-tree
 ```
 
-**Qué muestra:** Árbol de directorios del proyecto.
-
-**Cuándo usarlo:** Explorar organización del proyecto.
-
-### `make diff-config`
-Muestra diferencias entre la configuración local y la activa.
-
-```bash
-make diff-config
-```
-
-**Qué muestra:** Cambios que has hecho localmente pero no has aplicado aún.
+**Qué muestra:** Un árbol de carpetas ignorando archivos temporales y directorios ocultos, ideal para entender la organización de módulos y hosts.
 
 ---
 
+### `make fmt-diff`
+Muestra diferencias entre la configuración local actual y la configuración activa en `/etc/nixos`.
 
-### Antes de Commit
 ```bash
-make format  # Formatear código
-make lint    # Verificar problemas
-make validate # Validar configuración
-git commit   # Commitear
+make fmt-diff
 ```
 
-### Explorar Proyecto
+---
+
+## Workflow Recomendado
+
+### Preparación de Cambios
 ```bash
-make tree    # Ver estructura
+make fmt-check  # Formatear
+make fmt-lint   # Revisar calidad
+make sys-check  # Validar lógica
 ```
 
-## Tips
+### Exploración
+```bash
+make fmt-tree   # Entender estructura
+```
 
-- **Formatea siempre antes de commit** para mantener consistencia
-- **Lint detecta problemas** que pueden causar errores sutiles
-- **Tree es útil** para nuevos colaboradores
+> [!TIP]
+> Un código bien formateado y analizado reduce drásticamente las posibilidades de fallos inesperados durante la aplicación de la configuración (`sys-apply`).
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `format`), consulta la [Guía de Aliases](../10-aliases).

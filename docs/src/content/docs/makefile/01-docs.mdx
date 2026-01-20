@@ -21,235 +21,98 @@ make
 ```
 
 **Qué muestra:**
-- Lista completa de comandos
-- Descripción breve de cada uno
-- Organizado por sección
-- Vista rápida de referencia
-
-**Cuándo usarlo:** Referencia rápida para ver qué comandos existen.
+- Lista completa de comandos con prefijos (`sys-`, `upd-`, `gen-`, etc.)
+- Descripción breve de cada funcionalidad
+- Agrupación por módulos lógicos
+- Workflows sugeridos al final
 
 ---
 
 ### `make help-examples`
-Muestra comandos con ejemplos de uso, especialmente útil para comandos que requieren parámetros.
+Muestra comandos con ejemplos prácticos de uso, ideal para targets que requieren parámetros.
 
 ```bash
 make help-examples
 ```
 
-**Qué muestra:**
+**Ejemplos incluidos:**
 ```
+═══ 🔨 Build & Deploy ═══
+sys-apply HOSTNAME=<host>
+  → make sys-apply HOSTNAME=laptop
+
 ═══ 🔍 Search & Discovery ═══
-search PKG=<name>
-  → make search PKG=firefox
-  → make search PKG=neovim
-
-search-installed PKG=<name>
-  → make search-installed PKG=kitty
-
-═══ 📦 Updates ═══
-update-input INPUT=<name>
-  → make update-input INPUT=hydenix
-  → make update-input INPUT=nixpkgs
+dev-search PKG=<name>
+  → make dev-search PKG=firefox
 ```
 
-**Perfecto para:**
-- Comandos que requieren parámetros (PKG, INPUT, HOST, etc)
-- Ver ejemplos concretos de uso
-- Aprender la sintaxis correcta
-- Nuevos usuarios del sistema
+---
 
-**Cuándo usarlo:** Cuando necesitas saber **cómo usar** un comando específico.
+### `make doc-dev`
+Inicia el servidor de desarrollo de Astro para visualizar la documentación web.
+
+```bash
+make doc-dev
+```
+
+**Qué hace:**
+1. Instala dependencias (`npm install`) si faltan.
+2. Inicia el servidor de Astro con Hot Module Replacement (HMR).
+3. La documentación estará disponible en `http://localhost:4321`.
+
+---
+
+### `make doc-build`
+Construye la versión estática y optimizada de la documentación para producción.
+
+```bash
+make doc-build
+```
+
+---
+
+### `make doc-install`
+Instala las dependencias necesarias de Node.js para el motor de documentación.
+
+```bash
+make doc-install
+```
+
+---
+
+### `make doc-clean`
+Elimina los artefactos de construcción y el directorio `node_modules` para liberar espacio.
+
+```bash
+make doc-clean
+```
 
 ---
 
 ### `make docs-local`
-Lista todos los archivos de documentación disponibles localmente en el proyecto.
+Muestra un resumen de los archivos de documentación MD y MDX disponibles localmente en el repositorio.
 
 ```bash
 make docs-local
 ```
-
-**Output ejemplo:**
-```
-════════════════════════════════════════════════════
-          📚 Local Documentation                    
-════════════════════════════════════════════════════
-
-  ✓ README.md
-  ✓ AGENTS.md
-  ✓ docs/
-    ├─ docs/index.mdx
-    ├─ docs/makefile.mdx
-    └─ ...
-
-💡 Tip: Use less <file> or cat <file> to view documentation
-```
-
-**Cuándo usarlo:**
-- Explorar qué documentación está disponible
-- Encontrar archivos de documentación específicos
-- Verificar que la documentación existe
-
----
-
-### `make docs-dev`
-Inicia el servidor de desarrollo de Astro para la documentación web.
-
-```bash
-make docs-dev
-```
-
-**Qué hace:**
-1. Instala dependencias de npm si es necesario
-2. Inicia el servidor de desarrollo de Astro
-3. Abre la documentación en `http://localhost:4321`
-
-**Output ejemplo:**
-```
-════════════════════════════════════════════════════
-          📘 Servidor de Documentación              
-════════════════════════════════════════════════════
-
-📦 Instalando dependencias primero...
-Iniciando servidor de desarrollo Astro...
-La documentación estará disponible en http://localhost:4321
-```
-
-**Cuándo usarlo:**
-- Desarrollar o editar documentación
-- Previsualizar cambios en la documentación
-- Navegar la documentación web localmente
-
-**Nota:** El servidor se recarga automáticamente cuando editas archivos `.mdx`.
-
----
-
-### `make docs-build`
-Construye la documentación para producción (sitio estático optimizado).
-
-```bash
-make docs-build
-```
-
-**Qué hace:**
-1. Instala dependencias de npm si es necesario
-2. Construye la documentación con Astro
-3. Genera archivos estáticos en `docs/dist/`
-
-**Output ejemplo:**
-```
-════════════════════════════════════════════════════
-          📦 Construir Documentación                
-════════════════════════════════════════════════════
-
-📦 Instalando dependencias primero...
-Construyendo documentación para producción...
-
-════════════════════════════════════════════════════
-✅ Documentación construida exitosamente
-Los archivos están en docs/dist/
-════════════════════════════════════════════════════
-```
-
-**Cuándo usarlo:**
-- Preparar documentación para despliegue
-- Generar sitio estático para GitHub Pages
-- Verificar que la documentación se construye sin errores
-
----
-
-### `make docs-install`
-Instala o actualiza las dependencias de npm para la documentación.
-
-```bash
-make docs-install
-```
-
-**Qué hace:**
-- Ejecuta `npm install` en el directorio `docs/`
-- Instala todas las dependencias de Astro y Starlight
-- Actualiza dependencias si ya están instaladas
-
-**Cuándo usarlo:**
-- Primera vez que trabajas con la documentación
-- Después de actualizar `package.json`
-- Si las dependencias están desactualizadas
-
----
-
-### `make docs-clean`
-Elimina las dependencias de npm (`node_modules/`) para liberar espacio.
-
-```bash
-make docs-clean
-```
-
-**Qué hace:**
-- Elimina el directorio `docs/node_modules/`
-- Libera espacio en disco (puede ser varios cientos de MB)
-- No afecta el código fuente de la documentación
-
-**Output ejemplo:**
-```
-════════════════════════════════════════════════════
-          🧹 Limpiar Dependencias                   
-════════════════════════════════════════════════════
-
-Limpiando dependencias de la documentación...
-
-════════════════════════════════════════════════════
-✅ Dependencias limpiadas
-Se liberó espacio eliminando node_modules/
-════════════════════════════════════════════════════
-```
-
-**Cuándo usarlo:**
-- Liberar espacio en disco
-- Antes de hacer backup del repositorio
-- Resolver problemas con dependencias corruptas
-
-**Nota:** Después de `docs-clean`, necesitarás ejecutar `docs-install` antes de usar `docs-dev` o `docs-build`.
 
 ---
 
 ## Workflow Recomendado
 
-### Trabajar con Documentación
-
+### Consulta de Comandos
 ```bash
-# 1. Instalar dependencias (primera vez)
-make docs-install
-
-# 2. Iniciar servidor de desarrollo
-make docs-dev
-
-# 3. Editar archivos .mdx en docs/src/content/docs/
-# El servidor se recarga automáticamente
-
-# 4. Construir para producción
-make docs-build
-
-# 5. Limpiar cuando termines (opcional)
-make docs-clean
+make help          # Ver qué comandos hay
+make help-examples # Ver cómo usarlos con parámetros
+make help-aliases  # Ver equivalencias de comandos antiguos
 ```
 
-### Consultar Ayuda
-
+### Trabajar en la Documentación
 ```bash
-# Ver lista de comandos
-make help
-
-# Ver ejemplos de comandos con parámetros
-make help-examples
-
-# Ver documentación local disponible
-make docs-local
+make doc-install   # Instalar (primera vez)
+make doc-dev       # Editar y previsualizar
+make doc-build     # Generar versión final
 ```
 
-## Tips
-
-- **`make help`** es el comando más usado - memorízalo
-- **`make help-examples`** es perfecto para aprender comandos nuevos
-- **`make docs-dev`** recarga automáticamente - ideal para escribir documentación
-- **`make docs-clean`** libera espacio pero requiere reinstalar después
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad, consulta la [Guía de Aliases](../10-aliases).

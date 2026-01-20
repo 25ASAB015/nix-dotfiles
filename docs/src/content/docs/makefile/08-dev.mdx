@@ -7,135 +7,101 @@ description: Comandos para búsqueda de paquetes, análisis y desarrollo
 
 Módulo: `make/dev.mk`
 
-Comandos para búsqueda de paquetes, análisis del sistema y desarrollo.
+Comandos para búsqueda de paquetes, análisis del sistema y herramientas de desarrollo.
 
 ## Comandos Disponibles
 
-### `make list-hosts`
-Lista las configuraciones de hosts disponibles.
+### `make dev-hosts`
+Lista las configuraciones de hosts (nodos) definidos en el Flake.
 
 ```bash
-make list-hosts
+make dev-hosts
 ```
 
-**Qué muestra:** Hosts configurados en el flake (hydenix, laptop, vm, etc).
+**Qué muestra:** Hosts disponibles en la estructura de carpetas `hosts/` (ej: hydenix, laptop, vm).
 
 ---
 
-
-### `make search`
-Busca paquetes en nixpkgs.
+### `make dev-search`
+Busca paquetes en el repositorio de Nixpkgs.
 
 ```bash
-make search PKG=<name>
+make dev-search PKG=<name>
 ```
 
 **Ejemplos:**
 ```bash
-make search PKG=firefox
-make search PKG=neovim
-make search PKG=docker
+make dev-search PKG=firefox
+make dev-search PKG=neovim
 ```
 
-**Cuándo usarlo:** Encontrar paquetes disponibles antes de instalarlos.
+**Cuándo usarlo:** Antes de añadir un paquete a tu configuración para verificar su nombre exacto y disponibilidad.
 
 ---
 
-### `make search-installed`
-Busca en paquetes actualmente instalados.
+### `make dev-search-inst`
+Busca específicamente entre los paquetes que ya tienes instalados en el sistema.
 
 ```bash
-make search-installed PKG=<name>
+make dev-search-inst PKG=<name>
 ```
-
-**Ejemplos:**
-```bash
-make search-installed PKG=kitty
-make search-installed PKG=docker
-```
-
-**Cuándo usarlo:** Verificar si un paquete ya está instalado.
 
 ---
 
-### `make repl`
-Inicia nix repl con el flake.
+### `make dev-repl`
+Inicia un REPL de Nix con el Flake actual precargado.
 
 ```bash
-make repl
+make dev-repl
 ```
 
-**Cuándo usarlo:** Explorar configuración interactivamente o debuggear.
+**Cuándo usarlo:** Para inspeccionar valores de configuración, probar expresiones Nix o verificar atributos del Flake de forma interactiva.
 
 ---
 
-### `make shell`
-Entra en development shell.
+### `make dev-shell`
+Entra en un shell temporal con paquetes específicos (ad-hoc).
 
 ```bash
-make shell
+make dev-shell PKGS="htop vim"
 ```
-
-**Cuándo usarlo:** Desarrollo con dependencias específicas.
 
 ---
 
-### `make vm`
-Construye y ejecuta una VM con la configuración.
+### `make dev-vm`
+Construye y lanza una máquina virtual QEMU con la configuración del host especificado.
 
 ```bash
-make vm
+make dev-vm HOST=<name>
 ```
 
-**Cuándo usarlo:** Probar configuración en VM antes de aplicarla.
+**Cuándo usarlo:** Para probar cambios drásticos sin afectar tu hardware real.
 
 ---
 
-### `make closure-size`
-Muestra el closure size del sistema actual.
+### `make dev-size`
+Muestra el tamaño total de la clausura (todas las dependencias) para un host.
 
 ```bash
-make closure-size
+make dev-size HOST=<name>
 ```
-
-**Qué muestra:** Tamaño total de todas las dependencias del sistema.
-
-**Cuándo usarlo:** Ver qué está usando espacio en disco.
 
 ---
 
 ## Workflow Recomendado
 
-### Buscar e Instalar Paquetes
+### Búsqueda e Instalación
 ```bash
-# 1. Buscar paquete
-make search PKG=firefox
-
-# 2. Agregar a configuración
-nvim modules/system/packages.nix
-
-# 3. Aplicar
-make switch
+make dev-search PKG=firefox  # Buscar
+# ... añadir a hosts/$(HOSTNAME)/configuration.nix ...
+make sys-apply               # Aplicar
 ```
 
-### Multi-host
+### Desarrollo y VM
 ```bash
-# Ver hosts disponibles
-make list-hosts
-
-# Aplicar a host específico
-make switch HOSTNAME=laptop
+make dev-hosts               # Ver opciones
+make dev-vm HOST=vm          # Probar en entorno aislado
 ```
 
-### Análisis de Espacio
-```bash
-make closure-size      # Ver tamaño total
-make generation-sizes  # Ver por generación
-```
-
-### Desarrollo
-```bash
-make repl   # Explorar configuración
-make shell  # Development environment
-make vm     # Probar en VM
-```
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `search` o `repl`), consulta la [Guía de Aliases](../10-aliases).

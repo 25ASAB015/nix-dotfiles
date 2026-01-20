@@ -11,18 +11,18 @@ Comandos para limpiar generaciones antiguas, optimizar el store de Nix y liberar
 
 ## Comandos Disponibles
 
-### `make clean`
+### `make sys-gc`
 Limpia build artifacts y generaciones antiguas. Por defecto limpia generaciones de más de 30 días.
 
 ```bash
 # Limpieza estándar (30 días)
-make clean
+make sys-gc
 
 # Limpieza rápida (última semana)
-make clean DAYS=7
+make sys-gc DAYS=7
 
 # Limpieza conservadora (3 meses)
-make clean DAYS=90
+make sys-gc DAYS=90
 ```
 
 **Parámetros:**
@@ -37,59 +37,52 @@ make clean DAYS=90
 
 ---
 
-
-### `make deep-clean`
-Aggressive cleanup - elimina TODAS las generaciones antiguas.
+### `make sys-purge`
+Purga profunda y agresiva - elimina TODAS las generaciones antiguas.
 
 ```bash
-make deep-clean
+make sys-purge
 ```
 
-**⚠️ ADVERTENCIA:** Muy agresivo - solo mantiene la generación actual.
+**⚠️ ADVERTENCIA:** Muy agresivo - solo mantiene la generación actual. Esta acción es **IRREVERSIBLE**.
 
-**Cuándo usarlo:** Cuando necesitas liberar mucho espacio y estás seguro de la configuración actual.
+**Cuándo usarlo:** Cuando necesitas liberar el máximo espacio posible y estás seguro de que tu configuración actual es estable.
 
 ---
 
-### `make optimize`
-Optimiza el nix store (deduplicación y hard-linking).
+### `make sys-optimize`
+Optimiza el Nix store mediante la creación de hardlinks para archivos idénticos.
 
 ```bash
-make optimize
+make sys-optimize
 ```
 
 **Qué hace:**
-- Ejecuta `nix-store --optimise`
-- Deduplica archivos idénticos
-- Puede liberar varios GB de espacio
+- Deduplica archivos idénticos en el store
+- Es un proceso seguro que no elimina paquetes
+- Puede liberar varios GB de espacio si no se ha hecho recientemente
 
-**Cuándo usarlo:** Después de muchos builds o actualizaciones.
-
----
-
-### `make clean-result`
-Elimina symlinks `result*` que quedan después de builds de Nix.
-
-```bash
-make clean-result
-```
-
-**Qué hace:**
-- Busca y elimina symlinks `result*` en el directorio actual
-- No afecta el store de Nix (solo limpia symlinks)
-
-**Cuándo usarlo:** Después de builds para mantener el directorio limpio.
+**Cuándo usarlo:** Después de grandes actualizaciones de paquetes o instalaciones masivas.
 
 ---
 
-### `make fix-store`
-Intenta reparar el nix store si está corrupto.
+### `make sys-clean-result`
+Elimina los symlinks `result*` generados por comandos de construcción de Nix.
 
 ```bash
-make fix-store
+make sys-clean-result
 ```
 
-**Cuándo usarlo:** Cuando ves errores de corrupción en el store.
+---
+
+### `make sys-fix-store`
+Intenta reparar el Nix store si se detectan corrupciones.
+
+```bash
+make sys-fix-store
+```
+
+**Cuándo usarlo:** Cuando encuentres errores de "checksum mismatch" o archivos faltantes en el store.
 
 ---
 
@@ -97,47 +90,18 @@ make fix-store
 
 ### Mantenimiento Regular
 ```bash
-# Cada mes
-make clean
-make optimize
-make generation-sizes  # Ver cuánto espacio liberaste
+# Mantenimiento mensual ideal
+make sys-gc        # Limpiar generaciones viejas
+make sys-optimize  # Optimizar espacio
+make gen-sizes     # Verificar estado actual
 ```
 
 ### Liberar Espacio Urgente
 ```bash
-# 1. Ver qué está usando espacio
-make generation-sizes
-make closure-size
-
-# 2. Limpiar conservadoramente
-make clean
-
-# 3. Si necesitas más espacio
-make clean DAYS=7
-
-# 4. Optimizar
-make optimize
+make gen-sizes     # Ver qué consume más
+make sys-gc DAYS=7 # Limpieza agresiva de 1 semana
+make sys-optimize  # Consolidar archivos
 ```
 
-### Limpieza Profunda (con precaución)
-```bash
-# Solo si estás seguro
-make deep-clean
-make optimize
-```
-
-## Comparación de Comandos de Limpieza
-
-| Comando | Parámetro | Antigüedad | Seguridad |
-|---------|-----------|-----------|-----------|
-| `clean` | `DAYS=90` | 3 meses | ✅✅✅ Muy seguro |
-| `clean` | (Default) | 30 días | ✅✅ Seguro |
-| `clean` | `DAYS=7` | 1 semana | ⚠️ Precaución |
-| `deep-clean` | N/A | Todas | ⚠️⚠️ Peligroso |
-
-## Tips
-
-- **Empieza conservador:** Usa `make clean DAYS=90` la primera vez
-- **Optimiza regularmente:** `make optimize` puede liberar mucho espacio
-- **Verifica antes:** Usa `make generation-sizes` para ver qué limpiarás
-- **Backup primero:** Si vas a usar `deep-clean`, haz backup antes
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `make clean`), consulta la [Guía de Aliases](../10-aliases).
