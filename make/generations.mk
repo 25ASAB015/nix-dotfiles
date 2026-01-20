@@ -9,6 +9,8 @@
 
 # === Generaciones y Rollback ===
 
+# List all system generations with current generation highlighted
+# Shows total count and marks the active generation
 list-generations: ## List system generations
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📋 System Generations                    \n$(NC)"
@@ -22,6 +24,9 @@ list-generations: ## List system generations
 		sed 's/   (current)/   $(GREEN)(current)$(NC)/' | \
 		sed 's/^/  /' || printf "  $(YELLOW)Unable to list generations$(NC)\n"
 	@printf "\n"
+
+# Rollback to the previous system generation
+# Reverts all system changes to the last known good state
 rollback: ## Rollback to previous generation
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          ⏪ Revertir a Generación Anterior         \n$(NC)"
@@ -36,6 +41,9 @@ rollback: ## Rollback to previous generation
 	@printf "$(BLUE)El sistema ha vuelto a la generación anterior.\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Compare current generation with the previous one
+# Shows package changes, additions, and removals
 diff-generations: ## Compare current with previous generation
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Comparing Generations                  \n$(NC)"
@@ -65,6 +73,9 @@ diff-generations: ## Compare current with previous generation
 		printf "$(BLUE)Tip:$(NC) Use $(GREEN)make diff-gen GEN1=N GEN2=M$(NC) to compare specific generations\n"; \
 	fi
 	@printf "\n"
+
+# Compare two specific generations by number
+# Requires GEN1 and GEN2 parameters (e.g., make diff-gen GEN1=184 GEN2=186)
 diff-gen: ## Compare two specific generations (use GEN1=N GEN2=M)
 	@if [ -z "$(GEN1)" ] || [ -z "$(GEN2)" ]; then \
 		printf "$(RED)Error: Specify both generations$(NC)\n"; \
@@ -103,6 +114,8 @@ diff-gen: ## Compare two specific generations (use GEN1=N GEN2=M)
 	fi
 	@printf "\n"
 
+# Show disk usage for each generation
+# Helps identify which generations are consuming the most space
 generation-sizes: ## Show disk usage per generation
 	@printf "$(CYAN)💾 Generation Disk Usage\n$(NC)"
 	@printf "=======================\n"
@@ -116,6 +129,8 @@ generation-sizes: ## Show disk usage per generation
 		printf "$(YELLOW)No generations found$(NC)\n"; \
 	fi
 
+# Display detailed information about the current active generation
+# Shows generation number, activation date, and closure size
 current-generation: ## Show current generation details
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)        📍 Current Generation Details              \n$(NC)"

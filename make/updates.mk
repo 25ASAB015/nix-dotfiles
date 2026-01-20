@@ -9,6 +9,8 @@
 
 # === Actualizaciones y Flakes ===
 
+# Update all flake inputs to their latest versions
+# Refreshes nixpkgs, hydenix, home-manager, and other flake dependencies
 update: ## Update flake inputs
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📦 Actualizar Inputs del Flake            \n$(NC)"
@@ -24,6 +26,9 @@ update: ## Update flake inputs
 	@printf "$(YELLOW)Recuerda ejecutar 'make switch' para aplicar los cambios.\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Update only the nixpkgs flake input to the latest version
+# Refreshes the main package repository without affecting other inputs
 update-nixpkgs: ## Update only nixpkgs input
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📦 Actualizar nixpkgs                     \n$(NC)"
@@ -39,6 +44,9 @@ update-nixpkgs: ## Update only nixpkgs input
 	@printf "$(YELLOW)Recuerda ejecutar 'make switch' para aplicar los cambios.\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Update only the hydenix flake input to the latest version
+# Refreshes the hydenix framework without affecting other inputs
 update-hydenix: ## Update only hydenix input
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📦 Actualizar hydenix                     \n$(NC)"
@@ -54,6 +62,8 @@ update-hydenix: ## Update only hydenix input
 	@printf "$(YELLOW)Recuerda ejecutar 'make switch' para aplicar los cambios.\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+# Update a specific flake input by name (requires INPUT=name parameter)
+# Allows targeted updates of individual flake dependencies
 update-input: ## Update specific flake input (use INPUT=name)
 	@if [ -z "$(INPUT)" ]; then \
 		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
@@ -90,6 +100,9 @@ update-input: ## Update specific flake input (use INPUT=name)
 	@printf "$(YELLOW)Recuerda ejecutar 'make switch' para aplicar los cambios.\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Show git diff of flake.lock changes after input updates
+# Displays what changed in the lockfile after running update commands
 diff-update: ## Show changes in flake.lock after update
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Diferencias en flake.lock              \n$(NC)"
@@ -110,6 +123,8 @@ diff-update: ## Show changes in flake.lock after update
 		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
 		printf "\n"; \
 	fi
+# Complete upgrade workflow: update inputs, show changes, and switch
+# Automated sequence for safe system updates with change review
 upgrade: ## Update, show changes, and switch (recommended workflow)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🆙 Actualización Completa (Flujo Recomendado)\n$(NC)"
@@ -139,6 +154,8 @@ upgrade: ## Update, show changes, and switch (recommended workflow)
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
+# Display all available outputs from the flake
+# Shows packages, devShells, nixosConfigurations, and other flake outputs
 show: ## Show flake outputs
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📄 Flake Outputs Structure                \n$(NC)"
@@ -147,9 +164,14 @@ show: ## Show flake outputs
 	@nix flake show $(FLAKE_DIR) 2>&1 | grep -v "^warning:" || nix flake show $(FLAKE_DIR) 2>/dev/null || true
 	@printf "\n"
 
+# Validate flake syntax and structure without building
+# Performs syntax checking and basic validation of flake.nix
 flake-check: ## Check flake syntax without building
 	@printf "$(CYAN)📋 Checking flake syntax...\n$(NC)"
 	nix flake check $(FLAKE_DIR)
+
+# Show git diff of flake.nix and flake.lock files
+# Displays uncommitted changes to flake configuration files
 diff-flake: ## Show changes to flake.nix and flake.lock
 	@printf "$(CYAN)📊 Flake Changes\n$(NC)"
 	@printf "===============\n"

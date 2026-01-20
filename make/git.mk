@@ -24,6 +24,7 @@ git-add: ## Stage all changes for git
 		printf "$(YELLOW)⚠ No changes to stage$(NC)\n"; \
 	fi
 	@printf "\n"
+
 git-commit: ## Quick commit with timestamp
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📝 Committing Changes                  \n$(NC)"
@@ -39,6 +40,7 @@ git-commit: ## Quick commit with timestamp
 	printf "$(BLUE)Hash:$(NC) $(GREEN)$$COMMIT_HASH$(NC)\n"; \
 	printf "$(BLUE)Branch:$(NC) $(GREEN)$$BRANCH$(NC)\n"
 	@printf "\n"
+
 git-push: ## Push to remote using GitHub CLI
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)              🚀 Pushing to Remote                 \n$(NC)"
@@ -51,6 +53,9 @@ git-push: ## Push to remote using GitHub CLI
 	@git push || exit 1
 	@printf "\n$(GREEN)✅ Successfully pushed to remote$(NC)\n"
 	@printf "\n"
+
+# Show comprehensive git status with repository information
+# Displays branch, remote, uncommitted changes, and recent commits
 git-status: ## Show git status with GitHub CLI
 	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)           📊 Repository Status                    \n$(NC)"
@@ -101,6 +106,9 @@ git-status: ## Show git status with GitHub CLI
 		done; \
 	fi
 	@printf "\n"
+
+# Complete workflow: stage, commit, push, and switch to new configuration
+# Automated sequence that performs all git operations and applies changes
 save: ## Quick save: add, commit, push, and switch
 	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)              💾 Quick Save Workflow                \n$(NC)"
@@ -120,6 +128,8 @@ save: ## Quick save: add, commit, push, and switch
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
+# Show detailed diff of uncommitted changes to .nix configuration files
+# Displays additions, deletions, and affected files with statistics
 git-diff: ## Show uncommitted changes to .nix configuration files
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Configuration Changes                  \n$(NC)"

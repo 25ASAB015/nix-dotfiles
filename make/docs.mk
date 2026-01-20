@@ -9,6 +9,8 @@
 
 # === Ayuda y Documentación ===
 
+# Main help target - shows all available commands organized by category
+# Uses AWK to parse inline comments (##) and display them in a formatted menu
 help: ## Show this help message
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)      Ayuda Avanzada y Workflows (Makefile)        \n$(NC)"
@@ -43,6 +45,9 @@ help: ## Show this help message
 		printf "  • Multi-host:         make list-hosts → make switch HOSTNAME=laptop\n"; \
 		printf "\nAyuda rápida: make help | make help-examples | less MAKEFILE_TUTORIAL.md\n\n"; \
 	}' $(MAKEFILE_LIST)
+
+# Show detailed usage examples for commands that require parameters
+# Organized by category with practical examples
 help-examples: ## Show commands with usage examples
 	@printf "$(CYAN)╔════════════════════════════════════════════════════╗\n$(NC)"
 	@printf "$(CYAN)║        NixOS Commands with Usage Examples          ║\n$(NC)"
@@ -101,6 +106,8 @@ help-examples: ## Show commands with usage examples
 	@printf "$(YELLOW)For workflows:$(NC) make help\n"
 	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n\n"
 
+# List all available documentation files in the project
+# Scans for README, tutorials, and docs/ directory
 docs-local: ## Show local documentation files
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📚 Local Documentation                    \n$(NC)"
@@ -142,6 +149,9 @@ docs-local: ## Show local documentation files
 	fi
 	@printf "\n$(BLUE)💡 Tip:$(NC) Use $(GREEN)less <file>$(NC) or $(GREEN)cat <file>$(NC) to view documentation\n"
 	@printf "\n"
+
+# Start Astro documentation development server
+# Automatically installs dependencies if needed
 docs-dev: ## Run Astro docs dev server locally
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📘 Servidor de Documentación              \n$(NC)"
@@ -161,6 +171,9 @@ docs-dev: ## Run Astro docs dev server locally
 		printf "$(RED)✗ Directorio docs/ no encontrado$(NC)\n"; \
 		printf "\n"; \
 	fi
+
+# Build documentation for production deployment
+# Creates optimized static files in docs/dist/
 docs-build: ## Build Astro documentation for production
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📦 Construir Documentación                \n$(NC)"
@@ -183,6 +196,9 @@ docs-build: ## Build Astro documentation for production
 		printf "$(RED)✗ Directorio docs/ no encontrado$(NC)\n"; \
 		printf "\n"; \
 	fi
+
+# Remove node_modules to free up disk space
+# Run this if you need to clean up documentation dependencies
 docs-clean: ## Clean documentation dependencies (node_modules)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🧹 Limpiar Dependencias                   \n$(NC)"
@@ -199,6 +215,9 @@ docs-clean: ## Clean documentation dependencies (node_modules)
 		printf "$(YELLOW)⚠ No hay dependencias para limpiar\n$(NC)"; \
 	fi
 	@printf "\n"
+
+# Install or update npm dependencies for documentation
+# Run this before using docs-dev or docs-build
 docs-install: ## Install/update documentation dependencies
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📦 Instalar Dependencias                  \n$(NC)"

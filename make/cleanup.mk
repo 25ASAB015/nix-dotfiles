@@ -9,6 +9,8 @@
 
 # === Limpieza y Optimización ===
 
+# Standard cleanup - removes generations older than 30 days
+# Balances disk space recovery with rollback safety
 clean: ## Clean build artifacts older than 30 days
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🧹 Limpieza Estándar (30 días)            \n$(NC)"
@@ -25,6 +27,9 @@ clean: ## Clean build artifacts older than 30 days
 	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Weekly cleanup - removes generations older than 7 days
+# More aggressive, use when you need to free space quickly
 clean-week: ## Clean build artifacts older than 7 days
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🧹 Limpieza Semanal (7 días)              \n$(NC)"
@@ -41,6 +46,9 @@ clean-week: ## Clean build artifacts older than 7 days
 	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Conservative cleanup - removes generations older than 90 days
+# Safest option, recommended for production systems
 clean-conservative: ## Clean build artifacts older than 90 days (very safe)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🧹 Limpieza Conservadora (90 días)         \n$(NC)"
@@ -57,6 +65,9 @@ clean-conservative: ## Clean build artifacts older than 90 days (very safe)
 	@printf "$(BLUE)Usa 'make info' para verificar el espacio liberado\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Deep clean - removes ALL old generations (IRREVERSIBLE!)
+# Use with extreme caution - requires confirmation
 deep-clean: ## Aggressive cleanup (removes ALL old generations)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🗑️  Limpieza Profunda (IRREVERSIBLE)        \n$(NC)"
@@ -92,6 +103,9 @@ deep-clean: ## Aggressive cleanup (removes ALL old generations)
 		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
 		printf "\n"; \
 	fi
+
+# Optimize Nix store by creating hardlinks for identical files
+# Safe operation that saves space without deleting anything
 optimize: ## Optimize nix store
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🚀 Optimización del Nix Store             \n$(NC)"
@@ -108,6 +122,9 @@ optimize: ## Optimize nix store
 	@printf "$(BLUE)Usa 'make info' para verificar el espacio ahorrado\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Remove result symlinks created by nix build commands
+# Safe cleanup of temporary build artifacts
 clean-result: ## Remove result symlinks
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🧹 Clean Result Symlinks                  \n$(NC)"
@@ -139,6 +156,9 @@ clean-result: ## Remove result symlinks
 	@printf "$(GREEN)✅ Cleanup complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Verify and repair the Nix store for corruption
+# Use when experiencing store-related errors
 fix-store: ## Attempt to repair nix store
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔧 Repair Nix Store                       \n$(NC)"

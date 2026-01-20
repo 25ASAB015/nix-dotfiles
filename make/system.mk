@@ -9,6 +9,8 @@
 
 # === Gestión del Sistema (Rebuild/Switch) ===
 
+# Build and activate new system configuration for the current hostname
+# Performs git add, rebuild, and switch to apply configuration changes
 switch: ## Build and switch to new configuration
 	@printf "\n$(BLUE)==================== Switch ====================\n$(NC)"
 	@printf "$(BLUE)🔄 Git add, build y switch...\n$(NC)"
@@ -26,10 +28,19 @@ switch: ## Build and switch to new configuration
 	@printf "\n$(BLUE)==================== Build =====================\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
 	@printf "\n$(GREEN)==================== Done ======================\n$(NC)"
+
+# Validate configuration and then switch (recommended safe workflow)
+# Performs validation checks before applying configuration changes
 safe-switch: validate switch ## Validate then switch (safest option)
+
+# Build and test configuration without activating it
+# Evaluates and builds the configuration but doesn't apply changes
 test: ## Build and test configuration (no switch)
 	@printf "$(YELLOW)🧪 Testing configuration (no switch)...\n$(NC)"
 	sudo nixos-rebuild test --flake $(FLAKE_DIR)#$(HOSTNAME)
+
+# Build configuration without activating it and show build statistics
+# Compiles the configuration but doesn't apply changes, displays timing info
 build: ## Build configuration without switching
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔨 Build Configuration                    \n$(NC)"
@@ -63,6 +74,9 @@ build: ## Build configuration without switching
 	printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
 	printf "\n"; \
 	exit $$BUILD_EXIT
+
+# Preview what would be built or changed without actually building
+# Shows package changes, additions, and removals that would occur
 dry-run: ## Show what would be built/changed
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔍 Dry Run - Preview Changes             \n$(NC)"
@@ -73,6 +87,9 @@ dry-run: ## Show what would be built/changed
 	@printf "$(GREEN)✅ Dry run completed$(NC)\n"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Build configuration and set it as default for next boot
+# Compiles and configures the system to activate changes on next reboot
 boot: ## Build and set as boot default (no immediate switch)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🥾 Configurar para Próximo Arranque      \n$(NC)"
@@ -89,6 +106,8 @@ boot: ## Build and set as boot default (no immediate switch)
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
+# Validate flake syntax and configuration before applying changes
+# Performs multiple checks: flake syntax, configuration evaluation, and linting
 validate: ## Validate configuration before switching
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔍 Validation Checks                       \n$(NC)"
@@ -124,9 +143,15 @@ validate: ## Validate configuration before switching
 	@printf "$(GREEN)✅ Validation passed$(NC)\n"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Rebuild with maximum verbosity and debug tracing enabled
+# Shows detailed output for troubleshooting build issues
 debug: ## Rebuild with verbose output and trace
 	@printf "$(RED)🐛 Debug rebuild with full trace...\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose
+
+# Fast rebuild skipping validation checks for speed
+# Applies configuration quickly when you trust your changes
 quick: ## Quick rebuild (skip checks)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          ⚡ Rebuild Rápido (Sin Checks)              \n$(NC)"
@@ -142,6 +167,9 @@ quick: ## Quick rebuild (skip checks)
 	@printf "$(BLUE)Configuración aplicada sin verificaciones previas\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Emergency rebuild with maximum debugging and cache disabled
+# Used for critical system issues requiring full rebuild and tracing
 emergency: ## Emergency rebuild with maximum verbosity
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🚨 Rebuild de Emergencia (Debug Extremo)   \n$(NC)"
@@ -162,6 +190,8 @@ emergency: ## Emergency rebuild with maximum verbosity
 
 # === Plantillas y Otros ===
 
+# Generate new hardware configuration for the current hostname
+# Scans current hardware and creates updated hardware-configuration.nix
 hardware-scan: ## Re-scan hardware configuration
 	@printf "$(BLUE)🔧 Scanning hardware configuration for $(HOSTNAME)...\n$(NC)"
 	@sudo nixos-generate-config --show-hardware-config > hosts/$(HOSTNAME)/hardware-configuration-new.nix
@@ -172,6 +202,9 @@ hardware-scan: ## Re-scan hardware configuration
 	@printf "$(CYAN)To apply:\n$(NC)"
 	@printf "  mv hosts/$(HOSTNAME)/hardware-configuration-new.nix hosts/$(HOSTNAME)/hardware-configuration.nix\n"
 
+
+# Fix common permission issues in user directories and git repository
+# Corrects ownership of ~/.config, ~/.local, and flake git repository
 fix-permissions: ## Fix common permission issues
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🔧 Fix Permissions                        \n$(NC)"
@@ -199,6 +232,9 @@ fix-permissions: ## Fix common permission issues
 	@printf "$(BLUE)Common permission issues have been resolved.$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+
+# Fix git repository ownership issues in the flake directory
+# Corrects permissions on .git directory to allow proper git operations
 fix-git-permissions: ## Fix git repo ownership issues in flake dir
 	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \
 		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $$USER 2>/dev/null | grep -q .; then \

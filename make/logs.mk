@@ -46,6 +46,9 @@ health: ## Run comprehensive system health checks
 	@printf "\n"
 
 # --- Diagnóstico de Red ---
+
+# Comprehensive network diagnostics including DNS, connectivity, and performance tests
+# Tests DNS resolution, ping connectivity, and network throughput
 test-network: ## Run comprehensive network diagnostics
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          🌐 Network Diagnostics                    \n$(NC)"
@@ -71,6 +74,8 @@ test-network: ## Run comprehensive network diagnostics
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
+# Display comprehensive system information including versions and storage
+# Shows NixOS version, disk usage, generations, and flake inputs
 info: ## Show system information
 	@printf "$(YELLOW)⏳ Gathering system information, please wait...\n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -95,14 +100,22 @@ info: ## Show system information
 		grep -o '"lastModified":[0-9]*' | \
 		head -5 | sed 's/"lastModified"://' | sed 's/^/  /' || printf "  $(YELLOW)Unable to read$(NC)\n"
 	@printf "\n"
+
+# Show comprehensive system status (alias for git-status)
+# Displays git repository status and system overview
 status: git-status ## Show comprehensive system status (alias for git-status)
 
+# Monitor system logs in real-time using journalctl follow mode
+# Continuously displays new log entries as they are written
 watch-logs: ## Watch system logs in real-time (follow mode)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Watching System Logs                   \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Press $(GREEN)Ctrl+C$(BLUE) to exit$(NC)\n\n"
 	@journalctl -f
+
+# Display error and alert logs from the current boot session
+# Shows systemd logs with priority err and alert from current boot
 logs-boot: ## Show boot logs
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📋 Boot Logs                              \n$(NC)"
@@ -110,6 +123,9 @@ logs-boot: ## Show boot logs
 	@printf "\n$(BLUE)Showing errors and alerts from current boot...$(NC)\n\n"
 	@journalctl -b -p err..alert --no-pager | tail -50 || true
 	@printf "\n"
+
+# Display recent error-level logs from systemd journal
+# Shows the last 50 error messages with timestamps
 logs-errors: ## Show recent error logs
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📋 Recent Error Logs                      \n$(NC)"
@@ -124,6 +140,9 @@ logs-errors: ## Show recent error logs
 	@printf "\n"
 	@journalctl -p err -n 50 --no-pager || true
 	@printf "\n"
+
+# Display logs for a specific systemd service using journalctl
+# Shows recent logs for the specified service (use SVC=name parameter)
 logs-service: ## Show logs for specific service (use SVC=name)
 	@if [ -z "$(SVC)" ]; then \
 		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \

@@ -9,6 +9,8 @@
 
 # === Formato, Linting y Estructura ===
 
+# Format all .nix files in the project using nixpkgs-fmt or alejandra
+# Automatically detects which formatter is available
 format: ## Format nix files
 	@printf "$(CYAN)💅 Formatting nix files...\n$(NC)"
 	@if command -v nixpkgs-fmt >/dev/null 2>&1; then \
@@ -23,6 +25,9 @@ format: ## Format nix files
 		printf "$(BLUE)Or use: nix fmt (if configured)\n$(NC)"; \
 		exit 1; \
 	fi
+
+# Lint all .nix files using statix to find common issues
+# Helps catch potential problems before building
 lint: ## Lint nix files (requires statix)
 	@printf "$(CYAN)🔍 Linting nix files...\n$(NC)"
 	@if command -v statix >/dev/null 2>&1; then \
@@ -39,6 +44,8 @@ lint: ## Lint nix files (requires statix)
 		exit 1; \
 	fi
 
+# Display the directory structure of the configuration
+# Uses eza or tree if available, falls back to find
 tree: ## Show configuration structure
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📁 Configuration Structure                 \n$(NC)"
@@ -57,4 +64,7 @@ tree: ## Show configuration structure
 			sed 's|[^/]*/| |g'; \
 	fi
 	@printf "\n"
+
+# Alias for git-diff (deprecated, use git-diff instead)
+# Kept for backwards compatibility
 diff-config: git-diff ## Alias for git-diff (deprecated, use git-diff)
