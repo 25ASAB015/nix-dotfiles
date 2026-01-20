@@ -1202,19 +1202,19 @@ make clean
 **Cuándo usarlo:**
 - **Rutina mensual**: Como parte del mantenimiento regular del sistema
 - **Antes de actualizaciones grandes**: Libera espacio para nuevas construcciones
-- **Cuando `/nix/store` está grande**: Verifica con `make info` el tamaño del store
+- **Cuando `/nix/store` está grande**: Verifica con `make status` el tamaño del store
 - **Después de muchas instalaciones**: Limpia paquetes temporales y artefactos
 
 **Flujo recomendado:**
 ```bash
 # Ver estado actual
-make info
+make status
 
 # Limpiar
 make clean
 
 # Verificar espacio liberado
-make info
+make status
 
 # Opcional: optimizar después de limpiar
 make optimize
@@ -1275,7 +1275,7 @@ make optimize
 **Ejemplo de flujo completo:**
 ```bash
 # 1. Ver estado inicial
-make info
+make status
 
 # 2. Limpiar generaciones antiguas
 make clean
@@ -1284,7 +1284,7 @@ make clean
 make optimize
 
 # 4. Verificar espacio final
-make info
+make status
 ```
 
 **Nota importante:** Este proceso puede tomar tiempo, especialmente en stores grandes. Es seguro ejecutarlo en segundo plano, pero puede ralentizar otras operaciones de Nix mientras se ejecuta.
@@ -1309,7 +1309,7 @@ make info
 
 ```bash
 # 1. Verificar estado actual
-make info
+make status
 
 # 2. Limpiar generaciones antiguas
 make clean
@@ -1318,7 +1318,7 @@ make clean
 make optimize
 
 # 4. Verificar espacio liberado
-make info
+make status
 
 # 5. Opcional: Ver generaciones restantes
 make list-generations
@@ -1328,7 +1328,7 @@ make list-generations
 
 ```bash
 # 1. Verificar espacio crítico
-make info
+make status
 
 # 2. Limpieza agresiva pero segura
 make clean-week
@@ -1344,7 +1344,7 @@ make optimize
 
 ```bash
 # 1. Verificar estado
-make info
+make status
 
 # 2. Limpieza conservadora
 make clean-conservative
@@ -1353,7 +1353,7 @@ make clean-conservative
 make optimize
 
 # 4. Verificar
-make info
+make status
 ```
 
 ---
@@ -1361,12 +1361,12 @@ make info
 ## Mejores Prácticas
 
 1. **Limpia regularmente**: Ejecuta `make clean` al menos una vez al mes
-2. **Verifica antes y después**: Usa `make info` para ver el impacto
+2. **Verifica antes y después**: Usa `make status` para ver el impacto
 3. **Combina con optimize**: Después de limpiar, optimiza para maximizar espacio
 4. **Mantén generaciones importantes**: Si sabes que una generación es importante, no la elimines
 5. **Usa Git para historial**: Los comandos de limpieza no afectan tu historial de Git
 6. **Empieza conservador**: Si es tu primera vez, usa `make clean-conservative`
-7. **Monitorea el espacio**: Revisa periódicamente con `make info` o `df -h /nix/store`
+7. **Monitorea el espacio**: Revisa periódicamente con `make status` o `df -h /nix/store`
 
 ---
 
@@ -1386,7 +1386,7 @@ make clean-conservative
 make optimize
 
 # Ver estado del sistema
-make info
+make status
 
 # Ver generaciones disponibles
 make list-generations
@@ -1948,11 +1948,12 @@ make git-log
 <a id="cmd-system-info"></a>
 ### 📊 System Information
 
-#### `make info`
-Muestra información completa del sistema, incluyendo generaciones y uso de disco.
+#### `make status`
+
+Muestra el reporte completo del sistema (NixOS, Hardware y Flake).
 
 ```bash
-make info
+make status
 ```
 
 **Output ejemplo:**
@@ -2235,7 +2236,7 @@ make deep-clean
 **Flujo recomendado antes de usar:**
 ```bash
 # 1. Verificar que el sistema funciona perfectamente
-make info
+make status
 
 # 2. Intentar limpieza normal primero
 make clean
@@ -2243,7 +2244,7 @@ make clean
 make clean-week
 
 # 3. Verificar espacio liberado
-make info
+make status
 
 # 4. Si aún necesitas más espacio Y estás seguro:
 make deep-clean
@@ -3293,7 +3294,7 @@ nix.settings.experimental-features = [ "nix-command" "flakes" ];
 ### ❌ Error: "disk full"
 
 ```bash
-make info                # Ver espacio usado
+make status                # Ver espacio usado
 make clean               # Limpiar
 make optimize            # Optimizar store
 # Si es emergencia:
@@ -3622,7 +3623,7 @@ make git-status
 #  a9a8e70   feat: combine list-hosts and hosts-info...  15 minutes ago
 ```
 
-**Nota:** La información de System Info (Store size, Generations, Disk usage) ahora se muestra en `make info` en lugar de `make status`.
+**Nota:** La información de System Info ahora se muestra de forma organizada en `make status`.
 
 ---
 
@@ -3742,7 +3743,7 @@ make logs-service SVC=docker
 make git-log
 
 # Ver versión actual del sistema
-  make info
+  make status
 
 # Ver detalles de generación actual
 make current-generation
@@ -3826,7 +3827,7 @@ make clean-week
 make optimize
 
 # 5. Verificar resultado
-make info
+make status
 ```
 
 ---

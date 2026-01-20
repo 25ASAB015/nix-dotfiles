@@ -2,47 +2,49 @@
 # Diagnóstico y Logs
 # ============================================================================
 # Descripción: Targets para diagnóstico del sistema, logs y monitoreo
-# Targets: 8 targets
+# Targets: 7 targets
 # ============================================================================
 
-.PHONY: health test-network info status watch-logs logs-boot logs-errors logs-service
+.PHONY: health test-network status watch-logs logs-boot logs-errors logs-service
 
 # === Diagnóstico y Logs ===
 
-health: ## Run comprehensive system health checks
+health: ## Dashboard rápido de salud del sistema
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🏥 System Health Check                    \n$(NC)"
+	@printf "$(CYAN)          🏥 Dashboard de Salud                     \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	@printf "$(BLUE)1. Flake validation:$(NC) "
+	@printf "  $(BLUE)Sintaxis Flake:$(NC)    "
 	@if nix flake check . >/dev/null 2>&1; then \
-		printf "$(GREEN)✓ Passed$(NC)\n"; \
+		printf "$(GREEN)✓ OK$(NC)\n"; \
 	else \
-		printf "$(RED)✗ Failed$(NC)\n"; \
+		printf "$(RED)✗ FAIL$(NC)\n"; \
 	fi
-	@printf "$(BLUE)2. Disk space (/nix):$(NC) "
-	@df -h /nix 2>/dev/null | tail -1 | awk '{printf "%s used (%s free)\n", $$5, $$4}' || printf "$(YELLOW)N/A$(NC)\n"
-	@printf "$(BLUE)3. Generations count:$(NC) "
-	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l | awk '{print $$1 " generations"}' || printf "$(YELLOW)N/A$(NC)\n"
-	@printf "$(BLUE)4. Boot entries:$(NC) "
-	@ls /boot/loader/entries/ 2>/dev/null | wc -l | awk '{print $$1 " entries"}' || printf "$(YELLOW)N/A$(NC)\n"
-	@printf "$(BLUE)5. Failed services:$(NC) "
+	@printf "  $(BLUE)Espacio /nix:$(NC)      "
+	@df -h /nix 2>/dev/null | tail -1 | awk '{ \
+		usage=$$5; sub(/%/, "", usage); \
+		if (usage > 90) color="$(RED)"; \
+		else if (usage > 75) color="$(YELLOW)"; \
+		else color="$(GREEN)"; \
+		printf "%s%s usado (%s libre)$(NC)\n", color, $$5, $$4 \
+	}'
+	@printf "  $(BLUE)Servicios:$(NC)          "
 	@FAILED=$$(systemctl --failed --no-legend 2>/dev/null | wc -l); \
 	if [ $$FAILED -eq 0 ]; then \
-		printf "$(GREEN)✓ None$(NC)\n"; \
+		printf "$(GREEN)✓ OK$(NC)\n"; \
 	else \
-		printf "$(RED)✗ $$FAILED failed$(NC)\n"; \
-		printf "$(YELLOW)  Run 'systemctl --failed' for details$(NC)\n"; \
+		printf "$(RED)✗ $$FAILED fallidos$(NC)\n"; \
 	fi
-	@printf "$(BLUE)6. Git status:$(NC) "
+	@printf "  $(BLUE)Git Status:$(NC)         "
 	@if git diff-index --quiet HEAD -- 2>/dev/null; then \
 		printf "$(GREEN)✓ Clean$(NC)\n"; \
 	else \
-		printf "$(YELLOW)⚠ Uncommitted changes$(NC)\n"; \
+		printf "$(YELLOW)⚠ Pendiente$(NC)\n"; \
 	fi
+	@printf "  $(BLUE)Generaciones:$(NC)       "
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l | awk '{print $$1}'
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Health check complete$(NC)\n"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Verificación completada$(NC)\n"
 	@printf "\n"
 
 # --- Diagnóstico de Red ---
@@ -74,68 +76,43 @@ test-network: ## Run comprehensive network diagnostics
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
-# Display comprehensive system information including versions and storage
-# Shows NixOS version, disk usage, generations, and flake inputs
-info: ## Show system information
-	@printf "$(YELLOW)⏳ Gathering system information, please wait...\n$(NC)"
+# Show comprehensive system status including versions, storage, and generations
+status: ## Reporte completo del sistema (NixOS, Hardware, Flake)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)           💻 System Information                    \n$(NC)"
+	@printf "$(CYAN)          📊 Reporte de Estado del Sistema          \n$(NC)"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n$(BLUE)Hostname:$(NC)             $(GREEN)$(HOSTNAME)$(NC)\n"
-	@printf "$(BLUE)NixOS Version:$(NC)        $(GREEN)$(shell nixos-version 2>/dev/null | cut -d' ' -f1 || echo 'N/A')$(NC)\n"
-	@printf "$(BLUE)Flake Location:$(NC)       $(GREEN)$(PWD)$(NC)\n"
-	@printf "\n$(BLUE)💾 System Info$(NC)\n"
-	@printf "$(BLUE)Store Size:$(NC)           $(GREEN)$(shell du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')$(NC)\n"
-	@CURRENT_GEN_INFO=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1 " (" $$2 " " $$3 ")"}' || echo 'N/A'); \
-	CURRENT_GEN=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1}' || echo 'N/A'); \
-	TOTAL_GENS=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo 'N/A'); \
-	DISK_USAGE=$$(df -h /nix 2>/dev/null | tail -1 | awk '{print $$5}' || echo 'N/A'); \
-	printf "$(BLUE)Current Generation:$(NC)   $(GREEN)%s$(NC)\n" "$$CURRENT_GEN_INFO"; \
-	printf "$(BLUE)Total Generations:$(NC)    $(GREEN)%s$(NC)\n" "$$TOTAL_GENS"; \
-	printf "$(BLUE)Disk Usage (/nix):$(NC)    $(GREEN)%s$(NC)\n" "$$DISK_USAGE"
-	@printf "\n$(BLUE)🔄 Recent Generations$(NC)\n"
-	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -5 | sed 's/^/  /' || printf "  $(YELLOW)None$(NC)\n"
-	@printf "\n$(BLUE)📦 Flake Inputs Versions$(NC)\n"
-	@nix flake metadata --json 2>/dev/null | \
-		grep -o '"lastModified":[0-9]*' | \
-		head -5 | sed 's/"lastModified"://' | sed 's/^/  /' || printf "  $(YELLOW)Unable to read$(NC)\n"
-	@printf "\n"
-
-# Show comprehensive NixOS system status including generations and flake state
-# Displays current generation, recent generations, and flake input status
-status: ## Show comprehensive system status (NixOS generations + flake state)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📊 NixOS System Status                    \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@CURRENT_GEN_INFO=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1 " (" $$2 " " $$3 ")"}' || echo 'N/A'); \
-	CURRENT_GEN=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1}' || echo 'N/A'); \
-	TOTAL_GENS=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo 'N/A'); \
-	printf "$(BLUE)Current Generation:$(NC)   $(GREEN)%s$(NC)\n" "$$CURRENT_GEN_INFO"; \
-	printf "$(BLUE)Total Generations:$(NC)    $(GREEN)%s$(NC)\n" "$$TOTAL_GENS"
-	@printf "\n$(BLUE)📋 Recent Generations (last 5):$(NC)\n"
-	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -5 | sed 's/^/  /' || printf "  $(YELLOW)None$(NC)\n"
-	@printf "\n$(BLUE)🔄 Flake Status:$(NC)\n"
+	@printf "\n$(PURPLE)📍 Información de Base$(NC)\n"
+	@printf "  $(BLUE)Hostname:$(NC)     $(GREEN)$(HOSTNAME)$(NC)\n"
+	@printf "  $(BLUE)NixOS:$(NC)        $(GREEN)$$(nixos-version 2>/dev/null | cut -d' ' -f1 || echo 'N/A')$(NC)\n"
+	@printf "  $(BLUE)Flake:$(NC)        $(GREEN)$(PWD)$(NC)\n"
+	@printf "  $(BLUE)Store Size:$(NC)   $(GREEN)$$(du -sh /nix/store 2>/dev/null | cut -f1 || echo 'N/A')$(NC)\n"
+	@printf "\n$(PURPLE)💾 Almacenamiento y Generaciones$(NC)\n"
+	@DISK=$$(df -h /nix 2>/dev/null | tail -1 | awk '{print $$5 " usado (" $$4 " libre)"}' || echo 'N/A'); \
+	printf "  $(BLUE)Disco (/nix):$(NC) $(GREEN)%s$(NC)\n" "$$DISK"; \
+	TOTAL_GENS=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | wc -l || echo '0'); \
+	CURRENT_GEN=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -1 | awk '{print $$1 " (" $$2 " " $$3 ")"}' || echo 'N/A'); \
+	printf "  $(BLUE)Total Gens:$(NC)   $(GREEN)%s$(NC)\n" "$$TOTAL_GENS"; \
+	printf "  $(BLUE)Generación:$(NC)   $(GREEN)%s$(NC)\n" "$$CURRENT_GEN"; \
+	printf "\n$(BLUE)  Últimas 5 generaciones:$(NC)\n"
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system 2>/dev/null | tail -5 | sed 's/^/    /' || printf "    $(YELLOW)N/A$(NC)\n"
+	@printf "\n$(PURPLE)🔄 Estado de Componentes$(NC)\n"
+	@printf "  $(BLUE)Git Repo:$(NC)     "
 	@if git diff-index --quiet HEAD -- 2>/dev/null; then \
-		printf "  $(GREEN)✓ Clean$(NC) - No uncommitted changes\n"; \
+		printf "$(GREEN)✓ Clean$(NC)\n"; \
 	else \
-		printf "  $(YELLOW)⚠ Uncommitted changes$(NC)\n"; \
+		printf "$(YELLOW)⚠ Cambios pendientes$(NC)\n"; \
 	fi
-	@printf "$(BLUE)Flake Location:$(NC)       $(GREEN)$(PWD)$(NC)\n"
-	@printf "\n$(BLUE)💾 Storage:$(NC)\n"
-	@DISK_USAGE=$$(df -h /nix 2>/dev/null | tail -1 | awk '{print $$5 " used (" $$4 " free)"}' || echo 'N/A'); \
-	printf "  /nix: $(GREEN)%s$(NC)\n" "$$DISK_USAGE"
-	@printf "\n$(BLUE)🔧 Failed Services:$(NC) "
+	@printf "  $(BLUE)Servicios:$(NC)    "
 	@FAILED=$$(systemctl --failed --no-legend 2>/dev/null | wc -l); \
 	if [ $$FAILED -eq 0 ]; then \
-		printf "$(GREEN)✓ None$(NC)\n"; \
+		printf "$(GREEN)✓ OK$(NC)\n"; \
 	else \
-		printf "$(RED)✗ $$FAILED failed$(NC)\n"; \
-		printf "$(YELLOW)  Run 'systemctl --failed' for details$(NC)\n"; \
+		printf "$(RED)✗ $$FAILED fallidos$(NC) (ejecuta 'systemctl --failed')\n"; \
 	fi
+	@printf "\n$(PURPLE)📦 Flake Inputs (Top 5)$(NC)\n"
+	@nix flake metadata --json 2>/dev/null | grep -o '"lastModified":[0-9]*' | head -5 | sed 's/"lastModified"://' | sed 's/^/    /' || printf "    $(YELLOW)No disponible$(NC)\n"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ System status complete$(NC)\n"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ Reporte finalizado$(NC)\n"
 	@printf "\n"
 
 

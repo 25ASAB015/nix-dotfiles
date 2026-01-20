@@ -12,17 +12,20 @@ Comandos para diagnóstico del sistema, health checks y visualización de logs.
 ## Comandos Disponibles
 
 ### `make health`
-Ejecuta health checks comprehensivos del sistema.
+Muestra un dashboard rápido con el estado de salud del sistema.
 
 ```bash
 make health
 ```
 
 **Qué verifica:**
-- Estado del sistema NixOS
-- Servicios críticos
-- Espacio en disco
-- Configuración de red
+- Sintaxis y evaluación del Flake
+- Espacio en disco en `/nix` (con alertas de color)
+- Servicios fallidos de systemd
+- Estado del repositorio Git
+- Contador de generaciones de NixOS
+
+**Cuándo usarlo:** Como primer paso rápido para verificar que todo esté en orden.
 
 ---
 
@@ -43,63 +46,58 @@ make test-network
 
 ---
 
-### `make info`
-Muestra información del sistema (incluyendo versiones).
-
-```bash
-make info
-```
-
-**Qué muestra:**
-- Versión de NixOS
-- Kernel
-- Hostname
-- Uptime
-- Información de hardware
-
----
-
 ### `make status`
-
-Muestra el estado completo del sistema NixOS incluyendo generaciones y estado del flake.
+Reporte comprehensivo del sistema (Hardware, NixOS y Flake).
 
 ```bash
 make status
 ```
 
 **Información mostrada:**
-- Generación actual y total de generaciones
-- Últimas 5 generaciones con fechas
-- Estado del flake (cambios sin commitear)
-- Uso de almacenamiento en `/nix`
-- Servicios systemd fallidos
+- **Base:** Hostname, Versión de NixOS, ubicación del Flake y tamaño del Nix Store.
+- **Almacenamiento:** Uso detallado de `/nix` y resumen de generaciones.
+- **Historial:** Listado de las últimas 5 generaciones del sistema.
+- **Componentes:** Estado de salud del repo Git y servicios del sistema.
+- **Metadata:** Versiones (timestamps) de los principales inputs del Flake.
 
 **Salida esperada:**
 ```
 ════════════════════════════════════════════════════
-          📊 NixOS System Status                    
+          📊 Reporte de Estado del Sistema          
 ════════════════════════════════════════════════════
 
-Current Generation:   186 (2026-01-19 20:00)
-Total Generations:    186
+📍 Información de Base
+  Hostname:     hydenix
+  NixOS:        24.11.2026
+  Flake:        /home/ludus/Dotfiles
+  Store Size:   45G
 
-📋 Recent Generations (last 5):
-  182   2026-01-18 15:30:00
-  183   2026-01-18 18:45:00
-  184   2026-01-19 10:15:00
-  185   2026-01-19 16:20:00
-  186   2026-01-19 20:00:00   (current)
+💾 Almacenamiento y Generaciones
+  Disco (/nix): 45% usado (120G libre)
+  Total Gens:   186
+  Generación:   186 (2026-01-19 20:00)
 
-🔄 Flake Status:
-  ✓ Clean - No uncommitted changes
+  Últimas 5 generaciones:
+    182   2026-01-18 15:30:00
+    183   2026-01-18 18:45:00
+    184   2026-01-19 10:15:00
+    185   2026-01-19 16:20:00
+    186   2026-01-19 20:00:00
 
-💾 Storage:
-  /nix: 45% used (120G free)
+🔄 Estado de Componentes
+  Git Repo:     ✓ Clean
+  Servicios:    ✓ OK
 
-🔧 Failed Services: ✓ None
+📦 Flake Inputs (Top 5)
+    1737292800
+    1737292800
+    ...
+
+════════════════════════════════════════════════════
+✅ Reporte finalizado
 ```
 
-**Cuándo usarlo:** Para obtener un resumen rápido del estado del sistema NixOS.
+**Cuándo usarlo:** Cuando necesites un diagnóstico profundo o detalles específicos de la configuración activa.
 
 ---
 
@@ -156,8 +154,8 @@ make logs-service SVC=networkmanager
 
 ### Diagnóstico General
 ```bash
-make health        # Health check general
-make info          # Información del sistema
+make health        # Dashboard rápido de salud
+make status        # Reporte completo del sistema
 ```
 
 ### Problemas de Red

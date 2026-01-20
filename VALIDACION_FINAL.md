@@ -14,7 +14,7 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 
 | Métrica | Valor | Estado |
 |---------|-------|--------|
-| **Targets totales** | 66 | ✅ Completo |
+| **Targets totales** | 64 | ✅ Completo |
 | **Módulos creados** | 9 | ✅ Completo |
 | **Categorías** | 9 | ✅ Orden preservado |
 | **Variables globales** | 10 | ✅ Funcionando |
@@ -26,7 +26,7 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 
 ## ✅ 1. Verificación de Targets
 
-### Inventario Completo (66 targets)
+### Inventario Completo (64 targets)
 
 #### Ayuda y Documentación (7 targets)
 - `help` - Show this help message
@@ -59,7 +59,7 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 - `clean-result` - Remove result symlinks
 - `fix-store` - Attempt to repair nix store
 
-#### Actualizaciones y Flakes (9 targets)
+#### Actualizaciones y Flakes (8 targets)
 - `update` - Update flake inputs
 - `update-nixpkgs` - Update only nixpkgs input
 - `update-hydenix` - Update only hydenix input
@@ -86,19 +86,17 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 - `sync` - Total synchronization: add, commit, push, and switch
 - `git-log` - Show recent changes from git log
 
-#### Diagnóstico y Logs (8 targets)
-- `health` - Run comprehensive system health checks
+#### Diagnóstico y Logs (7 targets)
+- `health` - Dashboard rápido de salud del sistema
 - `test-network` - Run comprehensive network diagnostics
-- `info` - Show system information
-- `status` - Show comprehensive system status
+- `status` - Reporte completo del sistema (NixOS, Hardware, Flake)
 - `watch-logs` - Watch system logs in real-time
 - `logs-boot` - Show boot logs
 - `logs-errors` - Show recent error logs
 - `logs-service` - Show logs for specific service
 
-#### Análisis y Desarrollo (8 targets)
+#### Análisis y Desarrollo (7 targets)
 - `list-hosts` - List available host configurations
-- `hosts-info` - Show info about all configured hosts
 - `search` - Search for packages in nixpkgs
 - `search-installed` - Search in currently installed packages
 - `repl` - Start nix repl with flake
@@ -106,14 +104,15 @@ El Makefile ha sido modularizado exitosamente manteniendo **100% de compatibilid
 - `vm` - Build and run VM
 - `closure-size` - Show closure size of current system
 
-#### Formato, Linting y Estructura (3 targets)
+#### Formato, Linting y Estructura (4 targets)
 - `format` - Format nix files
 - `lint` - Lint nix files (requires statix)
 - `tree` - Show configuration structure
+- `diff-config` - Show diff between current and disk config
 
 ### Comparación con Inventario Original
 
-✅ **Resultado:** 68 targets inventariados en Paso 1 = 68 targets en Makefile modular  
+✅ **Resultado:** 64 targets inventariados = 64 targets en Makefile modular  
 ✅ **Targets perdidos:** 0  
 ✅ **Targets duplicados:** 0
 
@@ -211,8 +210,6 @@ include make/git.mk
 include make/logs.mk
 include make/dev.mk
 include make/format.mk
-include make/reports.mk
-include make/templates.mk
 ```
 
 ✅ **Resultado:** Todos los includes funcionan correctamente
@@ -292,7 +289,7 @@ Todos los módulos tienen cabecera estándar:
 
 ### Criterio 2: Todos los targets existen y funcionan igual
 
-✅ **CUMPLIDO** - 68/68 targets presentes y funcionales
+✅ **CUMPLIDO** - 64/64 targets presentes y funcionales
 
 ### Criterio 3: Los módulos `.mk` respetan el orden original
 
@@ -361,7 +358,7 @@ Todos los módulos tienen cabecera estándar:
 
 El Makefile ha sido modularizado exitosamente cumpliendo **todos los criterios de aceptación**:
 
-- ✅ 68 targets preservados sin pérdidas
+- ✅ 64 targets preservados y optimizados
 - ✅ Orden de categorías intacto
 - ✅ Documentación sincronizada y completa
 - ✅ Sin errores de sintaxis

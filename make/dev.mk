@@ -2,7 +2,7 @@
 # Análisis y Desarrollo
 # ============================================================================
 # Descripción: Targets para desarrollo, búsqueda de paquetes y análisis
-# Targets: 8 targets
+# Targets: 7 targets
 # ============================================================================
 
 .PHONY: list-hosts search search-installed repl shell vm closure-size
