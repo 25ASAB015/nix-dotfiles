@@ -23,7 +23,11 @@ export default defineConfig({
 						{ label: 'Navigation', slug: 'navigation' },
 						{ label: 'Themes', slug: 'themes' },
 						{ label: 'Unified clipboard', slug: 'unified-clipboard' },
-						{ label: 'Hotkeys', slug: 'hotkeys' },
+						{
+							label: 'Hotkeys',
+							autogenerate: { directory: 'hotkeys' },
+							collapsed: true,
+						},
 						{ label: 'The Applications', slug: 'the-applications' },
 						{ label: 'Terminal', slug: 'terminal' },
 						{ label: 'Neovim', slug: 'neovim' },
