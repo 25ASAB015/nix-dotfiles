@@ -3,6 +3,8 @@ title: Hotkeys
 description: Índice de atajos de teclado del sistema.
 ---
 
+import { CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
+
 # Hotkeys
 
 Esta sección documenta los atajos de teclado configurados en Hydenix (Hyprland).
@@ -15,6 +17,64 @@ Los atajos se generan desde los dotfiles en `~/Dotfiles`.
 - `$mainMod` = `Super`.
 - `$TERMINAL`, `$EDITOR`, `$EXPLORER`, `$BROWSER` se toman de tu config de Hypr.
 
-## Contenido
+## Categorías de Atajos
 
-Elige una categoría en la barra lateral para ver los atajos correspondientes.
+<CardGrid>
+  <LinkCard
+    title="Window Management"
+    description="Controles básicos, foco, redimensionado, splits y grupos."
+    href="./01-window-management"
+  />
+  
+  <LinkCard
+    title="Launchers"
+    description="Lanzadores de apps, menús Rofi y selectores."
+    href="./02-launchers"
+  />
+
+  <LinkCard
+    title="Clipboard"
+    description="Gestión del portapapeles universal y comandos de cortar/pegar."
+    href="./03-clipboard"
+  />
+
+  <LinkCard
+    title="Hardware Controls"
+    description="Control de audio, medios y brillo de pantalla."
+    href="./04-hardware"
+  />
+
+  <LinkCard
+    title="Utilities"
+    description="Capturas de pantalla, modo de juego y utilidades del sistema."
+    href="./05-utilities"
+  />
+
+  <LinkCard
+    title="Theming"
+    description="Gestión de temas, wallpapers y notificaciones."
+    href="./06-theming"
+  />
+
+  <LinkCard
+    title="Workspaces"
+    description="Navegación y manipulación de áreas de trabajo."
+    href="./07-workspaces"
+  />
+
+  <LinkCard
+    title="Input & Scripts"
+    description="Métodos de entrada (FCITX), scripts y grabación."
+    href="./08-input-scripts"
+  />
+
+  <LinkCard
+    title="Terminal Ecosystem"
+    description="Atajos específicos de Ghostty, Fish y herramientas CLI."
+    href="./09-terminal"
+  />
+</CardGrid>
+
+<Aside type="tip" title="Tip">
+  Usa la barra lateral para navegar rápidamente entre categorías específicas.
+</Aside>
