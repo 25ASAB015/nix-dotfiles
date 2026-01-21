@@ -11,8 +11,10 @@
 
 # Build and activate new system configuration for the current hostname
 sys-apply: ## Build and switch to new configuration
-	@printf "\n$(BLUE)==================== Apply ====================\n$(NC)"
-	@printf "$(BLUE)🔄 Git add, build y switch (apply)...\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🔄 Apply (Build & Switch)              $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@$(MAKE) --no-print-directory sys-fix-git
 	@if [ "$$(id -u)" -eq 0 ]; then \
 		if [ -n "$$SUDO_USER" ]; then \
@@ -33,9 +35,10 @@ sys-apply-safe: sys-check sys-apply ## Validate then switch (safest option)
 
 # Fast rebuild skipping internal nixos-rebuild checks for speed
 sys-apply-fast: ## Quick rebuild (skip checks)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          ⚡ Rebuild Rápido (Apply Fast)            \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            ⚡ Rebuild Rápido (Apply Fast)         $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Ejecutando switch rápido omitiendo verificaciones...\n$(NC)"
 	@printf "$(YELLOW)⚠️  Este comando usa '--fast' para acelerar el proceso.\n$(NC)"
@@ -50,14 +53,19 @@ sys-apply-fast: ## Quick rebuild (skip checks)
 
 # Build and test configuration without activating it
 sys-test: ## Build and test configuration (no switch)
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🧪 Test Configuration                  $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(YELLOW)🧪 Testing configuration (no switch)...\n$(NC)"
 	sudo nixos-rebuild test --flake $(FLAKE_DIR)#$(HOSTNAME)
 
 # Build configuration without activating it and show build statistics
 sys-build: ## Build configuration without switching
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🔨 Build Configuration                    \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🔨 Build Configuration                 $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Building configuration without applying changes...$(NC)\n"
 	@printf "$(YELLOW)This will compile but not activate the new generation.$(NC)\n"
@@ -90,9 +98,10 @@ sys-build: ## Build configuration without switching
 
 # Preview what would be built or changed without actually building
 sys-dry-run: ## Show what would be built/changed
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🔍 Dry Run - Preview Changes             \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🔍 Dry Run - Preview Changes           $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Showing what would be built/changed without applying...$(NC)\n\n"
 	@sudo nixos-rebuild dry-run --flake $(FLAKE_DIR)#$(HOSTNAME)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -102,9 +111,10 @@ sys-dry-run: ## Show what would be built/changed
 
 # Build configuration and set it as default for next boot
 sys-boot: ## Build and set as boot default (no immediate switch)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🥾 Configurar para Próximo Arranque      \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🥾 Configurar para Próximo Arranque    $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Compilando y configurando para el próximo arranque...\n$(NC)"
 	@printf "$(YELLOW)Los cambios se aplicarán al reiniciar el sistema.\n$(NC)"
@@ -119,9 +129,10 @@ sys-boot: ## Build and set as boot default (no immediate switch)
 
 # Validate flake syntax and configuration before applying changes
 sys-check: ## Validate configuration before applying
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🔍 Validation Checks (sys-check)           \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🔍 Validation Checks (sys-check)       $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)1/3 Checking flake syntax...$(NC) "
 	@if nix flake check $(FLAKE_DIR) >/dev/null 2>&1; then \
@@ -156,14 +167,19 @@ sys-check: ## Validate configuration before applying
 
 # Rebuild with maximum verbosity and debug tracing enabled
 sys-debug: ## Rebuild with verbose output and trace
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🐛 Debug Rebuild (Verbose)             $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(RED)🐛 Debug rebuild with full trace...\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose
 
 # Emergency rebuild with maximum debugging and cache disabled
 sys-force: ## Emergency rebuild with maximum verbosity
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🚨 Rebuild Forzado (Debug Extremo)         \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🚨 Rebuild Forzado (Debug Extremo)     $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(RED)⚠️  MODO DE RECONSTRUCCIÓN FORZADA ACTIVADO\n$(NC)"
 	@printf "$(YELLOW)Este comando ejecuta rebuild con máxima verbosidad y debugging.\n$(NC)"
@@ -180,9 +196,10 @@ sys-force: ## Emergency rebuild with maximum verbosity
 
 # Complete workflow: stage, commit, push, and apply (deploy)
 sys-deploy: ## Total sync (add + commit + push + apply)
-	@printf "$(CYAN) ════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)              🔄 Total Deployment (Ship it!)         \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🔄 Total Deployment (Ship it!)         $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)Executing complete deployment workflow:$(NC)\n"
 	@printf "  1. Stage changes (git add)\n"
 	@printf "  2. Commit changes (timestamped)\n"
@@ -202,6 +219,10 @@ sys-deploy: ## Total sync (add + commit + push + apply)
 
 # Generate new hardware configuration for the current hostname
 sys-hw-scan: ## Re-scan hardware configuration
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🔧 Hardware Scan                       $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(BLUE)🔧 Scanning hardware configuration for $(HOSTNAME)...\n$(NC)"
 	@sudo nixos-generate-config --show-hardware-config > hosts/$(HOSTNAME)/hardware-configuration-new.nix
 	@printf "$(YELLOW)New hardware config saved as:\n$(NC)"
@@ -213,9 +234,10 @@ sys-hw-scan: ## Re-scan hardware configuration
 
 # Fix common permission issues in user directories and git repository
 sys-doctor: ## Fix common permission issues (doctor)
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          👨‍⚕️ System Doctor (Permissions)           \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            👨‍⚕️ System Doctor (Permissions)        $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Fixing common permission issues...$(NC)\n"
 	@printf "$(YELLOW)This requires sudo privileges.$(NC)\n"
@@ -242,6 +264,10 @@ sys-doctor: ## Fix common permission issues (doctor)
 
 # Fix git repository ownership issues in the flake directory
 sys-fix-git: ## Fix git repo ownership issues in flake dir
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🔧 Fix Git Permissions                 $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \
 		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $USER 2>/dev/null | grep -q .; then \
 			printf "  $(YELLOW)Fixing ownership in $(FLAKE_DIR)/.git...$(NC) "; \

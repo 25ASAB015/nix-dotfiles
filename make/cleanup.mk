@@ -13,17 +13,18 @@
 # Usage: make sys-gc [DAYS=n]
 DAYS ?= 30
 sys-gc: ## Clean build artifacts older than specified days (default: 30)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ "$(DAYS)" -eq 7 ]; then \
-		printf "$(CYAN)          🧹 Limpieza Semanal (7 días)              \n$(NC)"; \
+		printf "$(CYAN)          🧹 Limpieza Semanal (7 días)             $(NC)\n"; \
 	elif [ "$(DAYS)" -eq 30 ]; then \
-		printf "$(CYAN)          🧹 Limpieza Estándar (30 días)            \n$(NC)"; \
+		printf "$(CYAN)          🧹 Limpieza Estándar (30 días)           $(NC)\n"; \
 	elif [ "$(DAYS)" -eq 90 ]; then \
-		printf "$(CYAN)          🧹 Limpieza Conservadora (90 días)         \n$(NC)"; \
+		printf "$(CYAN)          🧹 Limpieza Conservadora (90 días)       $(NC)\n"; \
 	else \
-		printf "$(CYAN)          🧹 Limpieza del Sistema ($(DAYS) días)           \n$(NC)"; \
+		printf "$(CYAN)          🧹 Limpieza del Sistema ($(DAYS) días)          $(NC)\n"; \
 	fi
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Limpiando artefactos de construcción mayores a $(DAYS) días...\n$(NC)"
 	@if [ "$(DAYS)" -lt 15 ]; then \
@@ -44,9 +45,10 @@ sys-gc: ## Clean build artifacts older than specified days (default: 30)
 # Deep clean - removes ALL old generations (IRREVERSIBLE!)
 # Use with extreme caution - requires confirmation
 sys-purge: ## Aggressive cleanup (removes ALL old generations)
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🗑️  Purga Profunda (IRREVERSIBLE)           \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🗑️  Purga Profunda (IRREVERSIBLE)          $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(RED)⚠️  ADVERTENCIA CRÍTICA ⚠️\n$(NC)"
 	@printf "$(RED)Este comando eliminará TODAS las generaciones antiguas del sistema.\n$(NC)"
@@ -81,9 +83,10 @@ sys-purge: ## Aggressive cleanup (removes ALL old generations)
 
 # Optimize Nix store by creating hardlinks for identical files
 sys-optimize: ## Optimize nix store
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🚀 Optimización del Nix Store             \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🚀 Optimización del Nix Store            $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Optimizando el Nix store...\n$(NC)"
 	@printf "$(YELLOW)Esto encontrará archivos idénticos y los convertirá en hardlinks.\n$(NC)"
@@ -99,9 +102,10 @@ sys-optimize: ## Optimize nix store
 
 # Remove result symlinks created by nix build commands
 sys-clean-result: ## Remove result symlinks
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🧹 Clean Result Symlinks                  \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🧹 Clean Result Symlinks                 $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Searching for result symlinks...$(NC)\n"
 	@printf "$(YELLOW)These symlinks are created by Nix builds and can be safely removed.$(NC)\n"
@@ -132,9 +136,10 @@ sys-clean-result: ## Remove result symlinks
 
 # Verify and repair the Nix store for corruption
 sys-fix-store: ## Attempt to repair nix store
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          🔧 Repair Nix Store                       \n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          🔧 Repair Nix Store                      $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)Verifying and repairing Nix store...$(NC)\n"
 	@printf "$(YELLOW)⚠️  This may take a long time (minutes to hours) on large systems.$(NC)\n"

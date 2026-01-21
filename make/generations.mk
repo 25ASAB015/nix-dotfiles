@@ -11,9 +11,10 @@
 
 # List all system generations with details
 gen-list: ## List all system generations
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📜 Generaciones del Sistema               \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            📜 Generaciones del Sistema            $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
@@ -23,9 +24,10 @@ gen-list: ## List all system generations
 
 # Rollback to the previous generation
 gen-rollback: ## Rollback to previous generation
-	@printf "\n$(RED)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(RED)          ⏪ Rollback de Configuración              \n$(NC)"
-	@printf "\n$(RED)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(RED)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(RED)            ⏪ Rollback de Configuración           $(NC)"
+	@printf "\n$(RED)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(YELLOW)¿Estás seguro de que quieres volver a la generación anterior?\n$(NC)"
 	@printf "$(BLUE)Esta acción cambiará la configuración actual inmediatamente.\n$(NC)"
@@ -46,23 +48,25 @@ gen-rollback: ## Rollback to previous generation
 
 # Compare any two generations (requires GEN1 and GEN2 variables)
 gen-diff: ## Compare two generations (use GEN1=n GEN2=m)
-	@if [ -z "$(GEN1)" ] || [ -z "$(GEN2)" ]; then \
+	@if [ -z "$$(GEN1)" ] || [ -z "$$(GEN2)" ]; then \
 		printf "\n$(RED)Error: Se requieren GEN1 y GEN2$(NC)\n"; \
 		printf "Uso: make gen-diff GEN1=101 GEN2=102\n\n"; \
 		exit 1; \
 	fi
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📊 Diferencias: Gen $(GEN1) vs $(GEN2)          \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            📊 Diferencias: Gen $$(GEN1) vs $$(GEN2)      $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Calculando diferencias de paquetes...$(NC)\n"
 	nix-diff /nix/var/nix/profiles/system-$(GEN1)-link /nix/var/nix/profiles/system-$(GEN2)-link
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 
 # Compare current generation with the previous one
 gen-diff-current: ## Compare current generation with previous
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📊 Cambios en la última generación        \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            📊 Cambios en la última generación     $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@CURRENT=$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'); \
 	PREVIOUS=$((CURRENT - 1)); \
 	if [ $PREVIOUS -gt 0 ]; then \
@@ -75,9 +79,10 @@ gen-diff-current: ## Compare current generation with previous
 
 # Show disk usage for all generations
 gen-sizes: ## Show size of generations
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          💾 Tamaño de Generaciones                 \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            💾 Tamaño de Generaciones              $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | \
 	awk '{print $1}' | while read -r gen; do \
@@ -88,9 +93,10 @@ gen-sizes: ## Show size of generations
 
 # Show details of the current generation
 gen-current: ## Show current generation info
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📌 Generación Actual                       \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            📌 Generación Actual                   $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"

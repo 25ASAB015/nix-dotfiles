@@ -12,9 +12,10 @@
 # Main help target - shows all available commands organized by category
 # Uses AWK to parse inline comments (##) and display them in a formatted menu
 help: ## Show this help message
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)      Ayuda Avanzada y Workflows (Makefile)        \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)      Ayuda Avanzada y Workflows (Makefile)        $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@awk -v GREEN="$(GREEN)" -v BLUE="$(BLUE)" -v NC="$(NC)" 'BEGIN {FS=":.*##"} /^[a-zA-Z0-9_-]+:.*##/ {desc[$$1]=$$2} \
 	function print_cat(title, list,    n,i,cmd) { \
 		printf "\n%s%s%s\n", BLUE, title, NC; \
@@ -49,9 +50,10 @@ help: ## Show this help message
 # Show detailed usage examples for commands that require parameters
 # Organized by category with practical examples
 help-examples: ## Show commands with usage examples
-	@printf "$(CYAN)╔════════════════════════════════════════════════════╗\n$(NC)"
-	@printf "$(CYAN)║        NixOS Commands with Usage Examples          ║\n$(NC)"
-	@printf "$(CYAN)╚════════════════════════════════════════════════════╝\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)        NixOS Commands with Usage Examples         $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)💡 Tip: Commands without parameters can be run directly$(NC)\n"
 	@printf "$(PURPLE)   Commands with parameters are shown with examples below$(NC)\n\n"
 	@printf "$(GREEN)═══ 🔨 Build & Deploy ═══$(NC)\n"
@@ -109,9 +111,10 @@ help-examples: ## Show commands with usage examples
 # List all available documentation files in the project
 # Scans for README, tutorials, and docs/ directory
 docs-local: ## Show local documentation files
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📚 Local Documentation                    \n$(NC)"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)          📚 Local Documentation                   $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@if [ -f "README.md" ]; then printf "  $(GREEN)✓$(NC) $(BLUE)README.md$(NC)\n"; fi
 	@if [ -d "docs/" ]; then printf "  $(GREEN)✓$(NC) $(BLUE)docs/$(NC)\n"; fi
@@ -121,21 +124,37 @@ docs-local: ## Show local documentation files
 # Start Astro documentation development server
 # Automatically installs dependencies if needed
 doc-dev: ## Run documentation dev server
-	@printf "$(BLUE)Iniciando servidor de desarrollo de docs...\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)        Iniciando servidor de desarrollo...        $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(BLUE)Iniciando servidor de desarrollo de docs...$(NC)\n"
 	@cd docs && npm run dev
 
 # Build static documentation site
 doc-build: ## Build documentation site
-	@printf "$(BLUE)Construyendo documentación estática...\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)        Construyendo documentación estática...     $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(BLUE)Construyendo documentación estática...$(NC)\n"
 	@cd docs && npm run build
 
 # Install documentation dependencies
 # Run this before using docs-dev or docs-build
 doc-install: ## Install documentation dependencies
-	@printf "$(BLUE)Instalando dependencias de docs...\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)        Instalando dependencias de docs...         $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(BLUE)Instalando dependencias de docs...$(NC)\n"
 	@cd docs && npm install
 
 # Clean documentation build artifacts
 doc-clean: ## Clean documentation artifacts
-	@printf "$(BLUE)Limpiando artefactos de docs...\n$(NC)"
+	@printf "\n"
+	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)        Limpiando artefactos de docs...            $(NC)"
+	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(BLUE)Limpiando artefactos de docs...$(NC)\n"
 	@rm -rf docs/dist docs/node_modules
