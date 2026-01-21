@@ -36,7 +36,7 @@ done
 
 
 # Show in rofi with system theme
-selected=$(echo -e "$script_list" | rofi -dmenu -p " Scripts" -i)
+selected=$(echo -e "$script_list" | rofi -dmenu -theme style_1 -p " Scripts" -i)
 
 # Exit if nothing selected
 [[ -z "$selected" ]] && exit 0
