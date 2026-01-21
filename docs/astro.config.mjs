@@ -40,6 +40,7 @@ export default defineConfig({
 						{ label: 'Windows VM', slug: 'windows-vm' },
 						{ label: 'Other Packages', slug: 'other-packages' },
 						{ label: 'Configuration', slug: 'configuration' },
+						{ label: 'Weather', slug: 'weather' },
 						{
 							label: 'Makefile',
 							collapsed: false,

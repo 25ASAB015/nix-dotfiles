@@ -1,0 +1,67 @@
+---
+title: Weather Configuration
+description: How to configure and troubleshoot the weather module in Waybar
+---
+
+This section explains how the Weather module in Waybar works, how to configure your location, and how to troubleshoot common issues.
+
+## How it Works
+
+The weather module is a **custom module** in Waybar defined in `resources/config/custom-weather.jsonc`. It uses a combination of local files and scripts to fetch weather data:
+
+1.  **Source**: Weather data is fetched from [wttr.in](https://wttr.in) using the `hyde-shell` tool.
+2.  **Configuration**: The location is read from a hidden file: `~/.config/.weather_location`.
+3.  **Update Interval**: Waybar is configured to check for updates every **30 seconds**.
+4.  **Display**: The module displays the current temperature and status, with a detailed tooltip showing the forecast.
+
+## Changing Your Location
+
+To change the location, we provide a helper script: `set-weather.sh` located in `resources/scripts/`.
+
+### Using the Script
+
+Run the following command in your terminal:
+
+```bash
+set-weather.sh "New Location"
+```
+
+For example:
+```bash
+set-weather.sh "Ilopango"
+```
+
+This script:
+1.  Updates the `~/.config/.weather_location` file.
+2.  Refreshes the Waybar module.
+
+### Manual Method
+
+You can also manually edit the configuration file:
+
+```bash
+echo "New Location" > ~/.config/.weather_location
+```
+
+## Troubleshooting: "Wrong Location"
+
+If you see a location different from what you expect (e.g., "San Martin" instead of "Ilopango"), it is likely due to how `wttr.in` resolves location names.
+
+### The Resolution Issue
+
+`wttr.in` tries to be smart about resolving locations. Sometimes, providing too much detail can confuse it or cause it to snap to a nearby major weather station.
+
+**Example:**
+- `Ilopango, San Salvador, El Salvador` -> Resolved to **San Martin**.
+- `Ilopango` -> Resolved correctly to **Ilopango**.
+
+**Solution:**
+Use a **simpler location name**. If the specific city doesn't work, try adding just the country, or removing the state/department.
+
+## Technical Details
+
+The setup involves ensuring **mutability** of the configuration file. By default, NixOS/Home Manager makes files read-only (symlinked to the Nix store).
+
+To allow you to change the location without rebuilding the system, we use a special **activation script** in `modules/hm/files.nix`. This script proactively creates a symlink from `~/.local/share/waybar/modules/custom-weather.jsonc` directly to your local `~/Dotfiles/resources/config/custom-weather.jsonc`.
+
+This bypasses the standard Nix behavior, giving you the flexibility of a mutable config file while keeping the declarative benefits for the rest of the system.
