@@ -14,7 +14,7 @@ in {
       text = ''
         {
             "custom/weather": {
-                "exec": "WEATHER_LOCATION='Ilopango, San Salvador' hyde-shell weather",
+                "exec": "WEATHER_LOCATION=\"$(cat $HOME/.config/.weather_location 2>/dev/null || echo 'Ilopango,San+Salvador,El+Salvador')\" hyde-shell weather",
                 "return-type": "json",
                 "interval": 30,
                 "format": "{0}",
@@ -45,6 +45,8 @@ in {
       mkSymlink "${dotfilesDir}/resources/scripts/nixos_github_setup.sh";
     ".local/lib/hyde/toggle-hdmi.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/toggle-hdmi.sh";
+    ".local/lib/hyde/set-weather.sh".source =
+      mkSymlink "${dotfilesDir}/resources/scripts/set-weather.sh";
     ".local/lib/hyde/ubuntu_github_setupsh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/ubuntu_github_setupsh";
   };
