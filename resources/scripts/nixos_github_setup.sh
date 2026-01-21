@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Setup SSH/GPG keys and configure git/gh for NixOS
 echo "=== CONFIGURACIÓN AUTOMATIZADA DE GIT/GITHUB (NixOS) ==="
 echo ""
 

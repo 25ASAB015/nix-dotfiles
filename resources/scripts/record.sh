@@ -1,6 +1,7 @@
 #!/run/current-system/sw/bin/bash
 set -euo pipefail
 
+# Screen recording utility (WF-Recorder wrapper) for video/GIF
 MODE="${1:-video}" # video | gif
 OUTDIR="$HOME/Videos"
 TS="$(date +'%Y-%m-%d_%H-%M-%S')"

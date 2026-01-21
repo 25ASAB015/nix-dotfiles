@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Set custom weather location for Waybar
 CONFIG_FILE="$HOME/.config/.weather_location"
 
 if [ -z "$1" ]; then
