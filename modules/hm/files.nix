@@ -37,6 +37,8 @@ in {
       mkSymlink "${dotfilesDir}/resources/scripts/toggle-hdmi.sh";
     ".local/lib/hyde/set-weather.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/set-weather.sh";
+    ".local/lib/hyde/cliphist.sh".source =
+      mkSymlink "${dotfilesDir}/resources/scripts/cliphist.sh";
     ".local/lib/hyde/ubuntu_github_setupsh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/ubuntu_github_setupsh";
     ".antigravity_debug".text = "Module is loaded";

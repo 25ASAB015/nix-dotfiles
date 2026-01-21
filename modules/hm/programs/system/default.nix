@@ -7,7 +7,7 @@
     ./gammastep.nix  # Color temperature adjustment for better eye health
     # Future imports:
     # ./dunst.nix      # Notification daemon
-    # ./clipboard.nix  # Clipboard manager
+    ./clipboard.nix  # Clipboard manager
   ];
 }
 

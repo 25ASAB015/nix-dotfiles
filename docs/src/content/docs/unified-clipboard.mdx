@@ -5,17 +5,34 @@ description: Atajos universales de portapapeles al estilo Omarchy.
 
 # Unified clipboard
 
-Esta configuracion replica el comportamiento de Omarchy para copiar/pegar/cortar
-en aplicaciones que no respetan Ctrl+C/V. Se basa en `sendshortcut` de Hyprland,
-igual que en Omarchy.
+Esta configuración replica el comportamiento de Omarchy para copiar/pegar/cortar
+en aplicaciones que no respetan Ctrl+C/V y añade un gestor de historial de portapapeles.
+
+## Implementación
+
+La solución se compone de tres partes:
+1.  **wl-clipboard**: Herramienta de bajo nivel para interactuar con el portapapeles de Wayland.
+2.  **cliphist**: Gestor de historial que guarda todo lo que copias.
+3.  **rofi**: Interfaz gráfica para seleccionar elementos del historial.
 
 ## Atajos
 
-- `SUPER + C` = copiar universal (envia `Ctrl+Insert`)
-- `SUPER + V` = pegar universal (envia `Shift+Insert`)
-- `SUPER + X` = cortar universal (envia `Ctrl+X`)
+| Atajo | Acción | Descripción |
+| :--- | :--- | :--- |
+| `SUPER + C` | Copiar Universal | Envía `Ctrl+Insert`. Funciona en terminales y apps rebeldes. |
+| `SUPER + V` | Pegar Universal | Envía `Shift+Insert`. |
+| `SUPER + X` | Cortar Universal | Envía `Ctrl+X`. |
+| `SUPER + P` | Historial | Abre el menú de historial de portapapeles (Rofi). |
+| `SUPER + Shift + P` | Historial (Alt) | Mismo comportamiento (reservado para variantes). |
 
-## Notas
+## Comandos
 
-- El editor paso a `SUPER + Ctrl + V` para liberar `SUPER + V` al pegado universal.
-- El gestor de portapapeles sigue en `SUPER + P` / `SUPER + Shift + P`.
+El script principal se encuentra en `resources/scripts/cliphist.sh`.
+Usa `rofi` para mostrar la lista y `wl-copy` para poner la selección en el portapapeles actual.
+
+```bash
+# Ver historial
+cliphist.sh
+# Limpiar historial
+cliphist.sh --wipe
+```
