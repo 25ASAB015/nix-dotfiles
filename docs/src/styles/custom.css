@@ -2,6 +2,10 @@
   --sl-color-accent: 196 94% 44%;
   --sl-color-accent-low: 196 80% 90%;
   --sl-color-accent-high: 196 85% 30%;
+  
+  /* Layout adjustments */
+  --sl-content-width: 75rem;
+  --sl-sidebar-width: 18rem;
 }
 
 :root[data-theme='dark'] {
@@ -36,3 +40,10 @@ body {
   box-shadow: 0 8px 24px hsl(0 0% 0% / 0.4);
 }
 
+
+/* Ajustes específicos para pantallas grandes */
+@media (min-width: 72rem) {
+  :root {
+     --sl-content-width: 80rem;
+  }
+}
