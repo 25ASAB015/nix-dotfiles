@@ -10,9 +10,10 @@ let
 in {
   # Archivos mutables (se actualizan sin rebuild al editar en el repo)
   home.file = {
-    # ".local/share/waybar/modules/custom-weather.jsonc" = lib.mkForce {
-    #   source = mkSymlink "${dotfilesDir}/resources/config/custom-weather.jsonc";
-    # };
+    ".local/share/waybar/modules/custom-weather.jsonc" = lib.mkForce {
+      source = mkSymlink "${dotfilesDir}/resources/config/custom-weather.jsonc";
+      force = true;
+    };
 
     ".config/hypr/keybindings.conf" = lib.mkForce {
       source = mkSymlink "${dotfilesDir}/resources/config/keybinds.conf";
@@ -51,10 +52,6 @@ in {
     fi
   '';
 
-  # Link weather config manually to ensure it points to the mutable file
-  home.activation.linkWeatherConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    $DRY_RUN_CMD mkdir -p $VERBOSE_ARG "${config.home.homeDirectory}/.local/share/waybar/modules"
-    $DRY_RUN_CMD ln -sf $VERBOSE_ARG "${dotfilesDir}/resources/config/custom-weather.jsonc" "${config.home.homeDirectory}/.local/share/waybar/modules/custom-weather.jsonc"
-  '';
+
 }
 
