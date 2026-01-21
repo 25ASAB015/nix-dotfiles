@@ -11,17 +11,7 @@ in {
   # Archivos mutables (se actualizan sin rebuild al editar en el repo)
   home.file = {
     ".local/share/waybar/modules/custom-weather.jsonc" = lib.mkForce {
-      text = ''
-        {
-            "custom/weather": {
-                "exec": "WEATHER_LOCATION=\"$(cat $HOME/.config/.weather_location 2>/dev/null || echo 'Ilopango,San+Salvador,El+Salvador')\" hyde-shell weather",
-                "return-type": "json",
-                "interval": 30,
-                "format": "{0}",
-                "tooltip": true
-            }
-        }
-      '';
+      source = mkSymlink "${dotfilesDir}/resources/config/custom-weather.jsonc";
     };
 
     ".config/hypr/keybindings.conf" = lib.mkForce {
