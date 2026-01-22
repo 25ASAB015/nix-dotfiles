@@ -200,7 +200,7 @@ sys-force: ## Emergency rebuild with maximum verbosity
 sys-deploy: ## Total sync (add + commit + push + apply)
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)            🔄 Total Deployment (Ship it!)         $(NC)"
+	@printf "$(CYAN)                          🔄 Total Deployment (Ship it!)                           $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)Executing complete deployment workflow:$(NC)\n"
 	@printf "  1. Fix permissions (sys-fix-git)\n"
