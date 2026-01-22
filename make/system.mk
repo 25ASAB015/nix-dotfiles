@@ -272,17 +272,17 @@ sys-fix-git: ## Fix git repo ownership issues in flake dir
 		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $USER 2>/dev/null | grep -q .; then \
 			printf "  $(YELLOW)Fixing ownership in $(FLAKE_DIR)/.git...$(NC) "; \
 			if sudo chown -R $USER:users "$(FLAKE_DIR)/.git" 2>/dev/null; then \
-				@printf "\n"
+				printf "\n"; \
 				printf "$(GREEN)✓$(NC)\n"; \
 			else \
-				@printf "\n"
+				printf "\n"; \
 				printf "$(RED)✗$(NC)\n"; \
 			fi; \
 		else \
-			@printf "\n"
+			printf "\n"; \
 			printf "  $(GREEN)✓ Git permissions OK$(NC)\n"; \
 		fi; \
 	else \
-		@printf "\n"
+		printf "\n"; \
 		printf "  $(YELLOW)⚠️  No git repository found at $(FLAKE_DIR)$(NC)\n"; \
 	fi
