@@ -122,6 +122,31 @@ in {
         default = "#1e1e2e";
         description = "Color de fondo";
       };
+      cursor = mkOption {
+        type = types.str;
+        default = "#f5e0dc";
+        description = "Color del cursor";
+      };
+      cursorText = mkOption {
+        type = types.str;
+        default = "#1e1e2e";
+        description = "Color del texto del cursor";
+      };
+      selectionForeground = mkOption {
+        type = types.str;
+        default = "#1e1e2e";
+        description = "Color del texto seleccionado";
+      };
+      selectionBackground = mkOption {
+        type = types.str;
+        default = "#f5e0dc";
+        description = "Color de fondo de la selección";
+      };
+      palette = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = "Lista de colores (0-15)";
+      };
     };
 
     # ══════════════════════════════════════════════════════════════════════
@@ -167,6 +192,9 @@ in {
   # Configuración cuando el módulo está habilitado
   # ══════════════════════════════════════════════════════════════════════════
   config = mkIf cfg.enable {
+    # Set Ghostty as default terminal
+    home.sessionVariables.TERMINAL = "ghostty";
+
     # Instalar Ghostty
     home.packages = [pkgs.ghostty];
 
@@ -220,6 +248,11 @@ in {
         # Colores personalizados solo si no hay tema
         foreground = cfg.colors.foreground;
         background = cfg.colors.background;
+        cursor-color = cfg.colors.cursor;
+        cursor-text = cfg.colors.cursorText;
+        selection-foreground = cfg.colors.selectionForeground;
+        selection-background = cfg.colors.selectionBackground;
+        palette = cfg.colors.palette;
       });
     };
   };

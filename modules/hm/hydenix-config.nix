@@ -222,7 +222,33 @@
   modules.terminal.emulators.ghostty = {
     enable = true;
     enableFishIntegration = true;
-    theme = null;  # Use manual colors defined in ghostty.nix to avoid "not found" error
+    theme = null;  # Use manual colors defined below
+    colors = {
+      foreground = "#cdd6f4";
+      background = "#1e1e2e";
+      cursor = "#f5e0dc";
+      cursorText = "#1e1e2e";
+      selectionForeground = "#1e1e2e";
+      selectionBackground = "#f5e0dc";
+      palette = [
+        "0=#43465a"
+        "1=#f38ba8"
+        "2=#a6e3a1"
+        "3=#f9e2af"
+        "4=#87b0f9"
+        "5=#f5c2e7"
+        "6=#94e2d5"
+        "7=#cdd6f4"
+        "8=#43465a"
+        "9=#f38ba8"
+        "10=#a6e3a1"
+        "11=#f9e2af"
+        "12=#87b0f9"
+        "13=#f5c2e7"
+        "14=#94e2d5"
+        "15=#a1a8c9"
+      ];
+    };
   };
 
   # ════════════════════════════════════════════════════════════════════════════
