@@ -195,6 +195,14 @@ in {
     # Set Ghostty as default terminal
     home.sessionVariables.TERMINAL = "ghostty";
 
+    # Set Ghostty as default for xdg-terminal-exec (used by HyDE's Super+Enter)
+    xdg.configFile."xdg-terminals.list".text = lib.mkForce ''
+      # See https://github.com/Vladimir-csp/xdg-terminal-exec?tab=readme-ov-file#configuration
+      com.mitchellh.ghostty.desktop
+      kitty.desktop
+      foot.desktop
+    '';
+
     # Instalar Ghostty
     home.packages = [pkgs.ghostty];
 
