@@ -55,9 +55,14 @@ git-push: ## Push to remote using GitHub CLI
 	REMOTE=$$(git remote get-url origin 2>/dev/null | sed -E 's|.*github.com[:/]([^/]+/[^/]+)(\.git)?$$|\1|' | sed 's|\.git$$||'); \
 	printf "\n$(BLUE)Branch:$(NC) $(GREEN)$$BRANCH$(NC)\n"; \
 	printf "$(BLUE)Remote:$(NC) $(GREEN)$$REMOTE$(NC)\n\n"; \
-	printf "$(BLUE)Pushing changes...$(NC)\n"
-	@git push || exit 1
-	@printf "\n$(GREEN)✅ Successfully pushed to remote$(NC)\n"
+	UNPUSHED=$$(git log origin/$$BRANCH..HEAD --oneline 2>/dev/null | wc -l); \
+	if [ $$UNPUSHED -gt 0 ]; then \
+		printf "$(BLUE)Pushing $$UNPUSHED commit(s)...$(NC)\n"; \
+		git push || exit 1; \
+		printf "\n$(GREEN)✅ Successfully pushed to remote$(NC)\n"; \
+	else \
+		printf "$(YELLOW)⚠ Everything up-to-date (no changes to push)$(NC)\n"; \
+	fi
 	@printf "\n"
 
 git-status: ## Show git status with GitHub CLI
