@@ -88,5 +88,11 @@
       
       # VM package
       packages."x86_64-linux".vm = vmConfig.config.system.build.vm;
+
+      # Development Shells
+      devShells."x86_64-linux".default = import ./shells/default.nix {
+        inherit inputs;
+        pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
+      };
     };
 }
