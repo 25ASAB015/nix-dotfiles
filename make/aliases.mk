@@ -17,7 +17,7 @@
 # === Ayuda de Aliases ===
 help-aliases: ## Show list of legacy aliases and their modern equivalents
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)      Legacy Aliases & Modern Equivalents          $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(YELLOW)Estos comandos se mantienen por compatibilidad.$(NC)\n"

@@ -12,7 +12,7 @@
 # Combined dashboard and detailed system status
 sys-status: ## Dashboard y reporte completo de salud del sistema
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            🏥 Dashboard de Salud (Vuelo)          $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
@@ -96,7 +96,7 @@ sys-status: ## Dashboard y reporte completo de salud del sistema
 # Tests DNS resolution, ping connectivity, and network throughput
 log-net: ## Run comprehensive network diagnostics
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            🌐 Network Diagnostics                 $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
@@ -124,7 +124,7 @@ log-net: ## Run comprehensive network diagnostics
 # Continuously displays new log entries as they are written
 log-watch: ## Watch system logs in real-time (follow mode)
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📊 Watching System Logs                $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Press $(GREEN)Ctrl+C$(BLUE) to exit$(NC)\n\n"
@@ -134,7 +134,7 @@ log-watch: ## Watch system logs in real-time (follow mode)
 # Shows systemd logs with priority err and alert from current boot
 log-boot: ## Show boot logs
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📋 Boot Logs                           $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Showing errors and alerts from current boot...$(NC)\n\n"
@@ -145,7 +145,7 @@ log-boot: ## Show boot logs
 # Shows the last 50 error messages with timestamps
 log-err: ## Show recent error logs
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📋 Recent Error Logs                   $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@ERROR_COUNT=$(journalctl -p err -n 50 --no-pager 2>/dev/null | wc -l || echo "0"); \
@@ -182,7 +182,7 @@ log-svc: ## Show logs for specific service (use SVC=name)
 		exit 1; \
 	fi
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📋 Service Logs                        $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Service:$(NC) $(GREEN)$(SVC)$(NC)\n"

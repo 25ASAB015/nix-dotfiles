@@ -13,7 +13,7 @@
 # Uses AWK to parse inline comments (##) and display them in a formatted menu
 help: ## Show this help message
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)      Ayuda Avanzada y Workflows (Makefile)        $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@awk -v GREEN="$(GREEN)" -v BLUE="$(BLUE)" -v NC="$(NC)" 'BEGIN {FS=":.*##"} /^[a-zA-Z0-9_-]+:.*##/ {desc[$$1]=$$2} \
@@ -51,7 +51,7 @@ help: ## Show this help message
 # Organized by category with practical examples
 help-examples: ## Show commands with usage examples
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)        NixOS Commands with Usage Examples         $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)💡 Tip: Commands without parameters can be run directly$(NC)\n"
@@ -112,7 +112,7 @@ help-examples: ## Show commands with usage examples
 # Scans for README, tutorials, and docs/ directory
 docs-local: ## Show local documentation files
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📚 Local Documentation                   $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
@@ -125,7 +125,7 @@ docs-local: ## Show local documentation files
 # Automatically installs dependencies if needed
 doc-dev: ## Run documentation dev server
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)        Iniciando servidor de desarrollo...        $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(BLUE)Iniciando servidor de desarrollo de docs...$(NC)\n"
@@ -134,7 +134,7 @@ doc-dev: ## Run documentation dev server
 # Build static documentation site
 doc-build: ## Build documentation site
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)        Construyendo documentación estática...     $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(BLUE)Construyendo documentación estática...$(NC)\n"
@@ -144,7 +144,7 @@ doc-build: ## Build documentation site
 # Run this before using docs-dev or docs-build
 doc-install: ## Install documentation dependencies
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)        Instalando dependencias de docs...         $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(BLUE)Instalando dependencias de docs...$(NC)\n"
@@ -153,7 +153,7 @@ doc-install: ## Install documentation dependencies
 # Clean documentation build artifacts
 doc-clean: ## Clean documentation artifacts
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)        Limpiando artefactos de docs...            $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(BLUE)Limpiando artefactos de docs...$(NC)\n"

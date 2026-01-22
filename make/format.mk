@@ -12,7 +12,7 @@
 # Format all Nix files using nixpkgs-fmt or alejandra
 fmt-check: ## Format all nix files
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            🎨 Nix Formatter                       $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(BLUE)Formateando archivos Nix...\n$(NC)"
@@ -27,7 +27,7 @@ fmt-check: ## Format all nix files
 # Lint Nix files for common issues using statix
 fmt-lint: ## Check nix files for common issues
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            🔎 Nix Linter (Statix)                 $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(BLUE)Analizando archivos Nix con statix...\n$(NC)"
@@ -40,7 +40,7 @@ fmt-lint: ## Check nix files for common issues
 # Show project structure tree
 fmt-tree: ## Show project structure tree
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📂 Project Structure                   $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(BLUE)Estructura del proyecto:\n$(NC)"
@@ -53,7 +53,7 @@ fmt-tree: ## Show project structure tree
 # Show diff between local and system config
 fmt-diff: ## Show diff between local and system config
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📉 Local Config Diff                     $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(BLUE)Diferencia con la configuración actual del sistema:\n$(NC)"

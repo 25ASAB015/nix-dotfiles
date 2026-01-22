@@ -12,7 +12,7 @@
 # List all system generations with details
 gen-list: ## List all system generations
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📜 Generaciones del Sistema            $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
@@ -54,7 +54,7 @@ gen-diff: ## Compare two generations (use GEN1=n GEN2=m)
 		exit 1; \
 	fi
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📊 Diferencias: Gen $$(GEN1) vs $$(GEN2)      $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Calculando diferencias de paquetes...$(NC)\n"
@@ -64,7 +64,7 @@ gen-diff: ## Compare two generations (use GEN1=n GEN2=m)
 # Compare current generation with the previous one
 gen-diff-current: ## Compare current generation with previous
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📊 Cambios en la última generación     $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@CURRENT=$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'); \
@@ -80,7 +80,7 @@ gen-diff-current: ## Compare current generation with previous
 # Show disk usage for all generations
 gen-sizes: ## Show size of generations
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            💾 Tamaño de Generaciones              $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
@@ -94,7 +94,7 @@ gen-sizes: ## Show size of generations
 # Show details of the current generation
 gen-current: ## Show current generation info
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📌 Generación Actual                   $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
