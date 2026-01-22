@@ -201,11 +201,13 @@ sys-deploy: ## Total sync (add + commit + push + apply)
 	@printf "$(CYAN)            🔄 Total Deployment (Ship it!)         $(NC)"
 	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)Executing complete deployment workflow:$(NC)\n"
-	@printf "  1. Stage changes (git add)\n"
-	@printf "  2. Commit changes (timestamped)\n"
-	@printf "  3. Push to remote (git push)\n"
-	@printf "  4. Build and apply (sys-apply)\n"
+	@printf "  1. Fix permissions (sys-fix-git)\n"
+	@printf "  2. Stage changes (git add)\n"
+	@printf "  3. Commit changes (timestamped)\n"
+	@printf "  4. Push to remote (git push)\n"
+	@printf "  5. Build and apply (sys-apply)\n"
 	@printf "\n"
+	@$(MAKE) --no-print-directory sys-fix-git
 	@$(MAKE) --no-print-directory git-add
 	@$(MAKE) --no-print-directory git-commit
 	@$(MAKE) --no-print-directory git-push
