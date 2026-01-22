@@ -231,7 +231,7 @@
     scrollbackLimit = 10000;
     windowDecoration = false;    # Sin bordes de ventana
     enableFishIntegration = true;
-    theme = "catppuccin-mocha";  # Temas: dracula, nord, gruvbox-dark, one-dark
+    theme = null;  # Use manual colors defined in ghostty.nix to avoid "not found" error
   };
 
   # ════════════════════════════════════════════════════════════════════════════
