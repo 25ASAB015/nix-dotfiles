@@ -16,7 +16,6 @@ sys-apply: ## Build and switch to new configuration
 
 sys-apply-core:
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            🔄 Apply (Build & Switch)              $(NC)"
 	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ "$$(id -u)" -eq 0 ]; then \
@@ -269,8 +268,7 @@ sys-doctor: ## Fix common permission issues (doctor)
 
 # Fix git repository ownership issues in the flake directory
 sys-fix-git: ## Fix git repo ownership issues in flake dir
-	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"	
 	@printf "$(CYAN)            🔧 Fix Git Permissions                 $(NC)"
 	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \

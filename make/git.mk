@@ -10,8 +10,7 @@
 # === Git y Publicación ===
 
 git-add: ## Stage all changes for git
-	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"	
 	@printf "$(CYAN)              📝 Staging Changes                   $(NC)"
 	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Adding all changes to staging area...$(NC)\n"
@@ -28,7 +27,6 @@ git-add: ## Stage all changes for git
 
 git-commit: ## Quick commit with timestamp
 	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📝 Committing Changes                  $(NC)"
 	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ -n "$$(git status --porcelain)" ]; then \
@@ -49,8 +47,7 @@ git-commit: ## Quick commit with timestamp
 	@printf "\n"
 
 git-push: ## Push to remote using GitHub CLI
-	@printf "\n"
-	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"	
 	@printf "$(CYAN)              🚀 Pushing to Remote                 $(NC)"
 	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@BRANCH=$$(git branch --show-current); \
