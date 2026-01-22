@@ -19,7 +19,7 @@ help-aliases: ## Show list of legacy aliases and their modern equivalents
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)      Legacy Aliases & Modern Equivalents          $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(YELLOW)Estos comandos se mantienen por compatibilidad.$(NC)\n"
 	@printf "$(YELLOW)Se recomienda usar la nueva nomenclatura.$(NC)\n\n"
 	@printf "$(BLUE)%-20s %-25s %s$(NC)\n" "LEGACY ALIAS" "MODERN COMMAND" "CATEGORY"

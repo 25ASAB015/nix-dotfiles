@@ -12,7 +12,7 @@
 git-add: ## Stage all changes for git
 	@printf "\n"	
 	@printf "$(CYAN)              📝 Staging Changes                   $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Adding all changes to staging area...$(NC)\n"
 	@git add .
 	@CHANGED=$$(git status --short | wc -l); \
@@ -28,7 +28,7 @@ git-add: ## Stage all changes for git
 git-commit: ## Quick commit with timestamp
 	@printf "\n"
 	@printf "$(CYAN)            📝 Committing Changes                  $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ -n "$$(git status --porcelain)" ]; then \
 		printf "\n$(BLUE)Staging changes...$(NC)\n"; \
 		git add .; \
@@ -49,7 +49,7 @@ git-commit: ## Quick commit with timestamp
 git-push: ## Push to remote using GitHub CLI
 	@printf "\n"	
 	@printf "$(CYAN)              🚀 Pushing to Remote                 $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@BRANCH=$$(git branch --show-current); \
 	REMOTE=$$(git remote get-url origin 2>/dev/null | sed -E 's|.*github.com[:/]([^/]+/[^/]+)(\.git)?$$|\1|' | sed 's|\.git$$||'); \
 	printf "\n$(BLUE)Branch:$(NC) $(GREEN)$$BRANCH$(NC)\n"; \
@@ -63,7 +63,7 @@ git-status: ## Show git status with GitHub CLI
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)           📊 Repository Status                    $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)📍 Configuration$(NC)\n"
 	@printf "├─ Host: $(HOSTNAME)\n"
 	@printf "├─ Flake: $(PWD)\n"
@@ -97,7 +97,7 @@ git-status: ## Show git status with GitHub CLI
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📝 Recent Changes                      $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if git rev-parse --git-dir > /dev/null 2>&1; then \
 		printf "\n"; \
 		git log --max-count=3 --pretty=format:"  %C(green)%h%C(reset)  %<(58,trunc)%s  %C(blue)%<(15)%ar%C(reset)" 2>/dev/null; \
@@ -108,7 +108,7 @@ git-diff: ## Show uncommitted changes to .nix configuration files
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)          📊 Configuration Changes                  $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if git diff --quiet -- '*.nix' 2>/dev/null; then \
 		printf "\n$(GREEN)✅ No uncommitted changes to .nix files$(NC)\n"; \
 		printf "$(BLUE)All configuration files are clean.$(NC)\n"; \
@@ -138,7 +138,7 @@ git-log: ## Show recent changes from git log
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📝 Recent Changes                      $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if git rev-parse --git-dir > /dev/null 2>&1; then \
 		printf "\n"; \
 		git log --max-count=15 --pretty=format:"  %C(green)%h%C(reset)  %<(58,trunc)%s  %C(blue)%<(15)%ar%C(reset)" 2>/dev/null; \

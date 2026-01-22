@@ -14,7 +14,7 @@ sys-status: ## Dashboard y reporte completo de salud del sistema
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            🏥 Dashboard de Salud (Vuelo)          $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "  $(BLUE)Estructura Flake:$(NC)  "
 	@if nix flake metadata --json . >/dev/null 2>&1; then \
@@ -98,7 +98,7 @@ log-net: ## Run comprehensive network diagnostics
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            🌐 Network Diagnostics                 $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	@printf "$(BLUE)1. DNS status (resolved):$(NC)\n"
 	@resolvectl status 2>/dev/null | head -60 || printf "$(YELLOW)resolvectl not available$(NC)\n"
@@ -126,7 +126,7 @@ log-watch: ## Watch system logs in real-time (follow mode)
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📊 Watching System Logs                $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Press $(GREEN)Ctrl+C$(BLUE) to exit$(NC)\n\n"
 	@journalctl -f
 
@@ -136,7 +136,7 @@ log-boot: ## Show boot logs
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📋 Boot Logs                           $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Showing errors and alerts from current boot...$(NC)\n\n"
 	@journalctl -b -p err..alert --no-pager | tail -50 || true
 	@printf "\n"
@@ -147,7 +147,7 @@ log-err: ## Show recent error logs
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📋 Recent Error Logs                   $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@ERROR_COUNT=$(journalctl -p err -n 50 --no-pager 2>/dev/null | wc -l || echo "0"); \
 	printf "\n$(BLUE)Showing last 50 error-level messages$(NC)\n"; \
 	if [ $ERROR_COUNT -eq 0 ]; then \
@@ -184,7 +184,7 @@ log-svc: ## Show logs for specific service (use SVC=name)
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📋 Service Logs                        $(NC)"
-	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Service:$(NC) $(GREEN)$(SVC)$(NC)\n"
 	@HAS_RECENT=$(journalctl -u $(SVC) --since "1 hour ago" --no-pager 2>/dev/null | grep -v "^-- No entries --" | grep -q . && echo "yes" || echo "no"); \
 	if [ "$HAS_RECENT" = "yes" ]; then \
