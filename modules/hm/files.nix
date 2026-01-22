@@ -42,6 +42,8 @@ in {
       mkSymlink "${dotfilesDir}/resources/scripts/cliphist.sh";
     ".local/lib/hyde/ubuntu_github_setupsh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/ubuntu_github_setupsh";
+    ".local/lib/hyde/toggle_gaps.sh".source =
+      mkSymlink "${dotfilesDir}/resources/scripts/toggle_gaps.sh";
     ".antigravity_debug".text = "Module is loaded";
   };
 
