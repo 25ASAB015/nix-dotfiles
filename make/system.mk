@@ -11,11 +11,14 @@
 
 # Build and activate new system configuration for the current hostname
 sys-apply: ## Build and switch to new configuration
+	@$(MAKE) --no-print-directory sys-fix-git
+	@$(MAKE) --no-print-directory sys-apply-core
+
+sys-apply-core:
 	@printf "\n"
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            🔄 Apply (Build & Switch)              $(NC)"
 	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@$(MAKE) --no-print-directory sys-fix-git
 	@if [ "$$(id -u)" -eq 0 ]; then \
 		if [ -n "$$SUDO_USER" ]; then \
 			sudo -u "$$SUDO_USER" git add .; \
@@ -84,7 +87,7 @@ sys-build: ## Build configuration without switching
 		printf "$(YELLOW)Use 'make sys-apply' to apply changes.$(NC)\n"; \
 		printf "\n$(BLUE)Build Statistics:$(NC)\n"; \
 		if [ $MINUTES -gt 0 ]; then \
-		printf "  $(GREEN)Build time:$(NC) $(YELLOW)${MINUTES}m $${SECONDS}s$(NC) ($(YELLOW)$${DURATION}s$(NC) total)\n"; \
+		printf "  $(GREEN)Build time:$(NC) $(YELLOW)$${MINUTES}m $${SECONDS}s$(NC) ($(YELLOW)$${DURATION}s$(NC) total)\n"; \
 		else \
 		printf "  $(GREEN)Build time:$(NC) $(YELLOW)$${SECONDS}s$(NC)\n"; \
 		fi; \
@@ -93,7 +96,7 @@ sys-build: ## Build configuration without switching
 		printf "$(YELLOW)Build time: $${DURATION}s$(NC)\n"; \
 	fi; \
 	printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-	printf "\n"; \
+	printf "\n"
 	exit $BUILD_EXIT
 
 # Preview what would be built or changed without actually building
@@ -211,7 +214,7 @@ sys-deploy: ## Total sync (add + commit + push + apply)
 	@$(MAKE) --no-print-directory git-add
 	@$(MAKE) --no-print-directory git-commit
 	@$(MAKE) --no-print-directory git-push
-	@$(MAKE) --no-print-directory sys-apply
+	@$(MAKE) --no-print-directory sys-apply-core
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Deployment completed successfully!$(NC)\n"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
