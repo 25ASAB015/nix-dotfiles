@@ -781,34 +781,269 @@ Si hay duplicados, decidir cuál mantener basándose en:
 2. La que está en el archivo de plugin (no en keymappings.nix)
 3. La que tiene mejor descripción
 
-## 🔄 PASO 6: Proceso de Actualización
+## 🔄 PASO 6: Actualización Iterativa (NO Reemplazo)
 
-### 6.1 Workflow Completo
+### 6.1 Filosofía de Actualización
+
+**NUNCA reemplazar el archivo completo.** El proceso debe ser iterativo:
+
+1. ✅ **Leer** el archivo existente `/home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx`
+2. ✅ **Analizar** qué categorías y keymaps ya existen
+3. ✅ **Comparar** con los keymaps extraídos del source
+4. ✅ **Agregar** solo los keymaps faltantes
+5. ✅ **Actualizar** descripciones si han cambiado
+6. ✅ **Preservar** todo el contenido existente
+
+### 6.2 Proceso de Comparación
 
 ```bash
-# 1. Ir al directorio de trabajo
-cd /home/ludus/Work/khanelivim/modules/nixvim
+# 1. Hacer backup del archivo actual
+cp /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx \
+   /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx.backup
 
-# 2. Extraer TODOS los keymaps
-# (usar el comando del paso 2.3)
+# 2. Extraer keymaps actuales del archivo de documentación
+echo "=== KEYMAPS EN DOCUMENTACIÓN ACTUAL ===" > /tmp/current_keymaps.txt
+grep "^| \`" /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+  cut -d'|' -f2 | \
+  sed 's/[` ]//g' | \
+  sort -u >> /tmp/current_keymaps.txt
 
-# 3. Procesar el archivo raw y crear documentación
-# (hacer esto manualmente o con script)
+# 3. Extraer keymaps del source (khanelivim)
+# (usar comando del paso 2.3 para generar /tmp/khanelivim_keymaps_raw.txt)
 
-# 4. Actualizar el archivo de documentación
-# Editar: /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx
+# 4. Comparar y encontrar diferencias
+echo "=== KEYMAPS FALTANTES ===" > /tmp/missing_keymaps.txt
+# Esto se hace manualmente comparando ambos archivos
+```
 
-# 5. Verificar conteo
-# (usar comandos del paso 5.1)
+### 6.3 Estrategia de Actualización por Sección
 
-# 6. Verificar keymaps críticos
-# (usar checklist del paso 5.2)
+Para CADA categoría de which-key:
 
-# 7. Commit cambios
-cd /home/ludus/Dotfiles
-git diff docs/src/content/docs/neovim.mdx
-git add docs/src/content/docs/neovim.mdx
-git commit -m "docs: sync neovim keymaps from khanelivim"
+```markdown
+## Paso a paso por categoría:
+
+1. Verificar si la sección existe en neovim.mdx
+   - Buscar: `## N. [Nombre Categoría]`
+   
+2. Si NO existe:
+   - Crear la sección completa con formato
+   - Agregar TODOS los keymaps de esa categoría
+   
+3. Si SÍ existe:
+   - Leer TODOS los keymaps actuales en esa sección
+   - Comparar con keymaps del source
+   - Agregar SOLO los faltantes al final de la tabla
+   - Actualizar descripciones si son diferentes
+   - Mantener el orden alfabético dentro de la tabla
+```
+
+### 6.4 Comandos de Verificación por Sección
+
+```bash
+# Verificar si una sección específica existe
+# Ejemplo: AI Assistant
+grep -q "^## .*AI Assistant" /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx
+if [ $? -eq 0 ]; then
+  echo "Sección AI Assistant existe - modo ACTUALIZAR"
+else
+  echo "Sección AI Assistant NO existe - modo CREAR"
+fi
+
+# Extraer keymaps de una sección específica
+# Ejemplo: extraer todos los keymaps de la sección "AI Assistant"
+awk '/^## .*AI Assistant/,/^## / {print}' \
+  /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+  grep "^| \`" | \
+  cut -d'|' -f2 | \
+  sed 's/[` ]//g'
+```
+
+### 6.5 Template de Actualización Iterativa
+
+**Para agregar un keymap faltante a una sección existente:**
+
+```bash
+# Ejemplo: Agregar <leader>ai a la sección AI Assistant
+
+# 1. Encontrar el número de línea donde termina la sección
+SECTION_START=$(grep -n "^## .*AI Assistant" neovim.mdx | cut -d: -f1)
+SECTION_END=$(tail -n +$((SECTION_START + 1)) neovim.mdx | \
+              grep -n "^## " | head -1 | cut -d: -f1)
+
+# 2. Insertar la nueva fila en la tabla (antes del final de la sección)
+# Usar sed, awk o un editor de texto programático
+
+# 3. Mantener el formato de la tabla
+# | `<leader>ai` | AI Inline | Normal |
+```
+
+### 6.6 Proceso de Actualización Manual/Asistido
+
+**Recomendación:** En lugar de un script automático completo, usar un enfoque asistido:
+
+1. **Claude Code extrae** todos los keymaps del source
+2. **Claude Code lee** el archivo actual de documentación
+3. **Claude Code identifica** qué keymaps faltan por sección
+4. **Claude Code genera** un reporte de diferencias:
+   ```
+   Sección: AI Assistant (<leader>a)
+   - Keymaps actuales: 5
+   - Keymaps en source: 8
+   - Faltantes: <leader>ai, <leader>ac, <leader>ax
+   
+   Sección: HTTP (<leader>h)
+   - NO EXISTE - necesita crearse completa
+   - Keymaps a agregar: 10
+   ```
+5. **Claude Code actualiza** sección por sección, preservando contenido existente
+
+### 6.7 Verificación de Integridad Post-Actualización
+
+Después de cada actualización, verificar:
+
+```bash
+# 1. El archivo es markdown válido
+# 2. Todas las tablas tienen el formato correcto
+# 3. No hay secciones duplicadas
+grep "^## " /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+  sort | uniq -d
+
+# 4. No hay keymaps duplicados
+grep "^| \`" /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+  cut -d'|' -f2 | sed 's/[` ]//g' | sort | uniq -d
+
+# 5. El conteo de keymaps aumentó (no disminuyó)
+BEFORE=$(cat /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx.backup | \
+         grep "^| \`" | wc -l)
+AFTER=$(cat /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+        grep "^| \`" | wc -l)
+echo "Keymaps antes: $BEFORE, después: $AFTER, diff: $((AFTER - BEFORE))"
+```
+
+### 6.8 Reporte de Cambios
+
+Después de la actualización, generar un reporte:
+
+```markdown
+# Reporte de Actualización de Keymaps
+Fecha: [FECHA]
+
+## Resumen
+- Secciones creadas: N
+- Secciones actualizadas: N
+- Keymaps agregados: N
+- Keymaps actualizados: N
+- Total keymaps ahora: N
+
+## Detalles por Sección
+
+### AI Assistant (<leader>a)
+- Estado: ACTUALIZADA
+- Keymaps agregados: 3
+  - <leader>ai - AI Inline
+  - <leader>ac - AI Chat
+  - <leader>ax - AI Execute
+
+### HTTP (<leader>h)
+- Estado: CREADA (nueva)
+- Keymaps agregados: 10
+  - <leader>hc - Copy as cURL
+  - <leader>hi - Inspect request
+  - ... [lista completa]
+
+### [Otras secciones...]
+```
+
+### 6.9 Workflow de Actualización Iterativa Completo
+
+```bash
+#!/bin/bash
+# Script de actualización iterativa
+
+DOC_FILE="/home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx"
+SOURCE_DIR="/home/ludus/Work/khanelivim/modules/nixvim"
+
+echo "=== INICIO ACTUALIZACIÓN ITERATIVA ==="
+
+# 1. Backup
+cp "$DOC_FILE" "$DOC_FILE.backup.$(date +%Y%m%d_%H%M%S)"
+
+# 2. Analizar estado actual
+echo "Analizando documentación actual..."
+CURRENT_SECTIONS=$(grep "^## " "$DOC_FILE" | wc -l)
+CURRENT_KEYMAPS=$(grep "^| \`" "$DOC_FILE" | wc -l)
+echo "Secciones actuales: $CURRENT_SECTIONS"
+echo "Keymaps actuales: $CURRENT_KEYMAPS"
+
+# 3. Extraer keymaps del source
+echo "Extrayendo keymaps del source..."
+cd "$SOURCE_DIR"
+# [Ejecutar comandos del paso 2.3]
+
+# 4. Para cada categoría de which-key:
+CATEGORIES=(
+  "AI Assistant:<leader>a"
+  "Buffers:<leader>b"
+  "Code & Comments:<leader>c"
+  # ... [todas las categorías]
+)
+
+for category in "${CATEGORIES[@]}"; do
+  NAME="${category%%:*}"
+  PREFIX="${category##*:}"
+  
+  echo "Procesando: $NAME ($PREFIX)"
+  
+  # Verificar si existe
+  if grep -q "^## .*$NAME" "$DOC_FILE"; then
+    echo "  - Sección existe, verificando keymaps..."
+    # [Comparar y actualizar]
+  else
+    echo "  - Sección NO existe, creando..."
+    # [Crear sección completa]
+  fi
+done
+
+# 5. Verificar integridad
+echo "Verificando integridad..."
+# [Ejecutar verificaciones del paso 6.7]
+
+# 6. Generar reporte
+echo "Generando reporte..."
+# [Crear reporte del paso 6.8]
+
+echo "=== ACTUALIZACIÓN COMPLETADA ==="
+```
+
+### 6.10 Instrucciones para Claude Code
+
+**Prompt optimizado para actualización iterativa:**
+
+```
+Usa /home/ludus/Dotfiles/.agent/workflows/sync-neovim-keymaps.md 
+para ACTUALIZAR (no reemplazar) la documentación en
+/home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx
+
+MODO: ITERATIVO - Preservar todo el contenido existente
+
+Proceso:
+1. LEE el archivo neovim.mdx actual completamente
+2. ANALIZA qué secciones y keymaps ya existen
+3. EXTRAE keymaps del source (/home/ludus/Work/khanelivim)
+4. COMPARA para identificar faltantes
+5. ACTUALIZA solo lo necesario:
+   - CREA secciones que no existen
+   - AGREGA keymaps faltantes a secciones existentes
+   - ACTUALIZA descripciones si cambiaron
+   - PRESERVA todo lo demás
+
+6. VERIFICA integridad (paso 6.7)
+7. GENERA reporte de cambios (paso 6.8)
+
+NUNCA reemplaces el archivo completo.
+SIEMPRE preserva el contenido existente.
+SOLO agrega o actualiza lo necesario.
 ```
 
 ## 🚨 CASOS ESPECIALES
@@ -886,18 +1121,20 @@ Si un keymap está definido múltiples veces:
 
 ## 🎯 CRITERIOS DE ÉXITO
 
-La documentación está completa cuando:
+La documentación está completa y actualizada cuando:
 
-1. ✅ TODOS los archivos de la checklist están revisados
+1. ✅ Todos los archivos de la checklist están revisados
 2. ✅ TODAS las categorías de which-key tienen su sección correspondiente
-3. ✅ El conteo de keymaps es >= 90% del total en source
+3. ✅ El conteo de keymaps **aumentó o se mantuvo** (nunca disminuyó)
 4. ✅ Todos los keymaps críticos están presentes (ver checklist 5.2)
 5. ✅ No hay duplicados sin resolver
 6. ✅ Cada categoría de which-key tiene su sección con keymaps o nota explicativa
-7. ✅ El formato markdown es consistente
+7. ✅ El formato markdown es consistente y válido
 8. ✅ Los keymaps de las capturas de pantalla están incluidos
 9. ✅ Los iconos de which-key están en los encabezados (si disponibles)
 10. ✅ El orden de secciones sigue el orden de which-key
+11. ✅ **El contenido previo fue PRESERVADO, no reemplazado**
+12. ✅ **El reporte de cambios muestra solo adiciones/actualizaciones**
 
 ## 📌 NOTAS IMPORTANTES
 
@@ -911,6 +1148,11 @@ La documentación está completa cuando:
 8. **Mantener el orden de categorías** - facilita la navegación y coincide con which-key
 9. **Usar el formato EXACTO de las keys** - copiar tal cual de los archivos
 10. **Actualizar este workflow** cada vez que se descubra un nuevo patrón o categoría
+11. **🚨 NUNCA REEMPLAZAR EL ARCHIVO COMPLETO** - siempre modo iterativo
+12. **🚨 PRESERVAR TODO EL CONTENIDO EXISTENTE** - solo agregar/actualizar
+13. **Hacer backup antes de cada actualización** - por seguridad
+14. **Generar reporte de cambios** - para auditar qué se agregó/cambió
+15. **Verificar integridad post-actualización** - conteo debe aumentar, no disminuir
 
 ### Sobre las Categorías de Which-Key
 
@@ -919,9 +1161,18 @@ La documentación está completa cuando:
 - El prefix del grupo (`<leader>a`, `<leader>b`, etc.) debe estar en el encabezado
 - Si un grupo no tiene keymaps directos, documentar sus sub-keymaps
 
+### Sobre el Modo Iterativo
+
+- **NUNCA** usar `> neovim.mdx` para sobrescribir
+- **SIEMPRE** leer primero, luego actualizar
+- **SOLO** agregar lo que falta
+- **PRESERVAR** descripciones personalizadas si existen
+- **MANTENER** el orden dentro de cada tabla
+- **REPORTAR** todos los cambios realizados
+
 ## 🔍 DEBUGGING
 
-Si faltan keymaps:
+Si faltan keymaps o hay problemas:
 
 ```bash
 # 1. Listar TODOS los archivos .nix
@@ -974,6 +1225,70 @@ rg "group\s*=\s*\"" --type nix | \
 echo ""
 echo "=== SECCIONES EN DOCUMENTACIÓN ==="
 grep "^##" /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx
+```
+
+### Debugging Actualización Iterativa
+
+Si la actualización no está funcionando como esperado:
+
+```bash
+# 1. Verificar que el backup existe
+ls -lh /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx.backup*
+
+# 2. Comparar diferencias entre backup y actual
+diff /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx.backup \
+     /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx
+
+# 3. Ver solo las líneas agregadas
+diff /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx.backup \
+     /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+     grep "^>"
+
+# 4. Contar cambios
+echo "Líneas agregadas:"
+diff /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx.backup \
+     /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+     grep "^>" | wc -l
+
+echo "Líneas eliminadas:"
+diff /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx.backup \
+     /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+     grep "^<" | wc -l
+
+# 5. Si algo salió mal, restaurar backup
+cp /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx.backup \
+   /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx
+```
+
+### Verificar Keymaps Específicos por Sección
+
+```bash
+# Extraer keymaps de una sección específica
+# Ejemplo: AI Assistant
+awk '/^## .*AI Assistant/,/^## /' \
+  /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+  grep "^| \`" | \
+  cut -d'|' -f2 | \
+  sed 's/[` ]//g' | \
+  sort
+
+# Comparar con el source
+cd /home/ludus/Work/khanelivim/modules/nixvim
+rg "<leader>a" --type nix | grep "key\|__unkeyed-1"
+```
+
+### Validar Formato de Tablas
+
+```bash
+# Verificar que todas las filas de tabla tienen el formato correcto
+grep "^| \`" /home/ludus/Dotfiles/docs/src/content/docs/neovim.mdx | \
+  while read line; do
+    # Contar pipes (debe ser 4: inicio, key, desc, mode, fin)
+    pipes=$(echo "$line" | tr -cd '|' | wc -c)
+    if [ $pipes -ne 4 ]; then
+      echo "ERROR en línea: $line (pipes: $pipes)"
+    fi
+  done
 ```
 
 ---
