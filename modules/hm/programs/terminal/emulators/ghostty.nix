@@ -42,7 +42,7 @@ in {
 
     fontSize = mkOption {
       type = types.int;
-      default = 12;
+      default = 9;
       description = "Tamaño de fuente";
     };
 
@@ -55,25 +55,25 @@ in {
 
     cursorStyle = mkOption {
       type = types.enum ["block" "bar" "underline"];
-      default = "bar";
+      default = "block";
       description = "Estilo del cursor";
     };
 
     cursorBlink = mkOption {
       type = types.bool;
-      default = true;
+      default = false;
       description = "Cursor parpadeante";
     };
 
     paddingX = mkOption {
       type = types.int;
-      default = 10;
+      default = 14;
       description = "Padding horizontal";
     };
 
     paddingY = mkOption {
       type = types.int;
-      default = 6;
+      default = 14;
       description = "Padding vertical";
     };
 
@@ -182,6 +182,7 @@ in {
         # Fuente
         font-family = cfg.font;
         font-size = cfg.fontSize;
+        font-style = "Regular";
         font-feature = cfg.fontFeatures;
         
         # Cursor
@@ -192,6 +193,8 @@ in {
         window-padding-x = cfg.paddingX;
         window-padding-y = cfg.paddingY;
         window-decoration = if cfg.windowDecoration then "auto" else "none";
+        window-theme = "ghostty";
+        gtk-toolbar-style = "flat";
         
         # Comportamiento
         scrollback-limit = cfg.scrollbackLimit;
@@ -202,6 +205,7 @@ in {
         confirm-close-surface = false;
         gtk-single-instance = true;
         quit-after-last-window-closed = false;
+        shell-integration-features = "no-cursor,ssh-env";
         
         # Ajustes de cursor
         adjust-cursor-height = "40%";
