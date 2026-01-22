@@ -13,15 +13,16 @@ git-add: ## Stage all changes for git
 	@printf "\n"	
 	@printf "$(CYAN)                                📝 Staging Changes                               $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n$(BLUE)Adding all changes to staging area...$(NC)\n"
-	@git add .
 	@CHANGED=$$(git status --short | wc -l); \
 	if [ $$CHANGED -gt 0 ]; then \
+		printf "\n$(BLUE)Adding all changes to staging area...$(NC)\n"; \
+		git add .; \
 		printf "$(GREEN)✅ Staged $$CHANGED file(s)$(NC)\n"; \
 		printf "\n$(BLUE)Changes staged:$(NC)\n"; \
 		git status --short | sed 's/^/  /'; \
 	else \
-		printf "$(YELLOW)⚠ No changes to stage$(NC)\n"; \
+		printf "\n$(YELLOW)⚠ No changes to stage$(NC)\n"; \
+		printf "$(BLUE)Working tree is clean.$(NC)\n"; \
 	fi
 	@printf "\n"
 
