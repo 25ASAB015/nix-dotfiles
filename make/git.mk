@@ -31,16 +31,21 @@ git-commit: ## Quick commit with timestamp
 	@printf "$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📝 Committing Changes                  $(NC)"
 	@printf "\n$(CYAN)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n$(BLUE)Staging changes...$(NC)\n"
-	@git add .
-	@COMMIT_MSG="config: update $$(date '+%Y-%m-%d %H:%M:%S')"; \
-	printf "$(BLUE)Creating commit:$(NC) $(GREEN)$$COMMIT_MSG$(NC)\n\n"; \
-	git commit -m "$$COMMIT_MSG" || exit 1; \
-	COMMIT_HASH=$$(git rev-parse --short HEAD); \
-	BRANCH=$$(git branch --show-current); \
-	printf "\n$(GREEN)✅ Commit created successfully$(NC)\n"; \
-	printf "$(BLUE)Hash:$(NC) $(GREEN)$$COMMIT_HASH$(NC)\n"; \
-	printf "$(BLUE)Branch:$(NC) $(GREEN)$$BRANCH$(NC)\n"
+	@if [ -n "$$(git status --porcelain)" ]; then \
+		printf "\n$(BLUE)Staging changes...$(NC)\n"; \
+		git add .; \
+		COMMIT_MSG="config: update $$(date '+%Y-%m-%d %H:%M:%S')"; \
+		printf "$(BLUE)Creating commit:$(NC) $(GREEN)$$COMMIT_MSG$(NC)\n\n"; \
+		git commit -m "$$COMMIT_MSG" || exit 1; \
+		COMMIT_HASH=$$(git rev-parse --short HEAD); \
+		BRANCH=$$(git branch --show-current); \
+		printf "\n$(GREEN)✅ Commit created successfully$(NC)\n"; \
+		printf "$(BLUE)Hash:$(NC) $(GREEN)$$COMMIT_HASH$(NC)\n"; \
+		printf "$(BLUE)Branch:$(NC) $(GREEN)$$BRANCH$(NC)\n"; \
+	else \
+		printf "\n$(YELLOW)⚠ No changes to commit$(NC)\n"; \
+		printf "$(BLUE)Working tree is clean. Proceeding...$(NC)\n"; \
+	fi
 	@printf "\n"
 
 git-push: ## Push to remote using GitHub CLI
