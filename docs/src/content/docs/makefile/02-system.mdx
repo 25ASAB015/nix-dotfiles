@@ -49,11 +49,10 @@ make sys-deploy
 
 **Qué hace:**
 1. Git-fix: Corrige permisos en el repositorio
-2. **Validate:** Verifica sintaxis y evalua configuración (linter suave)
-3. `make git-add` - Prepara todos los cambios
-4. `make git-commit` - Crea respaldo con timestamp (salta si no hay cambios)
-5. `make git-push` - Sube cambios al repositorio remoto
-6. **`make sys-apply`** - Aplica la configuración localmente
+2. `make git-add` - Prepara todos los cambios
+3. `make git-commit` - Crea respaldo con timestamp (salta si no hay cambios)
+4. `make git-push` - Sube cambios al repositorio remoto
+5. **`make sys-apply`** - Aplica la configuración localmente
 
 **Propósito:** Asegurar que tu configuración esté respaldada en la nube y aplicada localmente en un solo paso.
 

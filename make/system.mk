@@ -168,44 +168,6 @@ sys-check: ## Validate configuration before applying
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
-# Soft validation (warns but doesn't fail on lints)
-sys-check-soft: ## Validate config (non-strict mode)
-	@printf "\n"
-	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)            🔍 Soft Validation (Warn Only)         $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@printf "$(BLUE)1/3 Checking flake syntax...$(NC) "
-	@if nix flake check $(FLAKE_DIR) >/dev/null 2>&1; then \
-		printf "$(GREEN)✓$(NC)\n"; \
-	else \
-		printf "$(RED)✗$(NC)\n"; \
-		nix flake check $(FLAKE_DIR); \
-		exit 1; \
-	fi
-	@printf "$(BLUE)2/3 Checking configuration evaluation...$(NC) "
-	@if nix eval .#nixosConfigurations.$(HOSTNAME).config.system.build.toplevel >/dev/null 2>&1; then \
-		printf "$(GREEN)✓$(NC)\n"; \
-	else \
-		printf "$(RED)✗$(NC)\n"; \
-		nix eval .#nixosConfigurations.$(HOSTNAME).config.system.build.toplevel --show-trace; \
-		exit 1; \
-	fi
-	@printf "$(BLUE)3/3 Checking for common issues (optional)...$(NC) "
-	@if command -v statix >/dev/null 2>&1; then \
-		if statix check . >/dev/null 2>&1; then \
-			printf "$(GREEN)✓$(NC)\n"; \
-		else \
-			printf "$(YELLOW)⚠ (warnings found, continuing...)$(NC)\n"; \
-		fi \
-	else \
-		printf "$(YELLOW)⊘ (statix not installed)$(NC)\n"; \
-	fi
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Soft validation passed$(NC)\n"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-
 # Rebuild with maximum verbosity and debug tracing enabled
 sys-debug: ## Rebuild with verbose output and trace
 	@printf "\n"
@@ -243,14 +205,12 @@ sys-deploy: ## Total sync (add + commit + push + apply)
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)Executing complete deployment workflow:$(NC)\n"
 	@printf "  1. Fix permissions (sys-fix-git)\n"
-	@printf "  2. Validate config (sys-check)\n"
-	@printf "  3. Stage changes (git add)\n"
-	@printf "  4. Commit changes (timestamped)\n"
-	@printf "  5. Push to remote (git push)\n"
-	@printf "  6. Build and apply (sys-apply)\n"
+	@printf "  2. Stage changes (git add)\n"
+	@printf "  3. Commit changes (timestamped)\n"
+	@printf "  4. Push to remote (git push)\n"
+	@printf "  5. Build and apply (sys-apply)\n"
 	@printf "\n"
 	@$(MAKE) --no-print-directory sys-fix-git
-	@$(MAKE) --no-print-directory sys-check-soft
 	@$(MAKE) --no-print-directory git-add
 	@$(MAKE) --no-print-directory git-commit
 	@$(MAKE) --no-print-directory git-push
