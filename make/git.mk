@@ -11,7 +11,7 @@
 
 git-add: ## Stage all changes for git
 	@printf "\n"	
-	@printf "$(CYAN)              📝 Staging Changes                   $(NC)"
+	@printf "$(CYAN)                                📝 Staging Changes                               $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Adding all changes to staging area...$(NC)\n"
 	@git add .
@@ -27,7 +27,7 @@ git-add: ## Stage all changes for git
 
 git-commit: ## Quick commit with timestamp
 	@printf "\n"
-	@printf "$(CYAN)            📝 Committing Changes                  $(NC)"
+	@printf "$(CYAN)                              📝 Committing Changes                              $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ -n "$$(git status --porcelain)" ]; then \
 		printf "\n$(BLUE)Staging changes...$(NC)\n"; \
@@ -48,7 +48,7 @@ git-commit: ## Quick commit with timestamp
 
 git-push: ## Push to remote using GitHub CLI
 	@printf "\n"	
-	@printf "$(CYAN)              🚀 Pushing to Remote                 $(NC)"
+	@printf "$(CYAN)                               🚀 Pushing to Remote                              $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@BRANCH=$$(git branch --show-current); \
 	REMOTE=$$(git remote get-url origin 2>/dev/null | sed -E 's|.*github.com[:/]([^/]+/[^/]+)(\.git)?$$|\1|' | sed 's|\.git$$||'); \
