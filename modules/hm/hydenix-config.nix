@@ -221,15 +221,6 @@
   # Documentación: https://ghostty.org/docs
   modules.terminal.emulators.ghostty = {
     enable = true;
-    font = "JetBrainsMono Nerd Font";
-    fontSize = 12;
-    fontFeatures = "calt,liga";  # Ligatures
-    cursorStyle = "bar";
-    cursorBlink = true;
-    paddingX = 10;
-    paddingY = 6;
-    scrollbackLimit = 10000;
-    windowDecoration = false;    # Sin bordes de ventana
     enableFishIntegration = true;
     theme = null;  # Use manual colors defined in ghostty.nix to avoid "not found" error
   };
