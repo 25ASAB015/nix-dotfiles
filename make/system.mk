@@ -30,7 +30,7 @@ sys-apply-core:
 	fi
 	@printf "\n$(BLUE)==================== Build =====================\n$(NC)"
 	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
-	@printf "\n$(GREEN)==================== Done ======================\n$(NC)"
+	@printf "\n$(GREEN)==== ✅ Deployment completed successfully! ====\n$(NC)"
 
 # Validate configuration and then apply (recommended safe workflow)
 sys-apply-safe: sys-check sys-apply ## Validate then switch (safest option)
@@ -214,9 +214,6 @@ sys-deploy: ## Total sync (add + commit + push + apply)
 	@$(MAKE) --no-print-directory git-commit
 	@$(MAKE) --no-print-directory git-push
 	@$(MAKE) --no-print-directory sys-apply-core
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Deployment completed successfully!$(NC)\n"
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
 # === Mantenimiento y Otros ===
