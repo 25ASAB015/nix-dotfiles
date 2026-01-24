@@ -18,16 +18,13 @@
     "workbench.activityBar.location": "top",
     "window.customTitleBarVisibility": "auto",
     "workbench.sideBar.location": "right",
-    ##
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 1000,
     "editor.rulers": [80, 120],
     "terminal.integrated.fontSize": 13,
     "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font'",
     "workbench.iconTheme": "flow-icons",
-    "telemetry.telemetryLevel": "off",
     "git.confirmSync": false,
     "git.autofetch": true,
     "git.enableSmartCommit": true
-  }
-  
+}
