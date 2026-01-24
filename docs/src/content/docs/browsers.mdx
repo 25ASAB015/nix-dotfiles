@@ -293,23 +293,153 @@ home.sessionVariables = {
 
 ## Flags compartidos de Chromium
 
-El archivo `chromium-flags.nix` contiene flags optimizados para navegadores basados en Chromium (como Helium). Estos flags incluyen:
+El archivo `chromium-flags.nix` contiene flags optimizados para navegadores basados en Chromium. **Actualmente, estos flags se aplican a Helium** a través de variables de entorno. **Google Chrome no está usando estos flags por defecto**, pero puedes configurarlos si lo deseas.
 
-### Optimizaciones de rendimiento
-- Aceleración por hardware (GPU)
-- Decodificación de video con VAAPI
-- Renderizado con Vulkan
-- Zero-copy rendering
+### Explicación detallada de los flags
 
-### Privacidad
-- Reducción de fingerprinting
-- Deshabilitación de recolección de motores de búsqueda
-- Manejo de extensiones mejorado
+#### Wayland Support
+```nix
+--ozone-platform=wayland
+--enable-features=WaylandWindowDecorations
+```
+- **`--ozone-platform=wayland`**: Usa Wayland como plataforma de ventanas (mejor rendimiento y soporte nativo en Linux)
+- **`--enable-features=WaylandWindowDecorations`**: Habilita decoraciones de ventana nativas de Wayland
 
-### Variables de entorno
-- Configuración de drivers de video (RADV para AMD)
-- Soporte para Wayland
-- Optimizaciones de VAAPI/VDPAU
+#### GPU y Aceleración de Video
+```nix
+--use-vulkan=native
+--enable-dawn-backend=vulkan
+--ignore-gpu-blocklist
+--enable-gpu-rasterization
+--enable-zero-copy
+--enable-raw-draw
+--enable-drdc
+--disable-gpu-driver-bug-workarounds
+```
+- **`--use-vulkan=native`**: Usa Vulkan como API de gráficos (mejor rendimiento que OpenGL)
+- **`--enable-dawn-backend=vulkan`**: Backend Vulkan para WebGPU
+- **`--ignore-gpu-blocklist`**: Ignora la lista negra de GPUs (permite usar GPU aunque no esté oficialmente soportada)
+- **`--enable-gpu-rasterization`**: Usa GPU para rasterizar (renderizar) páginas web
+- **`--enable-zero-copy`**: Reduce copias de memoria innecesarias (mejor rendimiento)
+- **`--enable-raw-draw`**: Renderizado directo sin capas intermedias
+- **`--enable-drdc`**: Dynamic Refresh Rate Control (mejor sincronización)
+- **`--disable-gpu-driver-bug-workarounds`**: Desactiva workarounds para bugs de drivers (mejor rendimiento si tu driver es estable)
 
-Estos flags se aplican automáticamente a Helium a través de `home.sessionVariables`.
+#### Features de Rendimiento
+```nix
+--enable-features=UseOzonePlatform,Vulkan,SkiaGraphite,VaapiVideoEncoder,VaapiVideoDecoder,CanvasOopRasterization,VaapiIgnoreDriverChecks,OverlayScrollbar,ParallelDownloading
+```
+- **`UseOzonePlatform`**: Plataforma de ventanas moderna
+- **`Vulkan`**: Renderizado con Vulkan
+- **`SkiaGraphite`**: Motor de gráficos mejorado
+- **`VaapiVideoEncoder/VaapiVideoDecoder`**: Codificación/decodificación de video con VAAPI (aceleración por hardware)
+- **`CanvasOopRasterization`**: Rasterización fuera de proceso para canvas
+- **`VaapiIgnoreDriverChecks`**: Ignora verificaciones de drivers VAAPI
+- **`OverlayScrollbar`**: Barras de desplazamiento overlay (más espacio)
+- **`ParallelDownloading`**: Descargas paralelas (más rápido)
+
+#### Aceleración de Video Específica
+```nix
+--enable-hardware-overlays
+--enable-accelerated-video-decode
+--enable-accelerated-video-encode
+--enable-accelerated-mjpeg-decode
+```
+- **`--enable-hardware-overlays`**: Overlays de hardware (mejor rendimiento de video)
+- **`--enable-accelerated-video-decode`**: Decodificación de video acelerada por hardware
+- **`--enable-accelerated-video-encode`**: Codificación de video acelerada por hardware
+- **`--enable-accelerated-mjpeg-decode`**: Decodificación de JPEG acelerada
+
+#### Rendimiento General
+```nix
+--enable-oop-rasterization
+--enable-webgl-developer-extensions
+--enable-accelerated-2d-canvas
+--enable-direct-composition
+--enable-gpu-compositing
+```
+- **`--enable-oop-rasterization`**: Rasterización fuera de proceso (mejor estabilidad)
+- **`--enable-webgl-developer-extensions`**: Extensiones de desarrollo para WebGL
+- **`--enable-accelerated-2d-canvas`**: Canvas 2D acelerado por GPU
+- **`--enable-direct-composition`**: Composición directa (mejor rendimiento)
+- **`--enable-gpu-compositing`**: Composición con GPU
+
+#### Navegación Suave
+```nix
+--enable-media-router
+--enable-smooth-scrolling
+```
+- **`--enable-media-router`**: Router de medios (para casting, etc.)
+- **`--enable-smooth-scrolling`**: Desplazamiento suave
+
+#### Privacidad y Seguridad (UnGoogled)
+```nix
+--disable-search-engine-collection
+--extension-mime-request-handling=always-prompt-for-install
+--fingerprinting-canvas-image-data-noise
+--fingerprinting-canvas-measuretext-noise
+--fingerprinting-client-rects-noise
+--popups-to-tabs
+--force-punycode-hostnames
+--show-avatar-button=incognito-and-guest
+--no-pings
+```
+- **`--disable-search-engine-collection`**: Desactiva recolección de motores de búsqueda
+- **`--extension-mime-request-handling=always-prompt-for-install`**: Siempre pregunta antes de instalar extensiones
+- **`--fingerprinting-canvas-image-data-noise`**: Añade ruido a canvas para prevenir fingerprinting
+- **`--fingerprinting-canvas-measuretext-noise`**: Añade ruido a measureText para prevenir fingerprinting
+- **`--fingerprinting-client-rects-noise`**: Añade ruido a getBoundingClientRect para prevenir fingerprinting
+- **`--popups-to-tabs`**: Convierte popups en pestañas (más seguro)
+- **`--force-punycode-hostnames`**: Fuerza punycode en nombres de dominio (previene ataques de homografía)
+- **`--show-avatar-button=incognito-and-guest`**: Solo muestra avatar en modo incógnito/guest
+- **`--no-pings`**: Desactiva pings de red (previene tracking)
+
+#### Misceláneos
+```nix
+--disable-features=UseChromeOSDirectVideoDecoder
+--no-default-browser-check
+```
+- **`--disable-features=UseChromeOSDirectVideoDecoder`**: Desactiva decodificador directo de ChromeOS (no aplicable en Linux)
+- **`--no-default-browser-check`**: No verifica si es el navegador por defecto al iniciar
+
+### Variables de Entorno
+
+Las variables de entorno configuran el sistema para usar aceleración de hardware:
+
+```nix
+LIBVA_DRIVER_NAME = "radeonsi"           # Driver VAAPI para AMD
+LIBVA_MESSAGING_LEVEL = "1"              # Nivel de mensajes de VAAPI
+LIBGL_ALWAYS_SOFTWARE = "0"              # No forzar software rendering
+ENABLE_VAAPI = "1"                        # Habilitar VAAPI
+ENABLE_VDPAU = "1"                        # Habilitar VDPAU (otro sistema de aceleración)
+VAAPI_DISABLE_ENCODER_CHECKING = "1"     # Desactivar verificaciones de encoder
+EGL_PLATFORM = "wayland"                  # Usar Wayland para EGL
+RADV_PERFTEST = "sam"                     # Perfil de rendimiento para RADV (AMD)
+AMD_VULKAN_ICD = "RADV"                   # Usar RADV como driver Vulkan para AMD
+```
+
+### Aplicar flags a Google Chrome
+
+Actualmente, **Google Chrome no usa estos flags**. Para aplicarlos, puedes modificar `google-chrome.nix`:
+
+```nix
+{ pkgs, ... }:
+let
+  chromiumFlags = import ./chromium-flags.nix { inherit pkgs; };
+in {
+  home.packages = [ pkgs.google-chrome ];
+  
+  # Aplicar variables de entorno
+  home.sessionVariables = chromiumFlags.sessionVariables;
+  
+  # Aplicar flags (requiere wrapper personalizado)
+  # Nota: Google Chrome no acepta flags directamente vía variable de entorno
+  # Necesitarías crear un wrapper o usar un archivo de flags
+}
+```
+
+**Nota importante**: Google Chrome no acepta flags vía `GOOGLE_CHROME_EXTRA_FLAGS` de la misma forma que Chromium. Para aplicar flags a Google Chrome, necesitarías:
+1. Crear un wrapper personalizado del paquete
+2. O usar un archivo de configuración de flags (si Chrome lo soporta)
+3. O usar Chromium en lugar de Google Chrome (que sí acepta flags más fácilmente)
 
