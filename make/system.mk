@@ -211,6 +211,7 @@ sys-deploy: ## Total sync (doctor + add + commit + push + apply)
 	@printf "  6. Build and apply (sys-apply)\n"
 	@printf "\n"
 	@$(MAKE) --no-print-directory sys-doctor
+	@printf "\n"
 	@$(MAKE) --no-print-directory sys-fix-git
 	@printf "\n"
 	@$(MAKE) --no-print-directory git-add
