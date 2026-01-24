@@ -10,7 +10,10 @@
     
     # Comenzamos sin extensiones declarativas
     # Las instalaremos manualmente y luego las declararemos
-    extensions = [ ];
+    # Usar la nueva sintaxis con profiles.default.extensions
+    profiles.default = {
+      extensions = [ ];
+    };
   };
 }
 
