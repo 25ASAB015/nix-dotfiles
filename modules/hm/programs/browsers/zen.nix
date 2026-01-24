@@ -57,11 +57,10 @@
         # 1Password X - Password Manager
         # Formato de ID: "{UUID}"
         # https://addons.mozilla.org/en-US/firefox/addon/1password-x-password-manager/
-        # NOTA: Temporalmente comentado - puede causar problemas al iniciar
-        # "{d633138d-6c8b-4493-84d1-909800a9d5b5}" = {
-        #   install_url = "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager/latest.xpi";
-        #   installation_mode = "force_installed";
-        # };
+        "{d633138d-6c8b-4493-84d1-909800a9d5b5}" = {
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager/latest.xpi";
+          installation_mode = "force_installed";
+        };
         
         # Agregar más extensiones aquí:
         # "OTRA_EXTENSION_ID" = {
