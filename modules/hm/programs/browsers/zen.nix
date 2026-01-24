@@ -7,9 +7,11 @@
   programs.zen-browser = {
     enable = true;
 
+    # ════════════════════════════════════════════════════════════════════════════
+    # POLICIES - Configuración de políticas de Firefox/Zen
+    # ════════════════════════════════════════════════════════════════════════════
     policies = {
       DisableAppUpdate = true;
-
       DisableTelemetry = true;
       EnableTrackingProtection = {
         Value = true;
@@ -17,11 +19,155 @@
         Fingerprinting = true;
       };
 
+      # ══════════════════════════════════════════════════════════════════════════
+      # EXTENSIONES - Agregar extensiones automáticamente
+      # ══════════════════════════════════════════════════════════════════════════
+      # Para agregar una nueva extensión:
+      # 1. Obtén el ID de la extensión desde addons.mozilla.org (está en la URL)
+      # 2. Usa la URL de descarga directa del .xpi
+      # 3. Agrega una entrada aquí con el formato:
+      #
+      #   "EXTENSION_ID@author" = {
+      #     install_url = "https://addons.mozilla.org/firefox/downloads/latest/extension-name/latest.xpi";
+      #     installation_mode = "force_installed";  # o "normal_installed"
+      #   };
+      #
+      # Ejemplos de extensiones comunes:
+      # - Bitwarden: "browserpass@bitwarden.com"
+      # - Dark Reader: "addon@darkreader.org"
+      # - Privacy Badger: "jid1-MnnxcxisBPnSXQ@jetpack"
+      # - Multi-Account Containers: "@testpilot-containers"
       ExtensionSettings = {
+        # uBlock Origin - Bloqueador de anuncios
         "uBlock0@raymondhill.net" = {
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
           installation_mode = "force_installed";
         };
+        # Agregar más extensiones aquí:
+        # "OTRA_EXTENSION_ID@author" = {
+        #   install_url = "https://addons.mozilla.org/firefox/downloads/latest/extension-name/latest.xpi";
+        #   installation_mode = "force_installed";
+        # };
+      };
+    };
+
+    # ════════════════════════════════════════════════════════════════════════════
+    # SETTINGS/PREFERENCIAS - Configuración personalizada de Zen
+    # ════════════════════════════════════════════════════════════════════════════
+    # Para agregar settings personalizados, usa 'extraPrefs' con sintaxis user.js
+    # Referencia: https://kb.mozillazine.org/About:config_entries
+    #
+    # Ejemplos comunes:
+    # - Cambiar página de inicio: user_pref("browser.startup.homepage", "about:blank");
+    # - Deshabilitar sugerencias: user_pref("browser.urlbar.showSearchSuggestionsFirst", false);
+    # - Habilitar Wayland: user_pref("widget.wayland.enabled", true);
+    # - Modo oscuro: user_pref("ui.systemUsesDarkTheme", 1);
+    #
+    # Para ver todas las preferencias disponibles, abre Zen y ve a about:config
+    extraPrefs = ''
+      # Agregar preferencias personalizadas aquí
+      # user_pref("preference.name", value);
+    '';
+
+    # ════════════════════════════════════════════════════════════════════════════
+    # ARCHIVOS DE PREFERENCIAS ADICIONALES (opcional)
+    # ════════════════════════════════════════════════════════════════════════════
+    # Si prefieres mantener las preferencias en archivos separados:
+    # extraPrefsFiles = [
+    #   ./zen-prefs.js
+    # ];
+
+    # ════════════════════════════════════════════════════════════════════════════
+    # PERFILES - Configuración de perfiles (spaces, pins, keybindings, mods)
+    # ════════════════════════════════════════════════════════════════════════════
+    profiles = {
+      default = {
+        # ════════════════════════════════════════════════════════════════════════
+        # KEYBINDINGS - Atajos de teclado personalizados
+        # ════════════════════════════════════════════════════════════════════════
+        # Para agregar un keybinding personalizado:
+        # 1. Encuentra el ID del shortcut:
+        #    - Abre Zen y ve a about:config
+        #    - Busca "zen.keyboard.shortcuts.version" para ver la versión
+        #    - O revisa ~/.zen/default/zen-keyboard-shortcuts.json después de ejecutar Zen
+        # 2. Agrega una entrada aquí con el formato:
+        #
+        #   {
+        #     id = "cmd_shortcutName";  # ID del shortcut en Zen
+        #     key = "t";                 # Carácter de la tecla (opcional)
+        #     keycode = "VK_W";          # Código de tecla virtual (opcional, alternativo a key)
+        #     modifiers = {
+        #       accel = true;    # Ctrl (Linux/Windows) o Cmd (macOS)
+        #       control = true;  # Ctrl explícito
+        #       alt = true;      # Alt
+        #       shift = true;    # Shift
+        #       meta = true;     # Meta/Windows/Command
+        #     };
+        #     disabled = false;  # true para deshabilitar el shortcut
+        #   }
+        #
+        # IDs comunes de shortcuts en Zen:
+        # - cmd_newTab: Nueva pestaña
+        # - cmd_closeTab: Cerrar pestaña
+        # - cmd_undoCloseTab: Reabrir pestaña cerrada
+        # - cmd_newWindow: Nueva ventana
+        # - cmd_toggleSidebar: Mostrar/ocultar sidebar
+        # - cmd_goBack: Ir atrás
+        # - cmd_goForward: Ir adelante
+        # - cmd_reload: Recargar página
+        # - cmd_find: Buscar en página
+        #
+        # Para encontrar más IDs, ejecuta Zen y revisa:
+        # ~/.zen/default/zen-keyboard-shortcuts.json
+        keyboardShortcuts = [
+          # Agregar keybindings personalizados aquí:
+          # {
+          #   id = "cmd_newTab";
+          #   key = "t";
+          #   modifiers = {
+          #     accel = true;
+          #   };
+          #   disabled = false;
+          # }
+        ];
+
+        # Versión del schema de shortcuts (opcional, para validación)
+        # Si Zen actualiza y cambia los shortcuts, esto previene errores silenciosos
+        # Encuéntrala en about:config como "zen.keyboard.shortcuts.version"
+        # keyboardShortcutsVersion = 1;
+
+        # ════════════════════════════════════════════════════════════════════════
+        # SPACES/WORKSPACES - Espacios de trabajo (opcional)
+        # ════════════════════════════════════════════════════════════════════════
+        # spaces = {
+        #   work = {
+        #     id = "uuid-aqui";  # Genera un UUID v4
+        #     name = "Work";
+        #     position = 0;
+        #     icon = "💼";
+        #   };
+        # };
+
+        # ════════════════════════════════════════════════════════════════════════
+        # PINS - Pestañas fijadas (opcional)
+        # ════════════════════════════════════════════════════════════════════════
+        # pins = {
+        #   gmail = {
+        #     id = "uuid-aqui";
+        #     title = "Gmail";
+        #     url = "https://mail.google.com";
+        #     position = 0;
+        #   };
+        # };
+
+        # ════════════════════════════════════════════════════════════════════════
+        # MODS - Temas desde la tienda de Zen (opcional)
+        # ════════════════════════════════════════════════════════════════════════
+        # Lista de UUIDs de mods desde https://zen-browser.github.io/theme-store/
+        # mods = [
+        #   "mod-uuid-1"
+        #   "mod-uuid-2"
+        # ];
       };
     };
   };
