@@ -324,13 +324,14 @@
     nixosHost = "hydenix";     # Host para comandos nixos-rebuild
   };
 
-  # STARSHIP - Prompt para Fish (separado de zsh)
-  # Usa archivo ~/.config/starship/fish.toml
-  # NO afecta el prompt de zsh/Hydenix
-  modules.terminal.shell.starship = {
-    enable = true;
-    enableFishIntegration = true;
-  };
+  # STARSHIP - Deshabilitado para usar configuración original de Hydenix
+  # Hydenix instala automáticamente starship.toml y powerline.toml
+  # desde el paquete hyde cuando hydenix.hm.shell.starship.enable = true
+  # Fish usará starship.toml por defecto (no hay fish.toml separado en Hydenix)
+  # modules.terminal.shell.starship = {
+  #   enable = true;
+  #   enableFishIntegration = true;
+  # };
 
   # ════════════════════════════════════════════════════════════════════════════
   # GAMMASTEP - Ajuste de temperatura de color de pantalla
