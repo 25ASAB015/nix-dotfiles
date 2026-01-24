@@ -9,11 +9,12 @@
 # Si prefieres usar tus propias API keys, puedes modificar esta configuración.
 #
 # Modelos disponibles:
-# - Gemini 3 Pro (Low/High) - Google's latest model
-# - Gemini 3 Flash - Faster responses
-# - Claude Sonnet 4.5 - Anthropic's latest (with thinking variants)
-# - Claude Opus 4.5 - Most capable (with thinking variants)
-# - GPT-OSS 120B - Open source alternative
+# - Gemini 3 Pro (con variantes low/high)
+# - Gemini 3 Flash (con variantes minimal/low/medium/high)
+# - Gemini 2.5 Pro/Flash (modelos estables)
+# - Gemini 3 Preview (modelos en preview)
+# - Claude Sonnet 4.5 (con thinking configurable)
+# - Claude Opus 4.5 (con thinking configurable)
 # ════════════════════════════════════════════════════════════════════════════
 {
   config = {
@@ -21,10 +22,10 @@
       npm = "@ai-sdk/google";
       models = {
         # ══════════════════════════════════════════════════════════════════════
-        # Gemini 3 Pro - Modelo principal de Google
+        # Gemini 3 Pro - Modelo principal de Google con variantes
         # ══════════════════════════════════════════════════════════════════════
-        "antigravity-gemini-3-pro-low" = {
-          name = "Gemini 3 Pro Low (Antigravity)";
+        antigravity-gemini-3-pro = {
+          name = "Gemini 3 Pro (Antigravity)";
           limit = {
             context = 1048576;  # ~1M tokens de contexto
             output = 65535;     # ~65K tokens de salida
@@ -33,12 +34,41 @@
             input = ["text" "image" "pdf"];
             output = ["text"];
           };
+          variants = {
+            low = {thinkingLevel = "low";};
+            high = {thinkingLevel = "high";};
+          };
         };
-        "antigravity-gemini-3-pro-high" = {
-          name = "Gemini 3 Pro High (Antigravity)";
+
+        # ══════════════════════════════════════════════════════════════════════
+        # Gemini 3 Flash - Respuestas más rápidas con múltiples variantes
+        # ══════════════════════════════════════════════════════════════════════
+        antigravity-gemini-3-flash = {
+          name = "Gemini 3 Flash (Antigravity)";
           limit = {
             context = 1048576;
-            output = 65535;
+            output = 65536;
+          };
+          modalities = {
+            input = ["text" "image" "pdf"];
+            output = ["text"];
+          };
+          variants = {
+            minimal = {thinkingLevel = "minimal";};
+            low = {thinkingLevel = "low";};
+            medium = {thinkingLevel = "medium";};
+            high = {thinkingLevel = "high";};
+          };
+        };
+
+        # ══════════════════════════════════════════════════════════════════════
+        # Claude Sonnet 4.5 - Equilibrio entre velocidad y capacidad
+        # ══════════════════════════════════════════════════════════════════════
+        antigravity-claude-sonnet-4-5 = {
+          name = "Claude Sonnet 4.5 (no thinking) (Antigravity)";
+          limit = {
+            context = 200000;   # 200K tokens de contexto
+            output = 64000;     # 64K tokens de salida
           };
           modalities = {
             input = ["text" "image" "pdf"];
@@ -46,11 +76,59 @@
           };
         };
 
+        # Claude Sonnet 4.5 con thinking configurable
+        antigravity-claude-sonnet-4-5-thinking = {
+          name = "Claude Sonnet 4.5 Thinking (Antigravity)";
+          limit = {
+            context = 200000;
+            output = 64000;
+          };
+          modalities = {
+            input = ["text" "image" "pdf"];
+            output = ["text"];
+          };
+          variants = {
+            low = {thinkingConfig = {thinkingBudget = 8192;};};
+            max = {thinkingConfig = {thinkingBudget = 32768;};};
+          };
+        };
+
         # ══════════════════════════════════════════════════════════════════════
-        # Gemini 3 Flash - Respuestas más rápidas
+        # Claude Opus 4.5 - Modelo más capaz de Anthropic
         # ══════════════════════════════════════════════════════════════════════
-        "antigravity-gemini-3-flash" = {
-          name = "Gemini 3 Flash (Antigravity)";
+        antigravity-claude-opus-4-5-thinking = {
+          name = "Claude Opus 4.5 Thinking (Antigravity)";
+          limit = {
+            context = 200000;
+            output = 64000;
+          };
+          modalities = {
+            input = ["text" "image" "pdf"];
+            output = ["text"];
+          };
+          variants = {
+            low = {thinkingConfig = {thinkingBudget = 8192;};};
+            max = {thinkingConfig = {thinkingBudget = 32768;};};
+          };
+        };
+
+        # ══════════════════════════════════════════════════════════════════════
+        # Gemini 2.5 - Modelos estables
+        # ══════════════════════════════════════════════════════════════════════
+        gemini-2-5-flash = {
+          name = "Gemini 2.5 Flash (Gemini CLI)";
+          limit = {
+            context = 1048576;
+            output = 65536;
+          };
+          modalities = {
+            input = ["text" "image" "pdf"];
+            output = ["text"];
+          };
+        };
+
+        gemini-2-5-pro = {
+          name = "Gemini 2.5 Pro (Gemini CLI)";
           limit = {
             context = 1048576;
             output = 65536;
@@ -62,13 +140,13 @@
         };
 
         # ══════════════════════════════════════════════════════════════════════
-        # Claude Sonnet 4.5 - Equilibrio entre velocidad y capacidad
+        # Gemini 3 Preview - Modelos en preview
         # ══════════════════════════════════════════════════════════════════════
-        "antigravity-claude-sonnet-4-5" = {
-          name = "Claude Sonnet 4.5 (Antigravity)";
+        gemini-3-flash-preview = {
+          name = "Gemini 3 Flash Preview (Gemini CLI)";
           limit = {
-            context = 200000;   # 200K tokens de contexto
-            output = 64000;     # 64K tokens de salida
+            context = 1048576;
+            output = 65536;
           };
           modalities = {
             input = ["text" "image" "pdf"];
@@ -76,86 +154,11 @@
           };
         };
 
-        # Variantes con "thinking" (razonamiento extendido)
-        "antigravity-claude-sonnet-4-5-thinking-low" = {
-          name = "Claude Sonnet 4.5 Thinking Low (Antigravity)";
+        gemini-3-pro-preview = {
+          name = "Gemini 3 Pro Preview (Gemini CLI)";
           limit = {
-            context = 200000;
-            output = 64000;
-          };
-          modalities = {
-            input = ["text" "image" "pdf"];
-            output = ["text"];
-          };
-        };
-        "antigravity-claude-sonnet-4-5-thinking-medium" = {
-          name = "Claude Sonnet 4.5 Thinking Medium (Antigravity)";
-          limit = {
-            context = 200000;
-            output = 64000;
-          };
-          modalities = {
-            input = ["text" "image" "pdf"];
-            output = ["text"];
-          };
-        };
-        "antigravity-claude-sonnet-4-5-thinking-high" = {
-          name = "Claude Sonnet 4.5 Thinking High (Antigravity)";
-          limit = {
-            context = 200000;
-            output = 64000;
-          };
-          modalities = {
-            input = ["text" "image" "pdf"];
-            output = ["text"];
-          };
-        };
-
-        # ══════════════════════════════════════════════════════════════════════
-        # Claude Opus 4.5 - Modelo más capaz de Anthropic
-        # ══════════════════════════════════════════════════════════════════════
-        "antigravity-claude-opus-4-5-thinking-low" = {
-          name = "Claude Opus 4.5 Thinking Low (Antigravity)";
-          limit = {
-            context = 200000;
-            output = 64000;
-          };
-          modalities = {
-            input = ["text" "image" "pdf"];
-            output = ["text"];
-          };
-        };
-        "antigravity-claude-opus-4-5-thinking-medium" = {
-          name = "Claude Opus 4.5 Thinking Medium (Antigravity)";
-          limit = {
-            context = 200000;
-            output = 64000;
-          };
-          modalities = {
-            input = ["text" "image" "pdf"];
-            output = ["text"];
-          };
-        };
-        "antigravity-claude-opus-4-5-thinking-high" = {
-          name = "Claude Opus 4.5 Thinking High (Antigravity)";
-          limit = {
-            context = 200000;
-            output = 64000;
-          };
-          modalities = {
-            input = ["text" "image" "pdf"];
-            output = ["text"];
-          };
-        };
-
-        # ══════════════════════════════════════════════════════════════════════
-        # GPT-OSS 120B - Alternativa open source
-        # ══════════════════════════════════════════════════════════════════════
-        "antigravity-gpt-oss-120b-medium" = {
-          name = "GPT-OSS 120B Medium (Antigravity)";
-          limit = {
-            context = 131072;   # 128K tokens de contexto
-            output = 32768;     # 32K tokens de salida
+            context = 1048576;
+            output = 65535;
           };
           modalities = {
             input = ["text" "image" "pdf"];

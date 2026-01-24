@@ -50,9 +50,20 @@ OpenCode está configurado con múltiples modelos de IA a través del plugin **a
 
 #### Google Gemini
 
-- **Gemini 3 Pro Low**: Modelo principal de Google (1M tokens contexto, 65K salida)
-- **Gemini 3 Pro High**: Versión de mayor capacidad
-- **Gemini 3 Flash**: Respuestas más rápidas (1M tokens contexto, 64K salida)
+- **Gemini 3 Pro**: Modelo principal de Google con variantes:
+  - `low`: Thinking level bajo
+  - `high`: Thinking level alto
+  - Contexto: 1M tokens, Salida: 65K tokens
+
+- **Gemini 3 Flash**: Respuestas más rápidas con variantes:
+  - `minimal`: Thinking level mínimo
+  - `low`: Thinking level bajo
+  - `medium`: Thinking level medio
+  - `high`: Thinking level alto
+  - Contexto: 1M tokens, Salida: 64K tokens
+
+- **Gemini 2.5 Flash/Pro**: Modelos estables (1M contexto, 64K salida)
+- **Gemini 3 Preview**: Modelos en preview (Flash y Pro)
 
 Todos los modelos Gemini soportan:
 - Entrada: texto, imágenes, PDFs
@@ -61,18 +72,17 @@ Todos los modelos Gemini soportan:
 #### Claude (Anthropic)
 
 - **Claude Sonnet 4.5**: Equilibrio entre velocidad y capacidad (200K contexto, 64K salida)
-  - Variantes con "thinking": Low, Medium, High (razonamiento extendido)
+  - Versión sin thinking: `antigravity-claude-sonnet-4-5`
+  - Versión con thinking: `antigravity-claude-sonnet-4-5-thinking`
+    - Variantes: `low` (8K thinking budget), `max` (32K thinking budget)
+
 - **Claude Opus 4.5**: Modelo más capaz (200K contexto, 64K salida)
-  - Variantes con "thinking": Low, Medium, High
+  - Versión con thinking: `antigravity-claude-opus-4-5-thinking`
+    - Variantes: `low` (8K thinking budget), `max` (32K thinking budget)
 
 Todos los modelos Claude soportan:
 - Entrada: texto, imágenes, PDFs
 - Salida: texto
-
-#### GPT-OSS
-
-- **GPT-OSS 120B Medium**: Alternativa open source (128K contexto, 32K salida)
-  - Soporta: texto, imágenes, PDFs
 
 ### Configurar Modelos
 
@@ -240,16 +250,24 @@ Los **MCP Servers** extienden las capacidades de OpenCode proporcionando context
 ### MCP Servers Configurados
 
 1. **gh_grep**: Búsqueda en GitHub
+   - Tipo: `remote`
    - URL: `https://mcp.grep.app/`
    - Timeout: 10000ms
 
 2. **deepwiki**: Búsqueda en DeepWiki
+   - Tipo: `remote`
    - URL: `https://mcp.deepwiki.com/mcp`
    - Timeout: 10000ms
 
 3. **context7**: Contexto adicional
+   - Tipo: `remote`
    - URL: `https://mcp.context7.com/mcp`
    - Timeout: 10000ms
+
+4. **context-manager**: Gestor de contexto local
+   - Tipo: `local`
+   - Comando: `["bunx" "mcp-context-manager"]`
+   - Requiere: `bunx` (Bun package runner)
 
 ### Agregar un Nuevo MCP Server
 
@@ -273,11 +291,12 @@ Para servidores locales:
 ```nix
 mi-mcp-local = {
   type = "local";
-  url = "/ruta/al/servidor";
+  command = ["comando" "argumentos"];
   enabled = true;
-  timeout = 10000;
 };
 ```
+
+**Nota**: Los servidores locales usan `command` en lugar de `url`, y no requieren `timeout`.
 
 ---
 
@@ -287,7 +306,7 @@ OpenCode soporta plugins para extender funcionalidad. El plugin principal config
 
 ### antigravity-auth
 
-- **Versión**: `1.2.7-beta.6`
+- **Versión**: `1.3.0`
 - **Función**: Proporciona acceso gratuito a modelos premium a través de Google y OpenRouter
 - **Ubicación**: `~/.config/opencode/node_modules/@opencode-ai/plugin`
 
@@ -298,7 +317,7 @@ En `hydenix-config.nix`:
 ```nix
 modules.terminal.software.opencode = {
   plugins = [
-    "opencode-antigravity-auth@1.2.7-beta.6"
+    "opencode-antigravity-auth@1.3.0"
     "otro-plugin@version"
   ];
 };

@@ -149,7 +149,7 @@ in {
     
     plugins = mkOption {
       type = types.listOf types.str;
-      default = ["opencode-antigravity-auth@1.2.7-beta.6"];
+      default = ["opencode-antigravity-auth@1.3.0"];
       description = "Plugins a instalar (el plugin antigravity proporciona acceso gratuito a modelos)";
     };
     
@@ -162,8 +162,14 @@ in {
             description = "Tipo de servidor MCP";
           };
           url = mkOption {
-            type = types.str;
-            description = "URL del servidor MCP";
+            type = types.nullOr types.str;
+            default = null;
+            description = "URL del servidor MCP (solo para tipo remote)";
+          };
+          command = mkOption {
+            type = types.nullOr (types.listOf types.str);
+            default = null;
+            description = "Comando para ejecutar el servidor MCP (solo para tipo local)";
           };
           enabled = mkOption {
             type = types.bool;
@@ -171,9 +177,9 @@ in {
             description = "Habilitar este servidor MCP";
           };
           timeout = mkOption {
-            type = types.int;
+            type = types.nullOr types.int;
             default = 10000;
-            description = "Timeout en milisegundos";
+            description = "Timeout en milisegundos (solo para tipo remote)";
           };
         };
       });
@@ -195,6 +201,11 @@ in {
           url = "https://mcp.context7.com/mcp";
           enabled = true;
           timeout = 10000;
+        };
+        context-manager = {
+          type = "local";
+          command = ["bunx" "mcp-context-manager"];
+          enabled = true;
         };
       };
       description = "Servidores MCP (Model Context Protocol) para extender capacidades";
@@ -219,7 +230,21 @@ in {
         share = cfg.share;
         disabled_providers = cfg.disabledProviders;
         enabled_providers = cfg.enabledProviders;
-        mcp = cfg.mcp;
+        mcp = builtins.mapAttrs (name: mcpConfig:
+          if mcpConfig.type == "local" then
+            {
+              type = mcpConfig.type;
+              command = mcpConfig.command;
+              enabled = mcpConfig.enabled;
+            }
+          else
+            {
+              type = mcpConfig.type;
+              url = mcpConfig.url;
+              enabled = mcpConfig.enabled;
+              timeout = mcpConfig.timeout;
+            }
+        ) cfg.mcp;
         formatter = languages.formatter;
         lsp = languages.lsp;
         provider = providers.config;
