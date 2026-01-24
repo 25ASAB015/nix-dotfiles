@@ -43,14 +43,6 @@ in
 
     programs = {
       # ══════════════════════════════════════════════════════════════════════
-      # Carapace - Autocompletado multi-shell
-      # ══════════════════════════════════════════════════════════════════════
-      carapace = {
-        enable = true;
-        enableFishIntegration = true;
-      };
-
-      # ══════════════════════════════════════════════════════════════════════
       # Fish Shell
       # ══════════════════════════════════════════════════════════════════════
       fish = {
@@ -60,6 +52,21 @@ in
         # Variables de entorno (se cargan primero)
         # ════════════════════════════════════════════════════════════════════
         shellInit = ''
+          # Cargar secrets desde agenix (si existen)
+          if test -f /run/agenix/discordo
+            set -gx DISCORDO_TOKEN (cat /run/agenix/discordo)
+            set -gx OXICORD_TOKEN (cat /run/agenix/discordo)
+          end
+          if test -f /run/agenix/openrouter
+            set -gx OPENROUTER_API_KEY (cat /run/agenix/openrouter)
+          end
+          if test -f /run/agenix/github
+            set -gx GITHUB_TOKEN (cat /run/agenix/github)
+          end
+          if test -f /run/agenix/twt
+            set -gx TWT_TOKEN (cat /run/agenix/twt)
+          end
+
           set -gx NIXPKGS_ALLOW_UNFREE 1
           set -gx NIXPKGS_ALLOW_INSECURE 1
           set -gx EDITOR ${cfg.editor}
@@ -73,33 +80,44 @@ in
         # Configuración interactiva (keybindings, colores, etc.)
         # ════════════════════════════════════════════════════════════════════
         interactiveShellInit = ''
-          # Completion bridges para carapace
-          set -Ux CARAPACE_BRIDGES 'inshellisense,fish,bash'
-
           # Vi keybindings
           fish_vi_key_bindings
 
-          # Custom keybindings
-          for mode in insert default
-            bind -M $mode ctrl-backspace backward-kill-word
-            bind -M $mode ctrl-z undo
-            bind -M $mode ctrl-b beginning-of-line
-            bind -M $mode ctrl-e end-of-line
+          # Custom key bindings function (REQUIRED to properly unbind keys)
+          function fish_user_key_bindings
+            # Custom bindings
+            for mode in insert default
+              bind -M $mode ctrl-backspace backward-kill-word
+              bind -M $mode ctrl-z undo
+              bind -M $mode ctrl-b beginning-of-line
+              bind -M $mode ctrl-e end-of-line
+            end
+
+            bind -M insert \cx\ce edit_command_buffer
+            bind -M default \cx\ce edit_command_buffer
+
+            # History search with prefix (like nushell)
+            bind -M insert up history-prefix-search-backward
+            bind -M insert down history-prefix-search-forward
+            bind -M default up history-prefix-search-backward
+            bind -M default down history-prefix-search-forward
+
+            # UNBIND alt-s and alt-v completely (for Zellij)
+            bind -M insert alt-s ""
+            bind -M default alt-s ""
+            bind -M insert alt-v ""
+            bind -M default alt-v ""
+            bind -M insert alt-z ""
+            bind -M default alt-z ""
           end
 
-          # History search con prefijo (como nushell)
-          bind -M insert up history-prefix-search-backward
-          bind -M insert down history-prefix-search-forward
-          bind -M default up history-prefix-search-backward
-          bind -M default down history-prefix-search-forward
-
-          # Cursor shapes por modo Vi
+          # Cursor shapes per mode
           set fish_cursor_default block
           set fish_cursor_insert line
           set fish_cursor_replace_one underscore
           set fish_cursor_visual block
 
-          # Colores de sintaxis
+          # Syntax colors
           set -g fish_color_autosuggestion brblack
           set -g fish_color_command blue
           set -g fish_color_error red
@@ -113,7 +131,7 @@ in
 
           # Plugin settings
           set -Ux fifc_editor ${cfg.editor}
-          set -U fifc_keybinding \cx
+          set -U fifc_keybinding \cv
           set -g __done_min_cmd_duration 10000
           set -g sudope_sequence \cs
         '';
