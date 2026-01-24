@@ -227,7 +227,7 @@ El archivo `.desktop` se llama `zen-twilight.desktop` (no `zen-browser.desktop`)
 
 ## Helium Browser
 
-**Helium** es un navegador basado en Chromium con un enfoque fuerte en **seguridad y privacidad**. Está configurado con flags optimizados que reducen el tracking, fingerprinting y la recolección de datos.
+**Helium** es un navegador basado en Chromium con un enfoque fuerte en **seguridad, privacidad y comfort**. Está configurado con flags optimizados que reducen el tracking, fingerprinting y la recolección de datos, además de mejoras de rendimiento.
 
 ### Configuración
 
@@ -270,7 +270,7 @@ Las variables de entorno configuradas incluyen:
 
 ## Google Chrome
 
-**Google Chrome** es el navegador estándar de Google, disponible como alternativa.
+**Google Chrome** es el navegador estándar de Google, configurado **sin modificaciones** para mantener compatibilidad con herramientas de trabajo y evitar problemas con sitios corporativos.
 
 ### Configuración
 
@@ -281,7 +281,12 @@ modules/hm/programs/browsers/google-chrome.nix
 
 ### Uso
 
-Google Chrome se instala como un paquete estándar sin configuración adicional por defecto. Puedes agregar variables de entorno personalizadas si lo necesitas:
+Google Chrome se instala **sin flags ni modificaciones** por diseño:
+- ✅ **Sin flags de privacidad** - Para evitar problemas con sitios corporativos
+- ✅ **Sin modificaciones de comportamiento** - Compatibilidad total con herramientas de trabajo
+- ✅ **Configuración estándar** - Funciona como Chrome oficial sin personalizaciones
+
+Si necesitas flags personalizados (no recomendado para trabajo), puedes agregar:
 
 ```nix
 home.sessionVariables = {
@@ -404,23 +409,27 @@ El archivo `chromium-flags.nix` contiene flags optimizados para navegadores basa
 
 ### Variables de Entorno
 
-Las variables de entorno configuran el sistema para usar aceleración de hardware:
+Las variables de entorno configuran el sistema para usar aceleración de hardware. **Configurado para Intel GPU (i915 driver)**:
 
 ```nix
-LIBVA_DRIVER_NAME = "radeonsi"           # Driver VAAPI para AMD
+LIBVA_DRIVER_NAME = "i965"                # Driver VAAPI para Intel (i965 legacy, iHD moderno)
 LIBVA_MESSAGING_LEVEL = "1"              # Nivel de mensajes de VAAPI
 LIBGL_ALWAYS_SOFTWARE = "0"              # No forzar software rendering
 ENABLE_VAAPI = "1"                        # Habilitar VAAPI
 ENABLE_VDPAU = "1"                        # Habilitar VDPAU (otro sistema de aceleración)
 VAAPI_DISABLE_ENCODER_CHECKING = "1"     # Desactivar verificaciones de encoder
 EGL_PLATFORM = "wayland"                  # Usar Wayland para EGL
-RADV_PERFTEST = "sam"                     # Perfil de rendimiento para RADV (AMD)
-AMD_VULKAN_ICD = "RADV"                   # Usar RADV como driver Vulkan para AMD
 ```
+
+**Nota**: Esta configuración es para **Intel HD Graphics con driver i915**. Para AMD, cambiarías:
+- `LIBVA_DRIVER_NAME = "radeonsi"` (para AMD)
+- Agregar `AMD_VULKAN_ICD = "RADV"` y `RADV_PERFTEST = "sam"` (para AMD)
 
 ### Aplicar flags a Google Chrome
 
-Actualmente, **Google Chrome no usa estos flags**. Para aplicarlos, puedes modificar `google-chrome.nix`:
+**Google Chrome NO usa estos flags intencionalmente** - está configurado sin modificaciones para mantener compatibilidad con herramientas de trabajo. **Helium es el navegador que usa estos flags** para privacidad y comfort.
+
+Si por alguna razón quisieras aplicar flags a Google Chrome (no recomendado), podrías modificar `google-chrome.nix`:
 
 ```nix
 { pkgs, ... }:

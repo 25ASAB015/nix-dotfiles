@@ -42,15 +42,16 @@
   '';
 
   sessionVariables = {
-    LIBVA_DRIVER_NAME = "radeonsi";
+    # Intel GPU configuration (i915 driver)
+    LIBVA_DRIVER_NAME = "i965";  # Intel VAAPI driver (i965 for older, iHD for newer)
     LIBVA_MESSAGING_LEVEL = "1";
     LIBGL_ALWAYS_SOFTWARE = "0";
     ENABLE_VAAPI = "1";
     ENABLE_VDPAU = "1";
     VAAPI_DISABLE_ENCODER_CHECKING = "1";
     EGL_PLATFORM = "wayland";
-    RADV_PERFTEST = "sam";
-    AMD_VULKAN_ICD = "RADV";
+    # Intel Vulkan driver (ANV - Intel's Vulkan driver)
+    # No need for AMD-specific variables
   };
 
   flagsList =
