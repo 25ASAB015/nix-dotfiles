@@ -229,6 +229,14 @@
   # EMULADORES DE TERMINAL
   # ════════════════════════════════════════════════════════════════════════════
 
+  # KITTY - Terminal con GPU rendering (desde Hydenix)
+  # Usa la configuración por defecto de Hydenix (hyde.conf, theme.conf)
+  # Documentación: https://sw.kovidgoyal.net/kitty/
+  modules.terminal.emulators.kitty = {
+    enable = true;
+    configText = "";  # Configuración personalizada adicional (opcional)
+  };
+
   # FOOT - Terminal ligera para Wayland
   # Uso: foot, foot -e comando
   # Muy ligera y rápida, ideal para uso diario

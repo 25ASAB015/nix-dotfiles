@@ -7,5 +7,6 @@
   imports = [
     ./foot.nix      # Foot - Terminal ligera para Wayland
     ./ghostty.nix   # Ghostty - Terminal moderna y rápida
+    ./kitty.nix     # Kitty - Terminal con GPU rendering (desde Hydenix)
   ];
 }
