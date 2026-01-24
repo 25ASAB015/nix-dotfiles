@@ -9,7 +9,7 @@
   ...
 }: let
   cfg = config.modules.terminal.shell.starship;
-  configFile = "starship/starship.toml";
+  configFile = "starship/fish.toml";  # Archivo separado para Fish (zsh usa starship.toml de Hydenix)
   toTOML = (pkgs.formats.toml {}).generate;
 in {
   options.modules.terminal.shell.starship = {
