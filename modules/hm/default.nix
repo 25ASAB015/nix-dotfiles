@@ -56,6 +56,9 @@
   # ════════════════════════════════════════════════════════════════════════════
   hydenix.hm.shell = {
     enable = true;
+    starship = {
+      enable = true;  # Habilitar Starship explícitamente para zsh
+    };
     zsh = {
       enable = true;
       plugins = [
