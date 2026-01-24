@@ -5,7 +5,8 @@
 
 {
   imports = [
-    ./fish.nix       # Fish shell con plugins (incluye carapace)
+    ./carapace.nix   # Carapace - autocompletado multi-shell
+    ./fish.nix       # Fish shell con plugins
     ./starship.nix   # Prompt para Fish (separado de zsh)
     # Futuros módulos:
     # ./nushell.nix  # Shell moderno con datos estructurados
