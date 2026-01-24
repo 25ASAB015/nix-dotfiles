@@ -261,10 +261,11 @@ Helium utiliza los flags compartidos definidos en `chromium-flags.nix`, que incl
 - **VAAPI**: Decodificación de video acelerada por hardware
 - **Privacidad**: Flags para reducir fingerprinting y tracking
 
-Las variables de entorno configuradas incluyen:
-- `LIBVA_DRIVER_NAME=radeonsi`
+Las variables de entorno configuradas incluyen (para Intel GPU):
+- `LIBVA_DRIVER_NAME=i965` (Intel VAAPI driver)
 - `EGL_PLATFORM=wayland`
-- `AMD_VULKAN_ICD=RADV`
+- `ENABLE_VAAPI=1`
+- `ENABLE_VDPAU=1`
 
 ---
 
