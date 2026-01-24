@@ -43,6 +43,12 @@
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
           installation_mode = "force_installed";
         };
+        # 1Password X - Password Manager
+        # https://addons.mozilla.org/en-US/firefox/addon/1password-x-password-manager/
+        "{d633138d-6c8b-4493-84d1-909800a9d5b5}" = {
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager/latest.xpi";
+          installation_mode = "force_installed";
+        };
         # Agregar más extensiones aquí:
         # "OTRA_EXTENSION_ID@author" = {
         #   install_url = "https://addons.mozilla.org/firefox/downloads/latest/extension-name/latest.xpi";
@@ -65,8 +71,24 @@
     #
     # Para ver todas las preferencias disponibles, abre Zen y ve a about:config
     extraPrefs = ''
-      # Agregar preferencias personalizadas aquí
-      # user_pref("preference.name", value);
+      # ════════════════════════════════════════════════════════════════════════
+      # DRM Content - Habilitar reproducción de contenido DRM
+      # ════════════════════════════════════════════════════════════════════════
+      user_pref("media.eme.enabled", true);
+
+      # ════════════════════════════════════════════════════════════════════════
+      # Scrollbars - Mostrar siempre las barras de desplazamiento
+      # ════════════════════════════════════════════════════════════════════════
+      # Deshabilitar overlay scrollbars para mostrar siempre las barras
+      user_pref("widget.gtk.overlay-scrollbars.enabled", false);
+
+      # ════════════════════════════════════════════════════════════════════════
+      # Picture-in-Picture - Habilitar controles de Picture-in-Picture
+      # ════════════════════════════════════════════════════════════════════════
+      user_pref("media.videocontrols.picture-in-picture.enabled", true);
+      
+      # Mantener reproducción de videos en Picture-in-Picture al cambiar pestañas
+      user_pref("media.videocontrols.picture-in-picture.keep-playing-when-switching-tabs", true);
     '';
 
     # ════════════════════════════════════════════════════════════════════════════
