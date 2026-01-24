@@ -44,7 +44,7 @@
   # Desactivar VSCode de Hydenix para usar configuración personalizada
   hydenix.hm.editors.vscode.enable = false;
   
-  # Desactivar terminales de Hydenix para usar nuestra configuración (ghostty)
+  # Desactivar terminales de Hydenix para usar nuestra configuración personalizada
   # Esto evita el conflicto con xdg-terminals.list
   hydenix.hm.terminals.enable = false;
   
