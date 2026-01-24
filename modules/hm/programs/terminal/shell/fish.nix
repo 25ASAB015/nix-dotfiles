@@ -123,9 +123,6 @@ in
           set -g fish_color_error red
           set -g fish_color_param normal
 
-          # Path adicional
-          fish_add_path ~/.local/bin
-
           # Search highlight
           set -g fish_color_search_match --background=normal
 
@@ -133,7 +130,6 @@ in
           set -Ux fifc_editor ${cfg.editor}
           set -U fifc_keybinding \cv
           set -g __done_min_cmd_duration 10000
-          set -g sudope_sequence \cs
         '';
 
         # ════════════════════════════════════════════════════════════════════

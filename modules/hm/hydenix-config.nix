@@ -91,6 +91,23 @@
     enable = true;
   };
 
+  # AUTOJUMP - Navegación rápida a directorios frecuentes
+  modules.terminal.software.autojump = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+
+  # COMMAND-NOT-FOUND - Handler para comandos no encontrados
+  modules.terminal.software.command-not-found = {
+    enable = true;
+  };
+
+  # NIX-YOUR-SHELL - Integración de shell con Nix
+  modules.terminal.software.nix-your-shell = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+
   modules.terminal.software.atuin = {
     enable = true;
     enableFishIntegration = true;   # Solo para Fish
