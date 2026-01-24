@@ -24,11 +24,8 @@ in {
 
   config = lib.mkIf cfg.enable {
     # Starship ya está instalado por Hydenix, no necesitamos instalarlo
-
-    home.sessionVariables = {
-      STARSHIP_CONFIG = "${config.xdg.configHome}/${configFile}";
-      STARSHIP_LOG = "error";
-    };
+    # NOTA: No usamos home.sessionVariables porque afectaría a zsh también
+    # En su lugar, configuramos STARSHIP_CONFIG solo en fish/conf.d/starship.fish
 
     xdg.configFile = {
       # ══════════════════════════════════════════════════════════════════════
@@ -152,6 +149,10 @@ in {
       # ══════════════════════════════════════════════════════════════════════
       "fish/conf.d/starship.fish" = lib.mkIf cfg.enableFishIntegration {
         text = ''
+          # Configurar Starship para usar archivo específico de Fish
+          # zsh usa starship.toml de Hydenix, Fish usa fish.toml
+          set -gx STARSHIP_CONFIG "${config.xdg.configHome}/${configFile}"
+          set -gx STARSHIP_LOG "error"
           starship init fish | source
         '';
       };
