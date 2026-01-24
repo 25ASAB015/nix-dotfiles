@@ -204,13 +204,15 @@ sys-deploy: ## Total sync (doctor + add + commit + push + apply)
 	@printf "$(CYAN)                          🔄 Total Deployment (Ship it!)                           $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)Executing complete deployment workflow:$(NC)\n"
-	@printf "  1. Fix all permissions (sys-doctor)\n"
-	@printf "  2. Stage changes (git add)\n"
-	@printf "  3. Commit changes (timestamped)\n"
-	@printf "  4. Push to remote (git push)\n"
-	@printf "  5. Build and apply (sys-apply)\n"
+	@printf "  1. Fix user directory permissions (sys-doctor)\n"
+	@printf "  2. Fix git repository permissions (sys-fix-git)\n"
+	@printf "  3. Stage changes (git add)\n"
+	@printf "  4. Commit changes (timestamped)\n"
+	@printf "  5. Push to remote (git push)\n"
+	@printf "  6. Build and apply (sys-apply)\n"
 	@printf "\n"
 	@$(MAKE) --no-print-directory sys-doctor
+	@$(MAKE) --no-print-directory sys-fix-git
 	@$(MAKE) --no-print-directory git-add
 	@$(MAKE) --no-print-directory git-commit
 	@$(MAKE) --no-print-directory git-push
@@ -234,9 +236,9 @@ sys-hw-scan: ## Re-scan hardware configuration
 	@printf "$(CYAN)To apply:\n$(NC)"
 	@printf "  mv hosts/$(HOSTNAME)/hardware-configuration-new.nix hosts/$(HOSTNAME)/hardware-configuration.nix\n"
 
-# Fix common permission issues in user directories and git repository
+# Fix common permission issues in user directories
 # Internal target: used by sys-deploy, but can be called directly if needed
-sys-doctor:
+sys-doctor: ## Fix common permission issues (doctor)
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            👨‍⚕️ System Doctor (Permissions)        $(NC)"
@@ -275,8 +277,6 @@ sys-doctor:
 	else \
 		printf "$(YELLOW)⚠️  (directory not found)$(NC)\n"; \
 	fi
-	@printf "$(BLUE)3. Fixing git repository permissions...$(NC)\n"
-	@$(MAKE) --no-print-directory sys-fix-git
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Doctor: Permissions fixed$(NC)\n"
 	@printf "$(BLUE)Common permission issues have been resolved.$(NC)\n"
