@@ -265,6 +265,9 @@
   modules.terminal.emulators.ghostty = {
     enable = true;
     enableFishIntegration = true;
+    font = "JetBrainsMono Nerd Font";  # Fuente con iconos Nerd Fonts para Starship
+    fontSize = 11;
+    fontFeatures = "calt,liga";  # Ligatures habilitadas
     theme = null;  # Use manual colors defined below
     colors = {
       foreground = "#cdd6f4";
