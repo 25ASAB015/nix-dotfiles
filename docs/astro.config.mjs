@@ -31,6 +31,7 @@ export default defineConfig({
 					{ label: 'The Applications', slug: 'the-applications' },
 					{ label: 'Browsers', slug: 'browsers' },
 					{ label: 'Terminal', slug: 'terminal' },
+					{ label: 'Fish Shell', slug: 'fish-shell' },
 					{ label: 'Neovim', slug: 'neovim' },
 					{ label: 'Editores de Código', slug: 'editors' },
 					{ label: 'AI', slug: 'ai' },

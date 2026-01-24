@@ -1,0 +1,447 @@
+---
+title: Fish Shell
+description: Configuración completa de Fish shell con plugins, keybindings y herramientas integradas
+---
+
+# 🐟 Fish Shell
+
+**Fish** (Friendly Interactive Shell) es un shell moderno con autocompletado inteligente, sintaxis coloreada y configuración sencilla. Esta configuración está basada en [kaku](https://github.com/linuxmobile/kaku) y proporciona una experiencia de shell productiva y personalizada.
+
+La configuración se encuentra en:
+```
+modules/hm/programs/terminal/shell/
+```
+
+## Configuración Principal
+
+### Archivo de configuración
+
+La configuración principal de Fish se encuentra en:
+```
+modules/hm/programs/terminal/shell/fish.nix
+```
+
+### Habilitar Fish Shell
+
+En `hydenix-config.nix`:
+
+```nix
+modules.terminal.shell.fish = {
+  enable = true;
+  editor = "nvim";           # Editor por defecto (EDITOR y VISUAL)
+  nixosHost = "hydenix";     # Host para comandos nixos-rebuild
+};
+```
+
+## Características Principales
+
+### Variables de Entorno y Secrets
+
+Fish carga automáticamente secrets desde agenix (si existen):
+
+- **DISCORDO_TOKEN** / **OXICORD_TOKEN**: Desde `/run/agenix/discordo`
+- **OPENROUTER_API_KEY**: Desde `/run/agenix/openrouter`
+- **GITHUB_TOKEN**: Desde `/run/agenix/github`
+- **TWT_TOKEN**: Desde `/run/agenix/twt`
+
+Estos se cargan automáticamente si los archivos existen en `/run/agenix/`.
+
+### Keybindings Personalizados
+
+#### Keybindings Vi
+
+Fish usa keybindings estilo Vi por defecto:
+
+- **Modo normal**: Navegación y comandos
+- **Modo insert**: Edición de texto
+- **Modo visual**: Selección de texto
+
+#### Keybindings Personalizados
+
+Keybindings disponibles en ambos modos (insert y default):
+
+- **`Ctrl+Backspace`**: Eliminar palabra anterior
+- **`Ctrl+Z`**: Deshacer
+- **`Ctrl+B`**: Ir al inicio de línea
+- **`Ctrl+E`**: Ir al final de línea
+- **`Ctrl+X Ctrl+E`**: Editar comando en editor (`edit_command_buffer`)
+
+#### Navegación de Historial
+
+- **`↑` / `↓`**: Búsqueda de historial con prefijo (como nushell)
+  - Busca comandos que empiezan con lo que has escrito
+  - Más eficiente que navegación normal
+
+#### Keybindings Deshabilitados (para Zellij)
+
+Los siguientes keybindings están deshabilitados para evitar conflictos con Zellij:
+
+- **`Alt+S`**: Deshabilitado
+- **`Alt+V`**: Deshabilitado
+- **`Alt+Z`**: Deshabilitado
+
+### Cursor Shapes por Modo
+
+El cursor cambia de forma según el modo Vi:
+
+- **Default**: `block` (bloque sólido)
+- **Insert**: `line` (línea vertical)
+- **Replace**: `underscore` (guion bajo)
+- **Visual**: `block` (bloque sólido)
+
+### Colores de Sintaxis
+
+- **Autosugerencias**: `brblack` (gris oscuro)
+- **Comandos**: `blue`
+- **Errores**: `red`
+- **Parámetros**: `normal` (color por defecto)
+
+## Plugins Instalados
+
+Fish incluye los siguientes plugins:
+
+1. **autopair**: Cierra paréntesis, comillas y brackets automáticamente
+2. **done**: Notificación cuando termina un comando largo (mínimo 10 segundos)
+3. **bass**: Ejecutar scripts bash en Fish
+4. **plugin-git**: Aliases extendidos de Git
+5. **plugin-sudope**: `Ctrl+S` para agregar `sudo` al comando actual
+6. **humantime-fish**: Formato legible de tiempo (ej: "2 hours ago")
+7. **fifc**: Fuzzy finder para completions (`Ctrl+V` para abrir)
+8. **grc**: Coloriza output de comandos
+9. **puffer**: Expande `...` a `../../..` automáticamente
+
+### Configuración de Plugins
+
+```nix
+# Plugin settings en interactiveShellInit
+set -Ux fifc_editor nvim        # Editor para fifc
+set -U fifc_keybinding \cv      # Keybinding para fifc (Ctrl+V)
+set -g __done_min_cmd_duration 10000  # Duración mínima para notificación (10s)
+set -g sudope_sequence \cs      # Keybinding para sudope (Ctrl+S)
+```
+
+## Funciones Personalizadas
+
+### `fcd` - Navegar a directorio con fuzzy finder
+
+Navega a un directorio usando `fd` y `sk` (skim):
+
+```fish
+fcd
+```
+
+Busca todos los directorios y te permite seleccionar uno para cambiar.
+
+### `installed` - Ver paquetes instalados
+
+Lista los paquetes instalados en el sistema (solo nombres):
+
+```fish
+installed
+```
+
+Muestra una lista de paquetes instalados usando `sk` para búsqueda.
+
+### `installedall` - Ver todos los paquetes con path completo
+
+Lista todos los paquetes con su path completo y copia al portapapeles:
+
+```fish
+installedall
+```
+
+Útil para ver la ruta completa de un paquete en el nix store.
+
+### `fm` - File manager con Yazi
+
+Abre Yazi y cambia al directorio seleccionado al salir:
+
+```fish
+fm [directorio]
+```
+
+Si no especificas directorio, abre en el directorio actual.
+
+### `gitgrep` - Buscar en archivos tracked por Git
+
+Busca en archivos que están siendo tracked por Git:
+
+```fish
+gitgrep "patrón"
+```
+
+Equivalente a `git ls-files | rg patrón`.
+
+## Abbreviations
+
+Las abbreviations se expanden automáticamente al presionar espacio:
+
+- **`z`**: Se expande a `zoxide query`
+- **`zi`**: Se expande a `zoxide query -i` (interactivo)
+
+## Aliases
+
+### NixOS - Mantenimiento
+
+- **`cleanup`**: `sudo nix-collect-garbage --delete-older-than 1d`
+- **`listgen`**: `sudo nix-env -p /nix/var/nix/profiles/system --list-generations`
+- **`nixremove`**: `nix-store --gc`
+- **`bloat`**: `nix path-info -Sh /run/current-system`
+- **`cleanram`**: `sudo sh -c 'sync; echo 3 > /proc/sys/vm/drop_caches'`
+- **`trimall`**: `sudo fstrim -va`
+
+### Navegación
+
+- **`c`**: `clear`
+- **`q`**: `exit`
+- **`temp`**: `cd /tmp/`
+
+### NixOS Rebuild
+
+- **`test-build`**: `sudo nixos-rebuild test --flake .#hydenix`
+- **`switch-build`**: `sudo nixos-rebuild switch --flake .#hydenix`
+
+El host (`hydenix`) se configura en `hydenix-config.nix`.
+
+### Git
+
+- **`add`**: `git add .`
+- **`commit`**: `git commit`
+- **`push`**: `git push`
+- **`pull`**: `git pull`
+- **`diff`**: `git diff --staged`
+- **`gcld`**: `git clone --depth 1`
+- **`gitui`**: `lazygit`
+
+### Herramientas Mejoradas
+
+- **`l`**: `eza -lF --time-style=long-iso --icons`
+- **`ll`**: `eza -h --git --icons --color=auto --group-directories-first -s extension`
+- **`tree`**: `eza --tree --icons --tree`
+- **`cat`**: `bat --paging=never`
+- **`moon`**: `curl -s wttr.in/Moon`
+- **`weather`**: `curl -s wttr.in`
+- **`store-path`**: `readlink (which $argv)`
+
+### Systemd
+
+- **`us`**: `systemctl --user`
+- **`rs`**: `sudo systemctl`
+
+### Apps
+
+- **`zed`**: `zeditor` (Zed Editor)
+
+## Integraciones
+
+### Carapace - Autocompletado Multi-Shell
+
+Carapace proporciona autocompletado inteligente para múltiples shells. Configuración separada en:
+
+```
+modules/hm/programs/terminal/shell/carapace.nix
+```
+
+**Habilitar:**
+
+```nix
+modules.terminal.shell.carapace = {
+  enable = true;
+};
+```
+
+Carapace incluye:
+- **carapace**: Motor de autocompletado
+- **carapace-bridge**: Puente para múltiples shells
+- **inshellisense**: Autocompletado adicional
+
+Variables de entorno:
+- `CARAPACE_BRIDGES = "fish,zsh,bash,inshellisense"`
+- `CARAPACE_CACHE_DIR = "~/.cache/carapace"`
+
+### Starship - Prompt Personalizado
+
+Starship proporciona un prompt rápido y personalizable. Configuración en:
+
+```
+modules/hm/programs/terminal/shell/starship.nix
+```
+
+**Habilitar:**
+
+```nix
+modules.terminal.shell.starship = {
+  enable = true;
+  enableFishIntegration = true;
+};
+```
+
+El prompt de Fish usa un formato de 2 líneas:
+- **Línea 1**: `$status$username$hostname$directory$git_branch$git_status$cmd_duration$nix_shell`
+- **Línea 2**: `$character`
+
+**Módulos habilitados:**
+- `status`: Estado del último comando (│ en blanco/rojo)
+- `username`: Usuario actual (solo si no es el usuario por defecto)
+- `hostname`: Hostname (solo en SSH)
+- `directory`: Directorio actual (truncado a 1 nivel)
+- `git_branch`: Rama de Git actual
+- `git_status`: Estado de Git (modificados, staged, etc.)
+- `cmd_duration`: Duración de comandos largos (mínimo 2 segundos)
+- `nix_shell`: Indicador de shell de desarrollo Nix
+
+**Módulos deshabilitados** (para mejor rendimiento):
+- Todos los módulos de lenguajes (nodejs, python, rust, etc.)
+- AWS, GCloud, Kubernetes, etc.
+- Battery, time, package, conda, docker_context
+
+### fzf - Fuzzy Finder
+
+Integración con fzf para búsqueda fuzzy:
+
+```
+modules/hm/programs/terminal/software/fzf.nix
+```
+
+**Habilitar:**
+
+```nix
+modules.terminal.software.fzf = {
+  enable = true;
+  enableFishIntegration = true;
+};
+```
+
+**Configuración:**
+- Keybindings de fzf cargados automáticamente
+- `FZF_DEFAULT_OPTS = "--reverse --height 40% --border"`
+
+### Zoxide - Navegación Inteligente
+
+Zoxide aprende tus directorios frecuentes:
+
+```
+modules/hm/programs/terminal/software/zoxide.nix
+```
+
+**Habilitar:**
+
+```nix
+modules.terminal.software.zoxide = {
+  enable = true;
+  enableFishIntegration = true;
+};
+```
+
+**Uso:**
+- `z carpeta`: Salta a un directorio visitado frecuentemente
+- `zi`: Modo interactivo para seleccionar directorio
+- Abbreviations: `z` y `zi` se expanden automáticamente
+
+### Atuin - Historial Mejorado
+
+Atuin reemplaza el historial de Fish con una base de datos SQLite:
+
+```
+modules/hm/programs/terminal/software/atuin.nix
+```
+
+**Habilitar:**
+
+```nix
+modules.terminal.software.atuin = {
+  enable = true;
+  enableFishIntegration = true;
+  enableZshIntegration = false;  # No afectar zsh/Hydenix
+};
+```
+
+**Características:**
+- Búsqueda fuzzy con skim
+- Filtrado por host y sesión
+- Modo vim para navegación
+- Sincronización opcional (deshabilitada por defecto)
+- Formato compacto
+
+**Configuración:**
+- `search_mode = "skim"`: Usa skim para búsqueda
+- `filter_mode = "host"`: Filtra por host actual
+- `keymap_mode = "vim-normal"`: Navegación estilo vim
+- `style = "compact"`: Interfaz compacta
+- `history_filter = ["shit"]`: Comandos a ignorar
+
+### Autojump - Navegación Rápida
+
+Autojump aprende tus directorios frecuentes (alternativa a zoxide):
+
+```
+modules/hm/programs/terminal/software/autojump.nix
+```
+
+**Habilitar:**
+
+```nix
+modules.terminal.software.autojump = {
+  enable = true;
+};
+```
+
+**Uso:**
+- `j carpeta`: Salta a un directorio frecuente
+- Aprende automáticamente de tus `cd`
+
+## Agregar Nuevas Funciones
+
+Para agregar una nueva función personalizada, edita `fish.nix`:
+
+```nix
+functions = {
+  mi-funcion = ''
+    # Código de la función aquí
+    echo "Hola desde mi función"
+  '';
+};
+```
+
+## Agregar Nuevos Aliases
+
+Para agregar un nuevo alias:
+
+```nix
+shellAliases = {
+  mi-alias = "comando --opciones";
+};
+```
+
+## Agregar Nuevas Abbreviations
+
+Para agregar una nueva abbreviation:
+
+```nix
+shellAbbrs = {
+  gs = "git status";
+};
+```
+
+## Aplicar Cambios
+
+Después de modificar `fish.nix`:
+
+```bash
+make switch
+# o
+home-manager switch
+```
+
+Luego reinicia tu terminal o ejecuta:
+
+```fish
+source ~/.config/fish/config.fish
+```
+
+## Recursos
+
+- **Documentación oficial de Fish**: https://fishshell.com/docs/current/
+- **Plugins de Fish**: https://github.com/oh-my-fish/oh-my-fish/blob/master/docs/Plugins.md
+- **kaku (inspiración)**: https://github.com/linuxmobile/kaku
+
