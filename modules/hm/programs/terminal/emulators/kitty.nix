@@ -26,11 +26,6 @@ in {
     ];
 
     home.file = {
-      # Configuración de xdg-terminals.list (para xdg-terminal-exec)
-      ".config/xdg-terminals.list" = {
-        source = "${pkgs.hyde}/Configs/.config/xdg-terminals.list";
-      };
-
       # Configuración base de Hydenix para Kitty
       ".config/kitty/hyde.conf" = {
         source = "${pkgs.hyde}/Configs/.config/kitty/hyde.conf";
