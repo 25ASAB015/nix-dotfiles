@@ -1,0 +1,553 @@
+---
+title: Editores de Código
+description: Guía completa para gestionar VS Code, Cursor y AntiGravity en Hydenix con Nix y dotfiles.
+---
+
+# Editores de Código en Hydenix
+
+Esta guía explica cómo gestionar **VS Code**, **Cursor** y **AntiGravity** en tu configuración de Hydenix usando Nix y dotfiles. Todos los editores están configurados de forma declarativa y sus configuraciones se gestionan mediante symlinks para permitir edición inmediata sin rebuild.
+
+## 📋 Tabla de Contenidos
+
+- [Arquitectura](#arquitectura)
+- [Estructura de Archivos](#estructura-de-archivos)
+- [Configuración Actual](#configuración-actual)
+- [Editar Configuraciones](#editar-configuraciones)
+- [Agregar Extensiones](#agregar-extensiones)
+- [Mantenimiento](#mantenimiento)
+- [Troubleshooting](#troubleshooting)
+- [Flujo de Trabajo Recomendado](#flujo-de-trabajo-recomendado)
+
+---
+
+## 🏗️ Arquitectura
+
+### Cómo Funciona
+
+Los editores en Hydenix siguen un patrón de **archivos mutables** gestionados por symlinks:
+
+1. **Configuraciones en el repositorio**: Los archivos `settings.json` y `keybindings.json` viven en `~/Dotfiles/resources/config/`
+2. **Symlinks automáticos**: Home Manager crea symlinks desde `~/.config/[Editor]/User/` hacia los archivos del repositorio
+3. **Edición inmediata**: Al editar los archivos en el repo, los cambios se reflejan instantáneamente (solo recargar ventana)
+4. **Sin rebuild**: No necesitas ejecutar `make switch` para cambios en configuraciones
+
+### Ventajas de este Enfoque
+
+✅ **Control total**: Todo versionado en git  
+✅ **Cambios inmediatos**: Sin rebuild para settings  
+✅ **Reproducible**: Misma configuración en todas las máquinas  
+✅ **Sin Settings Sync**: No dependes de servicios externos  
+✅ **Extensible**: Fácil agregar nuevos editores
+
+---
+
+## 📁 Estructura de Archivos
+
+```
+Dotfiles/
+├── resources/
+│   └── config/
+│       ├── vscode/
+│       │   ├── settings.json          # Configuración VS Code
+│       │   └── keybindings.json        # Keybindings VS Code
+│       ├── cursor/
+│       │   ├── settings.json          # Configuración Cursor
+│       │   └── keybindings.json        # Keybindings Cursor
+│       └── antigravity/
+│           ├── settings.json          # Configuración AntiGravity
+│           └── keybindings.json       # Keybindings AntiGravity
+└── modules/
+    └── hm/
+        ├── files.nix                   # Symlinks de configuración
+        └── programs/
+            └── editors/
+                ├── default.nix        # Importador de editores
+                ├── vscode.nix         # Módulo VS Code (extensiones)
+                ├── cursor.nix         # Módulo Cursor (documentativo)
+                └── antigravity.nix    # Módulo AntiGravity (documentativo)
+```
+
+### Ubicaciones de Symlinks
+
+| Editor | Configuración | Symlink |
+|--------|--------------|---------|
+| VS Code | `settings.json` | `~/.config/Code/User/settings.json` → `~/Dotfiles/resources/config/vscode/settings.json` |
+| VS Code | `keybindings.json` | `~/.config/Code/User/keybindings.json` → `~/Dotfiles/resources/config/vscode/keybindings.json` |
+| Cursor | `settings.json` | `~/.config/Cursor/User/settings.json` → `~/Dotfiles/resources/config/cursor/settings.json` |
+| Cursor | `keybindings.json` | `~/.config/Cursor/User/keybindings.json` → `~/Dotfiles/resources/config/cursor/keybindings.json` |
+| AntiGravity | `settings.json` | `~/.config/Antigravity/User/settings.json` → `~/Dotfiles/resources/config/antigravity/settings.json` |
+| AntiGravity | `keybindings.json` | `~/.config/Antigravity/User/keybindings.json` → `~/Dotfiles/resources/config/antigravity/keybindings.json` |
+
+---
+
+## ⚙️ Configuración Actual
+
+### VS Code
+
+**Ubicación del módulo**: `modules/hm/programs/editors/vscode.nix`
+
+```nix
+{
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscode.fhs;  # Versión FHS para mejor compatibilidad
+    mutableExtensionsDir = true;  # Permite instalar extensiones manualmente
+    profiles.default = {
+      extensions = [ ];  # Extensiones declarativas (vacío por ahora)
+    };
+  };
+}
+```
+
+**Características**:
+- ✅ Settings Sync desactivado
+- ✅ Tema Wallbash (desde Hydenix)
+- ✅ Iconos Flow Icons
+- ✅ Terminal externa: ghostty
+- ✅ Telemetría desactivada
+
+### Cursor
+
+**Ubicación del módulo**: `modules/hm/programs/editors/cursor.nix`
+
+```nix
+{
+  # Cursor ya está instalado manualmente
+  # Este módulo solo documenta su presencia
+  # La configuración se gestiona con symlinks en files.nix
+}
+```
+
+**Características**:
+- ✅ Settings Sync desactivado
+- ✅ Tema: Cursor Dark Midnight
+- ✅ Terminal externa: ghostty
+- ✅ IA habilitada (AutoCompletion y Chat)
+- ✅ Ctrl+I para Composer Mode
+
+### AntiGravity
+
+**Ubicación del módulo**: `modules/hm/programs/editors/antigravity.nix`
+
+```nix
+{
+  # AntiGravity ya está instalado manualmente
+  # Este módulo solo documenta su presencia
+  # La configuración se gestiona con symlinks en files.nix
+}
+```
+
+**Características**:
+- ✅ Settings Sync desactivado
+- ✅ Tema: Tokyo Night
+- ✅ Terminal externa: ghostty
+- ✅ Configuración mínima funcional
+
+---
+
+## ✏️ Editar Configuraciones
+
+### Método Rápido (Recomendado)
+
+Los cambios en `settings.json` y `keybindings.json` son **inmediatos** sin rebuild:
+
+```bash
+# 1. Editar configuración
+nvim ~/Dotfiles/resources/config/vscode/settings.json
+# o
+nvim ~/Dotfiles/resources/config/cursor/settings.json
+# o
+nvim ~/Dotfiles/resources/config/antigravity/settings.json
+
+# 2. Recargar ventana en el editor
+# Ctrl+Shift+P > "Reload Window"
+
+# 3. (Opcional) Commitear cambios
+cd ~/Dotfiles
+git add resources/config/vscode/
+git commit -m "feat(vscode): update settings"
+git push
+```
+
+### Ejemplo: Cambiar Tamaño de Fuente
+
+```json
+// En ~/Dotfiles/resources/config/vscode/settings.json
+{
+  "editor.fontSize": 16,  // Cambiar de 14 a 16
+  // ... resto de configuración
+}
+```
+
+**Resultado**: El cambio se aplica inmediatamente al recargar la ventana.
+
+### Verificar Symlinks
+
+```bash
+# Verificar que los symlinks están activos
+ls -la ~/.config/Code/User/
+ls -la ~/.config/Cursor/User/
+ls -la ~/.config/Antigravity/User/
+
+# Verificar destino de symlinks
+readlink -f ~/.config/Code/User/settings.json
+# Debe mostrar: /home/ludus/Dotfiles/resources/config/vscode/settings.json
+```
+
+---
+
+## 🔌 Agregar Extensiones
+
+### VS Code: Método 1 - Instalación Manual (Recomendado)
+
+**Paso 1**: Instalar desde la UI de VS Code
+- Abrir VS Code
+- `Ctrl+Shift+X` (Extensions)
+- Buscar extensión
+- Instalar
+
+**Paso 2**: (Opcional) Declarar en `vscode.nix` para reproducibilidad
+
+```bash
+# Ver extensiones instaladas
+code --list-extensions --show-versions
+```
+
+### VS Code: Método 2 - Declarativo (Para Extensiones Críticas)
+
+#### Buscar Extensión en nixpkgs
+
+```bash
+# Buscar extensión disponible en nixpkgs
+nix search nixpkgs vscode-extensions | grep python
+```
+
+#### Si Existe en nixpkgs
+
+Editar `modules/hm/programs/editors/vscode.nix`:
+
+```nix
+{
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscode.fhs;
+    mutableExtensionsDir = true;
+    profiles.default = {
+      extensions = with pkgs.vscode-extensions; [
+        ms-python.python          # Python
+        vscodevim.vim             # Vim
+        jnoortheen.nix-ide        # Nix IDE
+        # Agregar más extensiones aquí
+      ];
+    };
+  };
+}
+```
+
+**Aplicar cambios**:
+```bash
+cd ~/Dotfiles
+make switch
+```
+
+#### Si NO Existe en nixpkgs
+
+Agregar desde marketplace usando `extensionsFromVscodeMarketplace`:
+
+```nix
+profiles.default = {
+  extensions = [ ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+    {
+      name = "nombre-extension";
+      publisher = "nombre-publisher";
+      version = "x.y.z";
+      sha256 = "hash-aqui";
+    }
+  ];
+};
+```
+
+**Obtener información de extensión**:
+1. URL del marketplace: `https://marketplace.visualstudio.com/items?itemName=publisher.nombre`
+2. Después de instalar manualmente: `code --list-extensions --show-versions | grep nombre`
+
+### Cursor y AntiGravity: Instalación Manual
+
+Cursor y AntiGravity no tienen soporte declarativo de extensiones en Nix actualmente. Instala extensiones desde la UI:
+
+**Cursor**:
+- `Ctrl+Shift+X` > Buscar > Instalar
+
+**AntiGravity**:
+- `Ctrl+Shift+X` > Buscar > Instalar
+
+---
+
+## 🔧 Mantenimiento
+
+### Actualizar Configuraciones
+
+```bash
+# 1. Editar archivos de configuración
+nvim ~/Dotfiles/resources/config/vscode/settings.json
+
+# 2. Validar JSON
+python3 -m json.tool ~/Dotfiles/resources/config/vscode/settings.json
+
+# 3. Recargar editor (Ctrl+Shift+P > "Reload Window")
+
+# 4. Commitear
+cd ~/Dotfiles
+git add resources/config/vscode/
+git commit -m "feat(vscode): update configuration"
+git push
+```
+
+### Sincronizar Entre Máquinas
+
+```bash
+# En máquina nueva
+cd ~/Dotfiles
+git pull
+make switch  # Aplica symlinks y configuración
+```
+
+### Backup de Configuración Actual
+
+```bash
+# Backup antes de cambios importantes
+cp ~/.config/Code/User/settings.json \
+   ~/.config/Code/User/settings.json.backup-$(date +%Y%m%d-%H%M%S)
+```
+
+### Verificar Estado del Sistema
+
+```bash
+# Verificar symlinks
+ls -la ~/.config/Code/User/
+ls -la ~/.config/Cursor/User/
+ls -la ~/.config/Antigravity/User/
+
+# Verificar extensión Wallbash (VS Code)
+ls -la ~/.vscode/extensions/ | grep wallbash
+
+# Verificar configuración de terminal
+grep "terminal.external" ~/Dotfiles/resources/config/*/settings.json
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Problema: Cambios en settings.json no se aplican
+
+**Diagnóstico**:
+```bash
+# Verificar que es symlink
+readlink -f ~/.config/Code/User/settings.json
+
+# Debe mostrar: /home/ludus/Dotfiles/resources/config/vscode/settings.json
+```
+
+**Solución**:
+```bash
+# Si no es symlink, recrear
+rm ~/.config/Code/User/settings.json
+cd ~/Dotfiles
+make switch
+```
+
+### Problema: Settings Sync sigue activo
+
+**Síntoma**: El editor pregunta sobre sincronización al iniciar
+
+**Solución**:
+```bash
+# Verificar settings.json
+grep "settingsSync" ~/Dotfiles/resources/config/vscode/settings.json
+
+# Debe contener:
+# "settingsSync.keybindingsPerPlatform": false
+
+# Si no está, agregarlo y recargar ventana
+```
+
+### Problema: Error de sintaxis JSON
+
+**Diagnóstico**:
+```bash
+# Validar JSON
+python3 -m json.tool ~/Dotfiles/resources/config/vscode/settings.json
+```
+
+**Solución**:
+- Corregir errores de sintaxis (comas faltantes, llaves no cerradas, etc.)
+- Eliminar comentarios `//` o `##` (JSON no soporta comentarios nativamente)
+- Usar un editor con validación JSON
+
+### Problema: Extensión Wallbash no funciona
+
+**Diagnóstico**:
+```bash
+# Verificar que existe
+ls -la ~/.vscode/extensions/ | grep wallbash
+```
+
+**Solución**:
+```bash
+# Si no existe, verificar pkgs.hyde
+nix-shell -p hyde --run "ls -la \$out/share/vscode/extensions/"
+
+# Recrear symlink
+cd ~/Dotfiles
+make switch
+```
+
+### Problema: Terminal externa no funciona
+
+**Verificar configuración**:
+```bash
+# Ver qué terminal está configurada
+grep "terminal.external" ~/Dotfiles/resources/config/*/settings.json
+
+# Debe mostrar: "terminal.external.linuxExec": "ghostty"
+```
+
+**Verificar que ghostty está instalado**:
+```bash
+which ghostty
+# Debe mostrar: /etc/profiles/per-user/ludus/bin/ghostty
+```
+
+**Solución**: Si ghostty no está instalado, agregarlo a tu configuración de Home Manager.
+
+### Problema: Warning de deprecación en VS Code
+
+**Síntoma**: Warning sobre `programs.vscode.extensions` renombrado
+
+**Solución**: Ya está corregido usando `profiles.default.extensions`. Si ves el warning, verifica que `vscode.nix` use la nueva sintaxis:
+
+```nix
+profiles.default = {
+  extensions = [ ];
+};
+```
+
+---
+
+## 🔄 Flujo de Trabajo Recomendado
+
+### Agregar Nueva Configuración
+
+1. **Editar en el repositorio**:
+   ```bash
+   nvim ~/Dotfiles/resources/config/vscode/settings.json
+   ```
+
+2. **Validar JSON**:
+   ```bash
+   python3 -m json.tool ~/Dotfiles/resources/config/vscode/settings.json
+   ```
+
+3. **Recargar editor**: `Ctrl+Shift+P` > "Reload Window"
+
+4. **Probar configuración**: Verificar que funciona como esperado
+
+5. **Commitear**:
+   ```bash
+   cd ~/Dotfiles
+   git add resources/config/vscode/
+   git commit -m "feat(vscode): add new setting"
+   git push
+   ```
+
+### Agregar Nueva Extensión (VS Code)
+
+1. **Instalar manualmente** desde la UI de VS Code
+
+2. **Probar extensión**: Verificar que funciona correctamente
+
+3. **(Opcional) Declarar en `vscode.nix`**:
+   ```bash
+   # Buscar en nixpkgs
+   nix search nixpkgs vscode-extensions | grep nombre-extension
+   
+   # Si existe, agregar a vscode.nix
+   nvim ~/Dotfiles/modules/hm/programs/editors/vscode.nix
+   
+   # Aplicar
+   cd ~/Dotfiles
+   make switch
+   ```
+
+### Sincronizar a Nueva Máquina
+
+1. **Clonar repositorio**:
+   ```bash
+   git clone <repo-url> ~/Dotfiles
+   ```
+
+2. **Aplicar configuración**:
+   ```bash
+   cd ~/Dotfiles
+   make switch
+   ```
+
+3. **Verificar symlinks**:
+   ```bash
+   ls -la ~/.config/Code/User/
+   ```
+
+4. **Instalar extensiones manuales** (si las necesitas)
+
+---
+
+## 📚 Referencias y Recursos
+
+### Documentación Oficial
+
+- **VS Code Settings**: https://code.visualstudio.com/docs/getstarted/settings
+- **Home Manager VSCode**: https://nix-community.github.io/home-manager/options.xhtml#opt-programs.vscode.enable
+- **Cursor Docs**: https://docs.cursor.sh
+- **Nix Packages Search**: https://search.nixos.org/packages
+
+### Comandos Útiles
+
+```bash
+# Listar extensiones instaladas (VS Code)
+code --list-extensions --show-versions
+
+# Buscar extensión en nixpkgs
+nix search nixpkgs vscode-extensions | grep nombre
+
+# Validar JSON
+python3 -m json.tool archivo.json
+
+# Verificar symlinks
+readlink -f ~/.config/Code/User/settings.json
+
+# Aplicar cambios
+cd ~/Dotfiles && make switch
+
+# Verificar sintaxis Nix
+nix-instantiate --parse --expr 'import ./modules/hm/programs/editors/vscode.nix'
+```
+
+---
+
+## 🎯 Resumen de Buenas Prácticas
+
+1. ✅ **Edita siempre en el repositorio**: `~/Dotfiles/resources/config/`
+2. ✅ **Valida JSON** antes de commitear
+3. ✅ **Recarga ventana** después de cambios (Ctrl+Shift+P > "Reload Window")
+4. ✅ **Commitear cambios** regularmente
+5. ✅ **Usar extensiones declarativas** para extensiones críticas
+6. ✅ **Documentar configuraciones** personalizadas en comentarios
+7. ✅ **Hacer backup** antes de cambios importantes
+8. ✅ **Verificar symlinks** si algo no funciona
+
+---
+
+**Última actualización**: 2025-01-23  
+**Mantenido por**: Sistema de dotfiles de Hydenix
+

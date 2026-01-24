@@ -31,6 +31,7 @@ export default defineConfig({
 						{ label: 'The Applications', slug: 'the-applications' },
 						{ label: 'Terminal', slug: 'terminal' },
 						{ label: 'Neovim', slug: 'neovim' },
+						{ label: 'Editores de Código', slug: 'editors' },
 						{ label: 'AI', slug: 'ai' },
 						{ label: 'Development Tools', slug: 'development-tools' },
 						{ label: 'Shell Tools', slug: 'shell-tools' },
