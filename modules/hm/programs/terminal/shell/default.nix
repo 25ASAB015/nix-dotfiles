@@ -7,7 +7,7 @@
   imports = [
     ./carapace.nix   # Carapace - autocompletado multi-shell
     ./fish.nix       # Fish shell con plugins
-    ./starship.nix   # Prompt para Fish (separado de zsh)
+    # ./starship.nix   # Deshabilitado - usar configuración original de Hydenix
     # Futuros módulos:
     # ./nushell.nix  # Shell moderno con datos estructurados
   ];
