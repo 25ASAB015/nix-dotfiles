@@ -1,39 +1,42 @@
-# Starlight Starter Kit: Basics
+# Hydenix Documentation
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+Documentation site for Ludus's NixOS Configuration, built with [Starlight](https://starlight.astro.build).
 
-```
-npm create astro@latest -- --template starlight
-```
+## See It in Action
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+<div align="center">
+
+<video controls width="100%" style="max-width: 800px; border-radius: 8px;">
+  <source src="/nix-dotfiles/324331744-7f8fadc8-e293-4482-a851-e9c6464f5265.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
+</div>
 
 ## 🚀 Project Structure
 
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+This documentation site is built with Astro + Starlight. The structure includes:
 
 ```
-.
-├── public/
+docs/
+├── public/              # Static assets (videos, images, favicons)
 ├── src/
-│   ├── assets/
+│   ├── assets/          # Images and other assets
 │   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
+│   │   └── docs/        # Documentation pages (.mdx files)
+│   └── styles/          # Custom CSS
+├── astro.config.mjs     # Astro configuration
 ├── package.json
 └── tsconfig.json
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+Documentation pages are written in `.mdx` format in `src/content/docs/`. Each file is exposed as a route based on its file name.
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
-
-Static assets, like favicons, can be placed in the `public/` directory.
+Static assets like videos and images should be placed in `public/` for direct access.
 
 ## 🧞 Commands
 
-All commands are run from the root of the project, from a terminal:
+All commands are run from the `docs/` directory:
 
 | Command                   | Action                                           |
 | :------------------------ | :----------------------------------------------- |
@@ -42,8 +45,15 @@ All commands are run from the root of the project, from a terminal:
 | `npm run build`           | Build your production site to `./dist/`          |
 | `npm run preview`         | Preview your build locally, before deploying     |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 👀 Want to learn more?
+## 📦 Deployment
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+This documentation is automatically deployed to GitHub Pages at [25ASAB015.github.io/nix-dotfiles](https://25ASAB015.github.io/nix-dotfiles).
+
+The site is configured with `base: '/nix-dotfiles'` in `astro.config.mjs` to match the GitHub Pages subdirectory structure.
+
+## 👀 Learn More
+
+- [Starlight Documentation](https://starlight.astro.build/)
+- [Astro Documentation](https://docs.astro.build)
+- [Main Project README](../README.md)
