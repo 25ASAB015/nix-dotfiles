@@ -240,4 +240,59 @@
   home.sessionVariables = {
     BROWSER = "zen";
   };
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # ARCHIVOS MANUALES - Asegurar que user.js y policies.json se generen
+  # ════════════════════════════════════════════════════════════════════════════
+  # El módulo de zen-browser puede no estar generando estos archivos correctamente
+  # Los creamos manualmente para asegurar que las preferencias y políticas se apliquen
+  home.file = {
+    # user.js con las preferencias personalizadas
+    ".zen/default/user.js" = {
+      text = ''
+        // Preferencias personalizadas de Zen Browser
+        // Generado automáticamente desde modules/hm/programs/browsers/zen.nix
+        
+        // DRM Content - Habilitar reproducción de contenido DRM
+        user_pref("media.eme.enabled", true);
+
+        // Scrollbars - Mostrar siempre las barras de desplazamiento
+        // Deshabilitar overlay scrollbars para mostrar siempre las barras
+        user_pref("widget.gtk.overlay-scrollbars.enabled", false);
+
+        // Picture-in-Picture - Habilitar controles de Picture-in-Picture
+        user_pref("media.videocontrols.picture-in-picture.enabled", true);
+        
+        // Mantener reproducción de videos en Picture-in-Picture al cambiar pestañas
+        user_pref("media.videocontrols.picture-in-picture.keep-playing-when-switching-tabs", true);
+      '';
+      force = true;
+    };
+
+    # policies.json con las políticas y extensiones
+    ".zen/default/policies.json" = {
+      text = builtins.toJSON {
+        policies = {
+          DisableAppUpdate = true;
+          DisableTelemetry = true;
+          EnableTrackingProtection = {
+            Value = true;
+            Cryptomining = true;
+            Fingerprinting = true;
+          };
+          ExtensionSettings = {
+            "uBlock0@raymondhill.net" = {
+              install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+              installation_mode = "force_installed";
+            };
+            "{d633138d-6c8b-4493-84d1-909800a9d5b5}" = {
+              install_url = "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager/latest.xpi";
+              installation_mode = "force_installed";
+            };
+          };
+        };
+      };
+      force = true;
+    };
+  };
 }
