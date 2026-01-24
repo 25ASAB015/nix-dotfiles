@@ -23,14 +23,21 @@
       # EXTENSIONES - Agregar extensiones automáticamente
       # ══════════════════════════════════════════════════════════════════════════
       # Para agregar una nueva extensión:
-      # 1. Obtén el ID de la extensión desde addons.mozilla.org (está en la URL)
-      # 2. Usa la URL de descarga directa del .xpi
+      # 1. Obtén el ID de la extensión desde addons.mozilla.org
+      #    - Puede estar en formato "ID@author" o "{UUID}"
+      #    - Revisa la página de la extensión o el código fuente del .xpi
+      # 2. Usa la URL de descarga directa del .xpi con el formato:
+      #    https://addons.mozilla.org/firefox/downloads/latest/[extension-slug]/latest.xpi
       # 3. Agrega una entrada aquí con el formato:
       #
-      #   "EXTENSION_ID@author" = {
-      #     install_url = "https://addons.mozilla.org/firefox/downloads/latest/extension-name/latest.xpi";
+      #   "EXTENSION_ID" = {
+      #     install_url = "https://addons.mozilla.org/firefox/downloads/latest/extension-slug/latest.xpi";
       #     installation_mode = "force_installed";  # o "normal_installed"
       #   };
+      #
+      # Nota: El ID puede tener diferentes formatos:
+      # - Formato con @: "uBlock0@raymondhill.net"
+      # - Formato UUID: "{d633138d-6c8b-4493-84d1-909800a9d5b5}"
       #
       # Ejemplos de extensiones comunes:
       # - Bitwarden: "browserpass@bitwarden.com"
@@ -38,20 +45,26 @@
       # - Privacy Badger: "jid1-MnnxcxisBPnSXQ@jetpack"
       # - Multi-Account Containers: "@testpilot-containers"
       ExtensionSettings = {
+        # Extensiones instaladas actualmente:
+        
         # uBlock Origin - Bloqueador de anuncios
+        # Formato de ID: "ID@author"
         "uBlock0@raymondhill.net" = {
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
           installation_mode = "force_installed";
         };
+        
         # 1Password X - Password Manager
+        # Formato de ID: "{UUID}"
         # https://addons.mozilla.org/en-US/firefox/addon/1password-x-password-manager/
         "{d633138d-6c8b-4493-84d1-909800a9d5b5}" = {
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager/latest.xpi";
           installation_mode = "force_installed";
         };
+        
         # Agregar más extensiones aquí:
-        # "OTRA_EXTENSION_ID@author" = {
-        #   install_url = "https://addons.mozilla.org/firefox/downloads/latest/extension-name/latest.xpi";
+        # "OTRA_EXTENSION_ID" = {
+        #   install_url = "https://addons.mozilla.org/firefox/downloads/latest/extension-slug/latest.xpi";
         #   installation_mode = "force_installed";
         # };
       };
@@ -63,7 +76,16 @@
     # Para agregar settings personalizados, usa 'extraPrefs' con sintaxis user.js
     # Referencia: https://kb.mozillazine.org/About:config_entries
     #
-    # Ejemplos comunes:
+    # Settings actualmente configurados:
+    # - DRM content habilitado (media.eme.enabled)
+    # - Scrollbars siempre visibles (widget.gtk.overlay-scrollbars.enabled)
+    # - Picture-in-Picture habilitado con controles
+    # - Mantener reproducción en PiP al cambiar pestañas
+    #
+    # Para agregar más settings, agrega líneas con el formato:
+    #   user_pref("preference.name", value);
+    #
+    # Ejemplos adicionales:
     # - Cambiar página de inicio: user_pref("browser.startup.homepage", "about:blank");
     # - Deshabilitar sugerencias: user_pref("browser.urlbar.showSearchSuggestionsFirst", false);
     # - Habilitar Wayland: user_pref("widget.wayland.enabled", true);

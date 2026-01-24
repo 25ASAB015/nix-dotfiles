@@ -1,0 +1,212 @@
+---
+title: Browsers
+description: Configuración de navegadores web, especialmente Zen Browser
+---
+
+# 🌐 Browsers
+
+Este sistema utiliza **Zen Browser** como navegador principal. Zen Browser es un fork de Firefox con características avanzadas de personalización, pestañas verticales y un sistema de mods.
+
+## Zen Browser
+
+### Configuración
+
+La configuración de Zen Browser se encuentra en:
+```
+modules/hm/programs/browsers/zen.nix
+```
+
+### Extensiones
+
+Las extensiones se configuran en la sección `ExtensionSettings` dentro de `policies`. Actualmente están instaladas:
+
+- **uBlock Origin** - Bloqueador de anuncios
+- **1Password X** - Gestor de contraseñas
+
+#### Agregar una nueva extensión
+
+Para agregar una extensión:
+
+1. Obtén el ID de la extensión desde [addons.mozilla.org](https://addons.mozilla.org)
+   - Puede estar en formato `"ID@author"` o `"{UUID}"`
+2. Usa la URL de descarga directa del .xpi:
+   ```
+   https://addons.mozilla.org/firefox/downloads/latest/[extension-slug]/latest.xpi
+   ```
+3. Agrega una entrada en `ExtensionSettings`:
+
+```nix
+ExtensionSettings = {
+  "EXTENSION_ID" = {
+    install_url = "https://addons.mozilla.org/firefox/downloads/latest/extension-slug/latest.xpi";
+    installation_mode = "force_installed";
+  };
+};
+```
+
+**Ejemplo real:**
+```nix
+# 1Password X - Password Manager
+"{d633138d-6c8b-4493-84d1-909800a9d5b5}" = {
+  install_url = "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager/latest.xpi";
+  installation_mode = "force_installed";
+};
+```
+
+### Settings/Preferencias
+
+Los settings personalizados se configuran en la sección `extraPrefs` usando sintaxis `user.js`.
+
+#### Settings actualmente configurados
+
+- **DRM Content**: Habilitado (`media.eme.enabled = true`)
+- **Scrollbars siempre visibles**: Deshabilitado overlay scrollbars (`widget.gtk.overlay-scrollbars.enabled = false`)
+- **Picture-in-Picture**: Habilitado con controles (`media.videocontrols.picture-in-picture.enabled = true`)
+- **Mantener reproducción en PiP**: Al cambiar pestañas (`media.videocontrols.picture-in-picture.keep-playing-when-switching-tabs = true`)
+
+#### Agregar un nuevo setting
+
+Agrega líneas en `extraPrefs` con el formato:
+
+```nix
+extraPrefs = ''
+  user_pref("preference.name", value);
+'';
+```
+
+**Ejemplos comunes:**
+```nix
+# Cambiar página de inicio
+user_pref("browser.startup.homepage", "about:blank");
+
+# Deshabilitar sugerencias de búsqueda
+user_pref("browser.urlbar.showSearchSuggestionsFirst", false);
+
+# Habilitar Wayland
+user_pref("widget.wayland.enabled", true);
+
+# Modo oscuro
+user_pref("ui.systemUsesDarkTheme", 1);
+```
+
+Para ver todas las preferencias disponibles, abre Zen y ve a `about:config`.
+
+### Keybindings
+
+Los atajos de teclado personalizados se configuran en `profiles.default.keyboardShortcuts`.
+
+#### Agregar un keybinding personalizado
+
+1. Encuentra el ID del shortcut:
+   - Abre Zen y ve a `about:config`
+   - Busca `zen.keyboard.shortcuts.version` para ver la versión
+   - O revisa `~/.zen/default/zen-keyboard-shortcuts.json` después de ejecutar Zen
+2. Agrega una entrada en `keyboardShortcuts`:
+
+```nix
+profiles.default = {
+  keyboardShortcuts = [
+    {
+      id = "cmd_shortcutName";  # ID del shortcut en Zen
+      key = "t";                 # Carácter de la tecla (opcional)
+      keycode = "VK_W";          # Código de tecla virtual (opcional)
+      modifiers = {
+        accel = true;    # Ctrl (Linux/Windows) o Cmd (macOS)
+        control = true;  # Ctrl explícito
+        alt = true;      # Alt
+        shift = true;    # Shift
+        meta = true;     # Meta/Windows/Command
+      };
+      disabled = false;  # true para deshabilitar el shortcut
+    }
+  ];
+};
+```
+
+**IDs comunes de shortcuts en Zen:**
+- `cmd_newTab`: Nueva pestaña
+- `cmd_closeTab`: Cerrar pestaña
+- `cmd_undoCloseTab`: Reabrir pestaña cerrada
+- `cmd_newWindow`: Nueva ventana
+- `cmd_toggleSidebar`: Mostrar/ocultar sidebar
+- `cmd_goBack`: Ir atrás
+- `cmd_goForward`: Ir adelante
+- `cmd_reload`: Recargar página
+- `cmd_find`: Buscar en página
+
+Para encontrar más IDs, ejecuta Zen y revisa:
+```
+~/.zen/default/zen-keyboard-shortcuts.json
+```
+
+### Otras opciones disponibles
+
+#### Spaces/Workspaces
+
+Configuración de espacios de trabajo:
+
+```nix
+profiles.default = {
+  spaces = {
+    work = {
+      id = "uuid-aqui";  # Genera un UUID v4
+      name = "Work";
+      position = 0;
+      icon = "💼";
+    };
+  };
+};
+```
+
+#### Pins
+
+Pestañas fijadas:
+
+```nix
+profiles.default = {
+  pins = {
+    gmail = {
+      id = "uuid-aqui";
+      title = "Gmail";
+      url = "https://mail.google.com";
+      position = 0;
+    };
+  };
+};
+```
+
+#### Mods
+
+Temas desde la tienda de Zen:
+
+```nix
+profiles.default = {
+  mods = [
+    "mod-uuid-1"
+    "mod-uuid-2"
+  ];
+};
+```
+
+Encuentra mods en: https://zen-browser.github.io/theme-store/
+
+## Aplicar cambios
+
+Después de modificar `zen.nix`:
+
+```bash
+make switch
+# o
+home-manager switch
+```
+
+Luego reinicia Zen Browser para que los cambios surtan efecto.
+
+## Navegador por defecto
+
+Zen Browser está configurado como navegador por defecto vía:
+- **XDG MIME Apps**: Configurado para abrir enlaces http/https
+- **Variable de entorno**: `BROWSER=zen` (usada por Hyprland y scripts)
+
+El archivo `.desktop` se llama `zen-twilight.desktop` (no `zen-browser.desktop`).
+
