@@ -10,7 +10,6 @@
 # === Git y Publicación ===
 
 git-add: ## Stage all changes for git
-	@printf "\n"	
 	@printf "$(CYAN)                                📝 Staging Changes                               $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@CHANGED=$$(git status --short | wc -l); \
@@ -24,7 +23,6 @@ git-add: ## Stage all changes for git
 		printf "\n$(YELLOW)⚠ No changes to stage$(NC)\n"; \
 		printf "$(BLUE)Working tree is clean.$(NC)\n"; \
 	fi
-	@printf "\n"
 
 git-commit: ## Quick commit with timestamp
 	@printf "$(CYAN)                              📝 Committing Changes                              $(NC)"
