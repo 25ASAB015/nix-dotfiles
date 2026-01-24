@@ -1,0 +1,30 @@
+{
+  "workbench.colorTheme": "Wallbash",
+  
+  "settingsSync.keybindingsPerPlatform": false,
+  
+  "window.menuBarVisibility": "toggle",
+  "editor.fontFamily": "'JetBrainsMono Nerd Font', 'Droid Sans Mono', 'monospace'",
+  "editor.fontSize": 14,
+  "editor.lineNumbers": "on",
+  "editor.rulers": [80, 120],
+  "editor.renderWhitespace": "boundary",
+  "editor.minimap.enabled": true,
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+  
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font'",
+  
+  "workbench.iconTheme": "flow-icons",
+  
+  "telemetry.telemetryLevel": "off",
+  
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "git.enableSmartCommit": true
+}
+

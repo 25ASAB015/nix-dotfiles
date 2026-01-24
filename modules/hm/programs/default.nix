@@ -9,7 +9,7 @@
     ./development      # Development tools and languages
     ./system           # System utilities (gammastep, notifications, etc.)
     ./document-viewers # Document viewers (Zathura for PDF/LaTeX)
-    # ./editors       # Future: Editors (neovim, vscode, helix)
+    ./editors           # Editors (vscode)
     # ./media         # Future: Media apps (vlc, mpv, spotify)
   ];
 }

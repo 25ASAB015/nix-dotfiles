@@ -41,6 +41,9 @@
   # Desactivar Neovim de Hydenix para usar khanelivim
   hydenix.hm.editors.neovim = false;
   
+  # Desactivar VSCode de Hydenix para usar configuración personalizada
+  hydenix.hm.editors.vscode.enable = false;
+  
   # Desactivar terminales de Hydenix para usar nuestra configuración (ghostty)
   # Esto evita el conflicto con xdg-terminals.list
   hydenix.hm.terminals.enable = false;

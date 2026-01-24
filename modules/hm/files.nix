@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
@@ -21,6 +22,25 @@ in {
     ".config/neovide/config.toml" = lib.mkForce {
       source = mkSymlink "${dotfilesDir}/resources/config/neovide/config.toml";
     };
+    
+    # VS Code Configuration
+    ".config/Code/User/settings.json" = {
+      source = mkSymlink "${dotfilesDir}/resources/config/vscode/settings.json";
+      force = true;
+    };
+    
+    ".config/Code/User/keybindings.json" = {
+      source = mkSymlink "${dotfilesDir}/resources/config/vscode/keybindings.json";
+      force = true;
+    };
+    
+    # Extensión Wallbash de Hydenix
+    ".vscode/extensions/prasanthrangan.wallbash" = {
+      source = "${pkgs.hyde}/share/vscode/extensions/prasanthrangan.wallbash";
+      recursive = true;
+      force = true;
+    };
+    
     # Scripts en .local/lib/hyde/ (todos los scripts de resources/scripts)
     ".local/lib/hyde/script_launcher.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/script_launcher.sh";
