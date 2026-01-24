@@ -1,11 +1,24 @@
 ---
 title: Browsers
-description: Configuración de navegadores web, especialmente Zen Browser
+description: Configuración de navegadores web instalados en el sistema
 ---
 
 # 🌐 Browsers
 
-Este sistema utiliza **Zen Browser** como navegador principal. Zen Browser es un fork de Firefox con características avanzadas de personalización, pestañas verticales y un sistema de mods.
+Este sistema incluye múltiples navegadores web configurados. La configuración se encuentra en:
+```
+modules/hm/programs/browsers/
+```
+
+## Navegadores instalados
+
+El sistema incluye los siguientes navegadores:
+
+1. **Zen Browser** - Navegador principal (fork de Firefox)
+2. **Helium** - Navegador flotante basado en Chromium
+3. **Google Chrome** - Navegador estándar de Google
+
+Todos los navegadores se importan desde `modules/hm/programs/browsers/default.nix`.
 
 ## Zen Browser
 
@@ -209,4 +222,85 @@ Zen Browser está configurado como navegador por defecto vía:
 - **Variable de entorno**: `BROWSER=zen` (usada por Hyprland y scripts)
 
 El archivo `.desktop` se llama `zen-twilight.desktop` (no `zen-browser.desktop`).
+
+---
+
+## Helium Browser
+
+**Helium** es un navegador flotante basado en Chromium, diseñado para funcionar como una ventana flotante sobre otras aplicaciones.
+
+### Configuración
+
+La configuración de Helium se encuentra en:
+```
+modules/hm/programs/browsers/helium.nix
+```
+
+### Características
+
+- **Navegador flotante**: Diseñado para funcionar como ventana flotante
+- **Basado en Chromium**: Compatible con extensiones de Chrome
+- **Flags optimizados**: Utiliza los flags compartidos de `chromium-flags.nix`
+
+### Flags de Chromium
+
+Helium utiliza los flags compartidos definidos en `chromium-flags.nix`, que incluyen:
+
+- **Wayland support**: Soporte nativo para Wayland
+- **GPU acceleration**: Aceleración por hardware para video y gráficos
+- **Vulkan backend**: Renderizado con Vulkan
+- **VAAPI**: Decodificación de video acelerada por hardware
+- **Privacidad**: Flags para reducir fingerprinting y tracking
+
+Las variables de entorno configuradas incluyen:
+- `LIBVA_DRIVER_NAME=radeonsi`
+- `EGL_PLATFORM=wayland`
+- `AMD_VULKAN_ICD=RADV`
+
+---
+
+## Google Chrome
+
+**Google Chrome** es el navegador estándar de Google, disponible como alternativa.
+
+### Configuración
+
+La configuración de Google Chrome se encuentra en:
+```
+modules/hm/programs/browsers/google-chrome.nix
+```
+
+### Uso
+
+Google Chrome se instala como un paquete estándar sin configuración adicional por defecto. Puedes agregar variables de entorno personalizadas si lo necesitas:
+
+```nix
+home.sessionVariables = {
+  GOOGLE_CHROME_EXTRA_FLAGS = "--some-flag";
+};
+```
+
+---
+
+## Flags compartidos de Chromium
+
+El archivo `chromium-flags.nix` contiene flags optimizados para navegadores basados en Chromium (como Helium). Estos flags incluyen:
+
+### Optimizaciones de rendimiento
+- Aceleración por hardware (GPU)
+- Decodificación de video con VAAPI
+- Renderizado con Vulkan
+- Zero-copy rendering
+
+### Privacidad
+- Reducción de fingerprinting
+- Deshabilitación de recolección de motores de búsqueda
+- Manejo de extensiones mejorado
+
+### Variables de entorno
+- Configuración de drivers de video (RADV para AMD)
+- Soporte para Wayland
+- Optimizaciones de VAAPI/VDPAU
+
+Estos flags se aplican automáticamente a Helium a través de `home.sessionVariables`.
 
