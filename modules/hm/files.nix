@@ -41,6 +41,28 @@ in {
       force = true;
     };
     
+    # Cursor Configuration
+    ".config/Cursor/User/settings.json" = {
+      source = mkSymlink "${dotfilesDir}/resources/config/cursor/settings.json";
+      force = true;
+    };
+    
+    ".config/Cursor/User/keybindings.json" = {
+      source = mkSymlink "${dotfilesDir}/resources/config/cursor/keybindings.json";
+      force = true;
+    };
+    
+    # AntiGravity Configuration
+    ".config/Antigravity/User/settings.json" = {
+      source = mkSymlink "${dotfilesDir}/resources/config/antigravity/settings.json";
+      force = true;
+    };
+    
+    ".config/Antigravity/User/keybindings.json" = {
+      source = mkSymlink "${dotfilesDir}/resources/config/antigravity/keybindings.json";
+      force = true;
+    };
+    
     # Scripts en .local/lib/hyde/ (todos los scripts de resources/scripts)
     ".local/lib/hyde/script_launcher.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/script_launcher.sh";
