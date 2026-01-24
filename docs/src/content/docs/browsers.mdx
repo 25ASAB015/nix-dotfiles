@@ -227,7 +227,7 @@ El archivo `.desktop` se llama `zen-twilight.desktop` (no `zen-browser.desktop`)
 
 ## Helium Browser
 
-**Helium** es un navegador flotante basado en Chromium, diseñado para funcionar como una ventana flotante sobre otras aplicaciones.
+**Helium** es un navegador basado en Chromium con un enfoque fuerte en **seguridad y privacidad**. Está configurado con flags optimizados que reducen el tracking, fingerprinting y la recolección de datos.
 
 ### Configuración
 
@@ -236,11 +236,20 @@ La configuración de Helium se encuentra en:
 modules/hm/programs/browsers/helium.nix
 ```
 
-### Características
+### Seguridad y Privacidad
 
-- **Navegador flotante**: Diseñado para funcionar como ventana flotante
+Helium está configurado con múltiples medidas de privacidad y seguridad:
+
+- **Protección contra fingerprinting**: Ruido añadido a canvas, measuretext y client-rects para dificultar la identificación única del navegador
+- **Sin recolección de datos**: Deshabilitada la recolección de motores de búsqueda y telemetría
+- **Manejo seguro de extensiones**: Configuración que requiere confirmación explícita para instalar extensiones
+- **Dominios punycode forzados**: Mejora la seguridad al mostrar dominios internacionales en formato punycode
+- **Sin pings**: Deshabilitados los pings de red para evitar tracking
+
+### Características técnicas
+
 - **Basado en Chromium**: Compatible con extensiones de Chrome
-- **Flags optimizados**: Utiliza los flags compartidos de `chromium-flags.nix`
+- **Flags optimizados**: Utiliza los flags compartidos de `chromium-flags.nix` para rendimiento y privacidad
 
 ### Flags de Chromium
 
