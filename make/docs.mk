@@ -31,7 +31,7 @@ help: ## Show this help message
 	} \
 	END { \
 		print_cat("Ayuda y Documentación", "help help-examples help-aliases docs-local doc-dev doc-build doc-install doc-clean"); \
-		print_cat("Gestión del Sistema (Rebuild/Switch)", "sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-doctor sys-fix-git sys-hw-scan sys-deploy"); \
+		print_cat("Gestión del Sistema (Rebuild/Switch)", "sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-fix-git sys-hw-scan sys-deploy"); \
 		print_cat("Limpieza y Optimización", "sys-gc sys-purge sys-optimize sys-clean-result sys-fix-store"); \
 		print_cat("Actualizaciones y Flakes", "upd-all upd-nixpkgs upd-hydenix upd-input upd-diff upd-upgrade upd-show upd-check"); \
 		print_cat("Generaciones y Rollback", "gen-list gen-rollback gen-diff gen-diff-current gen-sizes gen-current"); \
@@ -101,7 +101,7 @@ help-examples: ## Show commands with usage examples
 	@printf "$(BLUE)Troubleshooting:$(NC)\n"
 	@printf "  make sys-debug      → Debug rebuild\n"
 	@printf "  make log-err        → Show errors\n"
-	@printf "  make sys-doctor     → Fix permission issues\n"
+	@printf "  make sys-deploy     → Full deploy (includes permission fix)\n"
 	@printf "  make sys-fix-store  → Repair nix store\n\n"
 	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
 	@printf "$(YELLOW)For full command list:$(NC) make help\n"

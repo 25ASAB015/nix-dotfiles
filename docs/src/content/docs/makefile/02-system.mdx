@@ -33,8 +33,8 @@ make sys-apply
 ```
 
 **Qué hace:**
-1. Git-fix (opcional) de permisos en el repositorio
-2. `git add .` - Staging de todos los cambios
+1. `make sys-fix-git` - Corrige permisos en el repositorio Git
+2. `git add .` - Prepara todos los cambios para commit
 3. Compila la configuración del Flake
 4. Activa la nueva configuración inmediatamente
 
@@ -48,11 +48,11 @@ make sys-deploy
 ```
 
 **Qué hace:**
-1. Git-fix: Corrige permisos en el repositorio
+1. **`make sys-doctor`** - Verifica y corrige permisos en `~/.config`, `~/.local` y el repositorio Git
 2. `make git-add` - Prepara todos los cambios
 3. `make git-commit` - Crea respaldo con timestamp (salta si no hay cambios)
 4. `make git-push` - Sube cambios al repositorio remoto
-5. **`make sys-apply`** - Aplica la configuración localmente
+5. **`make sys-apply-core`** - Aplica la configuración localmente
 
 **Propósito:** Asegurar que tu configuración esté respaldada en la nube y aplicada localmente en un solo paso.
 
@@ -114,11 +114,13 @@ make sys-status
 
 ---
 
-### `make sys-doctor`
+### `make sys-doctor` (Internal)
 Diagnóstico y reparación automática de permisos en directorios de configuración y el repositorio.
 
+**Note:** This command is now automatically executed as part of `make sys-deploy`. You can still call it directly using the alias `make fix-permissions` if you only need to fix permissions without deploying.
+
 ```bash
-make sys-doctor
+make fix-permissions  # Alias for sys-doctor
 ```
 
 ---

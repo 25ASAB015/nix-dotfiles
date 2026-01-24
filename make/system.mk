@@ -197,20 +197,20 @@ sys-force: ## Emergency rebuild with maximum verbosity
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
-# Complete workflow: stage, commit, push, and apply (deploy)
-sys-deploy: ## Total sync (add + commit + push + apply)
+# Complete workflow: fix permissions, stage, commit, push, and apply (deploy)
+sys-deploy: ## Total sync (doctor + add + commit + push + apply)
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)                          🔄 Total Deployment (Ship it!)                           $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(PURPLE)Executing complete deployment workflow:$(NC)\n"
-	@printf "  1. Fix permissions (sys-fix-git)\n"
+	@printf "  1. Fix all permissions (sys-doctor)\n"
 	@printf "  2. Stage changes (git add)\n"
 	@printf "  3. Commit changes (timestamped)\n"
 	@printf "  4. Push to remote (git push)\n"
 	@printf "  5. Build and apply (sys-apply)\n"
 	@printf "\n"
-	@$(MAKE) --no-print-directory sys-fix-git
+	@$(MAKE) --no-print-directory sys-doctor
 	@$(MAKE) --no-print-directory git-add
 	@$(MAKE) --no-print-directory git-commit
 	@$(MAKE) --no-print-directory git-push
@@ -235,7 +235,8 @@ sys-hw-scan: ## Re-scan hardware configuration
 	@printf "  mv hosts/$(HOSTNAME)/hardware-configuration-new.nix hosts/$(HOSTNAME)/hardware-configuration.nix\n"
 
 # Fix common permission issues in user directories and git repository
-sys-doctor: ## Fix common permission issues (doctor)
+# Internal target: used by sys-deploy, but can be called directly if needed
+sys-doctor:
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            👨‍⚕️ System Doctor (Permissions)        $(NC)"
@@ -244,17 +245,35 @@ sys-doctor: ## Fix common permission issues (doctor)
 	@printf "$(BLUE)Fixing common permission issues...$(NC)\n"
 	@printf "$(YELLOW)This requires sudo privileges.$(NC)\n"
 	@printf "\n"
-	@printf "$(BLUE)1. Fixing ~/.config permissions...$(NC) "
-	@if sudo chown -R $USER:users ~/.config 2>/dev/null; then \
-		printf "$(GREEN)✓$(NC)\n"; \
+	@printf "$(BLUE)1. Checking ~/.config permissions...$(NC) "
+	@if [ -d ~/.config ]; then \
+		if find ~/.config -maxdepth 1 -not -user $USER 2>/dev/null | grep -q .; then \
+			printf "$(YELLOW)(fixing...)$(NC) "; \
+			if sudo chown -R $USER:users ~/.config 2>/dev/null; then \
+				printf "$(GREEN)✓ Fixed$(NC)\n"; \
+			else \
+				printf "$(RED)✗ Failed$(NC)\n"; \
+			fi; \
+		else \
+			printf "$(GREEN)✓ OK$(NC)\n"; \
+		fi; \
 	else \
-		printf "$(YELLOW)⚠️  (skipped)$(NC)\n"; \
+		printf "$(YELLOW)⚠️  (directory not found)$(NC)\n"; \
 	fi
-	@printf "$(BLUE)2. Fixing ~/.local permissions...$(NC) "
-	@if sudo chown -R $USER:users ~/.local 2>/dev/null; then \
-		printf "$(GREEN)✓$(NC)\n"; \
+	@printf "$(BLUE)2. Checking ~/.local permissions...$(NC) "
+	@if [ -d ~/.local ]; then \
+		if find ~/.local -maxdepth 1 -not -user $USER 2>/dev/null | grep -q .; then \
+			printf "$(YELLOW)(fixing...)$(NC) "; \
+			if sudo chown -R $USER:users ~/.local 2>/dev/null; then \
+				printf "$(GREEN)✓ Fixed$(NC)\n"; \
+			else \
+				printf "$(RED)✗ Failed$(NC)\n"; \
+			fi; \
+		else \
+			printf "$(GREEN)✓ OK$(NC)\n"; \
+		fi; \
 	else \
-		printf "$(YELLOW)⚠️  (skipped)$(NC)\n"; \
+		printf "$(YELLOW)⚠️  (directory not found)$(NC)\n"; \
 	fi
 	@printf "$(BLUE)3. Fixing git repository permissions...$(NC)\n"
 	@$(MAKE) --no-print-directory sys-fix-git
