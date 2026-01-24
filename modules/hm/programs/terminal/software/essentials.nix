@@ -9,17 +9,13 @@
 }: {
   # Paquetes esenciales (adaptado de environment.systemPackages del archivo fuente)
   # Nota: git y gh removidos para evitar duplicados (ya en git.nix y gh.nix)
+  # Nota: Cursor y AntiGravity movidos a modules/hm/programs/editors/
   home.packages = with pkgs; [
-    # Editors
-    code-cursor-fhs # Cursor AI
-    cursor-cli # Cursor CLI
-    
     # Git tools
     gitkraken # GitKraken GUI
     gk-cli # GitKraken CLI
     
     # Other
-    antigravity-fhs # Antigravity by Google
     dropbox # Dropbox
     meld # Visual diff and merge tool
     unzip # Unzip utility

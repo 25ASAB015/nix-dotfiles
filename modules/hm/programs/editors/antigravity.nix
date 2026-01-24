@@ -1,8 +1,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  # AntiGravity ya está instalado manualmente
-  # Este módulo solo documenta su presencia
+  # AntiGravity - Editor de código por Google
+  # Instalado como paquete en home.packages
   # La configuración se gestiona con symlinks en files.nix
+  home.packages = with pkgs; [
+    antigravity-fhs  # AntiGravity by Google (versión FHS)
+  ];
 }
 

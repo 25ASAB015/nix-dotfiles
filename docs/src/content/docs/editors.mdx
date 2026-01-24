@@ -62,10 +62,18 @@ Dotfiles/
         └── programs/
             └── editors/
                 ├── default.nix        # Importador de editores
-                ├── vscode.nix         # Módulo VS Code (extensiones)
-                ├── cursor.nix         # Módulo Cursor (documentativo)
-                └── antigravity.nix    # Módulo AntiGravity (documentativo)
+                ├── vscode.nix         # Módulo VS Code (instalación + extensiones)
+                ├── cursor.nix         # Módulo Cursor (instalación)
+                └── antigravity.nix    # Módulo AntiGravity (instalación)
 ```
+
+### Ubicaciones de Instalación
+
+| Editor | Método de Instalación | Ubicación |
+|--------|----------------------|-----------|
+| VS Code | `programs.vscode` (Home Manager) | `modules/hm/programs/editors/vscode.nix` |
+| Cursor | `home.packages` | `modules/hm/programs/editors/cursor.nix` |
+| AntiGravity | `home.packages` | `modules/hm/programs/editors/antigravity.nix` |
 
 ### Ubicaciones de Symlinks
 
@@ -80,9 +88,11 @@ Dotfiles/
 
 ---
 
-## ⚙️ Configuración Actual
+## ⚙️ Instalación y Configuración
 
 ### VS Code
+
+**Instalación**: Gestionado por Home Manager mediante `programs.vscode`
 
 **Ubicación del módulo**: `modules/hm/programs/editors/vscode.nix`
 
@@ -100,6 +110,7 @@ Dotfiles/
 ```
 
 **Características**:
+- ✅ Instalado declarativamente por Nix
 - ✅ Settings Sync desactivado
 - ✅ Tema Wallbash (desde Hydenix)
 - ✅ Iconos Flow Icons
@@ -108,17 +119,21 @@ Dotfiles/
 
 ### Cursor
 
-**Ubicación del módulo**: `modules/hm/programs/editors/cursor.nix`
+**Instalación**: Instalado como paquete en `modules/hm/programs/editors/cursor.nix`
+
+**Ubicación de instalación**: `modules/hm/programs/editors/cursor.nix`
 
 ```nix
 {
-  # Cursor ya está instalado manualmente
-  # Este módulo solo documenta su presencia
-  # La configuración se gestiona con symlinks en files.nix
+  home.packages = with pkgs; [
+    code-cursor-fhs  # Cursor AI (versión FHS para mejor compatibilidad)
+    cursor-cli        # Cursor CLI
+  ];
 }
 ```
 
 **Características**:
+- ✅ Instalado desde `modules/hm/programs/editors/cursor.nix`
 - ✅ Settings Sync desactivado
 - ✅ Tema: Cursor Dark Midnight
 - ✅ Terminal externa: ghostty
@@ -127,21 +142,34 @@ Dotfiles/
 
 ### AntiGravity
 
-**Ubicación del módulo**: `modules/hm/programs/editors/antigravity.nix`
+**Instalación**: Instalado como paquete en `modules/hm/programs/editors/antigravity.nix`
+
+**Ubicación de instalación**: `modules/hm/programs/editors/antigravity.nix`
 
 ```nix
 {
-  # AntiGravity ya está instalado manualmente
-  # Este módulo solo documenta su presencia
-  # La configuración se gestiona con symlinks en files.nix
+  home.packages = with pkgs; [
+    antigravity-fhs  # AntiGravity by Google (versión FHS)
+  ];
 }
 ```
 
 **Características**:
+- ✅ Instalado desde `modules/hm/programs/editors/antigravity.nix`
 - ✅ Settings Sync desactivado
 - ✅ Tema: Tokyo Night
 - ✅ Terminal externa: ghostty
 - ✅ Configuración mínima funcional
+
+### Nota sobre Instalación
+
+**VS Code** se instala mediante el módulo `programs.vscode` de Home Manager, lo que permite gestión declarativa de extensiones y configuración avanzada.
+
+**Cursor y AntiGravity** se instalan como paquetes en `home.packages` dentro de sus respectivos módulos en `modules/hm/programs/editors/`. Esto significa que:
+- Se instalan automáticamente con `make switch`
+- Todos los editores están organizados en un solo lugar (`editors/`)
+- No tienen gestión declarativa de extensiones (se instalan manualmente desde la UI)
+- La configuración se gestiona mediante symlinks en `files.nix`
 
 ---
 
