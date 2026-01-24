@@ -9,7 +9,8 @@
     ./development      # Development tools and languages
     ./system           # System utilities (gammastep, notifications, etc.)
     ./document-viewers # Document viewers (Zathura for PDF/LaTeX)
-    ./editors           # Editors (vscode)
+    ./editors           # Editors (vscode, cursor, antigravity)
+    ./ai-assistants     # AI Assistants (opencode)
     # ./media         # Future: Media apps (vlc, mpv, spotify)
   ];
 }
