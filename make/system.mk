@@ -239,8 +239,7 @@ sys-hw-scan: ## Re-scan hardware configuration
 # Fix common permission issues in user directories
 # Internal target: used by sys-deploy, but can be called directly if needed
 sys-doctor: ## Fix common permission issues (doctor)
-	@printf "\n"
-	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"	
 	@printf "$(CYAN)            👨‍⚕️ System Doctor (Permissions)        $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
@@ -277,11 +276,8 @@ sys-doctor: ## Fix common permission issues (doctor)
 	else \
 		printf "$(YELLOW)⚠️  (directory not found)$(NC)\n"; \
 	fi
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Doctor: Permissions fixed$(NC)\n"
-	@printf "$(BLUE)Common permission issues have been resolved.$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
+	
 
 # Fix git repository ownership issues in the flake directory
 sys-fix-git: ## Fix git repo ownership issues in flake dir
