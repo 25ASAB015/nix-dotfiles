@@ -15,7 +15,6 @@ sys-apply: ## Build and switch to new configuration
 	@$(MAKE) --no-print-directory sys-apply-core
 
 sys-apply-core:
-	@printf "\n"
 	@printf "$(CYAN)                            🔄 Apply (Build & Switch)                            $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ "$$(id -u)" -eq 0 ]; then \
@@ -212,10 +211,15 @@ sys-deploy: ## Total sync (doctor + add + commit + push + apply)
 	@printf "  6. Build and apply (sys-apply)\n"
 	@printf "\n"
 	@$(MAKE) --no-print-directory sys-doctor
+	@printf "\n"
 	@$(MAKE) --no-print-directory sys-fix-git
+	@printf "\n"
 	@$(MAKE) --no-print-directory git-add
+	@printf "\n"
 	@$(MAKE) --no-print-directory git-commit
+	@printf "\n"
 	@$(MAKE) --no-print-directory git-push
+	@printf "\n"
 	@$(MAKE) --no-print-directory sys-apply-core
 	@printf "\n"
 

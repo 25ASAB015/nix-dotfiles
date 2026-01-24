@@ -27,7 +27,6 @@ git-add: ## Stage all changes for git
 	@printf "\n"
 
 git-commit: ## Quick commit with timestamp
-	@printf "\n"
 	@printf "$(CYAN)                              📝 Committing Changes                              $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ -n "$$(git status --porcelain)" ]; then \
@@ -45,10 +44,8 @@ git-commit: ## Quick commit with timestamp
 		printf "\n$(YELLOW)⚠ No changes to commit$(NC)\n"; \
 		printf "$(BLUE)Working tree is clean. Proceeding...$(NC)\n"; \
 	fi
-	@printf "\n"
 
 git-push: ## Push to remote using GitHub CLI
-	@printf "\n"	
 	@printf "$(CYAN)                               🚀 Pushing to Remote                              $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@BRANCH=$$(git branch --show-current); \
@@ -63,7 +60,6 @@ git-push: ## Push to remote using GitHub CLI
 	else \
 		printf "$(YELLOW)⚠ Everything up-to-date (no changes to push)$(NC)\n"; \
 	fi
-	@printf "\n"
 
 git-status: ## Show git status with GitHub CLI
 	@printf "\n"
