@@ -211,7 +211,6 @@ sys-deploy: ## Total sync (doctor + add + commit + push + apply)
 	@printf "  6. Build and apply (sys-apply)\n"
 	@printf "\n"
 	@$(MAKE) --no-print-directory sys-doctor
-	@printf "\n"
 	@$(MAKE) --no-print-directory sys-fix-git
 	@printf "\n"
 	@$(MAKE) --no-print-directory git-add
@@ -278,7 +277,7 @@ sys-doctor: ## Fix common permission issues (doctor)
 	else \
 		printf "$(YELLOW)⚠️  (directory not found)$(NC)\n"; \
 	fi
-	@printf "$(GREEN)✅ Doctor: Permissions fixed$(NC)"
+	@printf "$(GREEN)✅ Doctor: Permissions fixed$(NC)\n"
 
 # Fix git repository ownership issues in the flake directory
 sys-fix-git: ## Fix git repo ownership issues in flake dir
