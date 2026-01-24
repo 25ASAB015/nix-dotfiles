@@ -80,6 +80,17 @@
   # ════════════════════════════════════════════════════════════════════════════
   # Uso: Ctrl+R para buscar en historial
   # Documentación: https://docs.atuin.sh/
+  # FZF - Fuzzy finder para línea de comandos
+  modules.terminal.software.fzf = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+
+  # ZELLIJ - Terminal multiplexer moderno
+  modules.terminal.software.zellij = {
+    enable = true;
+  };
+
   modules.terminal.software.atuin = {
     enable = true;
     enableFishIntegration = true;   # Solo para Fish
@@ -215,6 +226,21 @@
     enableSixel = true;        # Soporte para imágenes en terminal
   };
 
+  # ════════════════════════════════════════════════════════════════════════════
+  # EDITORES DE CÓDIGO
+  # ════════════════════════════════════════════════════════════════════════════
+
+  # ZED EDITOR - Editor de código moderno y rápido
+  # Integrado desde kaku con LSPs preconfigurados
+  # Documentación: https://zed.dev/
+  modules.editors.zed = {
+    enable = true;
+  };
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # EMULADORES DE TERMINAL
+  # ════════════════════════════════════════════════════════════════════════════
+
   # GHOSTTY - Terminal moderna con GPU rendering
   # Uso: ghostty, Ctrl+Shift+V (split), Alt+N (tab)
   # Muy rápida con soporte de splits y tabs nativos
@@ -255,8 +281,14 @@
   # SHELL - Configuración del shell y prompt
   # ════════════════════════════════════════════════════════════════════════════
   
+  # CARAPACE - Autocompletado multi-shell
+  # Proporciona autocompletado inteligente para Fish, Zsh y Bash
+  modules.terminal.shell.carapace = {
+    enable = true;
+  };
+
   # FISH SHELL - Shell moderno con plugins
-  # Incluye: carapace, autopair, done, bass, plugin-git, sudope, fifc, grc, puffer
+  # Incluye: autopair, done, bass, plugin-git, sudope, fifc, grc, puffer
   # Documentación: https://fishshell.com/docs/current/
   modules.terminal.shell.fish = {
     enable = true;
