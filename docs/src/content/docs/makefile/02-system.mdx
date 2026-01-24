@@ -48,11 +48,12 @@ make sys-deploy
 ```
 
 **Qué hace:**
-1. **`make sys-doctor`** - Verifica y corrige permisos en `~/.config`, `~/.local` y el repositorio Git
-2. `make git-add` - Prepara todos los cambios
-3. `make git-commit` - Crea respaldo con timestamp (salta si no hay cambios)
-4. `make git-push` - Sube cambios al repositorio remoto
-5. **`make sys-apply-core`** - Aplica la configuración localmente
+1. **`make sys-doctor`** - Verifica y corrige permisos en `~/.config` y `~/.local`
+2. **`make sys-fix-git`** - Corrige permisos en el repositorio Git
+3. `make git-add` - Prepara todos los cambios
+4. `make git-commit` - Crea respaldo con timestamp (salta si no hay cambios)
+5. `make git-push` - Sube cambios al repositorio remoto
+6. **`make sys-apply-core`** - Aplica la configuración localmente
 
 **Propósito:** Asegurar que tu configuración esté respaldada en la nube y aplicada localmente en un solo paso.
 
@@ -115,9 +116,9 @@ make sys-status
 ---
 
 ### `make sys-doctor` (Internal)
-Diagnóstico y reparación automática de permisos en directorios de configuración y el repositorio.
+Diagnóstico y reparación automática de permisos en directorios de configuración del usuario (`~/.config` y `~/.local`).
 
-**Note:** This command is now automatically executed as part of `make sys-deploy`. You can still call it directly using the alias `make fix-permissions` if you only need to fix permissions without deploying.
+**Note:** This command is now automatically executed as part of `make sys-deploy`. For Git repository permissions, `sys-deploy` also runs `make sys-fix-git` separately. You can still call `sys-doctor` directly using the alias `make fix-permissions` if you only need to fix user directory permissions without deploying.
 
 ```bash
 make fix-permissions  # Alias for sys-doctor
