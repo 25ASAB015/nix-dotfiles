@@ -247,9 +247,9 @@
   # El módulo de zen-browser puede no estar generando estos archivos correctamente
   # Los creamos manualmente para asegurar que las preferencias y políticas se apliquen
   # 
-  # IMPORTANTE: Estos archivos se sobrescriben en cada 'make switch' (gestión declarativa)
-  # - Si modificas user.js o policies.json manualmente, los cambios se perderán
-  # - Para cambios permanentes, edita este archivo (zen.nix) y haz 'make switch'
+  # IMPORTANTE: Estos archivos son MUTABLES (mutable = true)
+  # - Puedes editarlos manualmente y los cambios persistirán
+  # - Solo se crean/actualizan si no existen o si cambias la configuración en zen.nix
   # - Los archivos de estado (prefs.js, places.sqlite, bookmarks, etc.) NO se tocan
   home.file = {
     # user.js con las preferencias personalizadas
@@ -257,8 +257,7 @@
       text = ''
         // Preferencias personalizadas de Zen Browser
         // Generado automáticamente desde modules/hm/programs/browsers/zen.nix
-        // NOTA: Este archivo se sobrescribe en cada 'make switch'
-        // Para cambios permanentes, edita modules/hm/programs/browsers/zen.nix
+        // NOTA: Este archivo es MUTABLE - puedes editarlo manualmente y los cambios persistirán
         
         // DRM Content - Habilitar reproducción de contenido DRM
         user_pref("media.eme.enabled", true);
@@ -274,6 +273,7 @@
         user_pref("media.videocontrols.picture-in-picture.keep-playing-when-switching-tabs", true);
       '';
       force = true;
+      mutable = true;
     };
 
     # policies.json con las políticas y extensiones
@@ -300,6 +300,7 @@
         };
       };
       force = true;
+      mutable = true;
     };
   };
 }
