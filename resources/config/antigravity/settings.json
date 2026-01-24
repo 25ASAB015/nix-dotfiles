@@ -1,0 +1,23 @@
+{
+  "settingsSync.keybindingsPerPlatform": false,
+  
+  "workbench.colorTheme": "Tokyo Night",
+  "workbench.iconTheme": "vs-seti",
+  
+  "editor.fontFamily": "'JetBrainsMono Nerd Font', 'Droid Sans Mono', 'monospace'",
+  "editor.fontSize": 14,
+  "editor.lineNumbers": "on",
+  "editor.minimap.enabled": true,
+  
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font'",
+  "terminal.external.linuxExec": "ghostty",
+  
+  "telemetry.telemetryLevel": "off",
+  
+  "git.confirmSync": false
+}
+
