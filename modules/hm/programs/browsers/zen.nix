@@ -246,12 +246,19 @@
   # ════════════════════════════════════════════════════════════════════════════
   # El módulo de zen-browser puede no estar generando estos archivos correctamente
   # Los creamos manualmente para asegurar que las preferencias y políticas se apliquen
+  # 
+  # IMPORTANTE: Estos archivos se sobrescriben en cada 'make switch' (gestión declarativa)
+  # - Si modificas user.js o policies.json manualmente, los cambios se perderán
+  # - Para cambios permanentes, edita este archivo (zen.nix) y haz 'make switch'
+  # - Los archivos de estado (prefs.js, places.sqlite, bookmarks, etc.) NO se tocan
   home.file = {
     # user.js con las preferencias personalizadas
     ".zen/default/user.js" = {
       text = ''
         // Preferencias personalizadas de Zen Browser
         // Generado automáticamente desde modules/hm/programs/browsers/zen.nix
+        // NOTA: Este archivo se sobrescribe en cada 'make switch'
+        // Para cambios permanentes, edita modules/hm/programs/browsers/zen.nix
         
         // DRM Content - Habilitar reproducción de contenido DRM
         user_pref("media.eme.enabled", true);
