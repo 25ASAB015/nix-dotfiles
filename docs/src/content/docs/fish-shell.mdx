@@ -261,10 +261,11 @@ Variables de entorno:
 
 ### Starship - Prompt Personalizado
 
-Starship proporciona un prompt rápido y personalizable. Configuración en:
+Fish usa el mismo prompt de terminal de [omarchy](https://github.com/richen604/omarchy), proporcionando un prompt minimalista y elegante. La configuración se encuentra en:
 
 ```
 modules/hm/programs/terminal/shell/starship.nix
+resources/config/fish-starship.toml
 ```
 
 **Habilitar:**
@@ -276,24 +277,25 @@ modules.terminal.shell.starship = {
 };
 ```
 
-El prompt de Fish usa un formato de 2 líneas:
-- **Línea 1**: `$status$username$hostname$directory$git_branch$git_status$cmd_duration$nix_shell`
-- **Línea 2**: `$character`
+El prompt de Fish usa un formato compacto de 1 línea basado en omarchy:
+- **Formato**: `[$directory$git_branch$git_status]($style)$character`
+
+**Características del prompt:**
+- **Directory**: Directorio actual con truncación inteligente (2 niveles con `…/`)
+- **Git Branch**: Rama de Git en estilo italic cyan
+- **Git Status**: Estado de Git con símbolos Unicode (⇡ ahead, ⇣ behind, ⇕ diverged)
+- **Character**: Símbolo `❯` (éxito) o `✗` (error) en bold cyan
 
 **Módulos habilitados:**
-- `status`: Estado del último comando (│ en blanco/rojo)
-- `username`: Usuario actual (solo si no es el usuario por defecto)
-- `hostname`: Hostname (solo en SSH)
-- `directory`: Directorio actual (truncado a 1 nivel)
-- `git_branch`: Rama de Git actual
-- `git_status`: Estado de Git (modificados, staged, etc.)
-- `cmd_duration`: Duración de comandos largos (mínimo 2 segundos)
-- `nix_shell`: Indicador de shell de desarrollo Nix
+- `directory`: Directorio actual con truncación a 2 niveles
+- `git_branch`: Rama de Git (italic cyan)
+- `git_status`: Estado de Git con símbolos Unicode (cyan)
+- `character`: Símbolo de prompt (bold cyan)
 
-**Módulos deshabilitados** (para mejor rendimiento):
-- Todos los módulos de lenguajes (nodejs, python, rust, etc.)
-- AWS, GCloud, Kubernetes, etc.
-- Battery, time, package, conda, docker_context
+**Configuración:**
+- Archivo fuente: `resources/config/fish-starship.toml` (copiado desde omarchy)
+- Se copia a: `~/.config/starship/fish.toml` (solo para Fish)
+- **Nota**: Esta configuración es exclusiva para Fish y no afecta a zsh/Hydenix
 
 ### fzf - Fuzzy Finder
 
