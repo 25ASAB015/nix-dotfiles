@@ -25,7 +25,7 @@ La documentación del Makefile ha sido actualizada para reflejar los comandos ac
 - [Actualizaciones y Flakes](/nix-dotfiles/makefile/04-updates/) - `upd-all`, `upd-nixpkgs`, `upd-hydenix`, `upd-input`, `upd-diff`, `upd-upgrade`, `upd-show`, `upd-check`
 
 ### Generaciones y Rollback
-- [Generaciones y Rollback](/nix-dotfiles/makefile/05-generations/) - `gen-list`, `gen-rollback`, `gen-diff`, `gen-diff-current`, `gen-sizes`, `gen-current`
+- [Generaciones y Rollback](/nix-dotfiles/makefile/05-generations/) - `gen-list`, `gen-rollback`, `gen-rollback-commit`, `gen-diff`, `gen-diff-current`, `gen-sizes`, `gen-current`
 
 ### Git y Respaldo
 - [Git y Respaldo](/nix-dotfiles/makefile/06-git/) - `git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `git-log`
@@ -224,7 +224,7 @@ En el **Makefile actual**, los comandos están agrupados así:
 2. **Gestión del Sistema (Rebuild/Switch)** - sys-apply, sys-apply-safe, sys-apply-fast, sys-test, sys-build, sys-dry-run, sys-boot, sys-check, sys-debug, sys-force, sys-fix-git, sys-hw-scan, sys-deploy (includes permission fix via sys-doctor)
 3. **Limpieza y Optimización** - sys-gc, sys-purge, sys-optimize, sys-clean-result, sys-fix-store
 4. **Actualizaciones y Flakes** - upd-all, upd-nixpkgs, upd-hydenix, upd-input, upd-diff, upd-upgrade, upd-show, upd-check
-5. **Generaciones y Rollback** - gen-list, gen-rollback, gen-diff, gen-diff-current, gen-sizes, gen-current
+5. **Generaciones y Rollback** - gen-list, gen-rollback, gen-rollback-commit, gen-diff, gen-diff-current, gen-sizes, gen-current
 6. **Git y Respaldo** - git-add, git-commit, git-push, git-status, git-diff, git-log
 7. **Diagnóstico y Logs** - sys-status, log-net, log-watch, log-boot, log-err, log-svc
 8. **Análisis y Desarrollo** - dev-hosts, dev-search, dev-search-inst, dev-repl, dev-shell, dev-vm, dev-size
@@ -1663,11 +1663,146 @@ make sys-apply
 - `make sys-apply` - Aplicar cambios (puedes revertir con rollback)
 - Git - Para restaurar archivos de configuración específicos
 
-**Nota importante:** `make gen-rollback` solo revierte la configuración del sistema. Si editaste archivos de configuración manualmente y quieres restaurarlos, usa Git:
+**Nota importante:** `make gen-rollback` solo revierte la configuración del sistema. Si editaste archivos de configuración manualmente y quieres restaurarlos, usa Git o `gen-rollback-commit`:
 ```bash
-# Restaurar archivo específico con Git
+# Opción 1: Restaurar archivo específico con Git
 git checkout HEAD~1 -- path/to/file.nix
 make sys-apply
+
+# Opción 2: Rollback completo a commit específico (recomendado)
+make gen-rollback-commit COMMIT=9220122
+```
+
+---
+
+#### `make gen-rollback-commit`
+Revierte a un commit específico de Git y reconstruye el sistema desde ese commit. Útil cuando necesitas volver exactamente a un estado conocido.
+
+```bash
+make gen-rollback-commit COMMIT=<hash>
+```
+
+**Ejemplos:**
+```bash
+# Usando hash corto
+make gen-rollback-commit COMMIT=9220122
+
+# Usando hash completo
+make gen-rollback-commit COMMIT=9220122face1b1f71f0cf9b1fcc8536fa0cd2842
+```
+
+**Qué hace:**
+1. ✅ Verifica que el commit existe en el repositorio
+2. ✅ Muestra información detallada del commit:
+   - Hash completo y corto
+   - Mensaje del commit
+   - Fecha del commit
+   - Archivos modificados (stat)
+3. ✅ Pide confirmación antes de proceder
+4. ✅ Hace checkout al commit especificado
+5. ✅ Reconstruye el sistema desde ese commit
+6. ✅ Muestra el resultado y próximos pasos
+
+**Output ejemplo:**
+```
+═════════════════════════════════════════════════════════════════════════════════
+        ⏪ Rollback a Commit Específico y Rebuild        
+═════════════════════════════════════════════════════════════════════════════════
+
+Verificando commit: 9220122
+✓ Commit encontrado:
+  Hash completo: 9220122face1b1f71f0cf9b1fcc8536fa0cd2842
+  Hash corto: 9220122
+  Mensaje: fix(fish): mover configuración de starship a shellInit
+  Fecha: 2026-01-24 18:57:16 -0600
+
+Cambios en este commit:
+ modules/hm/programs/terminal/shell/fish.nix     |  6 ++++++
+ modules/hm/programs/terminal/shell/starship.nix | 11 +++--------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
+
+⚠️  ADVERTENCIA:
+  - Esto cambiará el HEAD del repositorio a este commit
+  - Se reconstruirá el sistema desde este commit
+  - Cualquier cambio sin commit se perderá
+  - Si tienes cambios sin guardar, usa 'git stash' primero
+
+Escribe 'yes' para confirmar rollback: 
+```
+
+**Cuándo usarlo:**
+- Cuando sabes exactamente qué commit funcionaba bien
+- Cuando necesitas volver varios commits atrás (no solo N-1)
+- Cuando quieres restaurar tanto el sistema como los archivos de configuración
+- Cuando `make gen-rollback` no es suficiente
+
+**Ventajas:**
+- ✅ Vuelve a cualquier commit, no solo al anterior
+- ✅ Restaura tanto el sistema como los archivos de configuración
+- ✅ Muestra información detallada antes de proceder
+- ✅ Verifica que el commit existe antes de hacer cambios
+- ✅ Permite rollback seguro con confirmación
+
+**Limitaciones:**
+- ⚠️ Modifica el estado del repositorio git (cambia el HEAD)
+- ⚠️ Requiere que no haya cambios sin commit (usa `git stash` primero)
+- ⚠️ Más lento que `gen-rollback` (reconstruye el sistema completo)
+- ⚠️ Si falla la reconstrucción, revierte el checkout automáticamente
+
+**Casos de uso:**
+
+**Ejemplo 1: Volver a commit conocido que funcionaba**
+```bash
+# Aplicas cambios nuevos
+make sys-apply
+
+# No funcionan como esperabas
+# Sabes que el commit 9220122 funcionaba bien
+make gen-rollback-commit COMMIT=9220122
+
+# Sistema reconstruido desde ese commit
+```
+
+**Ejemplo 2: Experimentar con seguridad**
+```bash
+# Crear rama de respaldo
+git checkout -b backup-before-switch
+git push origin backup-before-switch
+
+# Volver a main y aplicar cambios
+git checkout main
+make sys-apply
+
+# Si no funciona, rollback al commit anterior
+make gen-rollback-commit COMMIT=9220122
+```
+
+**Ejemplo 3: Comparar con `gen-rollback`**
+```bash
+# Rollback rápido (solo generación anterior)
+make gen-rollback
+
+# Rollback completo (commit específico + reconstrucción)
+make gen-rollback-commit COMMIT=9220122
+```
+
+**Relación con otros comandos:**
+- `make gen-rollback` - Rollback rápido a generación anterior (N-1)
+- `make gen-list` - Ver todas las generaciones disponibles
+- `make gen-rollback-commit` - Rollback completo a commit específico
+- `git stash` - Guardar cambios antes de rollback
+- `make sys-apply` - Aplicar configuración (puedes revertir con rollback)
+
+**Nota importante:** Si tienes cambios sin commit, guarda tus cambios primero:
+```bash
+# Guardar cambios temporalmente
+git stash
+
+# Hacer rollback
+make gen-rollback-commit COMMIT=9220122
+
+# (Opcional) Recuperar cambios guardados después
+git stash pop
 ```
 
 ---

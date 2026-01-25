@@ -147,9 +147,14 @@ El Makefile está organizado en módulos activos que coinciden con las categorí
        make gen-list
        ```
 
-    2. **Revertir** a la generación anterior
+    2. **Revertir** a la generación anterior (rápido)
        ```bash
        make gen-rollback
+       ```
+
+    3. **O revertir** a commit específico (completo)
+       ```bash
+       make gen-rollback-commit COMMIT=9220122
        ```
     </Steps>
   </TabItem>

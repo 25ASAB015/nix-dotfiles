@@ -653,8 +653,11 @@ make sys-apply-fast
 ### Comandos de Rollback
 
 ```bash
-# Revertir a generación anterior
+# Revertir a generación anterior (rápido)
 make gen-rollback
+
+# Revertir a commit específico (completo)
+make gen-rollback-commit COMMIT=9220122
 
 # Ver todas las generaciones
 make gen-list
