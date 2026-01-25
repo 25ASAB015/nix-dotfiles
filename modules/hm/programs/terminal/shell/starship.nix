@@ -57,9 +57,9 @@ in {
         git_status = {
           format = "[$all_status]($style)";
           style = "cyan";
-          ahead = "⇡${count} ";
-          diverged = "⇕⇡${ahead_count}⇣${behind_count} ";
-          behind = "⇣${count} ";
+          ahead = "⇡''${count} ";
+          diverged = "⇕⇡''${ahead_count}⇣''${behind_count} ";
+          behind = "⇣''${count} ";
           conflicted = " ";
           up_to_date = " ";
           untracked = "? ";
