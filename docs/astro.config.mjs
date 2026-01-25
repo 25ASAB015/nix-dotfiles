@@ -32,6 +32,7 @@ export default defineConfig({
 					{ label: 'Browsers', slug: 'browsers' },
 					{ label: 'Terminal', slug: 'terminal' },
 					{ label: 'Fish Shell', slug: 'fish-shell' },
+					{ label: 'Zsh Shell', slug: 'zsh-shell' },
 					{ label: 'Neovim', slug: 'neovim' },
 					{ label: 'Editores de Código', slug: 'editors' },
 					{ label: 'AI', slug: 'ai' },
