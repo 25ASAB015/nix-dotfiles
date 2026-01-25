@@ -34,7 +34,7 @@ help: ## Show this help message
 		print_cat("Gestión del Sistema (Rebuild/Switch)", "sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-fix-git sys-hw-scan sys-deploy"); \
 		print_cat("Limpieza y Optimización", "sys-gc sys-purge sys-optimize sys-clean-result sys-fix-store"); \
 		print_cat("Actualizaciones y Flakes", "upd-all upd-nixpkgs upd-hydenix upd-input upd-diff upd-upgrade upd-show upd-check"); \
-		print_cat("Generaciones y Rollback", "gen-list gen-rollback gen-diff gen-diff-current gen-sizes gen-current"); \
+		print_cat("Generaciones y Rollback", "gen-list gen-rollback gen-rollback-commit gen-diff gen-diff-current gen-sizes gen-current"); \
 		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff git-log"); \
 		print_cat("Diagnóstico y Logs", "sys-status log-net log-watch log-boot log-err log-svc"); \
 		print_cat("Análisis y Desarrollo", "dev-hosts dev-search dev-search-inst dev-repl dev-shell dev-vm dev-size"); \
@@ -43,7 +43,7 @@ help: ## Show this help message
 		printf "  • Flujo Pro:          make fmt-check → make sys-check → make sys-apply\n"; \
 		printf "  • Updates seguros:    make upd-all → make upd-diff → make sys-check → make sys-apply\n"; \
 		printf "  • Mantenimiento:      make sys-status → make sys-gc → make sys-optimize\n"; \
-		printf "  • Recuperación:       make gen-list → make gen-rollback\n"; \
+		printf "  • Recuperación:       make gen-list → make gen-rollback (o gen-rollback-commit COMMIT=xxx)\n"; \
 		printf "\nAyuda rápida: make help | make help-examples | make help-aliases | less README.md\n\n"; \
 	}' $(MAKEFILE_LIST)
 
@@ -76,6 +76,9 @@ help-examples: ## Show commands with usage examples
 	@printf "$(GREEN)═══ 💾 Generations ═══$(NC)\n"
 	@printf "$(BLUE)gen-diff GEN1=<n> GEN2=<m>$(NC)\n"
 	@printf "  → make gen-diff GEN1=184 GEN2=186\n\n"
+	@printf "$(BLUE)gen-rollback-commit COMMIT=<hash>$(NC)\n"
+	@printf "  → make gen-rollback-commit COMMIT=9220122\n"
+	@printf "  → make gen-rollback-commit COMMIT=9220122face1b1f71f0cf9b1fcc8536fa0cd2842\n\n"
 	@printf "$(GREEN)═══ 📋 Logs & Monitoring ═══$(NC)\n"
 	@printf "$(BLUE)log-svc SVC=<service>$(NC)\n"
 	@printf "  → make log-svc SVC=sshd\n"

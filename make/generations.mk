@@ -2,7 +2,7 @@
 # Generaciones y Rollback
 # ============================================================================
 # Descripción: Targets para gestionar generaciones del sistema y rollback
-# Targets: 6 targets
+# Targets: 7 targets
 # ============================================================================
 
 .PHONY: gen-list gen-rollback gen-rollback-commit gen-diff gen-diff-current gen-sizes gen-current
