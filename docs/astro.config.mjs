@@ -30,9 +30,15 @@ export default defineConfig({
 						},
 					{ label: 'The Applications', slug: 'the-applications' },
 					{ label: 'Browsers', slug: 'browsers' },
-					{ label: 'Terminal', slug: 'terminal' },
-					{ label: 'Fish Shell', slug: 'fish-shell' },
-					{ label: 'Zsh Shell', slug: 'zsh-shell' },
+					{
+						label: 'Terminal & Shells',
+						collapsed: false,
+						items: [
+							{ label: 'Overview', slug: 'terminal' },
+							{ label: 'Fish Shell', slug: 'terminal/01-fish-shell' },
+							{ label: 'Zsh Shell', slug: 'terminal/02-zsh-shell' },
+						],
+					},
 					{ label: 'Neovim', slug: 'neovim' },
 					{ label: 'Editores de Código', slug: 'editors' },
 					{ label: 'AI', slug: 'ai' },

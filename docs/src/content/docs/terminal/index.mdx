@@ -1,0 +1,66 @@
+---
+title: Terminal & Shells
+description: Documentación completa de shells y configuración de terminal
+---
+
+import { CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
+
+# Terminal & Shells
+
+Esta sección documenta la configuración de shells y herramientas de terminal en Hydenix.
+
+## 🐚 Shells Disponibles
+
+<CardGrid>
+  <LinkCard
+    title="🐟 Fish Shell"
+    description="Shell moderno con autocompletado inteligente, plugins y prompt de omarchy"
+    href="./01-fish-shell"
+  />
+  
+  <LinkCard
+    title="🐚 Zsh Shell"
+    description="Shell potente con Hydenix, plugins Oh My Zsh y Starship prompt"
+    href="./02-zsh-shell"
+  />
+</CardGrid>
+
+## 🎯 Características Principales
+
+### Fish Shell
+- **Prompt**: Starship (basado en omarchy)
+- **Plugins**: autopair, done, bass, plugin-git, sudope, fifc, grc, puffer
+- **Keybindings**: Vi mode con personalizaciones
+- **Funciones**: fcd, installed, installedall, fm, gitgrep
+- **Aliases**: Organizados por categorías (NixOS, Git, Navegación, etc.)
+
+### Zsh Shell
+- **Prompt**: Starship (configurado por Hydenix)
+- **Plugins**: sudo, zoxide, git, fzf, direnv
+- **Configuración**: Hydenix + `.zshrc_extra` para personalizaciones
+- **Aliases**: Editor, Git, Docker, Visualización, ROS
+
+## 🔧 Herramientas Compartidas
+
+Ambos shells comparten integraciones con:
+
+- **Starship**: Prompt rápido y personalizable
+- **Direnv**: Carga automática de entornos
+- **Zoxide**: Navegación inteligente de directorios
+- **fzf**: Fuzzy finder para búsqueda interactiva
+- **Carapace**: Autocompletado multi-shell
+
+<Aside type="tip" title="Elegir un Shell">
+- **Fish**: Ideal para usuarios que buscan un shell moderno con configuración mínima
+- **Zsh**: Perfecto si prefieres compatibilidad con bash y ecosistema Oh My Zsh
+</Aside>
+
+## 📚 Documentación por Shell
+
+Cada shell tiene su propia documentación completa con:
+- Configuración y habilitación
+- Plugins y características
+- Aliases y funciones organizados en tablas
+- Guías de personalización
+- Integraciones disponibles
+
