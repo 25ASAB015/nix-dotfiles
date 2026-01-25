@@ -11,7 +11,7 @@
     ./document-viewers # Document viewers (Zathura for PDF/LaTeX)
     ./editors           # Editors (vscode, cursor, antigravity)
     ./ai-assistants     # AI Assistants (opencode)
-    # ./media         # Future: Media apps (vlc, mpv, spotify)
+    ./media             # Media apps (OBS Studio, vlc, mpv, spotify)
   ];
 }
 

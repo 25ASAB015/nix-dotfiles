@@ -363,5 +363,16 @@
   # Integrado con Neovim/VimTeX para desarrollo LaTeX
   # Documentación: https://pwmt.org/projects/zathura/
   modules.document-viewers.zathura.enable = true;
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # OBS STUDIO - Software de grabación y streaming
+  # ════════════════════════════════════════════════════════════════════════════
+  # Incluye plugins para Wayland/Hyprland:
+  # - wlrobs: Captura de pantalla en Wayland
+  # - obs-pipewire-audio-capture: Captura de audio con PipeWire
+  # - looking-glass-obs: Integración con Looking Glass (VM passthrough)
+  # - hypr-obs-mouse-follow: Script Lua para seguir el cursor en Hyprland
+  # Documentación: https://obsproject.com/
+  modules.media.obs.enable = true;
 }
 
