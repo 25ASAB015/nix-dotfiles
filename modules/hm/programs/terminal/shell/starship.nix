@@ -36,9 +36,7 @@ in {
         scan_timeout = 5;
         command_timeout = 500;
 
-        format = ''
-          $status$username$hostname$directory$git_branch$git_status$cmd_duration$nix_shell
-          $character'';
+        format = "$status$username$hostname$directory$git_branch$git_status$cmd_duration$nix_shell\n$character";
 
         status = {
           disabled = false;
@@ -101,6 +99,10 @@ in {
           ahead = "[↑]";
           behind = "[↓]";
           diverged = "[↕]";
+          conflicted = "[~]";
+          up_to_date = "";
+          behind_count = true;
+          ahead_count = true;
         };
 
         cmd_duration = {
@@ -151,9 +153,15 @@ in {
         text = ''
           # Configurar Starship para usar archivo específico de Fish
           # zsh usa starship.toml de Hydenix, Fish usa fish.toml
+          # IMPORTANTE: Configurar antes de inicializar starship
           set -gx STARSHIP_CONFIG "${config.xdg.configHome}/${configFile}"
           set -gx STARSHIP_LOG "error"
-          starship init fish | source
+          set -gx STARSHIP_CACHE "${config.xdg.cacheHome}/starship"
+          
+          # Inicializar starship
+          if type -q starship
+            starship init fish | source
+          end
         '';
       };
 
