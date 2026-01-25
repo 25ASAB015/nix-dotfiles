@@ -36,7 +36,9 @@ in {
         scan_timeout = 5;
         command_timeout = 500;
 
-        format = "$status$username$hostname$directory$git_branch$git_status$cmd_duration$nix_shell\n$character";
+        format = ''
+          $status$username$hostname$directory$git_branch$git_status$cmd_duration$nix_shell
+          $character'';
 
         status = {
           disabled = false;
