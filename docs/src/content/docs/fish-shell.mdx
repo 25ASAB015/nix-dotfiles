@@ -120,117 +120,101 @@ set -g __done_min_cmd_duration 10000  # Duración mínima para notificación (10
 set -g sudope_sequence \cs      # Keybinding para sudope (Ctrl+S)
 ```
 
-## Funciones Personalizadas
+## 📋 Referencia Rápida: Funciones, Aliases y Abbreviations
 
-### `fcd` - Navegar a directorio con fuzzy finder
+### 🔧 Funciones Personalizadas
 
-Navega a un directorio usando `fd` y `sk` (skim):
+Las funciones personalizadas están disponibles directamente en tu shell:
 
+| Función | Descripción | Uso |
+|---------|-------------|-----|
+| **`fcd`** | Navegar a directorio con fuzzy finder | `fcd`<br/>Busca todos los directorios con `fd` y te permite seleccionar uno con `sk` |
+| **`installed`** | Ver paquetes instalados en el sistema | `installed`<br/>Lista solo los nombres de paquetes (sin paths) |
+| **`installedall`** | Ver todos los paquetes con path completo | `installedall`<br/>Lista paquetes con su ruta completa y copia al portapapeles |
+| **`fm`** | File manager con Yazi | `fm [directorio]`<br/>Abre Yazi y cambia al directorio seleccionado al salir |
+| **`gitgrep`** | Buscar en archivos tracked por Git | `gitgrep "patrón"`<br/>Equivalente a `git ls-files \| rg patrón` |
+
+### ⚡ Abbreviations
+
+Las abbreviations se expanden automáticamente al presionar **espacio**:
+
+| Abbreviation | Se expande a | Descripción |
+|--------------|--------------|-------------|
+| **`z`** | `zoxide query` | Navegar a directorio frecuente |
+| **`zi`** | `zoxide query -i` | Navegar a directorio (modo interactivo) |
+
+**Ejemplo de uso:**
 ```fish
-fcd
+# Escribe "z pro" y presiona espacio
+z pro  # Se expande a: zoxide query pro
 ```
 
-Busca todos los directorios y te permite seleccionar uno para cambiar.
+### 🎯 Aliases por Categoría
 
-### `installed` - Ver paquetes instalados
+#### 📦 NixOS - Mantenimiento del Sistema
 
-Lista los paquetes instalados en el sistema (solo nombres):
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`cleanup`** | `sudo nix-collect-garbage --delete-older-than 1d` | Elimina generaciones más antiguas de 1 día |
+| **`listgen`** | `sudo nix-env -p /nix/var/nix/profiles/system --list-generations` | Lista todas las generaciones del sistema |
+| **`nixremove`** | `nix-store --gc` | Ejecuta garbage collection del nix store |
+| **`bloat`** | `nix path-info -Sh /run/current-system` | Muestra el tamaño del sistema actual |
+| **`cleanram`** | `sudo sh -c 'sync; echo 3 > /proc/sys/vm/drop_caches'` | Limpia la caché de RAM |
+| **`trimall`** | `sudo fstrim -va` | Ejecuta TRIM en todos los sistemas de archivos |
 
-```fish
-installed
-```
+#### 🔨 NixOS - Rebuild
 
-Muestra una lista de paquetes instalados usando `sk` para búsqueda.
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`test-build`** | `sudo nixos-rebuild test --flake .#hydenix` | Prueba la configuración sin aplicarla |
+| **`switch-build`** | `sudo nixos-rebuild switch --flake .#hydenix` | Aplica la configuración permanentemente |
 
-### `installedall` - Ver todos los paquetes con path completo
+> **Nota**: El host (`hydenix`) se configura en `hydenix-config.nix`. Si cambias el host, estos aliases usarán el nuevo valor automáticamente.
 
-Lista todos los paquetes con su path completo y copia al portapapeles:
+#### 🗂️ Navegación y Terminal
 
-```fish
-installedall
-```
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`c`** | `clear` | Limpia la pantalla del terminal |
+| **`q`** | `exit` | Sale del shell |
+| **`temp`** | `cd /tmp/` | Cambia al directorio temporal |
 
-Útil para ver la ruta completa de un paquete en el nix store.
+#### 🔀 Git
 
-### `fm` - File manager con Yazi
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`add`** | `git add .` | Agrega todos los archivos al staging |
+| **`commit`** | `git commit` | Crea un commit (abre editor) |
+| **`push`** | `git push` | Envía commits al remoto |
+| **`pull`** | `git pull` | Obtiene cambios del remoto |
+| **`diff`** | `git diff --staged` | Muestra diferencias de archivos staged |
+| **`gcld`** | `git clone --depth 1` | Clona un repositorio (shallow clone) |
+| **`gitui`** | `lazygit` | Abre interfaz TUI de Git |
 
-Abre Yazi y cambia al directorio seleccionado al salir:
+#### 🛠️ Herramientas Mejoradas
 
-```fish
-fm [directorio]
-```
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`l`** | `eza -lF --time-style=long-iso --icons` | Lista archivos con formato largo e iconos |
+| **`ll`** | `eza -h --git --icons --color=auto --group-directories-first -s extension` | Lista detallada con Git info y agrupación |
+| **`tree`** | `eza --tree --icons --tree` | Muestra estructura de directorios en árbol |
+| **`cat`** | `bat --paging=never` | Muestra archivos con syntax highlighting |
+| **`moon`** | `curl -s wttr.in/Moon` | Muestra información de la luna |
+| **`weather`** | `curl -s wttr.in` | Muestra el clima actual |
+| **`store-path`** | `readlink (which $argv)` | Muestra la ruta del store de Nix para un comando |
 
-Si no especificas directorio, abre en el directorio actual.
+#### ⚙️ Systemd
 
-### `gitgrep` - Buscar en archivos tracked por Git
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`us`** | `systemctl --user` | Gestiona servicios de usuario |
+| **`rs`** | `sudo systemctl` | Gestiona servicios del sistema (requiere sudo) |
 
-Busca en archivos que están siendo tracked por Git:
+#### 📱 Aplicaciones
 
-```fish
-gitgrep "patrón"
-```
-
-Equivalente a `git ls-files | rg patrón`.
-
-## Abbreviations
-
-Las abbreviations se expanden automáticamente al presionar espacio:
-
-- **`z`**: Se expande a `zoxide query`
-- **`zi`**: Se expande a `zoxide query -i` (interactivo)
-
-## Aliases
-
-### NixOS - Mantenimiento
-
-- **`cleanup`**: `sudo nix-collect-garbage --delete-older-than 1d`
-- **`listgen`**: `sudo nix-env -p /nix/var/nix/profiles/system --list-generations`
-- **`nixremove`**: `nix-store --gc`
-- **`bloat`**: `nix path-info -Sh /run/current-system`
-- **`cleanram`**: `sudo sh -c 'sync; echo 3 > /proc/sys/vm/drop_caches'`
-- **`trimall`**: `sudo fstrim -va`
-
-### Navegación
-
-- **`c`**: `clear`
-- **`q`**: `exit`
-- **`temp`**: `cd /tmp/`
-
-### NixOS Rebuild
-
-- **`test-build`**: `sudo nixos-rebuild test --flake .#hydenix`
-- **`switch-build`**: `sudo nixos-rebuild switch --flake .#hydenix`
-
-El host (`hydenix`) se configura en `hydenix-config.nix`.
-
-### Git
-
-- **`add`**: `git add .`
-- **`commit`**: `git commit`
-- **`push`**: `git push`
-- **`pull`**: `git pull`
-- **`diff`**: `git diff --staged`
-- **`gcld`**: `git clone --depth 1`
-- **`gitui`**: `lazygit`
-
-### Herramientas Mejoradas
-
-- **`l`**: `eza -lF --time-style=long-iso --icons`
-- **`ll`**: `eza -h --git --icons --color=auto --group-directories-first -s extension`
-- **`tree`**: `eza --tree --icons --tree`
-- **`cat`**: `bat --paging=never`
-- **`moon`**: `curl -s wttr.in/Moon`
-- **`weather`**: `curl -s wttr.in`
-- **`store-path`**: `readlink (which $argv)`
-
-### Systemd
-
-- **`us`**: `systemctl --user`
-- **`rs`**: `sudo systemctl`
-
-### Apps
-
-- **`zed`**: `zeditor` (Zed Editor)
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`zed`** | `zeditor` | Abre Zed Editor |
 
 ## Integraciones
 
