@@ -151,14 +151,9 @@ in {
       # ══════════════════════════════════════════════════════════════════════
       "fish/conf.d/starship.fish" = lib.mkIf cfg.enableFishIntegration {
         text = ''
-          # Configurar Starship para usar archivo específico de Fish
-          # zsh usa starship.toml de Hydenix, Fish usa fish.toml
-          # IMPORTANTE: Configurar antes de inicializar starship
-          set -gx STARSHIP_CONFIG "${config.xdg.configHome}/${configFile}"
-          set -gx STARSHIP_LOG "error"
-          set -gx STARSHIP_CACHE "${config.xdg.cacheHome}/starship"
-          
-          # Inicializar starship
+          # Inicializar Starship prompt
+          # Las variables de entorno (STARSHIP_CONFIG, etc.) se configuran en shellInit
+          # para asegurar que estén disponibles antes de inicializar
           if type -q starship
             starship init fish | source
           end

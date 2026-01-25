@@ -72,6 +72,12 @@ in
           set -gx EDITOR ${cfg.editor}
           set -gx VISUAL ${cfg.editor}
 
+          # Configurar Starship (antes de interactiveShellInit)
+          # Usar variables de entorno XDG que están disponibles en el shell
+          set -gx STARSHIP_CONFIG "$XDG_CONFIG_HOME/starship/fish.toml"
+          set -gx STARSHIP_LOG "error"
+          set -gx STARSHIP_CACHE "$XDG_CACHE_HOME/starship"
+
           # Desactivar mensaje de bienvenida
           set -g fish_greeting
         '';
