@@ -17,6 +17,7 @@
     
     # Other
     dropbox # Dropbox
+    just # Command runner (justfile)
     meld # Visual diff and merge tool
     unzip # Unzip utility
   ];
