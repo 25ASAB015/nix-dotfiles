@@ -5,7 +5,7 @@
 # Targets: 6 targets
 # ============================================================================
 
-.PHONY: gen-list gen-rollback gen-diff gen-diff-current gen-sizes gen-current
+.PHONY: gen-list gen-rollback gen-rollback-commit gen-diff gen-diff-current gen-sizes gen-current
 
 # === Gestión de Generaciones ===
 
@@ -42,6 +42,82 @@ gen-rollback: ## Rollback to previous generation
 		printf "$(BLUE)Sistema restaurado a la generación anterior.\n$(NC)"; \
 		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
 		printf "\n"; \
+	else \
+		printf "\n$(BLUE)ℹ️  Rollback cancelado. No se realizaron cambios.\n$(NC)\n"; \
+	fi
+
+# Rollback to a specific commit and rebuild system
+gen-rollback-commit: ## Rollback to specific commit and rebuild (use COMMIT=hash)
+	@if [ -z "$$(COMMIT)" ]; then \
+		printf "\n$(RED)Error: Se requiere el parámetro COMMIT$(NC)\n"; \
+		printf "Uso: make gen-rollback-commit COMMIT=9220122\n"; \
+		printf "     make gen-rollback-commit COMMIT=9220122face1b1f71f0cf9b1fcc8536fa0cd2842\n\n"; \
+		exit 1; \
+	fi
+	@printf "\n"
+	@printf "$(RED)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(RED)        ⏪ Rollback a Commit Específico y Rebuild        $(NC)"
+	@printf "\n$(RED)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)Verificando commit: $(YELLOW)$$(COMMIT)$(NC)\n"
+	@if ! git rev-parse --verify "$$(COMMIT)" >/dev/null 2>&1; then \
+		printf "$(RED)✗ Error: Commit '$$(COMMIT)' no encontrado$(NC)\n"; \
+		printf "$(YELLOW)Verifica que el commit existe con: git log --oneline | grep $$(COMMIT)$(NC)\n\n"; \
+		exit 1; \
+	fi
+	@COMMIT_FULL=$$(git rev-parse "$$(COMMIT)"); \
+	COMMIT_SHORT=$$(git rev-parse --short "$$(COMMIT)"); \
+	COMMIT_MSG=$$(git log -1 --format="%s" "$$(COMMIT)"); \
+	COMMIT_DATE=$$(git log -1 --format="%ci" "$$(COMMIT)"); \
+	printf "$(GREEN)✓ Commit encontrado:$(NC)\n"; \
+	printf "  $(CYAN)Hash completo:$(NC) $$COMMIT_FULL\n"; \
+	printf "  $(CYAN)Hash corto:$(NC) $$COMMIT_SHORT\n"; \
+	printf "  $(CYAN)Mensaje:$(NC) $$COMMIT_MSG\n"; \
+	printf "  $(CYAN)Fecha:$(NC) $$COMMIT_DATE\n\n"; \
+	printf "$(YELLOW)Cambios en este commit:$(NC)\n"; \
+	git show --stat "$$(COMMIT)" | head -20; \
+	printf "\n"; \
+	printf "$(RED)⚠️  ADVERTENCIA:$(NC)\n"; \
+	printf "$(YELLOW)  - Esto cambiará el HEAD del repositorio a este commit$(NC)\n"; \
+	printf "$(YELLOW)  - Se reconstruirá el sistema desde este commit$(NC)\n"; \
+	printf "$(YELLOW)  - Cualquier cambio sin commit se perderá$(NC)\n"; \
+	printf "$(YELLOW)  - Si tienes cambios sin guardar, usa 'git stash' primero$(NC)\n\n"; \
+	printf "$(RED)Escribe 'yes' para confirmar rollback: $(NC)"; \
+	read -r REPLY; \
+	if [ "$$REPLY" = "yes" ]; then \
+		printf "\n$(YELLOW)1/3 Guardando estado actual del repositorio...$(NC)\n"; \
+		CURRENT_BRANCH=$$(git branch --show-current 2>/dev/null || echo "detached"); \
+		CURRENT_COMMIT=$$(git rev-parse HEAD); \
+		printf "$(BLUE)   Branch actual: $(YELLOW)$$CURRENT_BRANCH$(NC)\n"; \
+		printf "$(BLUE)   Commit actual: $(YELLOW)$$(git rev-parse --short HEAD)$(NC)\n\n"; \
+		printf "$(YELLOW)2/3 Haciendo checkout al commit $$COMMIT_SHORT...$(NC)\n"; \
+		if git checkout "$$(COMMIT)" >/dev/null 2>&1; then \
+			printf "$(GREEN)   ✓ Checkout exitoso$(NC)\n\n"; \
+			printf "$(YELLOW)3/3 Reconstruyendo sistema desde este commit...$(NC)\n"; \
+			if $(MAKE) --no-print-directory sys-apply-core; then \
+				printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+				printf "$(GREEN)✅ Rollback completado exitosamente$(NC)\n"; \
+				printf "$(BLUE)Sistema reconstruido desde commit: $$COMMIT_SHORT$(NC)\n"; \
+				printf "$(BLUE)Mensaje: $$COMMIT_MSG$(NC)\n"; \
+				printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+				printf "\n$(YELLOW)Nota:$(NC) El repositorio está ahora en el commit $$COMMIT_SHORT\n"; \
+				printf "$(YELLOW)Para volver a main:$(NC) git checkout main\n"; \
+				printf "$(YELLOW)Para crear una rama:$(NC) git checkout -b rollback-$$COMMIT_SHORT\n\n"; \
+			else \
+				printf "\n$(RED)✗ Error al reconstruir el sistema$(NC)\n"; \
+				printf "$(YELLOW)Revirtiendo checkout...$(NC)\n"; \
+				git checkout "$$CURRENT_COMMIT" >/dev/null 2>&1; \
+				if [ "$$CURRENT_BRANCH" != "detached" ]; then \
+					git checkout "$$CURRENT_BRANCH" >/dev/null 2>&1; \
+				fi; \
+				printf "$(BLUE)Repositorio restaurado a estado anterior$(NC)\n\n"; \
+				exit 1; \
+			fi; \
+		else \
+			printf "$(RED)   ✗ Error al hacer checkout$(NC)\n"; \
+			printf "$(YELLOW)Verifica que no hay cambios sin commit: git status$(NC)\n\n"; \
+			exit 1; \
+		fi; \
 	else \
 		printf "\n$(BLUE)ℹ️  Rollback cancelado. No se realizaron cambios.\n$(NC)\n"; \
 	fi
