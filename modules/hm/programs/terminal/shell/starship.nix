@@ -1,7 +1,7 @@
 # Starship - Prompt para Fish (separado de zsh/Hydenix)
 # IMPORTANTE: Esta configuración es EXCLUSIVA para Fish shell.
 # No afecta la configuración de Starship de zsh/Hydenix.
-# Basado en kaku: /home/ludus/Work/kaku/home/terminal/shell/starship.nix
+# Basado en omarchy: /home/ludus/Work/omarchy/config/starship.toml
 {
   config,
   lib,
@@ -29,123 +29,46 @@ in {
 
     xdg.configFile = {
       # ══════════════════════════════════════════════════════════════════════
-      # Configuración de Starship EXCLUSIVA para Fish (formato de kaku)
+      # Configuración de Starship EXCLUSIVA para Fish (basada en omarchy)
       # ══════════════════════════════════════════════════════════════════════
       "${configFile}".source = toTOML "starship.toml" {
         add_newline = true;
-        scan_timeout = 5;
-        command_timeout = 500;
+        command_timeout = 200;
 
-        format = ''
-          $status$username$hostname$directory$git_branch$git_status$cmd_duration$nix_shell
-          $character'';
-
-        status = {
-          disabled = false;
-          format = "[$symbol](bold $style) ";
-          symbol = "│";
-          success_symbol = "[│](bold white)";
-          style = "red";
-          map_symbol = false;
-          recognize_signal_code = false;
-          pipestatus = false;
-        };
+        format = "[$directory$git_branch$git_status]($style)$character";
 
         character = {
-          format = "$symbol";
-          success_symbol = "[│](bold white) ";
-          error_symbol = "[│](bold red) ";
-          vicmd_symbol = "[│](bold green) ";
-        };
-
-        jobs.disabled = true;
-
-        username = {
-          format = "[$user]($style)@";
-          style_user = "bold yellow";
-          style_root = "bold red";
-          show_always = false;
-        };
-
-        hostname = {
-          format = "[$hostname]($style) ";
-          style = "bold yellow";
-          ssh_only = true;
+          error_symbol = "[✗](bold cyan)";
+          success_symbol = "[❯](bold cyan)";
         };
 
         directory = {
-          format = "[$path]($style)";
-          style = "cyan";
-          truncation_length = 1;
-          truncation_symbol = "";
-          home_symbol = "~";
-          repo_root_format = "[$repo_root]($repo_root_style)";
-          repo_root_style = "bold white";
+          truncation_length = 2;
+          truncation_symbol = "…/";
+          repo_root_style = "bold cyan";
+          repo_root_format = "[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) ";
         };
 
         git_branch = {
-          format = " [$branch]($style)";
-          style = "green";
-          symbol = "";
+          format = "[$branch]($style) ";
+          style = "italic cyan";
         };
 
         git_status = {
-          format = " [$all_status$ahead_behind]($style)";
-          style = "yellow";
-          untracked = "[?]";
-          modified = "[!]";
-          staged = "[+]";
-          deleted = "[x]";
-          renamed = "[»]";
+          format = "[$all_status]($style)";
+          style = "cyan";
+          ahead = "⇡${count} ";
+          diverged = "⇕⇡${ahead_count}⇣${behind_count} ";
+          behind = "⇣${count} ";
+          conflicted = " ";
+          up_to_date = " ";
+          untracked = "? ";
+          modified = " ";
           stashed = "";
-          ahead = "[↑]";
-          behind = "[↓]";
-          diverged = "[↕]";
-          conflicted = "[~]";
-          up_to_date = "";
-          behind_count = true;
-          ahead_count = true;
+          staged = "";
+          renamed = "";
+          deleted = "";
         };
-
-        cmd_duration = {
-          format = " [$duration]($style)";
-          style = "yellow";
-          min_time = 2000;
-          show_milliseconds = true;
-        };
-
-        nix_shell = {
-          disabled = false;
-          heuristic = false;
-          format = " [nix]($style)";
-          style = "bold blue";
-          impure_msg = "";
-          pure_msg = "";
-          unknown_msg = "";
-        };
-
-        aws.disabled = true;
-        gcloud.disabled = true;
-        nodejs.disabled = true;
-        ruby.disabled = true;
-        python.disabled = true;
-        rust.disabled = true;
-        golang.disabled = true;
-        java.disabled = true;
-        kotlin.disabled = true;
-        lua.disabled = true;
-        perl.disabled = true;
-        php.disabled = true;
-        swift.disabled = true;
-        terraform.disabled = true;
-        zig.disabled = true;
-        package.disabled = true;
-        conda.disabled = true;
-        docker_context.disabled = true;
-        kubernetes.disabled = true;
-        helm.disabled = true;
-        battery.disabled = true;
-        time.disabled = true;
       };
 
       # ══════════════════════════════════════════════════════════════════════
