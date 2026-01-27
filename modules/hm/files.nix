@@ -17,10 +17,10 @@ in {
     };
 
     ".config/hypr/keybindings.conf" = lib.mkForce {
-      source = mkSymlink "${dotfilesDir}/resources/config/keybinds.conf";
+      source = mkSymlink "${dotfilesDir}/resources/config/hypr/keybinds.conf";
     };
     ".config/hypr/monitors.conf" = lib.mkForce {
-      source = mkSymlink "${dotfilesDir}/resources/config/monitors.conf";
+      source = mkSymlink "${dotfilesDir}/resources/config/hypr/monitors.conf";
       force = true;
     };
     ".config/neovide/config.toml" = lib.mkForce {

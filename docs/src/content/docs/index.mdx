@@ -129,10 +129,10 @@ Key entry points:
 
 Some configs are intended to be edited directly without rebuild:
 
-- Keybinds: `resources/config/keybinds.conf`
+- Keybinds: `resources/config/hypr/keybinds.conf`
 - Scripts: `resources/scripts/*.sh`
 - Kitty: `resources/config/kitty.conf`
-- Monitors: `resources/config/monitors.conf`
+- Monitors: `resources/config/hypr/monitors.conf`
 
 After the first `make sys-apply`, edits in `resources/` take effect immediately (no rebuild).
 
@@ -141,7 +141,7 @@ After the first `make sys-apply`, edits in `resources/` take effect immediately 
 Main keybinds are defined in:
 
 ```
-resources/config/keybinds.conf
+resources/config/hypr/keybinds.conf
 ```
 
 Script launcher reads from:
@@ -190,10 +190,10 @@ make sys-debug
 
 ## 11. Customization checklist
 
-- Edit `resources/config/keybinds.conf`
+- Edit `resources/config/hypr/keybinds.conf`
 - Add scripts in `resources/scripts/`
 - Update terminal settings in `resources/config/kitty.conf`
-- Update monitor layout in `resources/config/monitors.conf`
+- Update monitor layout in `resources/config/hypr/monitors.conf`
 
 ## 12. Glossary
 
