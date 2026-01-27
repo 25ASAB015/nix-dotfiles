@@ -19,6 +19,9 @@ in {
     ".config/hypr/keybindings.conf" = lib.mkForce {
       source = mkSymlink "${dotfilesDir}/resources/config/keybinds.conf";
     };
+    ".config/hypr/monitors.conf" = lib.mkForce {
+      source = mkSymlink "${dotfilesDir}/resources/config/monitors.conf";
+    };
     ".config/neovide/config.toml" = lib.mkForce {
       source = mkSymlink "${dotfilesDir}/resources/config/neovide/config.toml";
     };

@@ -6,14 +6,6 @@
 flake_dir := "."
 hostname := env_var_or_default("HOSTNAME", "hydenix")
 
-# Variables de color (definidas una sola vez)
-red := '\033[0;31m'
-green := '\033[0;32m'
-yellow := '\033[0;33m'
-blue := '\033[0;34m'
-cyan := '\033[0;36m'
-nc := '\033[0m'
-
 # ============================================================================
 # COMANDOS PRINCIPALES
 # ============================================================================
@@ -24,7 +16,9 @@ nc := '\033[0m'
 
 # Deployment completo: permisos → git → build
 @sync: doctor fix-git stage commit push apply
-    echo "{{green}}✅ Deployment completo exitoso{{nc}}"
+    #!/usr/bin/env bash
+    source .just-helpers.sh
+    printf "${GREEN}✅ Deployment completo exitoso${NC}\n"
 
 # Alias para sync
 alias deploy := sync
@@ -35,23 +29,26 @@ alias deploy := sync
 
 # Build y activa nueva configuración
 @apply: fix-git
-    echo "{{cyan}}🔄 Aplicando configuración NixOS...{{nc}}"
+    #!/usr/bin/env bash
+    source .just-helpers.sh
+    printf "${CYAN}🔄 Aplicando configuración NixOS...${NC}\n"
     git add .
     sudo nixos-rebuild switch --flake {{flake_dir}}#{{hostname}}
-    echo "{{green}}✅ Configuración aplicada{{nc}}"
+    printf "${GREEN}✅ Configuración aplicada${NC}\n"
 
 # Corrige permisos en directorios de usuario
 @doctor:
     #!/usr/bin/env bash
-    echo "{{cyan}}👨‍⚕️ Verificando permisos...{{nc}}"
+    source .just-helpers.sh
+    printf "${CYAN}👨‍⚕️ Verificando permisos...${NC}\n"
     fix_permissions() {
         local dir=$1
         if [ -d "$dir" ]; then
             if find "$dir" -maxdepth 1 -not -user $USER 2>/dev/null | grep -q .; then
-                echo -n "  Corrigiendo $dir... "
-                sudo chown -R $USER:users "$dir" && echo "{{green}}✓{{nc}}" || echo "{{red}}✗{{nc}}"
+                printf "  Corrigiendo $dir... "
+                sudo chown -R $USER:users "$dir" && printf "${GREEN}✓${NC}\n" || printf "${RED}✗${NC}\n"
             else
-                echo "  $dir {{green}}✓{{nc}}"
+                printf "  $dir ${GREEN}✓${NC}\n"
             fi
         fi
     }
@@ -61,10 +58,11 @@ alias deploy := sync
 # Corrige permisos del repositorio git
 @fix-git:
     #!/usr/bin/env bash
+    source .just-helpers.sh
     if [ -d "{{flake_dir}}/.git/objects" ]; then
         if find "{{flake_dir}}/.git/objects" -maxdepth 2 -type d -not -user $USER 2>/dev/null | grep -q .; then
-            echo -n "{{yellow}}Corrigiendo permisos de git...{{nc}} "
-            sudo chown -R $USER:users "{{flake_dir}}/.git" && echo "{{green}}✓{{nc}}" || echo "{{red}}✗{{nc}}"
+            printf "${YELLOW}Corrigiendo permisos de git...${NC} "
+            sudo chown -R $USER:users "{{flake_dir}}/.git" && printf "${GREEN}✓${NC}\n" || printf "${RED}✗${NC}\n"
         fi
     fi
 
@@ -75,43 +73,48 @@ alias deploy := sync
 # Prepara todos los cambios
 @stage:
     #!/usr/bin/env bash
+    source .just-helpers.sh
     if [ -n "$(git status --porcelain)" ]; then
         git add .
         count=$(git status --short | wc -l)
-        echo "{{green}}✓{{nc}} Staged $count archivo(s)"
+        printf "${GREEN}✓${NC} Staged $count archivo(s)\n"
     else
-        echo "{{yellow}}⚠{{nc}}  Sin cambios"
+        printf "${YELLOW}⚠${NC}  Sin cambios\n"
     fi
 
 # Commit con timestamp
 @commit:
     #!/usr/bin/env bash
+    source .just-helpers.sh
     if [ -n "$(git status --porcelain)" ]; then
         git add .
         msg="config: update $(date '+%Y-%m-%d %H:%M:%S')"
         git commit -m "$msg"
-        echo "{{green}}✓{{nc}} Commit: $(git rev-parse --short HEAD)"
+        printf "${GREEN}✓${NC} Commit: %s\n" "$(git rev-parse --short HEAD)"
     else
-        echo "{{yellow}}⚠{{nc}}  Sin cambios para commit"
+        printf "${YELLOW}⚠${NC}  Sin cambios para commit\n"
     fi
 
 # Push a remote
 @push:
     #!/usr/bin/env bash
+    source .just-helpers.sh
     branch=$(git branch --show-current)
     unpushed=$(git log origin/$branch..HEAD --oneline 2>/dev/null | wc -l || echo 0)
     if [ $unpushed -gt 0 ]; then
         git push
-        echo "{{green}}✓{{nc}} Pushed $unpushed commit(s) a $branch"
+        printf "${GREEN}✓${NC} Pushed $unpushed commit(s) a $branch\n"
     else
-        echo "{{yellow}}⚠{{nc}}  Todo actualizado"
+        printf "${YELLOW}⚠${NC}  Todo actualizado\n"
     fi
 
 # Commit con mensaje personalizado
 @commit-msg msg:
+    #!/usr/bin/env bash
+    source .just-helpers.sh
     git add .
     git commit -m "{{msg}}"
-    echo "{{green}}✓{{nc}} Commit: {{msg}}"
+    printf "${GREEN}✓${NC} Commit: {{msg}}\n"
 
 # ============================================================================
 # UTILIDADES
@@ -120,9 +123,7 @@ alias deploy := sync
 # Muestra el estado del sistema
 @status:
     #!/usr/bin/env bash
-    CYAN=$'\033[0;36m'
-    BLUE=$'\033[0;34m'
-    NC=$'\033[0m'
+    source .just-helpers.sh
     printf "${CYAN}📊 Estado del sistema${NC}\n\n"
     printf "${BLUE}Git:${NC}\n"
     git status --short --branch
@@ -135,21 +136,24 @@ alias deploy := sync
 
 # Limpia generaciones antiguas de NixOS
 @clean:
-    echo "{{yellow}}🗑️  Limpiando generaciones antiguas...{{nc}}"
+    #!/usr/bin/env bash
+    source .just-helpers.sh
+    printf "${YELLOW}🗑️  Limpiando generaciones antiguas...${NC}\n"
     sudo nix-collect-garbage --delete-old
-    echo "{{green}}✓{{nc}} Limpieza completa"
+    printf "${GREEN}✓${NC} Limpieza completa\n"
 
 # Actualiza flake inputs
 @update:
-    echo "{{cyan}}⬆️  Actualizando flake inputs...{{nc}}"
+    #!/usr/bin/env bash
+    source .just-helpers.sh
+    printf "${CYAN}⬆️  Actualizando flake inputs...${NC}\n"
     nix flake update
-    echo "{{green}}✓{{nc}} Flake actualizado"
+    printf "${GREEN}✓${NC} Flake actualizado\n"
 
 # Verifica la configuración sin aplicar
 @check:
     #!/usr/bin/env bash
-    CYAN=$'\033[0;36m'
-    NC=$'\033[0m'
+    source .just-helpers.sh
     printf "${CYAN}🔍 Verificando configuración...${NC}\n"
     nixos-rebuild dry-build --flake {{flake_dir}}#{{hostname}}
 
@@ -159,10 +163,12 @@ alias deploy := sync
 
 # Formatea archivos Nix (deshabilitado temporalmente)
 @fmt:
-    echo "{{yellow}}⚠{{nc}}  Formateo deshabilitado temporalmente"
-    # echo "{{cyan}}✨ Formateando código Nix...{{nc}}"
+    #!/usr/bin/env bash
+    source .just-helpers.sh
+    printf "${YELLOW}⚠${NC}  Formateo deshabilitado temporalmente\n"
+    # printf "${CYAN}✨ Formateando código Nix...${NC}\n"
     # nix fmt
-    # echo "{{green}}✓{{nc}} Formato aplicado"
+    # printf "${GREEN}✓${NC} Formato aplicado\n"
 
 # Muestra el diff de la última generación
 @diff:
