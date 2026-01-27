@@ -21,6 +21,7 @@ in {
     };
     ".config/hypr/monitors.conf" = lib.mkForce {
       source = mkSymlink "${dotfilesDir}/resources/config/monitors.conf";
+      force = true;
     };
     ".config/neovide/config.toml" = lib.mkForce {
       source = mkSymlink "${dotfilesDir}/resources/config/neovide/config.toml";
