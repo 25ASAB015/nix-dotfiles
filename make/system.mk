@@ -2,10 +2,17 @@
 # Gestión del Sistema
 # ============================================================================
 # Descripción: Targets para rebuild, switch, validación y gestión del sistema
-# Targets: 14 targets
+# Targets: 16 targets
 # ============================================================================
 
-.PHONY: sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-doctor sys-fix-git sys-hw-scan sys-deploy
+.PHONY: sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-doctor sys-fix-git sys-hw-scan sys-deploy sys-copy-hw-config sys-apply-core
+
+# === Nix Performance Options ===
+NIX_OPTS = \
+	--option download-buffer-size 5245245245 \
+	--option http-connections 16 \
+	--option cores 0 \
+	--option max-jobs auto
 
 # === Operaciones del Sistema ===
 
@@ -29,7 +36,7 @@ sys-apply-core:
 	fi	
 	@printf "\n$(BLUE)===================================== Build =====================================\n$(NC)"
 	@printf "\n"
-	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
+	sudo nixos-rebuild switch $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 	@printf "\n$(BLUE)===================== ✅ Deployment completed successfully! =====================\n$(NC)"
 
 # Validate configuration and then apply (recommended safe workflow)
@@ -46,7 +53,7 @@ sys-apply-fast: ## Quick rebuild (skip checks)
 	@printf "$(YELLOW)⚠️  Este comando usa '--fast' para acelerar el proceso.\n$(NC)"
 	@printf "$(BLUE)Útil cuando estás seguro de tu configuración y necesitas velocidad.\n$(NC)"
 	@printf "\n"
-	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --fast
+	sudo nixos-rebuild switch $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME) --fast
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Switch rápido completado\n$(NC)"
 	@printf "$(BLUE)Configuración aplicada exitosamente\n$(NC)"
@@ -60,7 +67,7 @@ sys-test: ## Build and test configuration (no switch)
 	@printf "$(CYAN)            🧪 Test Configuration                  $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(YELLOW)🧪 Testing configuration (no switch)...\n$(NC)"
-	sudo nixos-rebuild test --flake $(FLAKE_DIR)#$(HOSTNAME)
+	sudo nixos-rebuild test $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 
 # Build configuration without activating it and show build statistics
 sys-build: ## Build configuration without switching
@@ -73,8 +80,8 @@ sys-build: ## Build configuration without switching
 	@printf "$(YELLOW)This will compile but not activate the new generation.$(NC)\n"
 	@printf "\n"
 	@START=$(date +%s); \
-	sudo nixos-rebuild build --flake $(FLAKE_DIR)#$(HOSTNAME); \
-	BUILD_EXIT=$?; \
+	sudo nixos-rebuild build $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME); \
+	BUILD_EXIT=$$?; \
 	END=$(date +%s); \
 	DURATION=$((END - START)); \
 	MINUTES=$((DURATION / 60)); \
@@ -122,7 +129,7 @@ sys-boot: ## Build and set as boot default (no immediate switch)
 	@printf "$(YELLOW)Los cambios se aplicarán al reiniciar el sistema.\n$(NC)"
 	@printf "$(YELLOW)La sesión actual no se verá afectada.\n$(NC)"
 	@printf "\n"
-	sudo nixos-rebuild boot --flake $(FLAKE_DIR)#$(HOSTNAME)
+	sudo nixos-rebuild boot $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Configuración preparada para próximo arranque\n$(NC)"
 	@printf "$(BLUE)Reinicia el sistema para aplicar los cambios.\n$(NC)"
@@ -158,7 +165,7 @@ sys-check: ## Validate configuration before applying
 			printf "$(GREEN)✓$(NC)\n"; \
 		else \
 			printf "$(YELLOW)⚠$(NC) (warnings found, see 'make fmt-lint')\n"; \
-		fi \
+		fi; \
 	else \
 		printf "$(YELLOW)⊘$(NC) (statix not installed)\n"; \
 	fi
@@ -174,7 +181,7 @@ sys-debug: ## Rebuild with verbose output and trace
 	@printf "$(CYAN)            🐛 Debug Rebuild (Verbose)             $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(RED)🐛 Debug rebuild with full trace...\n$(NC)"
-	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose
+	sudo nixos-rebuild switch $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose
 
 # Emergency rebuild with maximum debugging and cache disabled
 sys-force: ## Emergency rebuild with maximum verbosity
@@ -189,7 +196,11 @@ sys-force: ## Emergency rebuild with maximum verbosity
 	@printf "$(BLUE)Útil cuando el sistema no arranca o hay problemas críticos.\n$(NC)"
 	@printf "$(RED)⚠️  Este proceso puede tomar mucho más tiempo que un rebuild normal.\n$(NC)"
 	@printf "\n"
-	sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose --option eval-cache false
+	sudo nixos-rebuild switch \
+		$(NIX_OPTS) \
+		--option eval-cache false \
+		--flake $(FLAKE_DIR)#$(HOSTNAME) \
+		--show-trace --verbose
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Rebuild forzado completado\n$(NC)"
 	@printf "$(BLUE)Revisa el output arriba para diagnosticar problemas\n$(NC)"
@@ -224,6 +235,23 @@ sys-deploy: ## Total sync (doctor + add + commit + push + apply)
 
 # === Mantenimiento y Otros ===
 
+# Copy hardware configuration from /etc/nixos to Dotfiles
+sys-copy-hw-config: ## Copy hardware config to Dotfiles    
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            📋 Copy Hardware Config                $(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(BLUE)📋 Copying hardware configuration to Dotfiles...\n$(NC)"
+	@sudo cp /etc/nixos/hardware-configuration.nix $(FLAKE_DIR)/hardware-configuration.nix
+	@sudo chown $$USER:users $(FLAKE_DIR)/hardware-configuration.nix
+	@sudo cp /etc/nixos/configuration.nix $(FLAKE_DIR)/configuration.nix
+	@sudo chown $$USER:users $(FLAKE_DIR)/configuration.nix
+	@printf "$(GREEN)✅ Hardware config copied to $(FLAKE_DIR)/hardware-configuration.nix\n$(NC)"
+	@printf "$(GREEN)✅ User config copied to $(FLAKE_DIR)/configuration.nix\n$(NC)"
+	@printf "$(BLUE)📋 File permissions set to user: $$USER\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+
+
 # Generate new hardware configuration for the current hostname
 sys-hw-scan: ## Re-scan hardware configuration
 	@printf "\n"
@@ -250,9 +278,9 @@ sys-doctor: ## Fix common permission issues (doctor)
 	@printf "\n"
 	@printf "$(BLUE)1. Checking ~/.config permissions...$(NC) "
 	@if [ -d ~/.config ]; then \
-		if find ~/.config -maxdepth 1 -not -user $USER 2>/dev/null | grep -q .; then \
+		if find ~/.config -maxdepth 1 -not -user $$USER 2>/dev/null | grep -q .; then \
 			printf "$(YELLOW)(fixing...)$(NC) "; \
-			if sudo chown -R $USER:users ~/.config 2>/dev/null; then \
+			if sudo chown -R $$USER:users ~/.config 2>/dev/null; then \
 				printf "$(GREEN)✓ Fixed$(NC)\n"; \
 			else \
 				printf "$(RED)✗ Failed$(NC)\n"; \
@@ -265,9 +293,9 @@ sys-doctor: ## Fix common permission issues (doctor)
 	fi
 	@printf "$(BLUE)2. Checking ~/.local permissions...$(NC) "
 	@if [ -d ~/.local ]; then \
-		if find ~/.local -maxdepth 1 -not -user $USER 2>/dev/null | grep -q .; then \
+		if find ~/.local -maxdepth 1 -not -user $$USER 2>/dev/null | grep -q .; then \
 			printf "$(YELLOW)(fixing...)$(NC) "; \
-			if sudo chown -R $USER:users ~/.local 2>/dev/null; then \
+			if sudo chown -R $$USER:users ~/.local 2>/dev/null; then \
 				printf "$(GREEN)✓ Fixed$(NC)\n"; \
 			else \
 				printf "$(RED)✗ Failed$(NC)\n"; \
@@ -285,9 +313,9 @@ sys-fix-git: ## Fix git repo ownership issues in flake dir
 	@printf "$(CYAN)                              🔧 Fix Git Permissions                             $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \
-		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $USER 2>/dev/null | grep -q .; then \
+		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $$USER 2>/dev/null | grep -q .; then \
 			printf "  $(YELLOW)Fixing ownership in $(FLAKE_DIR)/.git...$(NC) "; \
-			if sudo chown -R $USER:users "$(FLAKE_DIR)/.git" 2>/dev/null; then \
+			if sudo chown -R $$USER:users "$(FLAKE_DIR)/.git" 2>/dev/null; then \
 				printf "\n"; \
 				printf "$(GREEN)✓$(NC)\n"; \
 			else \

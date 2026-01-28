@@ -16,7 +16,7 @@ La documentación del Makefile ha sido actualizada para reflejar los comandos ac
 - [Ayuda y Documentación](/nix-dotfiles/makefile/01-docs/) - `help`, `help-examples`, `help-aliases`, `docs-local`, `doc-dev`, `doc-build`, `doc-install`, `doc-clean`
 
 ### Gestión del Sistema (Rebuild/Switch)
-- [Gestión del Sistema](/nix-dotfiles/makefile/02-system/) - `sys-apply`, `sys-apply-safe`, `sys-apply-fast`, `sys-test`, `sys-build`, `sys-dry-run`, `sys-boot`, `sys-check`, `sys-debug`, `sys-force`, `sys-fix-git`, `sys-hw-scan`, `sys-deploy` (includes permission fix)
+- [Gestión del Sistema](/nix-dotfiles/makefile/02-system/) - `sys-apply`, `sys-apply-safe`, `sys-apply-fast`, `sys-test`, `sys-build`, `sys-dry-run`, `sys-boot`, `sys-check`, `sys-debug`, `sys-force`, `sys-fix-git`, `sys-doctor`, `sys-hw-scan`, `sys-copy-hw-config`, `sys-deploy`
 
 ### Limpieza y Optimización
 - [Limpieza y Optimización](/nix-dotfiles/makefile/03-cleanup/) - `sys-gc`, `sys-purge`, `sys-optimize`, `sys-clean-result`, `sys-fix-store`
@@ -2405,11 +2405,11 @@ El comando pedirá confirmación escribiendo "yes" exactamente. Esto previene ej
 <a id="cmd-hardware"></a>
 ### 🔩 Hardware
 
-#### `make hardware-scan`
+#### `make sys-hw-scan`
 Re-detecta hardware y genera nueva configuración.
 
 ```bash
-make hardware-scan
+make sys-hw-scan
 ```
 
 **Qué hace:**
@@ -2424,12 +2424,28 @@ make hardware-scan
 
 **Flujo:**
 ```bash
-make hardware-scan
-diff hardware-configuration.nix hardware-configuration-new.nix
+make sys-hw-scan
+diff hosts/HOSTNAME/hardware-configuration.nix hosts/HOSTNAME/hardware-configuration-new.nix
 # Revisa diferencias
-mv hardware-configuration-new.nix hardware-configuration.nix
+mv hosts/HOSTNAME/hardware-configuration-new.nix hosts/HOSTNAME/hardware-configuration.nix
 make sys-apply
 ```
+
+#### `make sys-copy-hw-config`
+Copia la configuración de hardware generada desde `/etc/nixos` hacia tus Dotfiles.
+
+```bash
+make sys-copy-hw-config
+```
+
+**Qué hace:**
+- ✅ Copia `/etc/nixos/hardware-configuration.nix` al directorio del flake
+- ✅ Copia `/etc/nixos/configuration.nix` al directorio del flake
+- ✅ Asigna permisos de usuario correctos
+
+**Cuándo usarlo:**
+- Inmediatamente después de una instalación fresca de NixOS
+- Cuando has generado una nueva configuración con `nixos-generate-config` manualmente
 
 ---
 
@@ -2983,27 +2999,21 @@ make closure-size
 <a id="cmd-quick-fixes"></a>
 ### 🛠️ Quick Fixes
 
-#### `make fix-permissions`
-Corrige problemas comunes de permisos en `~/.config` y `~/.local`.
+#### `make sys-doctor`
+Arregla problemas comunes de permisos en `~/.config` y `~/.local`.
 
 ```bash
-make fix-permissions
+make sys-doctor
 # ════════════════════════════════════════════════════════
-#           🔧 Fix Permissions                        
+#           👨‍⚕️ System Doctor (Permissions)        
 # ════════════════════════════════════════════════════════
 # 
 # Fixing common permission issues...
 # This requires sudo privileges.
 # 
-# 1. Fixing ~/.config permissions... ✓
-# 2. Fixing ~/.local permissions... ✓
-# 3. Fixing git repository permissions...
-#   ✓ Git permissions OK
-# 
-# ════════════════════════════════════════════════════════
-# ✅ Permissions fixed
-# Common permission issues have been resolved.
-# ════════════════════════════════════════════════════════
+# 1. Checking ~/.config permissions... ✓ OK
+# 2. Checking ~/.local permissions... ✓ OK
+# ✅ Doctor: Permissions fixed
 ```
 
 **Cuándo usarlo:**
@@ -3017,15 +3027,17 @@ make fix-permissions
 - Corrige permisos del repositorio git automáticamente
 - Muestra progreso paso a paso
 
-**Nota:** Este comando se ejecuta automáticamente en `make sys-apply` para prevenir problemas de permisos.
+**Nota:** Este comando se ejecuta automáticamente en `make sys-deploy` para prevenir problemas de permisos.
 
 ---
 
-#### `make fix-git-permissions`
+#### `make sys-fix-git`
 Corrige permisos de ownership dentro del repositorio git del flake.
 
 ```bash
-make fix-git-permissions
+make sys-fix-git
+#                              🔧 Fix Git Permissions                             
+# ═════════════════════════════════════════════════════════════════════════════════
 #   ✓ Git permissions OK
 # o
 #   Fixing ownership in /home/user/Dotfiles/.git... ✓
@@ -3041,7 +3053,7 @@ make fix-git-permissions
 - Solo corrige si es necesario (no hace cambios si todo está bien)
 - Maneja el caso cuando no hay repositorio git
 
-**Nota:** Este comando se ejecuta automáticamente en `make fix-permissions` y `make sys-apply`.
+**Nota:** Este comando se ejecuta automáticamente en `make sys-doctor` y `make sys-deploy`.
 
 ---
 
