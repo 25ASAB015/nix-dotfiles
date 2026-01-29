@@ -1,20 +1,52 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  # Hydenix NixOS Configuration
+  
+  ## Tech Stack
+  - OS: NixOS Unstable
+  - Language: Nix
+  - Package Management: Nix Flakes, Home Manager, Nix-Flatpak
+  - Shell: Fish/Zsh
+  - Editor: Neovim (Khanelivim), VSCode, Zed, Cursor
+  - Terminal: Ghostty, Kitty, Foot
+  - Automation: Makefile
+  
+  ## Architecture
+  - System config: configuration.nix, modules/system/
+  - User config: modules/hm/ (Home Manager)
+  - Documentation: docs/ (MUST stay in sync with code)
+  
+  ## Critical Constraints
+  - All bash scripts MUST use: #!/run/current-system/sw/bin/bash
+  - Use GitHub CLI (gh) for push/pull operations
+  - Documentation MUST be updated with code changes
+  - Make atomic commits, push immediately
+  - All code files need documentation header comments
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+rules:
+  proposal:
+    - State which modules/files will be affected
+    - Identify if this is system-wide or user-specific
+    - Consider impact on existing NixOS generations
+    - Include rollback plan
+    
+  specs:
+    - Use declarative Nix syntax examples
+    - Show module options and types
+    - Include Home Manager integration if applicable
+    - Document any required flake inputs
+    
+  design:
+    - Specify module location (modules/system/ or modules/hm/)
+    - Show NixOS module structure with options/config
+    - Include documentation file path (docs/)
+    - Note any dependencies on other modules
+    - Consider Nix evaluation order
+    
+  tasks:
+    - Each task = one atomic commit
+    - First task: Update/create module file
+    - Second task: Update/create documentation
+    - Third task: Update parent imports
+    - Final task: Test with 'make sys-build'
