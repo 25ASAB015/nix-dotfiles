@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/run/current-system/sw/bin/bash
 
 # Using upower to check if the system is charging
 status=$(upower -i $(upower -e | grep 'BAT') | grep "state" | awk '{print $2}')

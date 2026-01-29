@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/run/current-system/sw/bin/bash
 
 # Set custom weather location for Waybar
 CONFIG_FILE="$HOME/.config/.weather_location"

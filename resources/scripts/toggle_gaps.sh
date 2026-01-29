@@ -1,6 +1,13 @@
-#!/bin/bash
+#!/run/current-system/sw/bin/bash
+
 
 # Toggles the window gaps on the active workspace between no gaps and the default 10/5/2.
+
+notify-send "Toggle Gaps" "Script execution start"
+echo "$(date): Script execution start" >> /tmp/toggle_gaps.log
+echo "User: $(whoami)" >> /tmp/toggle_gaps.log
+echo "PATH: $PATH" >> /tmp/toggle_gaps.log
+
 
 workspace_id=$(hyprctl activeworkspace -j | jq -r .id)
 gaps=$(hyprctl workspacerules -j | jq -r ".[] | select(.workspaceString==\"$workspace_id\") | .gapsOut[0] // 0")

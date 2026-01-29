@@ -26,5 +26,12 @@
     "workbench.iconTheme": "flow-icons",
     "git.confirmSync": false,
     "git.autofetch": true,
-    "git.enableSmartCommit": true
+    "git.enableSmartCommit": true,
+    "kilo-code.debug": false,
+    "kilo-code.allowedCommands": [
+      "git log",
+      "git diff",
+      "git show"
+    ],
+    "kilo-code.deniedCommands": []
 }

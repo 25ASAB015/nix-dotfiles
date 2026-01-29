@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/run/current-system/sw/bin/bash
 
 # Script to manage clipboard history using cliphist and rofi
 
