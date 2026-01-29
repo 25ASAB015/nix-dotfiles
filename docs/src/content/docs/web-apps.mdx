@@ -1,6 +1,55 @@
 ---
 title: Web Apps
-description: Placeholder page.
+description: Declarative management of PWA/SSB web applications
 ---
 
-# Web Apps
+import { Steps } from '@astrojs/starlight/components';
+
+This module manages a collection of web applications (Progressive Web Apps / Site-Specific Browsers) declaratively, including their icons and a custom launch script that ensures they open in a supported browser (Chrome/Chromium).
+
+## Overview
+
+- **Module**: `modules/hm/programs/webapps/default.nix`
+- **Icons**: `modules/hm/programs/webapps/icons/`
+- **Launcher**: `omarchy-launch-webapp` (packaged internally)
+
+## Features
+
+- **Declarative**: All apps are defined in Nix.
+- **Smart Launcher**: Automatically attempts to use `google-chrome-stable` for `--app` support, falling back gracefully if needed.
+- **Icon Management**: Icons are versioned within the repository.
+
+## Usage
+
+The module is imported by default in `modules/hm/programs/default.nix`.
+
+To enable/disable specific apps, you would modify the `xdg.desktopEntries` list in `modules/hm/programs/webapps/default.nix`.
+
+## Included Applications
+
+The following applications are currently configured:
+
+- **AI Assistants**: Claude AI, ChatGPT (OpenAI), Gemini, DeepSeek, Perplexity, Phind, etc.
+- **Productivity**: Notion, TickTick, M365 Copilot.
+- **Entertainment**: Netflix, Disney+, HBO Max, YouTube, Spotify (Web).
+- **Social**: X (Twitter), X Grok.
+- **Dev**: GitHub, GitKraken.
+
+## Adding a New App
+
+<Steps>
+
+1.  **Add Icon**:
+    Place the icon (PNG recommended) in `modules/hm/programs/webapps/icons/`.
+
+2.  **Add Entry**:
+    Add a new line to `xdg.desktopEntries` in `modules/hm/programs/webapps/default.nix`:
+
+    ```nix
+    "app-id" = mkWebApp "App Name" "https://url.com" "icon-filename.png";
+    ```
+
+3.  **Apply**:
+    Run `make sys-apply`.
+
+</Steps>
