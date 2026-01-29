@@ -37,3 +37,18 @@ Para cambiar la posición de un monitor, edita el archivo `monitors.conf` y ajus
 monitor=HDMI-A-1,1920x1080@60,0x0,1
 monitor=DP-1,1920x1080@60,1920x0,1
 ```
+
+## Monitor Toggle (Simple/Dual Mode)
+
+Se ha implementado una funcionalidad para alternar r&#225;pidamente entre el uso de un solo monitor y dos monitores.
+
+*   **Script**: `~/Dotfiles/resources/scripts/monitor-toggle.sh`
+*   **Atajo de Teclado**: `Super + Control + Z` (previamente `Super + Shift + M`)
+
+### Uso
+Presiona `Super + Control + Z` para alternar:
+1.  **Modo Single**: Desactiva el monitor secundario (HDMI-A-1 o el que no sea eDP-1).
+2.  **Modo Dual**: Reactiva el monitor desactivado en su posici&#243;n preferida.
+
+El sistema enviar&#225; una notificaci&#243;n indicando el cambio de estado.
+

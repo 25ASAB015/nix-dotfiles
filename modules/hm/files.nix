@@ -82,6 +82,8 @@ in {
       mkSymlink "${dotfilesDir}/resources/scripts/nixos_github_setup.sh";
     ".local/lib/hyde/toggle-hdmi.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/toggle-hdmi.sh";
+    ".local/lib/hyde/monitor-toggle.sh".source =
+      mkSymlink "${dotfilesDir}/resources/scripts/monitor-toggle.sh";
     ".local/lib/hyde/set-weather.sh".source =
       mkSymlink "${dotfilesDir}/resources/scripts/set-weather.sh";
     ".local/lib/hyde/cliphist.sh".source =
