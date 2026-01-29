@@ -6,6 +6,7 @@
   imports = [
     ./terminal         # Terminal: emulators, shell, CLI tools
     ./browsers         # Web browsers
+    ./webapps          # Web apps (SSB/PWA)
     ./development      # Development tools and languages
     ./system           # System utilities (gammastep, notifications, etc.)
     ./document-viewers # Document viewers (Zathura for PDF/LaTeX)
