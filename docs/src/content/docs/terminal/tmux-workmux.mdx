@@ -1,0 +1,192 @@
+---
+title: Tmux & Workmux
+description: Guía completa para el uso del multiplexor de terminal Tmux y el gestor de flujos de trabajo Workmux
+---
+
+# Tmux & Workmux
+
+Esta guía cubre el uso de **Tmux**, el multiplexor de terminales, y **Workmux**, una herramienta poderosa para gestionar flujos de trabajo paralelos con Git Worktrees y agentes de IA.
+
+## Tmux: Multiplexor de Terminales
+
+**Tmux** (Terminal Multiplexer) permite ejecutar múltiples sesiones de terminal dentro de una sola ventana. Es esencial para mantener procesos en ejecución, organizar áreas de trabajo y mejorar la productividad en la terminal.
+
+### Conceptos Básicos
+
+- **Sesión**: Un conjunto de ventanas. Puedes desconectarte (detach) de una sesión y dejarla corriendo en segundo plano, para luego reconectarte (attach).
+- **Ventana (Window)**: Como una pestaña en un navegador. Ocupa toda la pantalla.
+- **Panel (Pane)**: Subdivisiones dentro de una ventana. Permite ver múltiples terminales simultáneamente.
+
+### Instalación
+
+Tmux está instalado por defecto en tu configuración de usuario (`hosts/hydenix/user.nix`).
+
+### Teclas Rápidas (Keybindings)
+
+El prefijo por defecto suele ser `Ctrl+b`, pero en muchas configuraciones modernas se cambia a `Ctrl+a` o `Ctrl+Space`. (Verifica tu configuración local).
+
+#### Gestión de Sesiones
+- `prefix + d`: Desconectar (detach) de la sesión actual.
+- `prefix + s`: Listar y cambiar entre sesiones.
+- `tmux new -s nombre`: Crear una nueva sesión llamada "nombre".
+- `tmux a -t nombre`: Reconectarse (attach) a la sesión "nombre".
+
+#### Gestión de Ventanas
+- `prefix + c`: Crear nueva ventana.
+- `prefix + ,`: Renombrar ventana actual.
+- `prefix + n`: Ir a la siguiente ventana.
+- `prefix + p`: Ir a la ventana anterior.
+- `prefix + 0-9`: Ir a la ventana número X.
+- `prefix + w`: Listar ventanas (modo árbol).
+- `prefix + &`: Cerrar ventana actual (confirmar con y).
+
+#### Gestión de Paneles
+- `prefix + %`: Dividir verticalmente.
+- `prefix + "`: Dividir horizontalmente.
+- `prefix + flechas`: Navegar entre paneles.
+- `prefix + z`: Maximizar/Restaurar panel actual (Zoom).
+- `prefix + x`: Cerrar panel actual.
+- `prefix + {` / `}`: Mover panel.
+
+---
+
+## Workmux: Flujos de Trabajo Paralelos
+
+**Workmux** es una herramienta de "cero fricción" para gestionar **Git Worktrees** y sesiones de Tmux como entornos de desarrollo aislados. Es ideal para trabajar en múltiples características o correcciones simultáneamente sin conflictos, y perfecto para orquestar múltiples agentes de IA.
+
+> **Worktree**: Una característica de Git que permite tener múltiples copias de trabajo del mismo repositorio en diferentes directorios, todas vinculadas al mismo historial `.git`.
+
+### Características Principales
+
+- **Una ventana por tarea**: Cada tarea tiene su propia ventana de Tmux, estado de terminal, editor y servidores.
+- **Git Worktrees**: Crea worktrees automáticamente en directorios hermanos (`../proyecto__worktrees/rama`).
+- **Integración con IA**: Diseñado para trabajar con agentes como Claude Code, Gemini CLI, etc.
+- **Configuración flexible**: Soporta configuración global y por proyecto.
+
+### Instalación
+
+Workmux se instala a través de `llm-agents` en tu configuración (`hosts/hydenix/user.nix`).
+
+### Comandos Principales
+
+Se recomienda crear un alias en tu shell: `alias wm='workmux'`
+
+#### 1. Iniciar (`workmux add`)
+
+Crea un nuevo worktree y una ventana de Tmux asociada.
+
+```bash
+# Crear nueva rama y worktree
+workmux add nueva-feature
+
+# Usar una rama existente
+workmux add rama-existente
+
+# Crear desde una base específica
+workmux add hotfix --base production
+
+# Crear un worktree para un PR de GitHub
+workmux add --pr 123
+```
+
+Esto realizará automáticamente:
+1. Crear un worktree de git en una carpeta separada.
+2. Crear una ventana de Tmux (ej. `wm-nueva-feature`).
+3. Configurar el layout de paneles definido.
+4. Cambiarte a esa nueva ventana.
+
+#### 2. Finalizar (`workmux merge` / `remove`)
+
+Cuando termines tu tarea:
+
+```bash
+# Fusionar rama a main y limpiar todo (worktree, ventana, rama)
+workmux merge
+
+# Si usas Pull Requests (el merge ocurre en remoto), solo elimina el entorno local
+workmux remove
+```
+
+#### 3. Navegación
+
+- `workmux list`: Ver worktrees activos.
+- `workmux open <nombre>`: Abrir la ventana de un worktree existente.
+- `workmux close`: Cerrar la ventana (mantiene el worktree).
+
+### Integración con Agentes de IA
+
+Workmux brilla cuando se usa con agentes de IA. Puedes iniciar un entorno de trabajo con un agente pre-cargado con instrucciones.
+
+```bash
+# Crear worktree con un prompt para el agente
+workmux add feature/login --prompt "Implementar login con OAuth2 usando Google"
+
+# Usar un agente específico (si tienes varios configurados)
+workmux add feature/refactor -a gemini
+```
+
+Si tienes configurado `agent: claude` (por defecto), Workmux abrirá un panel con `claude` (o el agente configurado) y le pasará tu prompt automáticamente.
+
+### Configuración (`.workmux.yaml`)
+
+Puedes configurar Workmux globalmente (`~/.config/workmux/config.yaml`) o por proyecto (`.workmux.yaml`).
+
+Ejemplo de configuración de proyecto:
+
+```yaml
+# .workmux.yaml
+
+# Comandos a ejecutar tras crear el worktree (antes de abrir tmux)
+post_create:
+  - direnv allow
+  - pnpm install
+
+# Archivos a copiar o enlazar desde el directorio principal
+files:
+  copy:
+    - .env
+  symlink:
+    - node_modules
+
+# Layout de paneles de Tmux
+panes:
+  - command: <agent>       # Panel 1: Agente de IA (recibe el prompt)
+    focus: true
+  - command: pnpm run dev  # Panel 2: Servidor de desarrollo
+    split: horizontal
+```
+
+### Generación Automática de Nombres
+
+Workmux puede usar IA (vía `llm` CLI) para generar nombres de rama basados en tu descripción:
+
+```bash
+# Te pedirá un prompt y generará un nombre de rama adecuado (ej. "implement-oauth")
+workmux add -A
+```
+
+### Dashboard
+
+Usa `workmux dashboard` para ver una interfaz TUI con el estado de todos tus agentes y worktrees activos.
+
+---
+
+## Flujo de Trabajo Recomendado
+
+1.  **Nuevo Ticket/Tarea**:
+    `workmux add feature/nueva-api --prompt "Crear endpoint REST para usuarios"`
+    
+    *Workmux crea el worktree, instala dependencias (si está configurado), abre Tmux, divide la pantalla, e inicia al agente con las instrucciones.*
+
+2.  **Desarrollo**:
+    Trabajas en el entorno aislado. El agente modifica código, tú revisas, el servidor corre en otro panel.
+
+3.  **Context Switching**:
+    Si llega un bug urgente:
+    `workmux add hotfix/crash-prod`
+    
+    *Cambias instantáneamente a un entorno limpio para el hotfix. Tu trabajo en `feature/nueva-api` sigue corriendo intacto en su ventana.*
+
+4.  **Finalización**:
+    En la ventana del hotfix: `workmux merge` (o `gh pr create` y luego `workmux remove`).
+    Vuelves a tu tarea anterior con `workmux open feature/nueva-api`.
