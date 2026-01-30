@@ -5,7 +5,7 @@
 # Targets: 8 targets
 # ============================================================================
 
-.PHONY: upd-all upd-nixpkgs upd-hydenix upd-input upd-ai upd-diff upd-upgrade upd-show upd-check
+.PHONY: upd-all upd-nixpkgs upd-hydenix upd-input upd-ai upd-diff upd-upgrade upd-show upd-check upd-dots
 
 # === Actualización de Flake ===
 
@@ -144,3 +144,6 @@ upd-check: ## Check flake consistency
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)📋 Checking flake syntax...\n$(NC)"
 	nix flake check $(FLAKE_DIR)
+# Update dotfiles submodules and apply configuration
+upd-dots: ## Update submodules, sync oh-my-tmux and apply
+	@./make/upd-dots.sh

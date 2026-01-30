@@ -8,6 +8,7 @@
     ./shell      # Shell configurations (fish, starship)
     ./software   # CLI tools (git, gh, lazygit, etc.)
     ./tmux.nix   # Tmux configuration (Oh my tmux!)
+    ./sesh.nix   # Sesh session manager
   ];
 }
 

@@ -275,49 +275,108 @@ tmux info
 tmux source-file ~/.config/tmux/tmux.conf
 ```
 
+---
+
+## Sesh: Smart Session Manager
+
+**Sesh** es un gestor de sesiones inteligente que potencia el flujo de trabajo de tmux. Permite crear y conectar sesiones rápidamente basándose en directorios (vía zoxide), configuraciones y sesiones activas.
+
+### Características
+- **Búsqueda difusa (fzf)**: Encuentra cualquier proyecto o sesión instantáneamente.
+- **Detección inteligente**: Crea sesiones automáticamente si no existen.
+- **Integración con Zoxide**: Salta a tus directorios más frecuentes como sesiones de tmux.
+- **Configuración declarativa**: Define sesiones base y comandos de inicio en `sesh.toml`.
+
+### Uso en Tmux
+He configurado dos bindings para lanzar sesh dentro de un popup de tmux:
+
+- `prefix + T`: Abre el buscador de sesh con **fzf** (completo, con headers y buscador de archivos).
+- `prefix + K`: Abre el buscador de sesh con **gum** (minimalista, rápido y moderno).
+
+#### Sesh + Fzf (Buscador Completo)
+Dentro del buscador de `prefix + T` puedes usar:
+- `Ctrl+a`: Ver todo (sesiones + directorios)
+- `Ctrl+t`: Ver solo sesiones de tmux activas
+- `Ctrl+g`: Ver solo proyectos configurados en `sesh.toml`
+- `Ctrl+x`: Ver directorios de Zoxide
+- `Ctrl+f`: Buscar directorios con `fd`
+- `Ctrl+d`: Matar la sesión seleccionada
+
+#### Sesh + Gum (Buscador Rápido)
+Con `prefix + K` obtienes una interfaz más limpia impulsada por `gum filter`. Es ideal para saltar rápidamente entre sesiones conocidas sin la complejidad visual de fzf.
+
+### Uso en la Terminal (Zsh)
+También puedes usar sesh directamente desde tu shell sin estar dentro de tmux:
+
+- `Alt+s`: Abre el buscador de sesiones de sesh. Si seleccionas una, te conectará automáticamente (lanzando tmux si es necesario).
+
+### Configuración Creativa
+La configuración reside en [`modules/hm/programs/terminal/sesh.nix`](file:///home/ludus/Dotfiles/modules/hm/programs/terminal/sesh.nix). Aquí tienes ejemplos de sesiones configuradas con iconos y comandos de inicio:
+
+```toml
+[[session]]
+name = "Dotfiles ⚙️"
+path = "~/Dotfiles"
+startup_command = "nvim ."
+preview_command = "eza --all --git --icons --color=always {}"
+
+[[session]]
+name = "Work 💼"
+path = "~/Work"
+startup_command = "ls"
+preview_command = "eza --all --git --icons --color=always {}"
+
+[[session]]
+name = "Tmux Config ⌨️"
+path = "~/Dotfiles/modules/hm/programs/terminal"
+startup_command = "nvim tmux.conf.local"
+preview_command = "bat --color=always --style=numbers tmux.conf.local"
+
+[[session]]
+name = "NixOS Config ❄️"
+path = "~/Dotfiles"
+startup_command = "nvim hosts/hydenix/configuration.nix"
+```
+
+---
+
 ### Mantenimiento y Actualizaciones
 
-#### Actualizar Oh my tmux! a la última versión
+#### Método Automatizado (Recomendado)
 
-Oh my tmux! se mantiene como un git submodule, lo que permite actualizarlo fácilmente:
+Para mantener tus dotfiles, submodules y el sistema actualizados en un solo paso, usa el comando unificado:
+
+```bash
+make upd-dots
+```
+
+Este comando automatiza:
+1. La actualización de submodules git (incluyendo Oh my tmux!).
+2. La sincronización de `oh-my-tmux.conf`.
+3. La actualización de los inputs del flake de Nix.
+4. La aplicación de la nueva configuración al sistema.
+
+#### Método Manual (Detallado)
+
+Si prefieres realizar los pasos manualmente o necesitas debuggear:
 
 ```bash
 # 1. Actualizar el submodule a la última versión upstream
-cd /home/ludus/Dotfiles
+make/upd-dots.sh  # (El script contiene la lógica de sincronización)
+```
+
+O paso a paso:
+
+```bash
+# 1. Actualizar el submodule
 git submodule update --remote modules/hm/programs/terminal/oh-my-tmux
 
 # 2. Copiar la nueva configuración principal
 cp modules/hm/programs/terminal/oh-my-tmux/.tmux.conf \
    modules/hm/programs/terminal/oh-my-tmux.conf
 
-# 3. Agregar los cambios a git
-git add modules/hm/programs/terminal/oh-my-tmux \
-        modules/hm/programs/terminal/oh-my-tmux.conf
-
-# 4. Verificar cambios (opcional pero recomendado)
-git diff --cached modules/hm/programs/terminal/oh-my-tmux.conf
-
-# 5. Commit y aplicar
-git commit -m "chore(tmux): update Oh my tmux! to latest version"
-nixos-rebuild switch --flake .#hydenix
-```
-
-> [!TIP]
-> Antes de actualizar, revisa el [changelog de Oh my tmux!](https://github.com/gpakosz/.tmux/commits/master) para ver qué cambios incluye la nueva versión.
-
-> [!WARNING]
-> Después de actualizar, verifica que tu configuración personalizada en `tmux.conf.local` siga siendo compatible. Algunas actualizaciones pueden introducir cambios que requieran ajustes en tu configuración local.
-
-#### Verificar versión actual
-
-```bash
-# Ver el commit actual del submodule
-cd /home/ludus/Dotfiles/modules/hm/programs/terminal/oh-my-tmux
-git log -1 --oneline
-
-# Ver si hay actualizaciones disponibles
-git fetch origin
-git log HEAD..origin/master --oneline
+# 3. Aplicar configuración
+make sys-apply
 ```
 
 ### Recursos Adicionales

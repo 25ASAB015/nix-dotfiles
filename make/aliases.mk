@@ -8,7 +8,7 @@
 
 .PHONY: switch switch-safe switch-fast test build dry-run boot validate debug emergency \
         fix-permissions hardware-scan sync deploy clean deep-clean update update-nixpkgs \
-        update-hydenix update-input flake-diff upgrade show flake-check generations \
+        update-hydenix update-dots update-input flake-diff upgrade show flake-check generations \
         rollback diff-gens diff-current gen-size health status test-network watch-logs \
         logs-service boot-logs error-logs hosts search search-inst repl shell vm closure-size \
         format lint tree diff-config docs-local docs-dev docs-build docs-install docs-clean \
@@ -99,6 +99,7 @@ update: upd-all
 update-nixpkgs: upd-nixpkgs
 update-hydenix: upd-hydenix
 update-input: upd-input
+update-dots: upd-dots
 flake-diff: upd-diff
 upgrade: upd-upgrade
 show: upd-show
