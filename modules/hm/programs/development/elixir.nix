@@ -14,7 +14,7 @@ in {
       # Elixir y Erlang (desde unstable overlay)
       elixir
       erlang
-      elixir-ls     # Language Server para Elixir
+      (lib.lowPrio elixir-ls) # Evitar colisión de .gitattributes con flutter
       
       # Herramientas para Phoenix
       inotify-tools # Necesario para live reload en Linux
