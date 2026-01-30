@@ -19,34 +19,268 @@ Esta guía cubre el uso de **Tmux**, el multiplexor de terminales, y **Workmux**
 
 ### Instalación
 
-Tmux está instalado por defecto en tu configuración de usuario (`hosts/hydenix/user.nix`).
+Tmux está instalado por defecto en tu configuración de usuario ([`hosts/hydenix/user.nix`](file:///home/ludus/Dotfiles/hosts/hydenix/user.nix)) y configurado con **Oh my tmux!**, un framework de configuración moderno y visualmente atractivo.
+
+---
+
+## Oh my tmux! - Configuración Mejorada
+
+**Oh my tmux!** es un framework de configuración para tmux que proporciona una experiencia mejorada con tema visual inspirado en Powerline, bindings intuitivos y características avanzadas.
+
+### ¿Qué es Oh my tmux!?
+
+[Oh my tmux!](https://github.com/gpakosz/.tmux) es una configuración de tmux:
+- **Auto-contenida**: No requiere dependencias complejas
+- **Visualmente atractiva**: Tema Powerline con símbolos especiales
+- **Altamente personalizable**: Archivo de configuración local para tus ajustes
+- **Bien documentada**: Incluye comentarios detallados en la configuración
+
+### Características Principales
+
+#### 🎨 Tema Visual Moderno
+- **Powerline symbols**: Separadores y símbolos especiales para una barra de estado elegante
+- **Tema Nord**: Paleta de colores moderna y agradable a la vista
+- **Indicadores visuales**: Batería, uptime, hostname, estado de sincronización
+
+#### ⌨️ Bindings Mejorados
+- **Doble prefijo**: `Ctrl+a` (principal) y `Ctrl+b` (alternativo)
+- **Navegación Vim-style**: `h/j/k/l` para moverse entre paneles
+- **Splits intuitivos**: `|` para división vertical, `-` para horizontal
+- **Maximizar paneles**: `prefix + +` para maximizar/restaurar
+
+#### 🔧 Funcionalidades Avanzadas
+- **Mouse mode**: Toggle con `prefix + m`
+- **Clipboard integration**: Copia automática al portapapeles del sistema
+- **SSH-aware**: Muestra información de hostname cuando estás en SSH
+- **TPM support**: Soporte para Tmux Plugin Manager
+
+### Configuración en tus Dotfiles
+
+La configuración de Oh my tmux! está gestionada por Nix/Home Manager:
+
+```
+modules/hm/programs/terminal/
+├── tmux.nix              # Módulo Nix para gestión de configuración
+├── oh-my-tmux.conf       # Configuración principal de Oh my tmux!
+└── tmux.conf.local       # Tu configuración personalizada
+```
+
+Los archivos se enlazan simbólicamente a:
+- `~/.config/tmux/tmux.conf` → Configuración principal
+- `~/.config/tmux/tmux.conf.local` → Configuración personalizada
+
+> [!IMPORTANT]
+> **Nunca modifiques** `oh-my-tmux.conf` directamente. Todas tus personalizaciones deben ir en `tmux.conf.local`.
 
 ### Teclas Rápidas (Keybindings)
 
-El prefijo por defecto suele ser `Ctrl+b`, pero en muchas configuraciones modernas se cambia a `Ctrl+a` o `Ctrl+Space`. (Verifica tu configuración local).
+El **prefijo** en esta configuración es `Ctrl+a` (también funciona `Ctrl+b`).
 
-#### Gestión de Sesiones
-- `prefix + d`: Desconectar (detach) de la sesión actual.
-- `prefix + s`: Listar y cambiar entre sesiones.
-- `tmux new -s nombre`: Crear una nueva sesión llamada "nombre".
-- `tmux a -t nombre`: Reconectarse (attach) a la sesión "nombre".
+#### 📋 Gestión de Sesiones
+- `prefix + d`: Desconectar (detach) de la sesión actual
+- `prefix + s`: Listar y cambiar entre sesiones
+- `prefix + C-c`: Crear nueva sesión
+- `prefix + C-f`: Buscar sesión por nombre
+- `tmux new -s nombre`: Crear sesión llamada "nombre"
+- `tmux a -t nombre`: Reconectarse a sesión "nombre"
+- `tmux ls`: Listar todas las sesiones
 
-#### Gestión de Ventanas
-- `prefix + c`: Crear nueva ventana.
-- `prefix + ,`: Renombrar ventana actual.
-- `prefix + n`: Ir a la siguiente ventana.
-- `prefix + p`: Ir a la ventana anterior.
-- `prefix + 0-9`: Ir a la ventana número X.
-- `prefix + w`: Listar ventanas (modo árbol).
-- `prefix + &`: Cerrar ventana actual (confirmar con y).
+#### 🪟 Gestión de Ventanas
+- `prefix + c`: Crear nueva ventana
+- `prefix + ,`: Renombrar ventana actual
+- `prefix + C-h`: Ir a ventana anterior
+- `prefix + C-l`: Ir a ventana siguiente
+- `prefix + Tab`: Ir a última ventana activa
+- `prefix + 0-9`: Ir a ventana número X
+- `prefix + w`: Listar ventanas (modo árbol)
+- `prefix + &`: Cerrar ventana actual (confirmar con `y`)
 
-#### Gestión de Paneles
-- `prefix + %`: Dividir verticalmente.
-- `prefix + "`: Dividir horizontalmente.
-- `prefix + flechas`: Navegar entre paneles.
-- `prefix + z`: Maximizar/Restaurar panel actual (Zoom).
-- `prefix + x`: Cerrar panel actual.
-- `prefix + {` / `}`: Mover panel.
+#### 📐 Gestión de Paneles
+- `prefix + |`: Dividir verticalmente (nuevo binding intuitivo)
+- `prefix + -`: Dividir horizontalmente (nuevo binding intuitivo)
+- `prefix + h/j/k/l`: Navegar entre paneles (Vim-style)
+- `prefix + H/J/K/L`: Redimensionar paneles (Vim-style)
+- `prefix + </>`: Intercambiar paneles
+- `prefix + +`: Maximizar/restaurar panel actual
+- `prefix + z`: Zoom en panel actual (toggle)
+- `prefix + x`: Cerrar panel actual
+- `prefix + !`: Convertir panel en ventana
+
+#### 📝 Modo Copia (Vi-style)
+- `prefix + Enter`: Entrar en modo copia
+- `v`: Iniciar selección visual
+- `C-v`: Toggle selección rectangular
+- `y`: Copiar selección (y salir)
+- `H`: Ir al inicio de línea
+- `L`: Ir al final de línea
+- `Escape`: Cancelar modo copia
+
+#### 🛠️ Utilidades
+- `prefix + e`: Editar configuración local con `$EDITOR`
+- `prefix + r`: Recargar configuración
+- `prefix + m`: Toggle mouse mode
+- `prefix + U`: Abrir Urlscan/Urlview (si está instalado)
+- `prefix + F`: Abrir Facebook PathPicker (si está instalado)
+- `C-l`: Limpiar pantalla **y** historial de tmux
+
+### Personalización
+
+Para personalizar tu configuración, edita [`modules/hm/programs/terminal/tmux.conf.local`](file:///home/ludus/Dotfiles/modules/hm/programs/terminal/tmux.conf.local).
+
+#### Cambiar Tema de Colores
+
+La configuración actual usa el tema **Nord**. Para cambiar colores:
+
+```bash
+# En tmux.conf.local, busca las variables tmux_conf_theme_*
+tmux_conf_theme_pane_active_border='#88c0d0'  # Color del borde activo
+tmux_conf_theme_status_bg='#2e3440'           # Fondo de barra de estado
+```
+
+#### Personalizar Barra de Estado
+
+```bash
+# Lado izquierdo (sesión, uptime)
+tmux_conf_theme_status_left=' ❐ #S | ↑#{uptime_h}h #{uptime_m}m '
+
+# Lado derecho (batería, fecha, hostname)
+tmux_conf_theme_status_right='🔋 #{battery_percentage} | %H:%M | #{hostname} '
+```
+
+Variables disponibles:
+- `#{battery_percentage}`, `#{battery_status}`, `#{battery_bar}`
+- `#{uptime_y}`, `#{uptime_d}`, `#{uptime_h}`, `#{uptime_m}`
+- `#{hostname}`, `#{hostname_ssh}`, `#{username}`
+- `#{prefix}`, `#{synchronized}`, `#{pairing}`
+
+#### Habilitar Plugins (TPM)
+
+Para usar plugins de tmux, descomenta en `tmux.conf.local`:
+
+```bash
+# Ejemplos de plugins útiles
+set -g @plugin 'tmux-plugins/tmux-resurrect'  # Guardar/restaurar sesiones
+set -g @plugin 'tmux-plugins/tmux-continuum'  # Auto-guardar sesiones
+set -g @plugin 'tmux-plugins/tmux-yank'       # Mejor integración de clipboard
+```
+
+Luego instala con: `prefix + I` (Shift+i)
+
+#### Cambiar Bindings
+
+Para sobrescribir un binding de Oh my tmux!, agrega `#!important`:
+
+```bash
+# En tmux.conf.local
+bind c new-window -c '#{pane_current_path}' #!important
+```
+
+### Integración con Workmux
+
+Oh my tmux! está optimizado para trabajar con Workmux:
+
+- **Automatic window naming**: Las ventanas se renombran automáticamente según el worktree
+- **Aggressive resize**: Mejor soporte multi-cliente
+- **Retain current path**: Nuevos paneles/ventanas mantienen el directorio actual
+
+Cuando uses `workmux add`, tmux creará automáticamente ventanas con el layout configurado.
+
+### Troubleshooting
+
+#### Los símbolos Powerline no se muestran correctamente
+
+**Causa**: Tu fuente no incluye los símbolos Powerline.
+
+**Solución**:
+1. Instala una [Nerd Font](https://www.nerdfonts.com/) (recomendado: JetBrainsMono Nerd Font)
+2. Configura tu terminal para usar esa fuente
+3. Alternativamente, cambia los separadores en `tmux.conf.local`:
+
+```bash
+# Usar símbolos ASCII simples
+tmux_conf_theme_left_separator_main='|'
+tmux_conf_theme_left_separator_sub='|'
+tmux_conf_theme_right_separator_main='|'
+tmux_conf_theme_right_separator_sub='|'
+```
+
+#### La barra de estado se duplica o se ve rota
+
+**Causa**: Incompatibilidad entre versión de Unicode de glib y glibc.
+
+**Solución**: Ya está configurado para evitar caracteres Unicode problemáticos. Si persiste:
+1. Verifica que `LC_CTYPE` use locale UTF-8
+2. En iTerm2: desactiva "Use Unicode version 9 character widths"
+
+#### Los colores no se ven correctamente
+
+**Causa**: Terminal no soporta 256 colores o true color.
+
+**Solución**:
+1. Verifica que `$TERM` sea `xterm-256color` (ya configurado en `tmux.nix`)
+2. Asegúrate que tu emulador de terminal soporte true color
+3. Prueba con: `tmux info | grep Tc`
+
+#### Tmux no carga la configuración
+
+**Causa**: Symlinks no creados correctamente.
+
+**Solución**:
+```bash
+# Reconstruir configuración de Home Manager
+nixos-rebuild switch --flake .#hydenix
+
+# Verificar symlinks
+ls -la ~/.config/tmux/
+```
+
+#### El clipboard no funciona
+
+**Causa**: Falta `xclip`, `xsel`, o `wl-clipboard`.
+
+**Solución**: Oh my tmux! detecta automáticamente la herramienta disponible. Asegúrate de tener una instalada:
+```bash
+# Para X11
+nix-shell -p xclip
+
+# Para Wayland
+nix-shell -p wl-clipboard
+```
+
+### Comandos Útiles
+
+```bash
+# Ver todas las sesiones
+tmux ls
+
+# Crear sesión con nombre
+tmux new -s desarrollo
+
+# Adjuntar a sesión existente
+tmux attach -t desarrollo
+
+# Matar sesión específica
+tmux kill-session -t desarrollo
+
+# Matar todas las sesiones excepto la actual
+tmux kill-session -a
+
+# Listar todos los bindings
+prefix + ?
+
+# Ver información de tmux
+tmux info
+
+# Recargar configuración manualmente
+tmux source-file ~/.config/tmux/tmux.conf
+```
+
+### Recursos Adicionales
+
+- [Oh my tmux! GitHub](https://github.com/gpakosz/.tmux)
+- [Tmux Getting Started Guide](https://github.com/tmux/tmux/wiki/Getting-Started)
+- [Tmux Cheat Sheet](https://tmuxcheatsheet.com/)
+- [Libro: tmux 3 - Productive Mouse-Free Development](https://pragprog.com/titles/bhtmux3/tmux-3/)
 
 ---
 
