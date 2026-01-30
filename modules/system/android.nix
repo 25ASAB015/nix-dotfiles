@@ -3,21 +3,13 @@
 { config, pkgs, lib, ... }:
 
 {
-  # Habilitar udev rules para dispositivos Android
-  services.udev.packages = [
-    pkgs.android-udev-rules
-  ];
+  # Habilitar ADB (esto instala adb/fastboot y configura udev automáticamente)
+  programs.adb.enable = true;
 
-  # Grupo adbusers para el usuario
+  # Grupos necesarios para el usuario (adbusers es necesario para adb)
   users.users.ludus.extraGroups = [ "adbusers" "kvm" ];
 
   # Permitir KVM para emuladores
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
-
-  # Herramientas de sistema para Android
-  environment.systemPackages = with pkgs; [
-    adb
-    fastboot
-  ];
 }
