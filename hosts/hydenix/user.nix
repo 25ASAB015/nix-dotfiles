@@ -26,6 +26,8 @@
       home.packages = [
         inputs.khanelivim.packages.${pkgs.stdenv.hostPlatform.system}.default
         inputs.openspec.packages.${pkgs.stdenv.hostPlatform.system}.default
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli
       ];
       
       # Set as default editor

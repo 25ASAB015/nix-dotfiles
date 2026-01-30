@@ -60,6 +60,12 @@
     openspec.url = "github:Fission-AI/OpenSpec";
 
     # ══════════════════════════════════════════════════════════════════════════
+    # LLM-AGENTS - Nix packages for AI coding agents
+    # Documentación: https://github.com/numtide/llm-agents.nix
+    # ══════════════════════════════════════════════════════════════════════════
+    llm-agents.url = "github:numtide/llm-agents.nix";
+
+    # ══════════════════════════════════════════════════════════════════════════
     # NIXPKGS-UNSTABLE - Para paquetes actualizados (Cursor, Antigravity)
     # Solo se usa para sobrescribir paquetes específicos via overlay
     # El resto del sistema usa las versiones fijadas por hydenix
