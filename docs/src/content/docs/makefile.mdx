@@ -22,7 +22,7 @@ La documentación del Makefile ha sido actualizada para reflejar los comandos ac
 - [Limpieza y Optimización](/nix-dotfiles/makefile/03-cleanup/) - `sys-gc`, `sys-purge`, `sys-optimize`, `sys-clean-result`, `sys-fix-store`
 
 ### Actualizaciones y Flakes
-- [Actualizaciones y Flakes](/nix-dotfiles/makefile/04-updates/) - `upd-all`, `upd-nixpkgs`, `upd-hydenix`, `upd-input`, `upd-diff`, `upd-upgrade`, `upd-show`, `upd-check`
+- [Actualizaciones y Flakes](/nix-dotfiles/makefile/04-updates/) - `upd-all`, `upd-nixpkgs`, `upd-hydenix`, `upd-input`, `upd-ai`, `upd-diff`, `upd-upgrade`, `upd-show`, `upd-check`
 
 ### Generaciones y Rollback
 - [Generaciones y Rollback](/nix-dotfiles/makefile/05-generations/) - `gen-list`, `gen-rollback`, `gen-rollback-commit`, `gen-diff`, `gen-diff-current`, `gen-sizes`, `gen-current`
@@ -223,7 +223,7 @@ En el **Makefile actual**, los comandos están agrupados así:
 1. **Ayuda y Documentación** - help, help-examples, help-aliases, docs-*
 2. **Gestión del Sistema (Rebuild/Switch)** - sys-apply, sys-apply-safe, sys-apply-fast, sys-test, sys-build, sys-dry-run, sys-boot, sys-check, sys-debug, sys-force, sys-fix-git, sys-hw-scan, sys-deploy (includes permission fix via sys-doctor)
 3. **Limpieza y Optimización** - sys-gc, sys-purge, sys-optimize, sys-clean-result, sys-fix-store
-4. **Actualizaciones y Flakes** - upd-all, upd-nixpkgs, upd-hydenix, upd-input, upd-diff, upd-upgrade, upd-show, upd-check
+4. **Actualizaciones y Flakes** - upd-all, upd-nixpkgs, upd-hydenix, upd-input, upd-ai, upd-diff, upd-upgrade, upd-show, upd-check
 5. **Generaciones y Rollback** - gen-list, gen-rollback, gen-rollback-commit, gen-diff, gen-diff-current, gen-sizes, gen-current
 6. **Git y Respaldo** - git-add, git-commit, git-push, git-status, git-diff, git-log
 7. **Diagnóstico y Logs** - sys-status, log-net, log-watch, log-boot, log-err, log-svc
@@ -1480,11 +1480,28 @@ make upd-all-hydenix
 
 ---
 
-#### `make upd-all-input INPUT=nombre`
+#### `make upd-ai`
+Actualiza solo las herramientas de IA: **OpenCode**, **Cursor** y **Antigravity** (inputs `opencode` y `nixpkgs-unstable`).
+
+```bash
+make upd-ai
+# Luego aplicar cambios:
+make sys-apply
+```
+
+**Qué actualiza:**
+- **opencode** → OpenCode (asistente de IA en terminal)
+- **nixpkgs-unstable** → Cursor y Antigravity (editores, vía overlay)
+
+**Cuándo usarlo:** Cuando quieras tener las últimas versiones de OpenCode, Cursor y Antigravity sin actualizar el resto del flake.
+
+---
+
+#### `make upd-input INPUT=nombre`
 Actualiza solo un input específico del flake.
 
 ```bash
-make upd-all-input INPUT=hydenix
+make upd-input INPUT=hydenix
 # Actualiza solo hydenix, no nixpkgs ni otros
 ```
 
@@ -1494,17 +1511,18 @@ make upd-all-input INPUT=hydenix
 - nixos-hardware
 - mynixpkgs
 - opencode
+- nixpkgs-unstable
 - zen-browser-flake
 
 ---
 
 
-#### `make git-diff-update`
+#### `make upd-diff`
 Muestra cambios en flake.lock después de un update.
 
 ```bash
 make upd-all
-make git-diff-update
+make upd-diff
 # Ve qué cambió exactamente
 ```
 
@@ -4005,8 +4023,8 @@ Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acces
 ### Limpieza y Optimización (5)
 `clean`, `deep-clean`, `optimize`, `clean-result`, `fix-store`
 
-### Actualizaciones y Flakes (8)
-`update`, `update-nixpkgs`, `update-hydenix`, `update-input`, `flake-diff`, `upgrade`, `show`, `flake-check`
+### Actualizaciones y Flakes (9)
+`upd-all`, `upd-nixpkgs`, `upd-hydenix`, `upd-input`, `upd-ai`, `upd-diff`, `upd-upgrade`, `upd-show`, `upd-check`
 
 ### Generaciones y Rollback (6)
 `list-generations`, `rollback`, `diff-generations`, `diff-gen`, `generation-sizes`, `current-generation`

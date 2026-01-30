@@ -40,6 +40,26 @@ make upd-hydenix
 
 ---
 
+### `make upd-ai`
+Actualiza solo las herramientas de IA: **OpenCode**, **Cursor** y **Antigravity**.
+
+```bash
+make upd-ai
+```
+
+**Qué actualiza:**
+- **opencode** → OpenCode (asistente de IA en terminal)
+- **nixpkgs-unstable** → Cursor y Antigravity (editores, vía overlay en `modules/system/editor-overlays.nix`)
+
+**Flujo recomendado:**
+```bash
+make upd-ai      # Actualiza opencode y nixpkgs-unstable
+make upd-diff    # (Opcional) Ver qué cambió en flake.lock
+make sys-apply   # Aplicar cambios al sistema
+```
+
+---
+
 ### `make upd-input`
 Actualiza un input específico del flake.
 
@@ -51,6 +71,8 @@ make upd-input INPUT=<name>
 ```bash
 make upd-input INPUT=hydenix
 make upd-input INPUT=nixpkgs
+make upd-input INPUT=opencode
+make upd-input INPUT=nixpkgs-unstable
 make upd-input INPUT=zen-browser-flake
 ```
 
@@ -120,6 +142,12 @@ make upd-upgrade  # update + apply-safe
 # Solo actualizar un input específico
 make upd-input INPUT=hydenix
 make sys-test     # Probar
+make sys-apply    # Aplicar
+```
+
+### Update de herramientas AI (OpenCode + Cursor + Antigravity)
+```bash
+make upd-ai       # Actualiza opencode y nixpkgs-unstable
 make sys-apply    # Aplicar
 ```
 
