@@ -76,24 +76,8 @@
         modules = [
           { 
             nixpkgs.hostPlatform = "x86_64-linux";
-            # Configure nixpkgs to allow unfree packages for editors
-            # We use nixpkgs.config here even though nixpkgs is created externally
-            # because hydenix modules will apply overlays that add packages like pkgs.hyde
-            # The allowUnfree config needs to be in place before those overlays are evaluated
-            nixpkgs.config.allowUnfreePredicate = pkg:
-              let
-                pkgName = inputs.nixpkgs.lib.getName pkg;
-              in
-              builtins.elem pkgName [
-                "antigravity"
-                "antigravity-fhs"
-                "code"
-                "code-fhs"
-                "code-cursor"
-                "code-cursor-fhs"
-                "vscode"
-                "vscode-fhs"
-              ];
+            # Note: allowUnfree is handled via overlays in modules/system/editor-overlays.nix
+            # This avoids the "externally created instance" error while preserving hydenix packages
           }
           ./hosts/hydenix/configuration.nix
         ];
