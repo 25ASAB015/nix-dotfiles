@@ -11,6 +11,7 @@ Esta guía explica cómo gestionar **VS Code**, **Cursor** y **AntiGravity** en 
 
 - [Arquitectura](#arquitectura)
 - [Estructura de Archivos](#estructura-de-archivos)
+- [Editor Overlays (Cursor y AntiGravity)](#editor-overlays-cursor-y-antigravity)
 - [Configuración Actual](#configuración-actual)
 - [Editar Configuraciones](#editar-configuraciones)
 - [Agregar Extensiones](#agregar-extensiones)
@@ -57,14 +58,16 @@ Dotfiles/
 │           ├── settings.json          # Configuración AntiGravity
 │           └── keybindings.json       # Keybindings AntiGravity
 └── modules/
+    ├── system/
+    │   └── editor-overlays.nix        # Overlay: Cursor y AntiGravity desde nixpkgs-unstable
     └── hm/
         ├── files.nix                   # Symlinks de configuración
         └── programs/
             └── editors/
                 ├── default.nix        # Importador de editores
                 ├── vscode.nix         # Módulo VS Code (instalación + extensiones)
-                ├── cursor.nix         # Módulo Cursor (instalación)
-                └── antigravity.nix    # Módulo AntiGravity (instalación)
+                ├── cursor.nix         # Módulo Cursor (instalación: code-cursor-fhs, cursor-cli)
+                └── antigravity.nix    # Módulo AntiGravity (instalación: antigravity-fhs)
 ```
 
 ### Ubicaciones de Instalación
@@ -74,6 +77,14 @@ Dotfiles/
 | VS Code | `programs.vscode` (Home Manager) | `modules/hm/programs/editors/vscode.nix` |
 | Cursor | `home.packages` | `modules/hm/programs/editors/cursor.nix` |
 | AntiGravity | `home.packages` | `modules/hm/programs/editors/antigravity.nix` |
+
+### Nombres de paquetes Nix
+
+| Editor | Paquete(s) en nixpkgs | Descripción |
+|--------|------------------------|-------------|
+| Cursor | `code-cursor-fhs` | Cursor AI (versión FHS) |
+| Cursor | `cursor-cli` | Cursor CLI (línea de comandos) |
+| AntiGravity | `antigravity-fhs` | AntiGravity by Google (versión FHS) |
 
 ### Ubicaciones de Symlinks
 
@@ -85,6 +96,63 @@ Dotfiles/
 | Cursor | `keybindings.json` | `~/.config/Cursor/User/keybindings.json` → `~/Dotfiles/resources/config/cursor/keybindings.json` |
 | AntiGravity | `settings.json` | `~/.config/Antigravity/User/settings.json` → `~/Dotfiles/resources/config/antigravity/settings.json` |
 | AntiGravity | `keybindings.json` | `~/.config/Antigravity/User/keybindings.json` → `~/Dotfiles/resources/config/antigravity/keybindings.json` |
+
+---
+
+## 🔄 Editor Overlays (Cursor y AntiGravity)
+
+El módulo `modules/system/editor-overlays.nix` define un **overlay** de nixpkgs que:
+
+1. **Importa nixpkgs-unstable** con `allowUnfreePredicate` configurado (wrapper).
+2. **Sobrescribe** solo los paquetes `code-cursor-fhs` y `antigravity-fhs` con las versiones de nixpkgs-unstable.
+
+El resto del sistema sigue usando las versiones de nixpkgs fijadas por Hydenix. Solo Cursor y AntiGravity se actualizan desde unstable.
+
+### Ubicación
+
+- **Módulo**: `modules/system/editor-overlays.nix`
+- **Importado en**: `modules/system/default.nix`
+- **Flake**: Input `nixpkgs-unstable` en `flake.nix` → `github:nixos/nixpkgs/nixos-unstable`
+
+### Paquetes afectados
+
+| Paquete en nixpkgs | Editor   | Origen con el overlay   |
+|--------------------|----------|---------------------------|
+| `code-cursor-fhs` | Cursor   | nixpkgs-unstable          |
+| `antigravity-fhs` | AntiGravity | nixpkgs-unstable      |
+| `cursor-cli`      | Cursor CLI | nixpkgs principal (Hydenix) |
+
+### Por qué un wrapper
+
+Los paquetes Cursor y AntiGravity tienen licencia **unfree**. En NixOS, para evaluarlos hace falta configurar `nixpkgs.config.allowUnfreePredicate` o similar. Cuando nixpkgs se crea de forma externa (p. ej. por el flake de Hydenix), no se puede usar `nixpkgs.config` en módulos sin provocar el error *"Your system configures nixpkgs with an externally created instance"*.
+
+La solución es un **wrapper en el overlay**: dentro del overlay se importa nixpkgs-unstable con `allowUnfreePredicate` ya configurado. Así:
+
+- No se toca la instancia global de nixpkgs.
+- Se preservan paquetes de Hydenix (p. ej. `pkgs.hyde`).
+- Solo los paquetes del overlay (Cursor y AntiGravity) se evalúan con allowUnfree.
+
+### Actualizar Cursor y AntiGravity
+
+```bash
+# Actualizar solo el input nixpkgs-unstable
+nix flake lock --update-input nixpkgs-unstable
+
+# Reconstruir y aplicar
+sudo nixos-rebuild switch --flake .#hydenix
+```
+
+### Lista de paquetes permitidos (allowUnfreePredicate)
+
+En el overlay se permite la evaluación de estos nombres de paquete en nixpkgs-unstable:
+
+- `antigravity`, `antigravity-fhs`
+- `code`, `code-fhs`
+- `code-cursor`, `code-cursor-fhs`
+- `cursor`, `cursor-fhs`
+- `vscode`, `vscode-fhs`
+
+Solo `code-cursor-fhs` y `antigravity-fhs` se sobrescriben explícitamente en el overlay; el resto están en la lista por si se usan como dependencias o se quieren exponer más adelante.
 
 ---
 
@@ -165,9 +233,9 @@ Dotfiles/
 
 **VS Code** se instala mediante el módulo `programs.vscode` de Home Manager, lo que permite gestión declarativa de extensiones y configuración avanzada.
 
-**Cursor y AntiGravity** se instalan como paquetes en `home.packages` dentro de sus respectivos módulos en `modules/hm/programs/editors/`. Esto significa que:
+**Cursor y AntiGravity** se instalan como paquetes en `home.packages` dentro de sus respectivos módulos en `modules/hm/programs/editors/`. Las versiones que se instalan vienen de **nixpkgs-unstable** gracias al overlay en `modules/system/editor-overlays.nix` (wrapper con `allowUnfree`). Esto significa que:
 - Se instalan automáticamente con `make switch`
-- Todos los editores están organizados en un solo lugar (`editors/`)
+- Las versiones de Cursor (`code-cursor-fhs`) y AntiGravity (`antigravity-fhs`) son las de nixpkgs-unstable; el resto del sistema sigue con las versiones fijadas por Hydenix
 - No tienen gestión declarativa de extensiones (se instalan manualmente desde la UI)
 - La configuración se gestiona mediante symlinks en `files.nix`
 
@@ -576,6 +644,6 @@ nix-instantiate --parse --expr 'import ./modules/hm/programs/editors/vscode.nix'
 
 ---
 
-**Última actualización**: 2026-01-23  
+**Última actualización**: 2026-01-29  
 **Mantenido por**: Roberto Flores [https://github.com/25ASAB015](https://github.com/25ASAB015)
 

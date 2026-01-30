@@ -1,4 +1,4 @@
-# Documentation: docs/modules/system/editor-overlays.md
+# Documentation: docs/src/content/docs/editors.mdx (sección "Editor Overlays")
 # Editor Overlays - Actualización selectiva de Cursor y Antigravity
 # 
 # Este módulo crea un overlay que:
