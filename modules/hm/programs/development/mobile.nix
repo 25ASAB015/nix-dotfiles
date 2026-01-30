@@ -18,7 +18,6 @@ in {
       flutter
       
       # Expo y herramientas de Node (Node ya está instalado v22)
-      nodePackages.expo-cli
       nodePackages.eas-cli
       nodePackages.yarn
       nodePackages.typescript-language-server # LSP para TypeScript (Expo)
