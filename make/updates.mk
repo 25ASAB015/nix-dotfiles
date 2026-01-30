@@ -5,7 +5,7 @@
 # Targets: 8 targets
 # ============================================================================
 
-.PHONY: upd-all upd-nixpkgs upd-hydenix upd-input upd-ai upd-diff upd-upgrade upd-show upd-check upd-dots
+.PHONY: upd-all upd-nixpkgs upd-hydenix upd-input upd-ai upd-diff upd-upgrade upd-show upd-check upd-dots .upd-externals
 
 # === Actualización de Flake ===
 
@@ -108,21 +108,13 @@ upd-diff: ## Show versions differences in flake.lock
 	fi
 
 # Complete upgrade workflow: update inputs and apply safely
-upd-upgrade: ## Update all and apply configuration (safe)
-	@printf "\n"
-	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)            🆙 Safe Upgrade (Update & Apply)       $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-	@printf "$(BLUE)Ejecutando flujo seguro de actualización:\n$(NC)"
-	@printf "$(YELLOW)  1. Actualizar todos los inputs del flake\n$(NC)"
-	@printf "$(YELLOW)  2. Validar configuración\n$(NC)"
-	@printf "$(YELLOW)  3. Aplicar cambios al sistema\n$(NC)"
-	@printf "\n"
+# Complete upgrade workflow: sync everything and apply
+upd-upgrade: ## [MASTER] Update EVERYTHING (Submodules + Flakes + Apply)
+	@$(MAKE) --no-print-directory .upd-externals
 	@$(MAKE) --no-print-directory upd-all
 	@$(MAKE) --no-print-directory sys-apply-safe
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ Upgrade completo finalizado$(NC)\n"
+	@printf "$(GREEN)✅ Sistema actualizado a la última versión (Total Sync)\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
@@ -144,6 +136,8 @@ upd-check: ## Check flake consistency
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)📋 Checking flake syntax...\n$(NC)"
 	nix flake check $(FLAKE_DIR)
-# Update dotfiles submodules and apply configuration
-upd-dots: ## Update submodules, sync oh-my-tmux and apply
-	@./make/upd-dots.sh
+# Update dotfiles submodules and sync configs
+upd-dots: .upd-externals ## Update submodules and sync oh-my-tmux
+
+.upd-externals:
+	@./make/sync-externals.sh

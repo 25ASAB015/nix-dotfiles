@@ -12,6 +12,11 @@ YELLOW='\033[0;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+# Obtener la ruta raíz del repositorio (un nivel arriba de donde está este script)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$ROOT_DIR"
+
 FLAKE_DIR="."
 
 printf "${CYAN}═════════════════════════════════════════════════════════════════════════════════${NC}\n"
@@ -19,12 +24,12 @@ printf "${CYAN}            🔄 Dotfiles Automatic Update                   ${NC
 printf "${CYAN}═════════════════════════════════════════════════════════════════════════════════${NC}\n"
 
 # 1. Update Submodules
-printf "\n${BLUE}1/4 Actualizando submodules git...${NC}\n"
+printf "\n${BLUE}🔄 Actualizando submodules git...${NC}\n"
 git submodule update --init --recursive --remote
 printf "${GREEN}✓ Submodules actualizados${NC}\n"
 
 # 2. Sync oh-my-tmux.conf
-printf "\n${BLUE}2/4 Sincronizando oh-my-tmux.conf...${NC}\n"
+printf "\n${BLUE}⌨️ Sincronizando oh-my-tmux.conf...${NC}\n"
 if [ -f "modules/hm/programs/terminal/oh-my-tmux/.tmux.conf" ]; then
     cp modules/hm/programs/terminal/oh-my-tmux/.tmux.conf modules/hm/programs/terminal/oh-my-tmux.conf
     printf "${GREEN}✓ oh-my-tmux.conf sincronizado${NC}\n"
@@ -33,17 +38,5 @@ else
     exit 1
 fi
 
-# 3. Update Flake Inputs
-printf "\n${BLUE}3/4 Actualizando flake inputs...${NC}\n"
-nix flake update
-printf "${GREEN}✓ Flake actualizado${NC}\n"
-
-# 4. Apply Configuration
-printf "\n${BLUE}4/4 Aplicando nueva configuración...${NC}\n"
-git add .
-sudo nixos-rebuild switch --flake "${FLAKE_DIR}#hydenix"
-printf "${GREEN}✓ Configuración aplicada exitosamente${NC}\n"
-
-printf "\n${CYAN}═════════════════════════════════════════════════════════════════════════════════${NC}\n"
-printf "${GREEN}✅ Dotfiles actualizados y sistema sincronizado${NC}\n"
+printf "\n${GREEN}✅ Sincronización externa completada${NC}\n"
 printf "${CYAN}═════════════════════════════════════════════════════════════════════════════════${NC}\n\n"

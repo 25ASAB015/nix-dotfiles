@@ -344,17 +344,32 @@ startup_command = "nvim hosts/hydenix/configuration.nix"
 
 #### Método Automatizado (Recomendado)
 
-Para mantener tus dotfiles, submodules y el sistema actualizados en un solo paso, usa el comando unificado:
+Para mantener tus dotfiles, submodules y el sistema actualizados en un solo paso (el comando "todo en uno"), usa:
 
 ```bash
-make upd-dots
+make upd-upgrade
 ```
 
-Este comando automatiza:
+Este comando orquestará automáticamente:
 1. La actualización de submodules git (incluyendo Oh my tmux!).
-2. La sincronización de `oh-my-tmux.conf`.
-3. La actualización de los inputs del flake de Nix.
-4. La aplicación de la nueva configuración al sistema.
+2. La sincronización de archivos de configuración externos.
+3. La actualización de todos los inputs del flake de Nix.
+4. La aplicación segura de la configuración al sistema.
+
+#### Otros Comandos de Actualización
+
+Si necesitas realizar actualizaciones parciales:
+
+```bash
+# Sincronizar solo submodules y archivos de configuración
+make upd-dots
+
+# Actualizar solo los inputs del flake (Nix)
+make upd-all
+
+# Actualizar herramientas de IA (OpenCode, Antigravity, etc.)
+make upd-ai
+```
 
 #### Método Manual (Detallado)
 
