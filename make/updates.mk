@@ -32,17 +32,18 @@ upd-hydenix: ## Update only hydenix input
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	nix flake update hydenix --flake $(FLAKE_DIR)
 
-# Update OpenCode + Cursor/Antigravity (nixpkgs-unstable) in one go
-upd-ai: ## Update OpenCode, Cursor and Antigravity (opencode + nixpkgs-unstable)
+# Update OpenCode + Cursor/Antigravity (nixpkgs-unstable) and apply in one go
+upd-ai: ## Update OpenCode, Cursor and Antigravity, then apply (update + sys-apply)
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)            🤖 Update AI tools (OpenCode + Cursor + Antigravity)  $(NC)"
+	@printf "$(CYAN)            🤖 Update AI tools + Apply (OpenCode + Cursor + Antigravity)  $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n$(BLUE)  Actualizando opencode y nixpkgs-unstable...$(NC)\n"
-	nix flake update opencode nixpkgs-unstable --flake $(FLAKE_DIR)
+	@printf "\n$(BLUE)  1/2 Actualizando opencode y nixpkgs-unstable...$(NC)\n"
+	nix flake update --flake $(FLAKE_DIR) opencode nixpkgs-unstable
+	@printf "\n$(BLUE)  2/2 Aplicando configuración...$(NC)\n"
+	@$(MAKE) --no-print-directory sys-apply
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN)✅ OpenCode, Cursor y Antigravity actualizados\n$(NC)"
-	@printf "$(YELLOW)Ejecuta 'make sys-apply' para aplicar los cambios.\n$(NC)"
+	@printf "$(GREEN)✅ OpenCode, Cursor y Antigravity actualizados y aplicados\n$(NC)"
 	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
