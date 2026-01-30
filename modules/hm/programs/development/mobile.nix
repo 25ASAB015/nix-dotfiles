@@ -6,15 +6,13 @@ with lib; let
   cfg = config.modules.development.mobile;
   
   # Componer un SDK de Android mínimo pero funcional
-  androidSdk = pkgs.androidenv.composeAndroidSDK {
+  androidSdk = pkgs.androidenv.composeAndroidPackages {
     # Versiones de plataforma (Android 14)
     platformVersions = [ "34" ];
     # Herramientas de construcción
     buildToolsVersions = [ "34.0.0" "33.0.1" ];
-    # Herramientas básicas (adb, fastboot, etc.)
-    includePlatformTools = true;
-    includeSources = false;
-    includeEmulator = false; # Desactivado por defecto para ahorrar espacio, se puede habilitar si se necesita
+    # Versión de Platform Tools
+    platformToolsVersion = "36.0.2";
   };
 in {
   options.modules.development.mobile = {
@@ -27,7 +25,7 @@ in {
       android-studio
       
       # SDK de Android gestionado por Nix
-      androidSdk
+      androidSdk.androidsdk
       
       # Flutter (desde unstable overlay)
       (lib.setPrio 11 flutter) # Muy baja prioridad para evitar colisiones con dotfiles y elixir-ls
@@ -60,6 +58,6 @@ in {
     # Vincular de forma declarativa el SDK de Nix a la ruta esperada por Android Studio
     # Esto "engaña" a Android Studio haciéndole creer que el SDK está instalado localmente,
     # pero los archivos reales están en la store de Nix.
-    home.file."Android/Sdk".source = "${androidSdk}/libexec/android-sdk";
+    home.file."Android/Sdk".source = "${androidSdk.androidsdk}/libexec/android-sdk";
   };
 }

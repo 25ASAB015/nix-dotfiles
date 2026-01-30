@@ -23,28 +23,7 @@
           inherit system;
           config = {
             android_sdk.accept_license = true;
-            allowUnfreePredicate = pkg:
-              let
-                pkgName = inputs.nixpkgs-unstable.lib.getName pkg;
-              in
-              builtins.elem pkgName [
-                "antigravity"
-                "antigravity-fhs"
-                "code"
-                "code-fhs"
-                "code-cursor"
-                "code-cursor-fhs"
-                "cursor"
-                "cursor-fhs"
-                "vscode"
-                "vscode-fhs"
-                # Desarrollo Móvil
-                "android-studio"
-                "android-studio-stable"
-                "android-sdk"
-                "flutter"
-                "google-chrome"
-              ];
+            allowUnfree = true;
           };
         };
       in
@@ -55,6 +34,7 @@
         
         # Desarrollo Móvil (Unstable)
         android-studio = unstablePkgs.android-studio;
+        androidenv = unstablePkgs.androidenv;
         flutter = unstablePkgs.flutter;
 
         # Desarrollo Web (Elixir/Erlang)
