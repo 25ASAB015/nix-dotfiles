@@ -125,6 +125,23 @@
   # System version
   system.stateVersion = lib.mkDefault "25.05";
 
+  # ══════════════════════════════════════════════════════════════════════════
+  # NIXPKGS CONFIG - Permitir paquetes unfree específicos
+  # Permite antigravity y code-cursor que tienen licencias unfree
+  # ══════════════════════════════════════════════════════════════════════════
+  nixpkgs.config = {
+    allowUnfreePredicate = pkg:
+      let
+        pkgName = lib.getName pkg;
+      in
+      builtins.elem pkgName [
+        "antigravity"
+        "antigravity-fhs"
+        "code-cursor"
+        "code-cursor-fhs"
+      ];
+  };
+
   # Kernel parameters
   boot.kernel.sysctl = {
     "net.core.rmem_max" = 134217728;
