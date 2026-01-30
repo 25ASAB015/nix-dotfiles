@@ -15,7 +15,7 @@ in {
       android-studio
       
       # Flutter (desde unstable overlay)
-      flutter
+      (lib.lowPrio flutter) # Evitar colisiones de archivos de SDK con dotfiles
       
       # Expo y herramientas de Node (Node ya está instalado v22)
       nodePackages.eas-cli
