@@ -34,6 +34,8 @@
                 "code-fhs"
                 "code-cursor"
                 "code-cursor-fhs"
+                "cursor"
+                "cursor-fhs"
                 "vscode"
                 "vscode-fhs"
               ];
