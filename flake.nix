@@ -70,38 +70,30 @@
   outputs =
     { ... }@inputs:
     let
-      # Create nixpkgs with allowUnfree configuration
-      # This is needed because nixosSystem creates nixpkgs internally
-      # and we can't use nixpkgs.config in modules when that happens
-      pkgsWithUnfree = import inputs.nixpkgs {
-        system = "x86_64-linux";
-        config = {
-          allowUnfreePredicate = pkg:
-            let
-              pkgName = inputs.nixpkgs.lib.getName pkg;
-            in
-            builtins.elem pkgName [
-              "antigravity"
-              "antigravity-fhs"
-              "code"
-              "code-fhs"
-              "code-cursor"
-              "code-cursor-fhs"
-              "vscode"
-              "vscode-fhs"
-            ];
-        };
-      };
-      
       # Main desktop PC configuration
       hydenixConfig = inputs.nixpkgs.lib.nixosSystem {
         # Modern syntax (replaces deprecated 'system')
         modules = [
           { 
             nixpkgs.hostPlatform = "x86_64-linux";
-            # Pass the configured pkgs to override the internally created instance
-            # This preserves hydenix overlays while allowing unfree packages
-            nixpkgs.pkgs = pkgsWithUnfree;
+            # Configure nixpkgs to allow unfree packages for editors
+            # We use nixpkgs.config here even though nixpkgs is created externally
+            # because hydenix modules will apply overlays that add packages like pkgs.hyde
+            # The allowUnfree config needs to be in place before those overlays are evaluated
+            nixpkgs.config.allowUnfreePredicate = pkg:
+              let
+                pkgName = inputs.nixpkgs.lib.getName pkg;
+              in
+              builtins.elem pkgName [
+                "antigravity"
+                "antigravity-fhs"
+                "code"
+                "code-fhs"
+                "code-cursor"
+                "code-cursor-fhs"
+                "vscode"
+                "vscode-fhs"
+              ];
           }
           ./hosts/hydenix/configuration.nix
         ];
