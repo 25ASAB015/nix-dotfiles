@@ -42,7 +42,7 @@ help: ## Show this help message
 		printf "\nWorkflows sugeridos:\n"; \
 		printf "  • Flujo Pro:          make fmt-check → make sys-check → make sys-apply\n"; \
 		printf "  • Updates seguros:    make upd-all → make upd-diff → make sys-check → make sys-apply\n"; \
-		printf "  • Updates AI:         make upd-ai → make sys-apply (OpenCode + Cursor + Antigravity)\n"; \
+		printf "  • Updates AI:         make upd-ai (actualiza OpenCode + Cursor + Antigravity y aplica)\n"; \
 		printf "  • Mantenimiento:      make sys-status → make sys-gc → make sys-optimize\n"; \
 		printf "  • Recuperación:       make gen-list → make gen-rollback (o gen-rollback-commit COMMIT=xxx)\n"; \
 		printf "\nAyuda rápida: make help | make help-examples | make help-aliases | less README.md\n\n"; \
@@ -71,7 +71,7 @@ help-examples: ## Show commands with usage examples
 	@printf "  → make dev-search-inst PKG=docker\n\n"
 	@printf "$(GREEN)═══ 📦 Updates ═══$(NC)\n"
 	@printf "$(BLUE)upd-ai$(NC)\n"
-	@printf "  → make upd-ai   # OpenCode + Cursor + Antigravity\n\n"
+	@printf "  → make upd-ai   # Actualiza OpenCode + Cursor + Antigravity y aplica\n\n"
 	@printf "$(BLUE)upd-input INPUT=<name>$(NC)\n"
 	@printf "  → make upd-input INPUT=hydenix\n"
 	@printf "  → make upd-input INPUT=nixpkgs\n"
@@ -91,6 +91,7 @@ help-examples: ## Show commands with usage examples
 	@printf "$(BLUE)Everyday use:$(NC)\n"
 	@printf "  make sys-deploy     → Total sync (add + commit + push + apply)\n"
 	@printf "  make sys-apply      → Apply configuration\n"
+	@printf "  make upd-ai         → Update OpenCode + Cursor + Antigravity y aplicar\n"
 	@printf "  make sys-apply-fast → Fast switch (skip checks)\n"
 	@printf "  make sys-test       → Test without applying\n"
 	@printf "  make gen-rollback   → Undo last change\n"
