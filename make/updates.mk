@@ -2,10 +2,10 @@
 # Actualizaciones y Flakes
 # ============================================================================
 # Descripción: Targets para actualizar inputs del flake y gestionar versiones
-# Targets: 7 targets
+# Targets: 8 targets
 # ============================================================================
 
-.PHONY: upd-all upd-nixpkgs upd-hydenix upd-input upd-diff upd-upgrade upd-show upd-check
+.PHONY: upd-all upd-nixpkgs upd-hydenix upd-input upd-ai upd-diff upd-upgrade upd-show upd-check
 
 # === Actualización de Flake ===
 
@@ -31,6 +31,22 @@ upd-hydenix: ## Update only hydenix input
 	@printf "$(CYAN)            📦 Update Hydenix                      $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	nix flake lock --update-input hydenix $(FLAKE_DIR)
+
+# Update OpenCode + Cursor/Antigravity (nixpkgs-unstable) in one go
+upd-ai: ## Update OpenCode, Cursor and Antigravity (opencode + nixpkgs-unstable)
+	@printf "\n"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)            🤖 Update AI tools (OpenCode + Cursor + Antigravity)  $(NC)"
+	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n$(BLUE)  1/2 Actualizando opencode...$(NC)\n"
+	nix flake lock --update-input opencode $(FLAKE_DIR)
+	@printf "\n$(BLUE)  2/2 Actualizando nixpkgs-unstable (Cursor y Antigravity)...$(NC)\n"
+	nix flake lock --update-input nixpkgs-unstable $(FLAKE_DIR)
+	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN)✅ OpenCode, Cursor y Antigravity actualizados\n$(NC)"
+	@printf "$(YELLOW)Ejecuta 'make sys-apply' para aplicar los cambios.\n$(NC)"
+	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 # Allows targeted updates of individual flake dependencies
 upd-input: ## Update a specific input (use INPUT=name)
