@@ -15,6 +15,7 @@ Los comandos principales para actualizar tu sistema son:
 - `make upd-nixpkgs` - Actualiza solo el repositorio nixpkgs
 - `make upd-hydenix` - Actualiza solo el framework hydenix
 - `make upd-input INPUT=name` - Actualiza un input específico
+- `make upd-ai` - Actualiza OpenCode + Cursor + Antigravity y aplica (todo en uno)
 - `make upd-diff` - Muestra las diferencias en `flake.lock` después de actualizar
 - `make upd-upgrade` - Actualiza todos los inputs y aplica cambios de forma segura
 - `make upd-show` - Muestra la estructura de outputs del flake
@@ -116,7 +117,7 @@ make upd-nixpkgs
 
 ### ¿Qué hace?
 
-Ejecuta `nix flake lock --update-input nixpkgs`, actualizando solo el input de nixpkgs en `flake.lock`. El comando muestra una interfaz visual con información sobre la actualización.
+Ejecuta `nix flake update nixpkgs`, actualizando solo el input de nixpkgs en `flake.lock`.
 
 ### Cuándo usarlo
 
@@ -154,7 +155,7 @@ make upd-hydenix
 
 ### ¿Qué hace?
 
-Ejecuta `nix flake lock --update-input hydenix`, actualizando solo el input de hydenix en `flake.lock`. El comando muestra una interfaz visual con información sobre la actualización del framework.
+Ejecuta `nix flake update hydenix`, actualizando solo el input de hydenix en `flake.lock`.
 
 ### Cuándo usarlo
 
@@ -183,6 +184,34 @@ make sys-apply
 
 ---
 
+## `make upd-ai`
+
+Actualiza las herramientas de IA (**OpenCode**, **Cursor** y **Antigravity**) y aplica los cambios en un solo comando.
+
+```bash
+make upd-ai
+```
+
+### ¿Qué hace?
+
+1. Ejecuta `nix flake update opencode nixpkgs-unstable`, actualizando solo esos dos inputs en `flake.lock`.
+2. Ejecuta `make sys-apply` para construir y aplicar la nueva configuración.
+
+No hace falta ejecutar `make sys-apply` después; ya está incluido en `upd-ai`.
+
+### Qué actualiza
+
+- **opencode** → OpenCode (asistente de IA en terminal)
+- **nixpkgs-unstable** → Cursor y Antigravity (editores, vía overlay)
+- **llm-agents** → Colección de agentes de IA (Claude Code, Gemini CLI, etc.)
+
+### Cuándo usarlo
+
+- Cuando quieras las últimas versiones de OpenCode, Cursor y Antigravity sin actualizar el resto del flake.
+- Para aplicar los cambios de esas herramientas en un solo paso.
+
+---
+
 ## `make upd-input INPUT=name`
 
 Actualiza un input específico del flake. Útil cuando necesitas control granular sobre qué actualizar.
@@ -196,7 +225,7 @@ make upd-input INPUT=nixpkgs
 
 ### ¿Qué hace?
 
-Ejecuta `nix flake lock --update-input <nombre>`, actualizando solo el input especificado. El comando muestra una interfaz visual con información sobre qué input se está actualizando y te recuerda usar `make upd-diff` para ver los cambios y `make sys-apply` para aplicarlos.
+Ejecuta `nix flake update <nombre>`, actualizando solo el input especificado. Después puedes usar `make upd-diff` para ver los cambios y `make sys-apply` para aplicarlos.
 
 ### Inputs disponibles
 
@@ -206,7 +235,8 @@ Los inputs comunes que puedes actualizar incluyen:
 - `hydenix` - Framework de configuración
 - `nixos-hardware` - Configuraciones específicas de hardware
 - `mynixpkgs` - Fork personalizado de nixpkgs (si lo tienes)
-- `opencode` - Input personalizado (si lo tienes)
+- `opencode` - OpenCode (asistente de IA en terminal)
+- `nixpkgs-unstable` - Cursor y Antigravity (editores, vía overlay)
 - `zen-browser-flake` - Flake del navegador Zen (si lo tienes)
 
 ### Cuándo usarlo

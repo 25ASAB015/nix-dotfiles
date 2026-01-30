@@ -52,6 +52,43 @@ Ver [Actualizaciones y Flakes](/nix-dotfiles/makefile/04-updates/) para más com
 
 ---
 
+## LLM Agents (Nuevos)
+
+Además de OpenCode, hemos integrado **llm-agents.nix** para proporcionar acceso a herramientas de IA adicionales directamente en tu terminal.
+
+### Herramientas Instaladas
+
+Actualmente tienes instaladas las siguientes herramientas:
+
+#### Claude Code (`claude-code`)
+Un agente de codificación avanzado de Anthropic que vive en tu terminal, entiende tu base de código y te ayuda a programar más rápido.
+- **Uso**: `claude-code`
+
+#### Gemini CLI (`gemini-cli`)
+Agente de IA que trae el poder de Gemini directamente a tu terminal.
+- **Uso**: `gemini-cli`
+
+### Instalar Más Herramientas
+
+Puedes instalar más herramientas desde `llm-agents.nix` editando tu archivo `hosts/hydenix/user.nix` y agregando el paquete correspondiente:
+
+```nix
+home.packages = [
+  # ... otras herramientas
+  inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.nombre-paquete
+];
+```
+
+Algunas herramientas disponibles:
+- `amp`: Agente de codificación de Sourcegraph
+- `codex`: OpenAI Codex CLI
+- `copilot-cli`: GitHub Copilot CLI
+- `qwen-code`: Herramienta de flujo de trabajo para modelos Qwen3-Coder
+
+Para ver la lista completa de herramientas disponibles, consulta el [repositorio de llm-agents.nix](https://github.com/numtide/llm-agents.nix).
+
+---
+
 ## Modelos de IA (Providers)
 
 OpenCode está configurado con múltiples modelos de IA a través del plugin **antigravity-auth**, que proporciona acceso gratuito a modelos premium.

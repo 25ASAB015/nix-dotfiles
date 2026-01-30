@@ -48,12 +48,13 @@ make upd-ai
 ```
 
 **Qué hace:**
-1. Actualiza los inputs `opencode` y `nixpkgs-unstable` en el flake.
+1. Actualiza los inputs `opencode`, `nixpkgs-unstable` y `llm-agents` en el flake.
 2. Ejecuta `make sys-apply` para construir y aplicar la nueva configuración.
 
 **Qué actualiza:**
 - **opencode** → OpenCode (asistente de IA en terminal)
-- **nixpkgs-unstable** → Cursor y Antigravity (editores, vía overlay en `modules/system/editor-overlays.nix`)
+- **nixpkgs-unstable** → Cursor y Antigravity (editores, vía overlay)
+- **llm-agents** → Colección de agentes de IA (Claude Code, Gemini CLI, etc.)
 
 No hace falta ejecutar `make sys-apply` después; ya está incluido en `upd-ai`.
 

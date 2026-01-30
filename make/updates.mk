@@ -39,7 +39,7 @@ upd-ai: ## Update OpenCode, Cursor and Antigravity, then apply (update + sys-app
 	@printf "$(CYAN)            🤖 Update AI tools + Apply (OpenCode + Cursor + Antigravity)  $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)  1/2 Actualizando opencode y nixpkgs-unstable...$(NC)\n"
-	nix flake update --flake $(FLAKE_DIR) opencode nixpkgs-unstable
+	nix flake update --flake $(FLAKE_DIR) opencode nixpkgs-unstable llm-agents
 	@printf "\n$(BLUE)  2/2 Aplicando configuración...$(NC)\n"
 	@$(MAKE) --no-print-directory sys-apply
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
