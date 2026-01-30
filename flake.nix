@@ -75,6 +75,19 @@
         # Modern syntax (replaces deprecated 'system')
         modules = [
           { nixpkgs.hostPlatform = "x86_64-linux"; }
+          # Configure nixpkgs to allow unfree packages for antigravity and code-cursor
+          {
+            nixpkgs.config.allowUnfreePredicate = pkg:
+              let
+                pkgName = inputs.nixpkgs.lib.getName pkg;
+              in
+              builtins.elem pkgName [
+                "antigravity"
+                "antigravity-fhs"
+                "code-cursor"
+                "code-cursor-fhs"
+              ];
+          }
           ./hosts/hydenix/configuration.nix
         ];
         specialArgs = {
