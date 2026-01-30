@@ -23,14 +23,14 @@ upd-nixpkgs: ## Update only nixpkgs input
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📦 Update Nixpkgs                      $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	nix flake update nixpkgs $(FLAKE_DIR)
+	nix flake update nixpkgs --flake $(FLAKE_DIR)
 
 upd-hydenix: ## Update only hydenix input
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)            📦 Update Hydenix                      $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	nix flake update hydenix $(FLAKE_DIR)
+	nix flake update hydenix --flake $(FLAKE_DIR)
 
 # Update OpenCode + Cursor/Antigravity (nixpkgs-unstable) in one go
 upd-ai: ## Update OpenCode, Cursor and Antigravity (opencode + nixpkgs-unstable)
@@ -39,7 +39,7 @@ upd-ai: ## Update OpenCode, Cursor and Antigravity (opencode + nixpkgs-unstable)
 	@printf "$(CYAN)            🤖 Update AI tools (OpenCode + Cursor + Antigravity)  $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)  Actualizando opencode y nixpkgs-unstable...$(NC)\n"
-	nix flake update opencode nixpkgs-unstable $(FLAKE_DIR)
+	nix flake update opencode nixpkgs-unstable --flake $(FLAKE_DIR)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ OpenCode, Cursor y Antigravity actualizados\n$(NC)"
 	@printf "$(YELLOW)Ejecuta 'make sys-apply' para aplicar los cambios.\n$(NC)"
@@ -73,7 +73,7 @@ upd-input: ## Update a specific input (use INPUT=name)
 	@printf "$(BLUE)Actualizando input: $(INPUT)\n$(NC)"
 	@printf "$(YELLOW)Esto actualizará solo este input específico.\n$(NC)"
 	@printf "\n"
-	nix flake update $(INPUT) $(FLAKE_DIR)
+	nix flake update $(INPUT) --flake $(FLAKE_DIR)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Input '$(INPUT)' actualizado\n$(NC)"
 	@printf "$(BLUE)Usa 'make upd-diff' para ver los cambios\n$(NC)"
