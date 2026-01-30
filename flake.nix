@@ -94,7 +94,7 @@
       };
       
       # Main desktop PC configuration
-      hydenixConfig = pkgsWithUnfree.lib.nixosSystem {
+      hydenixConfig = inputs.nixpkgs.lib.nixosSystem {
         # Modern syntax (replaces deprecated 'system')
         modules = [
           { 
