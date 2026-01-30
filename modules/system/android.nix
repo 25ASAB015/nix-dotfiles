@@ -15,9 +15,6 @@
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
-  # Aceptación de licencias del SDK (necesario para descargar componentes)
-  nixpkgs.config.android_sdk.accept_license = true;
-  
   # Herramientas de sistema para Android
   environment.systemPackages = with pkgs; [
     adb
