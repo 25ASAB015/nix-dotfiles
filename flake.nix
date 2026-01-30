@@ -81,8 +81,12 @@
             builtins.elem pkgName [
               "antigravity"
               "antigravity-fhs"
+              "code"
+              "code-fhs"
               "code-cursor"
               "code-cursor-fhs"
+              "vscode"
+              "vscode-fhs"
             ];
         };
       };
