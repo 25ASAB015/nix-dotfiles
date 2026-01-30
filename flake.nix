@@ -58,6 +58,13 @@
     # Documentación: https://github.com/Fission-AI/OpenSpec
     # ══════════════════════════════════════════════════════════════════════════
     openspec.url = "github:Fission-AI/OpenSpec";
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # NIXPKGS-UNSTABLE - Para paquetes actualizados (Cursor, Antigravity)
+    # Solo se usa para sobrescribir paquetes específicos via overlay
+    # El resto del sistema usa las versiones fijadas por hydenix
+    # ══════════════════════════════════════════════════════════════════════════
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
   outputs =
