@@ -12,17 +12,17 @@
 { config, lib, inputs, ... }:
 
 {
-  # Overlay para actualizar editores desde nixpkgs-unstable con allowUnfree
+  # Overlay para actualizar editores y herramientas de desarrollo desde nixpkgs-unstable con allowUnfree
   nixpkgs.overlays = [
     (final: prev: 
       let
         # Obtener el sistema desde el contexto del overlay
         system = prev.stdenv.hostPlatform.system;
         # Importar nixpkgs-unstable con allowUnfree configurado (wrapper)
-        # Esto permite evaluar paquetes unfree sin necesidad de nixpkgs.config
         unstablePkgs = import inputs.nixpkgs-unstable {
           inherit system;
           config = {
+            android_sdk.accept_license = true;
             allowUnfreePredicate = pkg:
               let
                 pkgName = inputs.nixpkgs-unstable.lib.getName pkg;
@@ -38,22 +38,29 @@
                 "cursor-fhs"
                 "vscode"
                 "vscode-fhs"
+                # Desarrollo Móvil
+                "android-studio"
+                "android-studio-stable"
+                "android-sdk"
+                "flutter"
+                "google-chrome"
               ];
           };
         };
       in
       {
-        # Sobrescribir code-cursor-fhs con versión de nixpkgs-unstable (wrapper con allowUnfree)
+        # Editores
         code-cursor-fhs = unstablePkgs.code-cursor-fhs;
-        
-        # Sobrescribir antigravity-fhs con versión de nixpkgs-unstable (wrapper con allowUnfree)
         antigravity-fhs = unstablePkgs.antigravity-fhs;
         
-        # También hacer disponibles otros paquetes unfree desde unstable si se necesitan
-        # code = unstablePkgs.code;
-        # code-fhs = unstablePkgs.code-fhs;
-        # vscode = unstablePkgs.vscode;
-        # vscode-fhs = unstablePkgs.vscode-fhs;
+        # Desarrollo Móvil (Unstable)
+        android-studio = unstablePkgs.android-studio-stable;
+        flutter = unstablePkgs.flutter;
+
+        # Desarrollo Web (Elixir/Erlang)
+        # Traemos las versiones más recientes de unstable
+        elixir = unstablePkgs.elixir;
+        erlang = unstablePkgs.erlang;
       }
     )
   ];

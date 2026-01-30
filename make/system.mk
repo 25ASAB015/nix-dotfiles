@@ -74,20 +74,20 @@ sys-build: ## Build configuration without switching
 	@printf "$(BLUE)Building configuration without applying changes...$(NC)\n"
 	@printf "$(YELLOW)This will compile but not activate the new generation.$(NC)\n"
 	@printf "\n"
-	@START=$(date +%s); \
+	@START=$$(date +%s); \
 	sudo nixos-rebuild build $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME); \
 	BUILD_EXIT=$$?; \
-	END=$(date +%s); \
-	DURATION=$((END - START)); \
-	MINUTES=$((DURATION / 60)); \
-	SECONDS=$((DURATION % 60)); \
+	END=$$(date +%s); \
+	DURATION=$$((END - START)); \
+	MINUTES=$$((DURATION / 60)); \
+	SECONDS=$$((DURATION % 60)); \
 	printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-	if [ $BUILD_EXIT -eq 0 ]; then \
+	if [ $$BUILD_EXIT -eq 0 ]; then \
 		printf "$(GREEN)✅ Build completed successfully$(NC)\n"; \
 		printf "$(BLUE)Configuration compiled but not activated.$(NC)\n"; \
 		printf "$(YELLOW)Use 'make sys-apply' to apply changes.$(NC)\n"; \
 		printf "\n$(BLUE)Build Statistics:$(NC)\n"; \
-		if [ $MINUTES -gt 0 ]; then \
+		if [ $$MINUTES -gt 0 ]; then \
 		printf "  $(GREEN)Build time:$(NC) $(YELLOW)$${MINUTES}m $${SECONDS}s$(NC) ($(YELLOW)$${DURATION}s$(NC) total)\n"; \
 		else \
 		printf "  $(GREEN)Build time:$(NC) $(YELLOW)$${SECONDS}s$(NC)\n"; \
@@ -98,7 +98,7 @@ sys-build: ## Build configuration without switching
 	fi; \
 	printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
 	printf "\n"
-	exit $BUILD_EXIT
+	exit $$BUILD_EXIT
 
 # Preview what would be built or changed without actually building
 sys-dry-run: ## Show what would be built/changed

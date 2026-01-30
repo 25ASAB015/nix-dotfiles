@@ -1,0 +1,25 @@
+# Elixir & Phoenix Development
+
+This module configures the Elixir development stack.
+
+## Tools Installed
+- **Elixir & Erlang/OTP**: Latest versions from the unstable channel.
+- **inotify-tools**: Required for Phoenix live reloading on Linux.
+- **PostgreSQL**: System-wide service pre-configured for development.
+
+## PostgreSQL Configuration
+- **Version**: PostgreSQL 16.
+- **Authentication**: Set to `trust` for local connections (no password required for `ludus` or `dev_db`).
+- **Initial DBs**: `ludus`, `dev_db`.
+
+## Getting Started
+1. Start the PostgreSQL service if it's not running: `sudo systemctl start postgresql`.
+2. Install hex and phoenix:
+   ```bash
+   mix local.hex
+   mix archive.install hex phx_new
+   ```
+3. Test a new project:
+   ```bash
+   mix phx.new my_app
+   ```

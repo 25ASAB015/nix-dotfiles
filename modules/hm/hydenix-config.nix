@@ -63,6 +63,13 @@
   # Integración automática con Fish y Zsh (detecta shells habilitados)
   # Documentación: https://direnv.net/
   modules.development.direnv.enable = true;
+  
+  # ════════════════════════════════════════════════════════════════════════════
+  # DEVELOPMENT STACKS - Entornos de desarrollo específicos
+  # ════════════════════════════════════════════════════════════════════════════
+  modules.development.mobile.enable = true;    # Android, Expo, Flutter
+  modules.development.elixir.enable = true;    # Elixir y Phoenix
+  modules.development.databases.enable = true; # Clientes de bases de datos
 
   # ════════════════════════════════════════════════════════════════════════════
   # ZOXIDE - Navegación inteligente de directorios
