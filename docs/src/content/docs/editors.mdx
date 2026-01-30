@@ -134,11 +134,18 @@ La solución es un **wrapper en el overlay**: dentro del overlay se importa nixp
 
 ### Actualizar Cursor y AntiGravity
 
-```bash
-# Actualizar solo el input nixpkgs-unstable
-nix flake lock --update-input nixpkgs-unstable
+Para actualizar **OpenCode**, **Cursor** y **Antigravity** y aplicar los cambios en un solo comando:
 
-# Reconstruir y aplicar
+```bash
+make upd-ai
+```
+
+Este comando actualiza los inputs `opencode` y `nixpkgs-unstable` y ejecuta `make sys-apply`. No hace falta ejecutar nada más.
+
+**Alternativa manual** (solo si no usas el Makefile):
+
+```bash
+nix flake update --flake . opencode nixpkgs-unstable
 sudo nixos-rebuild switch --flake .#hydenix
 ```
 

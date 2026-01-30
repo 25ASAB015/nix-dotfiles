@@ -1481,19 +1481,21 @@ make upd-all-hydenix
 ---
 
 #### `make upd-ai`
-Actualiza solo las herramientas de IA: **OpenCode**, **Cursor** y **Antigravity** (inputs `opencode` y `nixpkgs-unstable`).
+Actualiza las herramientas de IA (**OpenCode**, **Cursor** y **Antigravity**) y aplica los cambios en un solo comando.
 
 ```bash
 make upd-ai
-# Luego aplicar cambios:
-make sys-apply
 ```
+
+**Qué hace:**
+1. Actualiza los inputs `opencode` y `nixpkgs-unstable`.
+2. Ejecuta `make sys-apply` para aplicar la nueva configuración.
 
 **Qué actualiza:**
 - **opencode** → OpenCode (asistente de IA en terminal)
 - **nixpkgs-unstable** → Cursor y Antigravity (editores, vía overlay)
 
-**Cuándo usarlo:** Cuando quieras tener las últimas versiones de OpenCode, Cursor y Antigravity sin actualizar el resto del flake.
+No hace falta ejecutar `make sys-apply` después; ya está incluido.
 
 ---
 
