@@ -15,7 +15,7 @@ in {
       android-studio
       
       # Flutter (desde unstable overlay)
-      (lib.lowPrio flutter) # Evitar colisiones de archivos de SDK con dotfiles
+      (lib.setPrio 11 flutter) # Muy baja prioridad para evitar colisiones con dotfiles y elixir-ls
       
       # Expo y herramientas de Node (Node ya está instalado v22)
       nodePackages.eas-cli

@@ -14,7 +14,7 @@ in {
       # Elixir y Erlang (desde unstable overlay)
       elixir
       erlang
-      elixir-ls     # Language Server para Elixir
+      (lib.lowPrio elixir-ls) # Menos prioridad que los dotfiles
       
       # Herramientas para Phoenix
       inotify-tools # Necesario para live reload en Linux
