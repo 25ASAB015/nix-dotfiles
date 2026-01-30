@@ -70,35 +70,28 @@
   outputs =
     { ... }@inputs:
     let
-      # Import nixpkgs with configuration to allow unfree packages
-      pkgs = import inputs.nixpkgs {
-        system = "x86_64-linux";
-        config = {
-          allowUnfreePredicate = pkg:
-            let
-              pkgName = inputs.nixpkgs.lib.getName pkg;
-            in
-            builtins.elem pkgName [
-              "antigravity"
-              "antigravity-fhs"
-              "code"
-              "code-fhs"
-              "code-cursor"
-              "code-cursor-fhs"
-              "vscode"
-              "vscode-fhs"
-            ];
-        };
-      };
-      
       # Main desktop PC configuration
       hydenixConfig = inputs.nixpkgs.lib.nixosSystem {
         # Modern syntax (replaces deprecated 'system')
         modules = [
-          { nixpkgs.hostPlatform = "x86_64-linux"; }
-          # Pass configured pkgs to override the externally created instance
-          {
-            nixpkgs.pkgs = pkgs;
+          { 
+            nixpkgs.hostPlatform = "x86_64-linux";
+            # Configure nixpkgs to allow unfree packages for editors
+            # This is done here because nixpkgs is created externally
+            nixpkgs.config.allowUnfreePredicate = pkg:
+              let
+                pkgName = inputs.nixpkgs.lib.getName pkg;
+              in
+              builtins.elem pkgName [
+                "antigravity"
+                "antigravity-fhs"
+                "code"
+                "code-fhs"
+                "code-cursor"
+                "code-cursor-fhs"
+                "vscode"
+                "vscode-fhs"
+              ];
           }
           ./hosts/hydenix/configuration.nix
         ];
