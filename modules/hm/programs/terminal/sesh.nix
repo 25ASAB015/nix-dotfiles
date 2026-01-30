@@ -43,7 +43,7 @@
   '';
 
   # Zsh integration (Alt-s to open sesh with fzf)
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
     function sesh-sessions() {
       {
         exec </dev/tty

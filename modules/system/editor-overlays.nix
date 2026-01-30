@@ -54,13 +54,14 @@
         antigravity-fhs = unstablePkgs.antigravity-fhs;
         
         # Desarrollo Móvil (Unstable)
-        android-studio = unstablePkgs.android-studio-stable;
+        android-studio = unstablePkgs.android-studio;
         flutter = unstablePkgs.flutter;
 
         # Desarrollo Web (Elixir/Erlang)
         # Traemos las versiones más recientes de unstable
         elixir = unstablePkgs.elixir;
         erlang = unstablePkgs.erlang;
+        google-chrome = unstablePkgs.google-chrome;
       }
     )
   ];
