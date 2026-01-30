@@ -561,22 +561,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_7": {
-      "locked": {
-        "lastModified": 1767640445,
-        "narHash": "sha256-UWYqmD7JFBEDBHWYcqE6s6c77pWdcU/i+bwD6XxMb8A=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "9f0c42f8bc7151b8e7e5840fb3bd454ad850d8c5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixvim": {
       "inputs": {
         "flake-parts": [
@@ -623,24 +607,6 @@
         "type": "github"
       }
     },
-    "openspec": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_7"
-      },
-      "locked": {
-        "lastModified": 1769484805,
-        "narHash": "sha256-InoHfLQHItOFceWB0nReqxH8Az/QlBVh8T1FDIdjavs=",
-        "owner": "Fission-AI",
-        "repo": "OpenSpec",
-        "rev": "f6b415cb9b03f2a632238c5b3347b325af4b815b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Fission-AI",
-        "repo": "OpenSpec",
-        "type": "github"
-      }
-    },
     "pkgs-by-name-for-flake-parts": {
       "locked": {
         "lastModified": 1769286518,
@@ -670,7 +636,6 @@
         ],
         "nixpkgs-unstable": "nixpkgs-unstable",
         "opencode": "opencode",
-        "openspec": "openspec",
         "zen-browser": "zen-browser"
       }
     },

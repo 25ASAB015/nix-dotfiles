@@ -54,12 +54,6 @@
     };
 
     # ══════════════════════════════════════════════════════════════════════════
-    # OPENSPEC - Spec-driven development for AI coding assistants
-    # Documentación: https://github.com/Fission-AI/OpenSpec
-    # ══════════════════════════════════════════════════════════════════════════
-    openspec.url = "github:Fission-AI/OpenSpec";
-
-    # ══════════════════════════════════════════════════════════════════════════
     # LLM-AGENTS - Nix packages for AI coding agents
     # Documentación: https://github.com/numtide/llm-agents.nix
     # ══════════════════════════════════════════════════════════════════════════

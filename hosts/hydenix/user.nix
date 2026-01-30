@@ -25,9 +25,13 @@
       # Use khanelivim as neovim package (replaces default nvim)
       home.packages = [
         inputs.khanelivim.packages.${pkgs.stdenv.hostPlatform.system}.default
-        inputs.openspec.packages.${pkgs.stdenv.hostPlatform.system}.default
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
         inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.workmux
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.jules
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.vibe-kanban
+        inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.openspec
+        pkgs.tmux
       ];
       
       # Set as default editor
