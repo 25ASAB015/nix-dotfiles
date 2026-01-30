@@ -36,7 +36,7 @@ gen-rollback: ## Rollback to previous generation
 	read -r REPLY; \
 	if [ "$REPLY" = "yes" ]; then \
 		printf "\n$(YELLOW)Ejecutando rollback...\n$(NC)\n"; \
-		sudo nixos-rebuild rollback; \
+		sudo nixos-rebuild rollback $(NIX_OPTS); \
 		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
 		printf "$(GREEN)✅ Rollback completado exitosamente\n$(NC)"; \
 		printf "$(BLUE)Sistema restaurado a la generación anterior.\n$(NC)"; \

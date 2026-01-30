@@ -7,12 +7,7 @@
 
 .PHONY: sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-doctor sys-fix-git sys-hw-scan sys-deploy sys-copy-hw-config sys-apply-core
 
-# === Nix Performance Options ===
-NIX_OPTS = \
-	--option download-buffer-size 5245245245 \
-	--option http-connections 16 \
-	--option cores 0 \
-	--option max-jobs auto
+# === Nix Performance Options (Defined in main Makefile) ===
 
 # === Operaciones del Sistema ===
 
@@ -112,7 +107,7 @@ sys-dry-run: ## Show what would be built/changed
 	@printf "$(CYAN)            🔍 Dry Run - Preview Changes           $(NC)"
 	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n$(BLUE)Showing what would be built/changed without applying...$(NC)\n\n"
-	@sudo nixos-rebuild dry-run --flake $(FLAKE_DIR)#$(HOSTNAME)
+	@sudo nixos-rebuild dry-run $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN)✅ Dry run completed$(NC)\n"
 	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"

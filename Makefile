@@ -9,6 +9,13 @@ FLAKE_DIR := .
 HOSTNAME ?= hydenix
 AVAILABLE_HOSTS := hydenix laptop vm
 
+# Nix Performance Options
+NIX_OPTS := \
+	--option download-buffer-size 5245245245 \
+	--option http-connections 16 \
+	--option cores 0 \
+	--option max-jobs auto
+
 # Colors for pretty output
 RED := \033[0;31m
 GREEN := \033[0;32m
