@@ -275,6 +275,51 @@ tmux info
 tmux source-file ~/.config/tmux/tmux.conf
 ```
 
+### Mantenimiento y Actualizaciones
+
+#### Actualizar Oh my tmux! a la última versión
+
+Oh my tmux! se mantiene como un git submodule, lo que permite actualizarlo fácilmente:
+
+```bash
+# 1. Actualizar el submodule a la última versión upstream
+cd /home/ludus/Dotfiles
+git submodule update --remote modules/hm/programs/terminal/oh-my-tmux
+
+# 2. Copiar la nueva configuración principal
+cp modules/hm/programs/terminal/oh-my-tmux/.tmux.conf \
+   modules/hm/programs/terminal/oh-my-tmux.conf
+
+# 3. Agregar los cambios a git
+git add modules/hm/programs/terminal/oh-my-tmux \
+        modules/hm/programs/terminal/oh-my-tmux.conf
+
+# 4. Verificar cambios (opcional pero recomendado)
+git diff --cached modules/hm/programs/terminal/oh-my-tmux.conf
+
+# 5. Commit y aplicar
+git commit -m "chore(tmux): update Oh my tmux! to latest version"
+nixos-rebuild switch --flake .#hydenix
+```
+
+> [!TIP]
+> Antes de actualizar, revisa el [changelog de Oh my tmux!](https://github.com/gpakosz/.tmux/commits/master) para ver qué cambios incluye la nueva versión.
+
+> [!WARNING]
+> Después de actualizar, verifica que tu configuración personalizada en `tmux.conf.local` siga siendo compatible. Algunas actualizaciones pueden introducir cambios que requieran ajustes en tu configuración local.
+
+#### Verificar versión actual
+
+```bash
+# Ver el commit actual del submodule
+cd /home/ludus/Dotfiles/modules/hm/programs/terminal/oh-my-tmux
+git log -1 --oneline
+
+# Ver si hay actualizaciones disponibles
+git fetch origin
+git log HEAD..origin/master --oneline
+```
+
 ### Recursos Adicionales
 
 - [Oh my tmux! GitHub](https://github.com/gpakosz/.tmux)
