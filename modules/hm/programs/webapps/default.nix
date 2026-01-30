@@ -90,7 +90,9 @@ in {
     "vix" = mkWebApp "Vix" "https://vix.com/es-es" "Vix.png";
     "x-bookmarks" = mkWebApp "X bookmarks" "https://x.com/i/bookmarks" "X.png";
     "x-grok" = mkWebApp "X Grok" "https://x.com/i/grok" "X.png";
-    "youtube" = mkWebApp "YouTube" "https://youtube.com/" "YouTube.png";
+    "youtube" = (mkWebApp "YouTube" "https://youtube.com/" "YouTube.png") // {
+      exec = "helium --app=https://youtube.com/";
+    };
     "z-ai" = mkWebApp "Z ai" "https://chat.z.ai/" "Z ai.png";
   };
 }
