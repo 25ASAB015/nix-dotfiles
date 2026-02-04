@@ -260,27 +260,27 @@ sys-deploy: ## Total sync (doctor + add + commit + push + apply)
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	
-	@printf "$(BLUE)1. System Doctor (Permissions):$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)System Doctor (Permissions):$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@$(MAKE) --no-print-directory sys-doctor EMBEDDED=1
 
-	@printf "\n$(BLUE)2. Git Permissions Fix:$(NC)\n"
+	@printf "\n$(GREEN)2.$(NC) $(BLUE)Git Permissions Fix:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@$(MAKE) --no-print-directory sys-fix-git EMBEDDED=1
 
-	@printf "\n$(BLUE)3. Git Stage Changes:$(NC)\n"
+	@printf "\n$(GREEN)3.$(NC) $(BLUE)Git Stage Changes:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@$(MAKE) --no-print-directory git-add EMBEDDED=1
 
-	@printf "\n$(BLUE)4. Git Quick Commit:$(NC)\n"
+	@printf "\n$(GREEN)4.$(NC) $(BLUE)Git Quick Commit:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@$(MAKE) --no-print-directory git-commit EMBEDDED=1
 
-	@printf "\n$(BLUE)5. Git Push to Remote:$(NC)\n"
+	@printf "\n$(GREEN)5.$(NC) $(BLUE)Git Push to Remote:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@$(MAKE) --no-print-directory git-push EMBEDDED=1
 
-	@printf "\n$(BLUE)6. System Apply (Build & Switch):$(NC)\n"
+	@printf "\n$(GREEN)6.$(NC) $(BLUE)System Apply (Build & Switch):$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@$(MAKE) --no-print-directory sys-apply-core EMBEDDED=1
 	
