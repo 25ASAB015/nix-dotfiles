@@ -48,8 +48,8 @@
   # Esto evita el conflicto con xdg-terminals.list
   hydenix.hm.terminals.enable = false;
   
-  # Habilitar Spotify
-  hydenix.hm.spotify.enable = true;
+  # Deshabilitar Spotify estándar (conflicto con Spicetify que ya provee /bin/spotify)
+  hydenix.hm.spotify.enable = false;
 
   # ════════════════════════════════════════════════════════════════════════════
   # ZSH SHELL - Configuración y plugins
