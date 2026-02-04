@@ -32,6 +32,7 @@ sys-apply-core:
 	@printf "\n$(BLUE)===================================== Build =====================================\n$(NC)"
 	@printf "\n"
 	sudo nixos-rebuild switch $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
+	hyde-shell reload
 	@printf "\n$(BLUE)===================== ✅ Deployment completed successfully! =====================\n$(NC)"
 
 # Validate configuration and then apply (recommended safe workflow)
