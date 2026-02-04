@@ -1,0 +1,324 @@
+---
+title: Zsh Shell
+description: Configuración completa de Zsh shell con plugins, aliases y herramientas integradas
+---
+
+# 🐚 Zsh Shell
+
+**Zsh** (Z Shell) es un shell potente y altamente personalizable. Esta configuración usa [Hydenix](https://github.com/richen604/hydenix) para gestionar zsh con plugins, Starship como prompt, y herramientas integradas para una experiencia productiva.
+
+La configuración se encuentra en:
+```
+modules/hm/default.nix
+resources/config/.zshrc_extra
+```
+
+## Configuración Principal
+
+### Archivo de configuración
+
+La configuración principal de Zsh se gestiona a través de Hydenix en:
+```
+modules/hm/default.nix
+```
+
+Para personalizaciones adicionales, edita:
+```
+resources/config/.zshrc_extra
+```
+
+### Habilitar Zsh Shell
+
+En `modules/hm/default.nix`:
+
+```nix
+hydenix.hm.shell = {
+  enable = true;
+  starship = {
+    enable = true;  # Habilitar Starship explícitamente para zsh
+  };
+  zsh = {
+    enable = true;
+    plugins = [
+      "sudo"
+      "zoxide"
+      "git"
+      "fzf"
+      "direnv"
+    ];
+    configText = ''
+      # Cargar configuraciones extras (.zshrc_extra)
+      source ~/Dotfiles/resources/config/.zshrc_extra
+    '';
+  };
+};
+```
+
+## Características Principales
+
+### Variables de Entorno
+
+Las siguientes variables de entorno se configuran automáticamente:
+
+- **`NIXPKGS_ALLOW_UNFREE=1`**: Permite paquetes no libres en Nix
+- **`MANPAGER='nvim +Man!'`**: Usa Neovim como visor de manuales
+- **`PYTHON_BASIC_REPL=1`**: Configuración básica de REPL de Python
+- **`NPM_CONFIG_PREFIX`**: Configuración de npm global (`$HOME/.npm-global`)
+- **`PATH`**: Incluye `$HOME/.npm-global/bin` automáticamente
+
+### Plugins Instalados
+
+Zsh incluye los siguientes plugins de Hydenix:
+
+| Plugin | Descripción |
+|--------|-------------|
+| **`sudo`** | Agrega `sudo` al comando actual con doble `Esc` |
+| **`zoxide`** | Navegación inteligente de directorios |
+| **`git`** | Aliases y funciones útiles de Git |
+| **`fzf`** | Fuzzy finder para búsqueda interactiva |
+| **`direnv`** | Carga automática de entornos por directorio |
+
+## 📋 Referencia Rápida: Aliases y Funciones
+
+### 🎯 Aliases por Categoría
+
+#### 📝 Editor y Archivos
+
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`fn`** | `nvim $(fzf)` | Abre Neovim con selector fuzzy de archivos |
+| **`fp`** | `zathura $(fzf)` | Abre Zathura (PDF viewer) con selector fuzzy |
+| **`cat`** | `bat` | Muestra archivos con syntax highlighting |
+
+#### 🔀 Git y Desarrollo
+
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`da`** | `direnv allow .` | Permite direnv en el directorio actual |
+
+#### 🐳 Docker/Podman
+
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`lzd`** | `DOCKER_HOST=unix:///run/user/1000/podman/podman.sock lazydocker` | Abre lazydocker con Podman socket |
+
+#### 🌳 Visualización de Directorios
+
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`t`** | `tree -L 2` | Muestra árbol de directorios (2 niveles) |
+| **`tt`** | `tree -L 3` | Muestra árbol de directorios (3 niveles) |
+
+#### 🤖 ROS/Robótica
+
+| Alias | Comando | Descripción |
+|-------|---------|-------------|
+| **`rviz2`** | `QT_QPA_PLATFORM=xcb rviz2` | Ejecuta RViz2 con configuración XCB |
+
+## Integraciones
+
+### Starship - Prompt Personalizado
+
+Zsh usa **Starship** como prompt, configurado a través de Hydenix. El prompt es rápido, personalizable y muestra información útil sobre tu entorno.
+
+**Habilitar:**
+
+```nix
+hydenix.hm.shell = {
+  enable = true;
+  starship = {
+    enable = true;
+  };
+  zsh = {
+    enable = true;
+  };
+};
+```
+
+**Características:**
+- Prompt rápido y asíncrono
+- Información de Git integrada
+- Indicadores de entorno (Nix, Python, Node, etc.)
+- Configuración separada de Fish (no se afectan mutuamente)
+
+### Direnv - Entornos Automáticos
+
+Direnv carga automáticamente entornos cuando entras a un directorio:
+
+```
+modules/hm/hydenix-config.nix
+```
+
+**Habilitar:**
+
+```nix
+modules.development.direnv.enable = true;
+```
+
+**Uso:**
+1. Crea un archivo `.envrc` en tu proyecto:
+   ```bash
+   echo "use nix" > .envrc
+   ```
+2. Permite direnv en ese directorio:
+   ```bash
+   da  # o: direnv allow .
+   ```
+3. Al entrar al directorio, se carga el entorno automáticamente
+
+**Características:**
+- Carga entornos Nix automáticamente
+- Variables de entorno por proyecto
+- Integración con nix-shell y nix-direnv
+
+### Zoxide - Navegación Inteligente
+
+Zoxide aprende tus directorios frecuentes y te permite saltar rápidamente:
+
+```
+modules/hm/hydenix-config.nix
+```
+
+**Habilitar:**
+
+```nix
+modules.terminal.software.zoxide = {
+  enable = true;
+};
+```
+
+**Uso:**
+- `z carpeta`: Salta a un directorio visitado frecuentemente
+- `zi`: Modo interactivo para seleccionar directorio
+- Aprende automáticamente de tus `cd`
+
+### fzf - Fuzzy Finder
+
+fzf proporciona búsqueda fuzzy interactiva:
+
+```
+modules/hm/hydenix-config.nix
+```
+
+**Habilitar:**
+
+```nix
+modules.terminal.software.fzf = {
+  enable = true;
+};
+```
+
+**Uso:**
+- **`Ctrl+R`**: Buscar en historial
+- **`Ctrl+T`**: Buscar archivos
+- **`Alt+C`**: Buscar directorios
+- Integrado con aliases: `fn` y `fp` usan fzf
+
+### Git Plugin
+
+El plugin de Git proporciona aliases y funciones útiles:
+
+**Aliases disponibles:**
+- `g`: `git`
+- `ga`: `git add`
+- `gc`: `git commit`
+- `gp`: `git push`
+- `gl`: `git pull`
+- `gst`: `git status`
+- `gco`: `git checkout`
+- Y muchos más...
+
+### Sudo Plugin
+
+Agrega `sudo` al comando actual fácilmente:
+
+**Uso:**
+- Escribe un comando
+- Presiona `Esc` dos veces
+- Se agrega `sudo` al inicio del comando
+
+## Personalización
+
+### Agregar Aliases Personalizados
+
+Edita `resources/config/.zshrc_extra`:
+
+```bash
+# Agregar nuevos aliases
+alias mi-alias='comando --opciones'
+```
+
+### Agregar Variables de Entorno
+
+Edita `resources/config/.zshrc_extra`:
+
+```bash
+# Agregar variables de entorno
+export MI_VARIABLE="valor"
+export PATH="$PATH:/ruta/adicional"
+```
+
+### Agregar Funciones Personalizadas
+
+Edita `resources/config/.zshrc_extra`:
+
+```bash
+# Agregar funciones
+mi-funcion() {
+    echo "Hola desde mi función"
+    # Tu código aquí
+}
+```
+
+### Agregar Plugins
+
+Edita `modules/hm/default.nix`:
+
+```nix
+zsh = {
+  enable = true;
+  plugins = [
+    "sudo"
+    "zoxide"
+    "git"
+    "fzf"
+    "direnv"
+    "nuevo-plugin"  # Agregar aquí
+  ];
+};
+```
+
+## Aplicar Cambios
+
+Después de modificar la configuración:
+
+```bash
+# Reconstruir configuración
+make switch
+# o
+home-manager switch
+```
+
+Luego reinicia tu terminal o ejecuta:
+
+```bash
+source ~/.zshrc
+```
+
+## Diferencias con Fish
+
+| Característica | Zsh (Hydenix) | Fish |
+|----------------|---------------|------|
+| **Prompt** | Starship (Hydenix) | Starship (omarchy) |
+| **Configuración** | `modules/hm/default.nix` + `.zshrc_extra` | `modules/hm/programs/terminal/shell/fish.nix` |
+| **Plugins** | Oh My Zsh plugins | Fish plugins nativos |
+| **Historial** | Historial tradicional | Atuin (opcional) |
+| **Autocompletado** | Oh My Zsh + fzf | Autocompletado nativo + fzf |
+
+## Recursos
+
+- **Documentación oficial de Zsh**: https://zsh.sourceforge.io/Doc/
+- **Oh My Zsh**: https://ohmyz.sh/
+- **Hydenix (inspiración)**: https://github.com/richen604/hydenix
+- **Starship**: https://starship.rs/
+

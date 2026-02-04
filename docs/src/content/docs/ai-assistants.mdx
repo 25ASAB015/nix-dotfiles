@@ -1,0 +1,472 @@
+---
+title: AI Assistants
+description: Configuración de asistentes de IA, especialmente OpenCode
+---
+
+# 🤖 AI Assistants
+
+Este sistema incluye **OpenCode**, un asistente de IA para terminal que permite interactuar con múltiples modelos de IA (Claude, Gemini, GPT, etc.) directamente desde la terminal.
+
+## OpenCode
+
+**OpenCode** es una herramienta de línea de comandos que permite interactuar con modelos de IA directamente desde la terminal. Incluye integración con LSP para autocompletado inteligente, skills personalizables y soporte para MCP (Model Context Protocol) servers.
+
+### Configuración
+
+La configuración de OpenCode se encuentra en:
+```
+modules/hm/programs/ai-assistants/opencode/
+```
+
+### Uso Básico
+
+```bash
+# Iniciar el asistente en modo interactivo
+opencode
+
+# Enviar un prompt directo
+opencode "explica qué es Nix"
+
+# Usar con un archivo
+opencode < archivo.txt
+```
+
+### Características Principales
+
+- **Múltiples proveedores de IA**: Soporte para Google, OpenRouter, Anthropic, y más
+- **Integración con LSP**: Autocompletado inteligente usando Language Servers
+- **Skills personalizables**: Habilidades especializadas para tareas específicas
+- **MCP Servers**: Extensión de capacidades mediante Model Context Protocol
+- **Formatters integrados**: Formateo automático de código
+- **Plugin Antigravity**: Acceso gratuito a modelos premium
+
+### Actualizar OpenCode
+
+Para actualizar OpenCode (y también Cursor y Antigravity) y aplicar los cambios:
+
+```bash
+make upd-ai
+```
+
+Ver [Actualizaciones y Flakes](/nix-dotfiles/makefile/04-updates/) para más comandos de actualización.
+
+---
+
+## LLM Agents (Nuevos)
+
+Además de OpenCode, hemos integrado **llm-agents.nix** para proporcionar acceso a herramientas de IA adicionales directamente en tu terminal.
+
+### Herramientas Instaladas
+
+Actualmente tienes instaladas las siguientes herramientas:
+
+#### Claude Code (`claude-code`)
+Un agente de codificación avanzado de Anthropic que vive en tu terminal, entiende tu base de código y te ayuda a programar más rápido.
+- **Uso**: `claude-code`
+
+#### Gemini CLI (`gemini-cli`)
+Agente de IA que trae el poder de Gemini directamente a tu terminal.
+- **Uso**: `gemini-cli`
+
+#### Jules (`jules`)
+El agente de codificación asíncrono de Google, en la terminal.
+- **Uso**: `jules`
+
+#### Workmux (`workmux`)
+Git worktrees + tmux windows para desarrollo paralelo sin fricción.
+- **Uso**: `workmux`
+
+#### Vibe Kanban (`vibe-kanban`)
+Tablero Kanban para orquestar agentes de codificación IA como Claude Code, Codex y Gemini CLI.
+- **Uso**: `vibe-kanban`
+
+#### OpenSpec (`openspec`)
+Desarrollo guiado por especificaciones para asistentes de codificación IA.
+- **Uso**: `openspec`
+
+### Instalar Más Herramientas
+
+Puedes instalar más herramientas desde `llm-agents.nix` editando tu archivo `hosts/hydenix/user.nix` y agregando el paquete correspondiente:
+
+```nix
+home.packages = [
+  # ... otras herramientas
+  inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.nombre-paquete
+];
+```
+
+Algunas herramientas disponibles:
+- `amp`: Agente de codificación de Sourcegraph
+- `codex`: OpenAI Codex CLI
+- `copilot-cli`: GitHub Copilot CLI
+- `qwen-code`: Herramienta de flujo de trabajo para modelos Qwen3-Coder
+
+Para ver la lista completa de herramientas disponibles, consulta el [repositorio de llm-agents.nix](https://github.com/numtide/llm-agents.nix).
+
+---
+
+## Modelos de IA (Providers)
+
+OpenCode está configurado con múltiples modelos de IA a través del plugin **antigravity-auth**, que proporciona acceso gratuito a modelos premium.
+
+### Modelos Disponibles
+
+#### Google Gemini
+
+- **Gemini 3 Pro**: Modelo principal de Google con variantes:
+  - `low`: Thinking level bajo
+  - `high`: Thinking level alto
+  - Contexto: 1M tokens, Salida: 65K tokens
+
+- **Gemini 3 Flash**: Respuestas más rápidas con variantes:
+  - `minimal`: Thinking level mínimo
+  - `low`: Thinking level bajo
+  - `medium`: Thinking level medio
+  - `high`: Thinking level alto
+  - Contexto: 1M tokens, Salida: 64K tokens
+
+- **Gemini 2.5 Flash/Pro**: Modelos estables (1M contexto, 64K salida)
+- **Gemini 3 Preview**: Modelos en preview (Flash y Pro)
+
+Todos los modelos Gemini soportan:
+- Entrada: texto, imágenes, PDFs
+- Salida: texto
+
+#### Claude (Anthropic)
+
+- **Claude Sonnet 4.5**: Equilibrio entre velocidad y capacidad (200K contexto, 64K salida)
+  - Versión sin thinking: `antigravity-claude-sonnet-4-5`
+  - Versión con thinking: `antigravity-claude-sonnet-4-5-thinking`
+    - Variantes: `low` (8K thinking budget), `max` (32K thinking budget)
+
+- **Claude Opus 4.5**: Modelo más capaz (200K contexto, 64K salida)
+  - Versión con thinking: `antigravity-claude-opus-4-5-thinking`
+    - Variantes: `low` (8K thinking budget), `max` (32K thinking budget)
+
+Todos los modelos Claude soportan:
+- Entrada: texto, imágenes, PDFs
+- Salida: texto
+
+### Configurar Modelos
+
+Los modelos se configuran en `_providers.nix`. Para agregar un nuevo modelo:
+
+```nix
+"antigravity-nombre-modelo" = {
+  name = "Nombre del Modelo (Antigravity)";
+  limit = {
+    context = 1048576;  # Tokens de contexto
+    output = 65535;     # Tokens de salida
+  };
+  modalities = {
+    input = ["text" "image" "pdf"];
+    output = ["text"];
+  };
+};
+```
+
+### Proveedores Habilitados
+
+Actualmente habilitados:
+- **openrouter**: Acceso a múltiples modelos a través de OpenRouter
+- **google**: Modelos de Google (Gemini)
+
+### Proveedores Deshabilitados
+
+Por defecto, muchos proveedores están deshabilitados para simplificar la configuración. Puedes habilitarlos en `hydenix-config.nix`:
+
+```nix
+modules.terminal.software.opencode = {
+  enabledProviders = ["openrouter" "google" "anthropic"];
+  disabledProviders = [];  # Vaciar para habilitar todos
+};
+```
+
+---
+
+## Skills (Habilidades)
+
+Los **skills** son archivos `SKILL.md` que proporcionan instrucciones especializadas al modelo de IA para tareas específicas. Se descargan de repositorios públicos de GitHub.
+
+### Skills Instalados
+
+1. **technical-writing**: Escritura técnica profesional
+2. **refactoring-patterns**: Patrones de refactoring de código
+3. **blog-post-writer**: Escritor de posts de blog
+4. **frontend-design**: Diseño frontend
+5. **architecture-patterns**: Patrones de arquitectura de software
+6. **flutter-development**: Desarrollo Flutter
+7. **writing-documentation**: Escritura de documentación
+8. **rust-engineer**: Ingeniería en Rust
+
+### Agregar un Nuevo Skill
+
+Para agregar un skill, edita `_skills.nix`:
+
+```nix
+skills = {
+  # Tu nuevo skill
+  mi-skill = fetchSkill {
+    name = "mi-skill";
+    owner = "usuario-github";
+    repo = "repositorio";
+    rev = "commit-hash";
+    path = "ruta/al/SKILL.md";
+    hash = "sha256-hash-del-archivo";
+  };
+};
+```
+
+O para un skill con múltiples archivos:
+
+```nix
+mi-skill-dir = fetchSkillDir {
+  name = "mi-skill-dir";
+  owner = "usuario-github";
+  repo = "repositorio";
+  rev = "commit-hash";
+  basePath = "ruta/al/directorio";
+  hash = "sha256-hash";
+};
+```
+
+Los skills se instalan en `~/.config/opencode/skill/`.
+
+---
+
+## Language Servers (LSP)
+
+OpenCode incluye integración con Language Servers para autocompletado inteligente y análisis de código.
+
+### LSPs Configurados
+
+- **nil**: LSP para Nix (archivos `.nix`)
+- **biome**: LSP para JavaScript/TypeScript (archivos `.js`, `.ts`, `.json`, `.jsx`, `.tsx`)
+- **marksman**: LSP para Markdown (archivos `.md`)
+- **astro-ls**: LSP para Astro (archivos `.astro`)
+- **tailwindcss**: LSP para Tailwind CSS (archivos `.css`, `.html`)
+- **volar**: LSP para Vue.js (archivos `.vue`)
+
+### Agregar un Nuevo LSP
+
+Edita `_languages.nix`:
+
+```nix
+lspBins = {
+  # Tu nuevo LSP
+  mi-lsp = "${pkgs.mi-lsp}/bin/mi-lsp";
+};
+
+lsp = {
+  mi-lsp = {
+    command = [lspBins.mi-lsp "--stdio"];
+    extensions = ["ext1" "ext2"];
+  };
+};
+```
+
+No olvides agregar el paquete a `packages`:
+
+```nix
+packages = with pkgs; [
+  mi-lsp
+  # ... otros paquetes
+];
+```
+
+---
+
+## Formatters
+
+OpenCode incluye formatters automáticos para múltiples lenguajes.
+
+### Formatters Configurados
+
+- **alejandra**: Formatter para Nix (archivos `.nix`)
+- **biome**: Formatter para Astro (archivos `.astro`)
+- **oxfmt**: Formatter multi-lenguaje (`.yaml`, `.js`, `.json`, `.jsx`, `.md`, `.ts`, `.tsx`, `.css`, `.html`, `.vue`)
+- **shfmt**: Formatter para shell scripts (archivos `.sh`, `.bash`)
+
+### Agregar un Nuevo Formatter
+
+Edita `_languages.nix`:
+
+```nix
+formatterBins = {
+  mi-formatter = "${pkgs.mi-formatter}/bin/mi-formatter";
+};
+
+formatter = {
+  mi-formatter = {
+    command = [formatterBins.mi-formatter "--opciones"];
+    extensions = ["ext1" "ext2"];
+  };
+};
+```
+
+---
+
+## MCP Servers (Model Context Protocol)
+
+Los **MCP Servers** extienden las capacidades de OpenCode proporcionando contexto adicional y herramientas especializadas.
+
+### MCP Servers Configurados
+
+1. **gh_grep**: Búsqueda en GitHub
+   - Tipo: `remote`
+   - URL: `https://mcp.grep.app/`
+   - Timeout: 10000ms
+
+2. **deepwiki**: Búsqueda en DeepWiki
+   - Tipo: `remote`
+   - URL: `https://mcp.deepwiki.com/mcp`
+   - Timeout: 10000ms
+
+3. **context7**: Contexto adicional
+   - Tipo: `remote`
+   - URL: `https://mcp.context7.com/mcp`
+   - Timeout: 10000ms
+
+4. **context-manager**: Gestor de contexto local
+   - Tipo: `local`
+   - Comando: `["bunx" "mcp-context-manager"]`
+   - Requiere: `bunx` (Bun package runner)
+
+### Agregar un Nuevo MCP Server
+
+En `hydenix-config.nix`:
+
+```nix
+modules.terminal.software.opencode = {
+  mcp = {
+    mi-mcp = {
+      type = "remote";  # o "local"
+      url = "https://mcp.example.com/";
+      enabled = true;
+      timeout = 10000;
+    };
+  };
+};
+```
+
+Para servidores locales:
+
+```nix
+mi-mcp-local = {
+  type = "local";
+  command = ["comando" "argumentos"];
+  enabled = true;
+};
+```
+
+**Nota**: Los servidores locales usan `command` en lugar de `url`, y no requieren `timeout`.
+
+---
+
+## Plugins
+
+OpenCode soporta plugins para extender funcionalidad. El plugin principal configurado es:
+
+### antigravity-auth
+
+- **Versión**: `1.3.0`
+- **Función**: Proporciona acceso gratuito a modelos premium a través de Google y OpenRouter
+- **Ubicación**: `~/.config/opencode/node_modules/@opencode-ai/plugin`
+
+### Agregar un Nuevo Plugin
+
+En `hydenix-config.nix`:
+
+```nix
+modules.terminal.software.opencode = {
+  plugins = [
+    "opencode-antigravity-auth@1.3.0"
+    "otro-plugin@version"
+  ];
+};
+```
+
+---
+
+## Configuración Avanzada
+
+### Opciones Disponibles
+
+Todas las opciones se configuran en `hydenix-config.nix`:
+
+```nix
+modules.terminal.software.opencode = {
+  enable = true;                    # Habilitar OpenCode
+  
+  # Modelo pequeño para tareas rápidas
+  smallModel = "google/gemma-3n-e4b-it:free";
+  
+  # Actualizaciones automáticas
+  autoupdate = false;
+  
+  # Compartir datos de uso
+  share = "disabled";  # "enabled" o "disabled"
+  
+  # Proveedores
+  enabledProviders = ["openrouter" "google"];
+  disabledProviders = [ /* lista de proveedores */ ];
+  
+  # Plugins
+  plugins = ["opencode-antigravity-auth@1.2.7-beta.6"];
+  
+  # MCP Servers
+  mcp = { /* configuración de MCP */ };
+};
+```
+
+### Archivo de Configuración
+
+La configuración se genera en `~/.config/opencode/config.json` y incluye:
+- Plugins instalados
+- Modelo pequeño por defecto
+- Configuración de actualizaciones
+- Proveedores habilitados/deshabilitados
+- Servidores MCP
+- Formatters y LSPs
+- Configuración de providers
+
+### Variables de Entorno
+
+OpenCode usa las siguientes variables:
+- `OPENCODE_LIBC`: Path a libc (configurado automáticamente)
+- `PATH`: Incluye todos los formatters y LSPs configurados
+
+---
+
+## Integración con Neovim
+
+OpenCode también está disponible como plugin de Neovim. Ver la documentación de Neovim para los keybindings:
+
+- `<leader>aot`: Toggle opencode
+- `<leader>aoA`: Ask opencode
+- `<leader>aoa`: Ask about cursor/selection
+- `<leader>aon`: New session
+- `<leader>aoy`: Copy last response
+
+---
+
+## Aplicar Cambios
+
+Después de modificar la configuración:
+
+```bash
+make switch
+# o
+home-manager switch
+```
+
+Luego reinicia OpenCode o inicia una nueva sesión.
+
+---
+
+## Recursos
+
+- **Documentación oficial**: https://github.com/anomalyco/opencode
+- **Repositorio base**: https://github.com/linuxmobile/kaku
+- **Plugin Antigravity**: Proporciona acceso gratuito a modelos premium
+

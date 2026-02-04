@@ -1,0 +1,24 @@
+# Mobile Development on NixOS
+
+This module configures the environment for Mobile development using Expo, React Native, and Flutter.
+
+## Tools Installed
+- **Android Studio**: Managed via Nix (stable version from unstable channel).
+- **Flutter**: Latest stable version.
+- **Expo & EAS CLI**: Node.js based tools.
+- **Watchman**: File watching service for hot reload.
+
+## Configuration Details
+- `ANDROID_HOME` is set to `~/Android/Sdk`.
+- Android SDK tools and platform-tools are added to your `PATH`.
+- `udev` rules are enabled for physical device debugging.
+- Your user is added to `adbusers` and `kvm` groups.
+
+## First Time Setup
+1. Run `android-studio`.
+2. Follow the setup wizard to install the SDK into `~/Android/Sdk`.
+3. Run `flutter doctor` to verify the environment.
+
+## Troubleshooting
+- **KVM**: If the emulator doesn't start, ensure virtualization is enabled in your BIOS.
+- **Licenses**: Licensed are automatically accepted in the Nix configuration for the SDK download, but you might need to run `flutter doctor --android-licenses`.

@@ -1,0 +1,85 @@
+---
+title: Extra themes
+description: Como instalar temas adicionales en HyDE/Hydenix.
+---
+
+# Extra themes
+
+Para descargar temas adicionales, este es el flujo recomendado: usar `hydectl`
+y la galeria oficial de temas. [HyDE Project - hyde-gallery](https://github.com/HyDE-Project/hyde-gallery.git)
+
+Requisitos: tener HyDE y `hydectl` instalados.
+
+## Importar un tema desde la galeria
+
+Hay dos formas de acceder al importador de temas:
+
+### Desde el menú visual (recomendado)
+
+1. Abre el menú de HyDE en Waybar (icono del menú)
+2. Selecciona **Theme**
+3. En el submenú, elige **More Themes** 🎨
+4. Se abrirá el importador interactivo donde podrás seleccionar temas de la galería
+
+### Desde la línea de comandos
+
+1. Ejecuta el importador:
+
+```bash
+hydectl theme import
+```
+
+2. Selecciona el tema en el selector interactivo.
+
+## Importar desde URL o ruta local
+
+Si tienes un tema en una URL de GitHub o en una ruta local, puedes importarlo directamente:
+
+```bash
+# Desde una ruta local
+hydectl theme import --name "Theme-Name" --url "/ruta/al/tema"
+
+# Desde un repositorio de GitHub
+hydectl theme import --name "Theme Name" --url "https://github.com/User/Repository"
+
+# Desde una rama específica de un repositorio
+hydectl theme import --name "Theme-Name" --url "https://github.com/User/Repository/tree/branch"
+```
+
+## Forzar actualización de recursos
+
+Si necesitas forzar la actualización de iconos, cursores o fuentes después de importar un tema:
+
+```bash
+export FORCE_THEME_UPDATE=true
+hydectl theme import
+```
+
+O simplemente:
+
+```bash
+FORCE_THEME_UPDATE=true hydectl theme import
+```
+
+## Flujo completo recomendado
+
+1. **Accede al importador**: Desde el menú de Waybar → Theme → More Themes, o ejecuta `hydectl theme import`
+2. **Selecciona un tema**: Navega por la galería y elige el tema que te guste
+3. **Aplica el tema**: Una vez importado, puedes seleccionarlo desde el menú Theme → Select Theme o con `Super + T`
+4. **Personaliza si es necesario**: Los temas se instalan en `~/.config/hyde/themes/` donde puedes hacer ajustes
+
+## Ubicación de los temas
+
+Los temas importados se guardan en:
+
+```
+~/.config/hyde/themes/<nombre-del-tema>/
+```
+
+Cada tema incluye:
+- Configuración de colores
+- Wallpapers (si los tiene)
+- Configuración de Waybar
+- Estilos para aplicaciones
+
+Mas detalles en la documentacion del repositorio. [HyDE Project - hyde-gallery](https://github.com/HyDE-Project/hyde-gallery.git)

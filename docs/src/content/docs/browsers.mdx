@@ -1,0 +1,455 @@
+---
+title: Browsers
+description: Configuración de navegadores web instalados en el sistema
+---
+
+# 🌐 Browsers
+
+Este sistema incluye múltiples navegadores web configurados. La configuración se encuentra en:
+```
+modules/hm/programs/browsers/
+```
+
+## Navegadores instalados
+
+El sistema incluye los siguientes navegadores:
+
+1. **Zen Browser** - Navegador principal (fork de Firefox)
+2. **Helium** - Navegador flotante basado en Chromium
+3. **Google Chrome** - Navegador estándar de Google
+
+Todos los navegadores se importan desde `modules/hm/programs/browsers/default.nix`.
+
+## Zen Browser
+
+### Configuración
+
+La configuración de Zen Browser se encuentra en:
+```
+modules/hm/programs/browsers/zen.nix
+```
+
+### Extensiones
+
+Las extensiones se configuran en la sección `ExtensionSettings` dentro de `policies`. Actualmente están instaladas:
+
+- **uBlock Origin** - Bloqueador de anuncios
+- **1Password X** - Gestor de contraseñas
+
+#### Agregar una nueva extensión
+
+Para agregar una extensión:
+
+1. Obtén el ID de la extensión desde [addons.mozilla.org](https://addons.mozilla.org)
+   - Puede estar en formato `"ID@author"` o `"{UUID}"`
+2. Usa la URL de descarga directa del .xpi:
+   ```
+   https://addons.mozilla.org/firefox/downloads/latest/[extension-slug]/latest.xpi
+   ```
+3. Agrega una entrada en `ExtensionSettings`:
+
+```nix
+ExtensionSettings = {
+  "EXTENSION_ID" = {
+    install_url = "https://addons.mozilla.org/firefox/downloads/latest/extension-slug/latest.xpi";
+    installation_mode = "force_installed";
+  };
+};
+```
+
+**Ejemplo real:**
+```nix
+# 1Password X - Password Manager
+"{d633138d-6c8b-4493-84d1-909800a9d5b5}" = {
+  install_url = "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager/latest.xpi";
+  installation_mode = "force_installed";
+};
+```
+
+### Settings/Preferencias
+
+Los settings personalizados se configuran en la sección `extraPrefs` usando sintaxis `user.js`.
+
+#### Settings actualmente configurados
+
+- **DRM Content**: Habilitado (`media.eme.enabled = true`)
+- **Scrollbars siempre visibles**: Deshabilitado overlay scrollbars (`widget.gtk.overlay-scrollbars.enabled = false`)
+- **Picture-in-Picture**: Habilitado con controles (`media.videocontrols.picture-in-picture.enabled = true`)
+- **Mantener reproducción en PiP**: Al cambiar pestañas (`media.videocontrols.picture-in-picture.keep-playing-when-switching-tabs = true`)
+
+#### Agregar un nuevo setting
+
+Agrega líneas en `extraPrefs` con el formato:
+
+```nix
+extraPrefs = ''
+  user_pref("preference.name", value);
+'';
+```
+
+**Ejemplos comunes:**
+```nix
+# Cambiar página de inicio
+user_pref("browser.startup.homepage", "about:blank");
+
+# Deshabilitar sugerencias de búsqueda
+user_pref("browser.urlbar.showSearchSuggestionsFirst", false);
+
+# Habilitar Wayland
+user_pref("widget.wayland.enabled", true);
+
+# Modo oscuro
+user_pref("ui.systemUsesDarkTheme", 1);
+```
+
+Para ver todas las preferencias disponibles, abre Zen y ve a `about:config`.
+
+### Keybindings
+
+Los atajos de teclado personalizados se configuran en `profiles.default.keyboardShortcuts`.
+
+#### Agregar un keybinding personalizado
+
+1. Encuentra el ID del shortcut:
+   - Abre Zen y ve a `about:config`
+   - Busca `zen.keyboard.shortcuts.version` para ver la versión
+   - O revisa `~/.zen/default/zen-keyboard-shortcuts.json` después de ejecutar Zen
+2. Agrega una entrada en `keyboardShortcuts`:
+
+```nix
+profiles.default = {
+  keyboardShortcuts = [
+    {
+      id = "cmd_shortcutName";  # ID del shortcut en Zen
+      key = "t";                 # Carácter de la tecla (opcional)
+      keycode = "VK_W";          # Código de tecla virtual (opcional)
+      modifiers = {
+        accel = true;    # Ctrl (Linux/Windows) o Cmd (macOS)
+        control = true;  # Ctrl explícito
+        alt = true;      # Alt
+        shift = true;    # Shift
+        meta = true;     # Meta/Windows/Command
+      };
+      disabled = false;  # true para deshabilitar el shortcut
+    }
+  ];
+};
+```
+
+**IDs comunes de shortcuts en Zen:**
+- `cmd_newTab`: Nueva pestaña
+- `cmd_closeTab`: Cerrar pestaña
+- `cmd_undoCloseTab`: Reabrir pestaña cerrada
+- `cmd_newWindow`: Nueva ventana
+- `cmd_toggleSidebar`: Mostrar/ocultar sidebar
+- `cmd_goBack`: Ir atrás
+- `cmd_goForward`: Ir adelante
+- `cmd_reload`: Recargar página
+- `cmd_find`: Buscar en página
+
+Para encontrar más IDs, ejecuta Zen y revisa:
+```
+~/.zen/default/zen-keyboard-shortcuts.json
+```
+
+### Otras opciones disponibles
+
+#### Spaces/Workspaces
+
+Configuración de espacios de trabajo:
+
+```nix
+profiles.default = {
+  spaces = {
+    work = {
+      id = "uuid-aqui";  # Genera un UUID v4
+      name = "Work";
+      position = 0;
+      icon = "💼";
+    };
+  };
+};
+```
+
+#### Pins
+
+Pestañas fijadas:
+
+```nix
+profiles.default = {
+  pins = {
+    gmail = {
+      id = "uuid-aqui";
+      title = "Gmail";
+      url = "https://mail.google.com";
+      position = 0;
+    };
+  };
+};
+```
+
+#### Mods
+
+Temas desde la tienda de Zen:
+
+```nix
+profiles.default = {
+  mods = [
+    "mod-uuid-1"
+    "mod-uuid-2"
+  ];
+};
+```
+
+Encuentra mods en: https://zen-browser.github.io/theme-store/
+
+## Aplicar cambios
+
+Después de modificar `zen.nix`:
+
+```bash
+make switch
+# o
+home-manager switch
+```
+
+Luego reinicia Zen Browser para que los cambios surtan efecto.
+
+## Navegador por defecto
+
+Zen Browser está configurado como navegador por defecto vía:
+- **XDG MIME Apps**: Configurado para abrir enlaces http/https
+- **Variable de entorno**: `BROWSER=zen` (usada por Hyprland y scripts)
+
+El archivo `.desktop` se llama `zen-twilight.desktop` (no `zen-browser.desktop`).
+
+---
+
+## Helium Browser
+
+**Helium** es un navegador basado en Chromium con un enfoque fuerte en **seguridad, privacidad y comfort**. Está configurado con flags optimizados que reducen el tracking, fingerprinting y la recolección de datos, además de mejoras de rendimiento.
+
+### Configuración
+
+La configuración de Helium se encuentra en:
+```
+modules/hm/programs/browsers/helium.nix
+```
+
+### Seguridad y Privacidad
+
+Helium está configurado con múltiples medidas de privacidad y seguridad:
+
+- **Protección contra fingerprinting**: Ruido añadido a canvas, measuretext y client-rects para dificultar la identificación única del navegador
+- **Sin recolección de datos**: Deshabilitada la recolección de motores de búsqueda y telemetría
+- **Manejo seguro de extensiones**: Configuración que requiere confirmación explícita para instalar extensiones
+- **Dominios punycode forzados**: Mejora la seguridad al mostrar dominios internacionales en formato punycode
+- **Sin pings**: Deshabilitados los pings de red para evitar tracking
+
+### Características técnicas
+
+- **Basado en Chromium**: Compatible con extensiones de Chrome
+- **Flags optimizados**: Utiliza los flags compartidos de `chromium-flags.nix` para rendimiento y privacidad
+
+### Flags de Chromium
+
+Helium utiliza los flags compartidos definidos en `chromium-flags.nix`, que incluyen:
+
+- **Wayland support**: Soporte nativo para Wayland
+- **GPU acceleration**: Aceleración por hardware para video y gráficos
+- **Vulkan backend**: Renderizado con Vulkan
+- **VAAPI**: Decodificación de video acelerada por hardware
+- **Privacidad**: Flags para reducir fingerprinting y tracking
+
+Las variables de entorno configuradas incluyen (para Intel GPU):
+- `LIBVA_DRIVER_NAME=i965` (Intel VAAPI driver)
+- `EGL_PLATFORM=wayland`
+- `ENABLE_VAAPI=1`
+- `ENABLE_VDPAU=1`
+
+---
+
+## Google Chrome
+
+**Google Chrome** es el navegador estándar de Google, configurado **sin modificaciones** para mantener compatibilidad con herramientas de trabajo y evitar problemas con sitios corporativos.
+
+### Configuración
+
+La configuración de Google Chrome se encuentra en:
+```
+modules/hm/programs/browsers/google-chrome.nix
+```
+
+### Uso
+
+Google Chrome se instala **sin flags ni modificaciones** por diseño:
+- ✅ **Sin flags de privacidad** - Para evitar problemas con sitios corporativos
+- ✅ **Sin modificaciones de comportamiento** - Compatibilidad total con herramientas de trabajo
+- ✅ **Configuración estándar** - Funciona como Chrome oficial sin personalizaciones
+
+Si necesitas flags personalizados (no recomendado para trabajo), puedes agregar:
+
+```nix
+home.sessionVariables = {
+  GOOGLE_CHROME_EXTRA_FLAGS = "--some-flag";
+};
+```
+
+---
+
+## Flags compartidos de Chromium
+
+El archivo `chromium-flags.nix` contiene flags optimizados para navegadores basados en Chromium. **Actualmente, estos flags se aplican a Helium** a través de variables de entorno. **Google Chrome no está usando estos flags por defecto**, pero puedes configurarlos si lo deseas.
+
+### Explicación detallada de los flags
+
+#### Wayland Support
+```nix
+--ozone-platform=wayland
+--enable-features=WaylandWindowDecorations
+```
+- **`--ozone-platform=wayland`**: Usa Wayland como plataforma de ventanas (mejor rendimiento y soporte nativo en Linux)
+- **`--enable-features=WaylandWindowDecorations`**: Habilita decoraciones de ventana nativas de Wayland
+
+#### GPU y Aceleración de Video
+```nix
+--use-vulkan=native
+--enable-dawn-backend=vulkan
+--ignore-gpu-blocklist
+--enable-gpu-rasterization
+--enable-zero-copy
+--enable-raw-draw
+--enable-drdc
+--disable-gpu-driver-bug-workarounds
+```
+- **`--use-vulkan=native`**: Usa Vulkan como API de gráficos (mejor rendimiento que OpenGL)
+- **`--enable-dawn-backend=vulkan`**: Backend Vulkan para WebGPU
+- **`--ignore-gpu-blocklist`**: Ignora la lista negra de GPUs (permite usar GPU aunque no esté oficialmente soportada)
+- **`--enable-gpu-rasterization`**: Usa GPU para rasterizar (renderizar) páginas web
+- **`--enable-zero-copy`**: Reduce copias de memoria innecesarias (mejor rendimiento)
+- **`--enable-raw-draw`**: Renderizado directo sin capas intermedias
+- **`--enable-drdc`**: Dynamic Refresh Rate Control (mejor sincronización)
+- **`--disable-gpu-driver-bug-workarounds`**: Desactiva workarounds para bugs de drivers (mejor rendimiento si tu driver es estable)
+
+#### Features de Rendimiento
+```nix
+--enable-features=UseOzonePlatform,Vulkan,SkiaGraphite,VaapiVideoEncoder,VaapiVideoDecoder,CanvasOopRasterization,VaapiIgnoreDriverChecks,OverlayScrollbar,ParallelDownloading
+```
+- **`UseOzonePlatform`**: Plataforma de ventanas moderna
+- **`Vulkan`**: Renderizado con Vulkan
+- **`SkiaGraphite`**: Motor de gráficos mejorado
+- **`VaapiVideoEncoder/VaapiVideoDecoder`**: Codificación/decodificación de video con VAAPI (aceleración por hardware)
+- **`CanvasOopRasterization`**: Rasterización fuera de proceso para canvas
+- **`VaapiIgnoreDriverChecks`**: Ignora verificaciones de drivers VAAPI
+- **`OverlayScrollbar`**: Barras de desplazamiento overlay (más espacio)
+- **`ParallelDownloading`**: Descargas paralelas (más rápido)
+
+#### Aceleración de Video Específica
+```nix
+--enable-hardware-overlays
+--enable-accelerated-video-decode
+--enable-accelerated-video-encode
+--enable-accelerated-mjpeg-decode
+```
+- **`--enable-hardware-overlays`**: Overlays de hardware (mejor rendimiento de video)
+- **`--enable-accelerated-video-decode`**: Decodificación de video acelerada por hardware
+- **`--enable-accelerated-video-encode`**: Codificación de video acelerada por hardware
+- **`--enable-accelerated-mjpeg-decode`**: Decodificación de JPEG acelerada
+
+#### Rendimiento General
+```nix
+--enable-oop-rasterization
+--enable-webgl-developer-extensions
+--enable-accelerated-2d-canvas
+--enable-direct-composition
+--enable-gpu-compositing
+```
+- **`--enable-oop-rasterization`**: Rasterización fuera de proceso (mejor estabilidad)
+- **`--enable-webgl-developer-extensions`**: Extensiones de desarrollo para WebGL
+- **`--enable-accelerated-2d-canvas`**: Canvas 2D acelerado por GPU
+- **`--enable-direct-composition`**: Composición directa (mejor rendimiento)
+- **`--enable-gpu-compositing`**: Composición con GPU
+
+#### Navegación Suave
+```nix
+--enable-media-router
+--enable-smooth-scrolling
+```
+- **`--enable-media-router`**: Router de medios (para casting, etc.)
+- **`--enable-smooth-scrolling`**: Desplazamiento suave
+
+#### Privacidad y Seguridad (UnGoogled)
+```nix
+--disable-search-engine-collection
+--extension-mime-request-handling=always-prompt-for-install
+--fingerprinting-canvas-image-data-noise
+--fingerprinting-canvas-measuretext-noise
+--fingerprinting-client-rects-noise
+--popups-to-tabs
+--force-punycode-hostnames
+--show-avatar-button=incognito-and-guest
+--no-pings
+```
+- **`--disable-search-engine-collection`**: Desactiva recolección de motores de búsqueda
+- **`--extension-mime-request-handling=always-prompt-for-install`**: Siempre pregunta antes de instalar extensiones
+- **`--fingerprinting-canvas-image-data-noise`**: Añade ruido a canvas para prevenir fingerprinting
+- **`--fingerprinting-canvas-measuretext-noise`**: Añade ruido a measureText para prevenir fingerprinting
+- **`--fingerprinting-client-rects-noise`**: Añade ruido a getBoundingClientRect para prevenir fingerprinting
+- **`--popups-to-tabs`**: Convierte popups en pestañas (más seguro)
+- **`--force-punycode-hostnames`**: Fuerza punycode en nombres de dominio (previene ataques de homografía)
+- **`--show-avatar-button=incognito-and-guest`**: Solo muestra avatar en modo incógnito/guest
+- **`--no-pings`**: Desactiva pings de red (previene tracking)
+
+#### Misceláneos
+```nix
+--disable-features=UseChromeOSDirectVideoDecoder
+--no-default-browser-check
+```
+- **`--disable-features=UseChromeOSDirectVideoDecoder`**: Desactiva decodificador directo de ChromeOS (no aplicable en Linux)
+- **`--no-default-browser-check`**: No verifica si es el navegador por defecto al iniciar
+
+### Variables de Entorno
+
+Las variables de entorno configuran el sistema para usar aceleración de hardware. **Configurado para Intel GPU (i915 driver)**:
+
+```nix
+LIBVA_DRIVER_NAME = "i965"                # Driver VAAPI para Intel (i965 legacy, iHD moderno)
+LIBVA_MESSAGING_LEVEL = "1"              # Nivel de mensajes de VAAPI
+LIBGL_ALWAYS_SOFTWARE = "0"              # No forzar software rendering
+ENABLE_VAAPI = "1"                        # Habilitar VAAPI
+ENABLE_VDPAU = "1"                        # Habilitar VDPAU (otro sistema de aceleración)
+VAAPI_DISABLE_ENCODER_CHECKING = "1"     # Desactivar verificaciones de encoder
+EGL_PLATFORM = "wayland"                  # Usar Wayland para EGL
+```
+
+**Nota**: Esta configuración es para **Intel HD Graphics con driver i915**. Para AMD, cambiarías:
+- `LIBVA_DRIVER_NAME = "radeonsi"` (para AMD)
+- Agregar `AMD_VULKAN_ICD = "RADV"` y `RADV_PERFTEST = "sam"` (para AMD)
+
+### Aplicar flags a Google Chrome
+
+**Google Chrome NO usa estos flags intencionalmente** - está configurado sin modificaciones para mantener compatibilidad con herramientas de trabajo. **Helium es el navegador que usa estos flags** para privacidad y comfort.
+
+Si por alguna razón quisieras aplicar flags a Google Chrome (no recomendado), podrías modificar `google-chrome.nix`:
+
+```nix
+{ pkgs, ... }:
+let
+  chromiumFlags = import ./chromium-flags.nix { inherit pkgs; };
+in {
+  home.packages = [ pkgs.google-chrome ];
+  
+  # Aplicar variables de entorno
+  home.sessionVariables = chromiumFlags.sessionVariables;
+  
+  # Aplicar flags (requiere wrapper personalizado)
+  # Nota: Google Chrome no acepta flags directamente vía variable de entorno
+  # Necesitarías crear un wrapper o usar un archivo de flags
+}
+```
+
+**Nota importante**: Google Chrome no acepta flags vía `GOOGLE_CHROME_EXTRA_FLAGS` de la misma forma que Chromium. Para aplicar flags a Google Chrome, necesitarías:
+1. Crear un wrapper personalizado del paquete
+2. O usar un archivo de configuración de flags (si Chrome lo soporta)
+3. O usar Chromium en lugar de Google Chrome (que sí acepta flags más fácilmente)
+

@@ -1,0 +1,54 @@
+---
+title: Navigation
+description: Placeholder page.
+---
+
+# Navigation
+
+Everything in this system happens via the keyboard — _EVERYTHING!_ When the system first starts, you literally can't do a thing with the mouse alone. But you can hit `Super + Space` to reveal the application launcher. This command allows you to do just about everything.
+
+But the application launcher is not intended to be the main way to operate the system most of the time. We can get faster than that! All the most important applications are bound directly to individual hotkeys. You start the terminal with `Super + Return` and a browser with `Super + B`. Try doing one after the other, and you'll see the magic of Hyprland's tiling in action:
+
+[![browser+terminal.png](https://manual.omakub.org/u/browser-terminal-yCV75f.png)](https://manual.omakub.org/u/browser-terminal-yCV75f.png)
+
+You can then hit `Super + S` to toggle the split orientation (stacking them horizontally instead of vertically):
+
+[![stacked.png](https://learn.omacom.io/u/stacked-sswEJE.png)](https://learn.omacom.io/u/stacked-sswEJE.png)
+
+Hit `Super + S` again to return them to the previous split orientation. Then try `Super + Shift + L` while on the browser to move the window to the right.
+
+Now try `Control + Shift + Escape` to start the Activity monitor. That'll appear as a floating window. You can tile it using `Super + Shift + Space` (and hit that again to make it floating again). Now press `Super + E` to open the file explorer. You'll have a neat four-way setup:
+
+[![fourway-tiling.png](https://learn.omacom.io/u/fourway-tiling-SHbfzO.png)](https://learn.omacom.io/u/fourway-tiling-SHbfzO.png)
+
+You navigate between the window you want to be active with `Super + H/J/K/L` (vim-style navigation) or `Super + Arrow` keys. This will switch focus and move the cursor to the center of the new application.
+
+If you hit `Super + Shift + 2`, you'll move the current focused application onto the second workspace. `Super + Shift + 1` moves it back. (And `Super + Alt + 2` will move the current focused application onto the second workspace without switching to it).
+
+If you hold down `Super` and use the mouse to click on a window, you'll be able to rearrange where it sits. If you hold `Super` and use the right button on the mouse, you can freely resize the window.
+
+You close a window on `Super + Q` (or `Alt + F4`) and close all windows on `Ctrl + Alt + Delete` (which opens the logout menu).
+
+You can also go full screen with `Super + F`.
+
+---
+
+### Grouping windows
+
+Windows can be grouped using `Super + G`. Once you're in a group, every window you start while that's active will belong to the group. You can move between these grouped windows using `Super + [` to go to the previous group or `Super + ]` to go to the next group.
+
+You can disassemble the entire group by hitting `Super + G` again.
+
+---
+
+### Scratchpad workspace
+
+Finally, there's a special scratchpad workspace that overlays on whatever workspace you're currently on. You access what's on that using `Super + =` (equal sign) and you place windows there using `Super + -` (minus sign).
+
+It works well for controls or perhaps a terminal that you quickly want to interact with in an overlay without leaving the current workspace. If you want to move a window off the scratchpad, you just move it directly to another workspace with something like `Super + Shift + 1` to move it to workspace 1. You can also use `Super + Shift + -` to move a window to the scratchpad silently (without switching to it).
+
+---
+
+### It takes some getting used to!
+
+It takes a little while to get used to navigating your desktop like this, but once you do, it'll be hard to go back to a traditional mouse-driven desktop experience!

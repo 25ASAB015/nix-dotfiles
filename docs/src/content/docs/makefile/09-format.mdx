@@ -1,0 +1,76 @@
+---
+title: Formato y Linting
+description: Comandos para formatear y validar código Nix
+---
+
+# Formato y Linting
+
+Módulo: `make/format.mk`
+
+Comandos para asegurar la calidad, consistencia y legibilidad del código Nix en el proyecto.
+
+## Comandos Disponibles
+
+### `make fmt-check`
+Aplica formato automático a todos los archivos Nix.
+
+```bash
+make fmt-check
+```
+
+**Qué hace:** Utiliza `alejandra` (preferido) o `nixpkgs-fmt` para normalizar el estilo del código en todo el repositorio.
+
+**Cuándo usarlo:** Antes de realizar commits o después de ediciones extensas para mantener un estándar visual.
+
+---
+
+### `make fmt-lint`
+Analiza los archivos Nix en busca de errores comunes y anti-patrones.
+
+```bash
+make fmt-lint
+```
+
+**Qué hace:** Ejecuta `statix` para detectar sugerencias de optimización y posibles bugs en las expresiones Nix.
+
+---
+
+### `make fmt-tree`
+Muestra una representación visual de la estructura de directorios del proyecto.
+
+```bash
+make fmt-tree
+```
+
+**Qué muestra:** Un árbol de carpetas ignorando archivos temporales y directorios ocultos, ideal para entender la organización de módulos y hosts.
+
+---
+
+### `make fmt-diff`
+Muestra diferencias entre la configuración local actual y la configuración activa en `/etc/nixos`.
+
+```bash
+make fmt-diff
+```
+
+---
+
+## Workflow Recomendado
+
+### Preparación de Cambios
+```bash
+make fmt-check  # Formatear
+make fmt-lint   # Revisar calidad
+make sys-check  # Validar lógica
+```
+
+### Exploración
+```bash
+make fmt-tree   # Entender estructura
+```
+
+> [!TIP]
+> Un código bien formateado y analizado reduce drásticamente las posibilidades de fallos inesperados durante la aplicación de la configuración (`sys-apply`).
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `format`), consulta la [Guía de Aliases](../10-aliases).

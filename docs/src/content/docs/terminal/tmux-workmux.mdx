@@ -1,0 +1,545 @@
+---
+title: Tmux, Sesh & Workmux
+description: Guía completa para el uso de Tmux (multiplexor), Sesh (gestor inteligente de sesiones) y Workmux (flujos de trabajo AI/Git)
+---
+
+# Tmux, Sesh & Workmux
+
+Esta guía cubre el uso de **Tmux**, el multiplexor de terminales, **Sesh**, un gestor inteligente de sesiones, y **Workmux**, una herramienta poderosa para gestionar flujos de trabajo paralelos con Git Worktrees y agentes de IA.
+
+## Tmux: Multiplexor de Terminales
+
+**Tmux** (Terminal Multiplexer) permite ejecutar múltiples sesiones de terminal dentro de una sola ventana. Es esencial para mantener procesos en ejecución, organizar áreas de trabajo y mejorar la productividad en la terminal.
+
+### Conceptos Básicos
+
+- **Sesión**: Un conjunto de ventanas. Puedes desconectarte (detach) de una sesión y dejarla corriendo en segundo plano, para luego reconectarte (attach).
+- **Ventana (Window)**: Como una pestaña en un navegador. Ocupa toda la pantalla.
+- **Panel (Pane)**: Subdivisiones dentro de una ventana. Permite ver múltiples terminales simultáneamente.
+
+### Instalación
+
+Tmux está instalado por defecto en tu configuración de usuario ([`hosts/hydenix/user.nix`](file:///home/ravn/Dotfiles/hosts/hydenix/user.nix)) y configurado con **Oh my tmux!**, un framework de configuración moderno y visualmente atractivo.
+
+---
+
+## Oh my tmux! - Configuración Mejorada
+
+**Oh my tmux!** es un framework de configuración para tmux que proporciona una experiencia mejorada con tema visual inspirado en Powerline, bindings intuitivos y características avanzadas.
+
+### ¿Qué es Oh my tmux!?
+
+[Oh my tmux!](https://github.com/gpakosz/.tmux) es una configuración de tmux:
+- **Auto-contenida**: No requiere dependencias complejas
+- **Visualmente atractiva**: Tema Powerline con símbolos especiales
+- **Altamente personalizable**: Archivo de configuración local para tus ajustes
+- **Bien documentada**: Incluye comentarios detallados en la configuración
+
+### Características Principales
+
+#### 🎨 Tema Visual Moderno
+- **Powerline symbols**: Separadores y símbolos especiales para una barra de estado elegante
+- **Tema Nord**: Paleta de colores moderna y agradable a la vista
+- **Indicadores visuales**: Batería, uptime, hostname, estado de sincronización
+
+#### ⌨️ Bindings Mejorados
+- **Doble prefijo**: `Ctrl+a` (principal) y `Ctrl+b` (alternativo)
+- **Navegación Vim-style**: `h/j/k/l` para moverse entre paneles
+- **Splits intuitivos**: `|` para división vertical, `-` para horizontal
+- **Maximizar paneles**: `prefix + +` para maximizar/restaurar
+
+#### 🔧 Funcionalidades Avanzadas
+- **Mouse mode**: Toggle con `prefix + m`
+- **Clipboard integration**: Copia automática al portapapeles del sistema
+- **SSH-aware**: Muestra información de hostname cuando estás en SSH
+- **TPM support**: Soporte para Tmux Plugin Manager
+
+### Configuración en tus Dotfiles
+
+La configuración de Oh my tmux! está gestionada por Nix/Home Manager:
+
+```
+modules/hm/programs/terminal/
+├── tmux.nix              # Módulo Nix para gestión de configuración
+├── oh-my-tmux.conf       # Configuración principal de Oh my tmux!
+└── tmux.conf.local       # Tu configuración personalizada
+```
+
+Los archivos se enlazan simbólicamente a:
+- `~/.config/tmux/tmux.conf` → Configuración principal
+- `~/.config/tmux/tmux.conf.local` → Configuración personalizada
+
+> [!IMPORTANT]
+> **Nunca modifiques** `oh-my-tmux.conf` directamente. Todas tus personalizaciones deben ir en `tmux.conf.local`.
+
+### Teclas Rápidas (Keybindings)
+
+El **prefijo** en esta configuración es `Ctrl+a` (también funciona `Ctrl+b`).
+
+#### 📋 Gestión de Sesiones
+- `prefix + d`: Desconectar (detach) de la sesión actual
+- `prefix + s`: Listar y cambiar entre sesiones
+- `prefix + C-c`: Crear nueva sesión
+- `prefix + C-f`: Buscar sesión por nombre
+- `tmux new -s nombre`: Crear sesión llamada "nombre"
+- `tmux a -t nombre`: Reconectarse a sesión "nombre"
+- `tmux ls`: Listar todas las sesiones
+
+#### 🪟 Gestión de Ventanas
+- `prefix + c`: Crear nueva ventana
+- `prefix + ,`: Renombrar ventana actual
+- `prefix + C-h`: Ir a ventana anterior
+- `prefix + C-l`: Ir a ventana siguiente
+- `prefix + Tab`: Ir a última ventana activa
+- `prefix + 0-9`: Ir a ventana número X
+- `prefix + w`: Listar ventanas (modo árbol)
+- `prefix + &`: Cerrar ventana actual (confirmar con `y`)
+
+#### 📐 Gestión de Paneles
+- `prefix + |`: Dividir verticalmente (nuevo binding intuitivo)
+- `prefix + -`: Dividir horizontalmente (nuevo binding intuitivo)
+- `prefix + h/j/k/l`: Navegar entre paneles (Vim-style)
+- `prefix + H/J/K/L`: Redimensionar paneles (Vim-style)
+- `prefix + </>`: Intercambiar paneles
+- `prefix + +`: Maximizar/restaurar panel actual
+- `prefix + z`: Zoom en panel actual (toggle)
+- `prefix + x`: Cerrar panel actual
+- `prefix + !`: Convertir panel en ventana
+
+#### 📝 Modo Copia (Vi-style)
+- `prefix + Enter`: Entrar en modo copia
+- `v`: Iniciar selección visual
+- `C-v`: Toggle selección rectangular
+- `y`: Copiar selección (y salir)
+- `H`: Ir al inicio de línea
+- `L`: Ir al final de línea
+- `Escape`: Cancelar modo copia
+
+#### 🛠️ Utilidades
+- `prefix + e`: Editar configuración local con `$EDITOR`
+- `prefix + r`: Recargar configuración
+- `prefix + m`: Toggle mouse mode
+- `prefix + U`: Abrir Urlscan/Urlview (si está instalado)
+- `prefix + F`: Abrir Facebook PathPicker (si está instalado)
+- `C-l`: Limpiar pantalla **y** historial de tmux
+
+### Personalización
+
+Para personalizar tu configuración, edita [`modules/hm/programs/terminal/tmux.conf.local`](file:///home/ravn/Dotfiles/modules/hm/programs/terminal/tmux.conf.local).
+
+#### Cambiar Tema de Colores
+
+La configuración actual usa el tema **Nord**. Para cambiar colores:
+
+```bash
+# En tmux.conf.local, busca las variables tmux_conf_theme_*
+tmux_conf_theme_pane_active_border='#88c0d0'  # Color del borde activo
+tmux_conf_theme_status_bg='#2e3440'           # Fondo de barra de estado
+```
+
+#### Personalizar Barra de Estado
+
+```bash
+# Lado izquierdo (sesión, uptime)
+tmux_conf_theme_status_left=' ❐ #S | ↑#{uptime_h}h #{uptime_m}m '
+
+# Lado derecho (batería, fecha, hostname)
+tmux_conf_theme_status_right='🔋 #{battery_percentage} | %H:%M | #{hostname} '
+```
+
+Variables disponibles:
+- `#{battery_percentage}`, `#{battery_status}`, `#{battery_bar}`
+- `#{uptime_y}`, `#{uptime_d}`, `#{uptime_h}`, `#{uptime_m}`
+- `#{hostname}`, `#{hostname_ssh}`, `#{username}`
+- `#{prefix}`, `#{synchronized}`, `#{pairing}`
+
+#### Habilitar Plugins (TPM)
+
+Para usar plugins de tmux, descomenta en `tmux.conf.local`:
+
+```bash
+# Ejemplos de plugins útiles
+set -g @plugin 'tmux-plugins/tmux-resurrect'  # Guardar/restaurar sesiones
+set -g @plugin 'tmux-plugins/tmux-continuum'  # Auto-guardar sesiones
+set -g @plugin 'tmux-plugins/tmux-yank'       # Mejor integración de clipboard
+```
+
+Luego instala con: `prefix + I` (Shift+i)
+
+#### Cambiar Bindings
+
+Para sobrescribir un binding de Oh my tmux!, agrega `#!important`:
+
+```bash
+# En tmux.conf.local
+bind c new-window -c '#{pane_current_path}' #!important
+```
+
+### Integración con Workmux
+
+Oh my tmux! está optimizado para trabajar con Workmux:
+
+- **Automatic window naming**: Las ventanas se renombran automáticamente según el worktree
+- **Aggressive resize**: Mejor soporte multi-cliente
+- **Retain current path**: Nuevos paneles/ventanas mantienen el directorio actual
+
+Cuando uses `workmux add`, tmux creará automáticamente ventanas con el layout configurado.
+
+### Troubleshooting
+
+#### Los símbolos Powerline no se muestran correctamente
+
+**Causa**: Tu fuente no incluye los símbolos Powerline.
+
+**Solución**:
+1. Instala una [Nerd Font](https://www.nerdfonts.com/) (recomendado: JetBrainsMono Nerd Font)
+2. Configura tu terminal para usar esa fuente
+3. Alternativamente, cambia los separadores en `tmux.conf.local`:
+
+```bash
+# Usar símbolos ASCII simples
+tmux_conf_theme_left_separator_main='|'
+tmux_conf_theme_left_separator_sub='|'
+tmux_conf_theme_right_separator_main='|'
+tmux_conf_theme_right_separator_sub='|'
+```
+
+#### La barra de estado se duplica o se ve rota
+
+**Causa**: Incompatibilidad entre versión de Unicode de glib y glibc.
+
+**Solución**: Ya está configurado para evitar caracteres Unicode problemáticos. Si persiste:
+1. Verifica que `LC_CTYPE` use locale UTF-8
+2. En iTerm2: desactiva "Use Unicode version 9 character widths"
+
+#### Los colores no se ven correctamente
+
+**Causa**: Terminal no soporta 256 colores o true color.
+
+**Solución**:
+1. Verifica que `$TERM` sea `xterm-256color` (ya configurado en `tmux.nix`)
+2. Asegúrate que tu emulador de terminal soporte true color
+3. Prueba con: `tmux info | grep Tc`
+
+#### Tmux no carga la configuración
+
+**Causa**: Symlinks no creados correctamente.
+
+**Solución**:
+```bash
+# Reconstruir configuración de Home Manager
+nixos-rebuild switch --flake .#hydenix
+
+# Verificar symlinks
+ls -la ~/.config/tmux/
+```
+
+#### El clipboard no funciona
+
+**Causa**: Falta `xclip`, `xsel`, o `wl-clipboard`.
+
+**Solución**: Oh my tmux! detecta automáticamente la herramienta disponible. Asegúrate de tener una instalada:
+```bash
+# Para X11
+nix-shell -p xclip
+
+# Para Wayland
+nix-shell -p wl-clipboard
+```
+
+### Comandos Útiles
+
+```bash
+# Ver todas las sesiones
+tmux ls
+
+# Crear sesión con nombre
+tmux new -s desarrollo
+
+# Adjuntar a sesión existente
+tmux attach -t desarrollo
+
+# Matar sesión específica
+tmux kill-session -t desarrollo
+
+# Matar todas las sesiones excepto la actual
+tmux kill-session -a
+
+# Listar todos los bindings
+prefix + ?
+
+# Ver información de tmux
+tmux info
+
+# Recargar configuración manualmente
+tmux source-file ~/.config/tmux/tmux.conf
+```
+
+---
+
+## Sesh: Smart Session Manager
+
+**Sesh** es un gestor de sesiones inteligente que potencia el flujo de trabajo de tmux. Permite crear y conectar sesiones rápidamente basándose en directorios (vía zoxide), configuraciones y sesiones activas.
+
+### Características
+- **Búsqueda difusa (fzf)**: Encuentra cualquier proyecto o sesión instantáneamente.
+- **Detección inteligente**: Crea sesiones automáticamente si no existen.
+- **Integración con Zoxide**: Salta a tus directorios más frecuentes como sesiones de tmux.
+- **Configuración declarativa**: Define sesiones base y comandos de inicio en `sesh.toml`.
+
+### Uso en Tmux
+He configurado dos bindings para lanzar sesh dentro de un popup de tmux:
+
+- `prefix + T`: Abre el buscador de sesh con **fzf** (completo, con headers y buscador de archivos).
+- `prefix + K`: Abre el buscador de sesh con **gum** (minimalista, rápido y moderno).
+
+#### Sesh + Fzf (Buscador Completo)
+Dentro del buscador de `prefix + T` puedes usar:
+- `Ctrl+a`: Ver todo (sesiones + directorios)
+- `Ctrl+t`: Ver solo sesiones de tmux activas
+- `Ctrl+g`: Ver solo proyectos configurados en `sesh.toml`
+- `Ctrl+x`: Ver directorios de Zoxide
+- `Ctrl+f`: Buscar directorios con `fd`
+- `Ctrl+d`: Matar la sesión seleccionada
+
+#### Sesh + Gum (Buscador Rápido)
+Con `prefix + K` obtienes una interfaz más limpia impulsada por `gum filter`. Es ideal para saltar rápidamente entre sesiones conocidas sin la complejidad visual de fzf.
+
+### Uso en la Terminal (Zsh)
+También puedes usar sesh directamente desde tu shell sin estar dentro de tmux:
+
+- **Zsh**: Presiona `Alt + g` para abrir el selector de sesiones de sesh. Si seleccionas una, te conectará automáticamente (lanzando tmux si es necesario).
+
+### Configuración Creativa
+La configuración reside en [`modules/hm/programs/terminal/sesh.nix`](file:///home/ravn/Dotfiles/modules/hm/programs/terminal/sesh.nix). Aquí tienes ejemplos de sesiones configuradas con iconos y comandos de inicio:
+
+```toml
+[[session]]
+name = "Dotfiles ⚙️"
+path = "~/Dotfiles"
+startup_command = "nvim ."
+preview_command = "eza --all --git --icons --color=always {}"
+
+[[session]]
+name = "Work 💼"
+path = "~/Work"
+startup_command = "ls"
+preview_command = "eza --all --git --icons --color=always {}"
+
+[[session]]
+name = "Tmux Config ⌨️"
+path = "~/Dotfiles/modules/hm/programs/terminal"
+startup_command = "nvim tmux.conf.local"
+preview_command = "bat --color=always --style=numbers tmux.conf.local"
+
+[[session]]
+name = "NixOS Config ❄️"
+path = "~/Dotfiles"
+startup_command = "nvim hosts/hydenix/configuration.nix"
+```
+
+---
+
+### Mantenimiento y Actualizaciones
+
+#### Método Automatizado (Recomendado)
+
+Para mantener tus dotfiles, submodules y el sistema actualizados en un solo paso (el comando "todo en uno"), usa:
+
+```bash
+make upd-upgrade
+```
+
+Este comando orquestará automáticamente:
+1. La actualización de submodules git (incluyendo Oh my tmux!).
+2. La sincronización de archivos de configuración externos.
+3. La actualización de todos los inputs del flake de Nix.
+4. La aplicación segura de la configuración al sistema.
+
+#### Otros Comandos de Actualización
+
+Si necesitas realizar actualizaciones parciales:
+
+```bash
+# Sincronizar solo submodules y archivos de configuración
+make upd-dots
+
+# Actualizar solo los inputs del flake (Nix)
+make upd-all
+
+# Actualizar herramientas de IA (OpenCode, Antigravity, etc.)
+make upd-ai
+```
+
+#### Método Manual (Detallado)
+
+Si prefieres realizar los pasos manualmente o necesitas debuggear:
+
+```bash
+# 1. Actualizar el submodule a la última versión upstream
+make/upd-dots.sh  # (El script contiene la lógica de sincronización)
+```
+
+O paso a paso:
+
+```bash
+# 1. Actualizar el submodule
+git submodule update --remote modules/hm/programs/terminal/oh-my-tmux
+
+# 2. Copiar la nueva configuración principal
+cp modules/hm/programs/terminal/oh-my-tmux/.tmux.conf \
+   modules/hm/programs/terminal/oh-my-tmux.conf
+
+# 3. Aplicar configuración
+make sys-apply
+```
+
+### Recursos Adicionales
+
+- [Oh my tmux! GitHub](https://github.com/gpakosz/.tmux)
+- [Tmux Getting Started Guide](https://github.com/tmux/tmux/wiki/Getting-Started)
+- [Tmux Cheat Sheet](https://tmuxcheatsheet.com/)
+- [Libro: tmux 3 - Productive Mouse-Free Development](https://pragprog.com/titles/bhtmux3/tmux-3/)
+
+---
+
+## Workmux: Flujos de Trabajo Paralelos
+
+**Workmux** es una herramienta de "cero fricción" para gestionar **Git Worktrees** y sesiones de Tmux como entornos de desarrollo aislados. Es ideal para trabajar en múltiples características o correcciones simultáneamente sin conflictos, y perfecto para orquestar múltiples agentes de IA.
+
+> **Worktree**: Una característica de Git que permite tener múltiples copias de trabajo del mismo repositorio en diferentes directorios, todas vinculadas al mismo historial `.git`.
+
+### Características Principales
+
+- **Una ventana por tarea**: Cada tarea tiene su propia ventana de Tmux, estado de terminal, editor y servidores.
+- **Git Worktrees**: Crea worktrees automáticamente en directorios hermanos (`../proyecto__worktrees/rama`).
+- **Integración con IA**: Diseñado para trabajar con agentes como Claude Code, Gemini CLI, etc.
+- **Configuración flexible**: Soporta configuración global y por proyecto.
+
+### Instalación
+
+Workmux se instala a través de `llm-agents` en tu configuración (`hosts/hydenix/user.nix`).
+
+### Comandos Principales
+
+Se recomienda crear un alias en tu shell: `alias wm='workmux'`
+
+#### 1. Iniciar (`workmux add`)
+
+Crea un nuevo worktree y una ventana de Tmux asociada.
+
+```bash
+# Crear nueva rama y worktree
+workmux add nueva-feature
+
+# Usar una rama existente
+workmux add rama-existente
+
+# Crear desde una base específica
+workmux add hotfix --base production
+
+# Crear un worktree para un PR de GitHub
+workmux add --pr 123
+```
+
+Esto realizará automáticamente:
+1. Crear un worktree de git en una carpeta separada.
+2. Crear una ventana de Tmux (ej. `wm-nueva-feature`).
+3. Configurar el layout de paneles definido.
+4. Cambiarte a esa nueva ventana.
+
+#### 2. Finalizar (`workmux merge` / `remove`)
+
+Cuando termines tu tarea:
+
+```bash
+# Fusionar rama a main y limpiar todo (worktree, ventana, rama)
+workmux merge
+
+# Si usas Pull Requests (el merge ocurre en remoto), solo elimina el entorno local
+workmux remove
+```
+
+#### 3. Navegación
+
+- `workmux list`: Ver worktrees activos.
+- `workmux open <nombre>`: Abrir la ventana de un worktree existente.
+- `workmux close`: Cerrar la ventana (mantiene el worktree).
+
+### Integración con Agentes de IA
+
+Workmux brilla cuando se usa con agentes de IA. Puedes iniciar un entorno de trabajo con un agente pre-cargado con instrucciones.
+
+```bash
+# Crear worktree con un prompt para el agente
+workmux add feature/login --prompt "Implementar login con OAuth2 usando Google"
+
+# Usar un agente específico (si tienes varios configurados)
+workmux add feature/refactor -a gemini
+```
+
+Si tienes configurado `agent: claude` (por defecto), Workmux abrirá un panel con `claude` (o el agente configurado) y le pasará tu prompt automáticamente.
+
+### Configuración (`.workmux.yaml`)
+
+Puedes configurar Workmux globalmente (`~/.config/workmux/config.yaml`) o por proyecto (`.workmux.yaml`).
+
+Ejemplo de configuración de proyecto:
+
+```yaml
+# .workmux.yaml
+
+# Comandos a ejecutar tras crear el worktree (antes de abrir tmux)
+post_create:
+  - direnv allow
+  - pnpm install
+
+# Archivos a copiar o enlazar desde el directorio principal
+files:
+  copy:
+    - .env
+  symlink:
+    - node_modules
+
+# Layout de paneles de Tmux
+panes:
+  - command: <agent>       # Panel 1: Agente de IA (recibe el prompt)
+    focus: true
+  - command: pnpm run dev  # Panel 2: Servidor de desarrollo
+    split: horizontal
+```
+
+### Generación Automática de Nombres
+
+Workmux puede usar IA (vía `llm` CLI) para generar nombres de rama basados en tu descripción:
+
+```bash
+# Te pedirá un prompt y generará un nombre de rama adecuado (ej. "implement-oauth")
+workmux add -A
+```
+
+### Dashboard
+
+Usa `workmux dashboard` para ver una interfaz TUI con el estado de todos tus agentes y worktrees activos.
+
+---
+
+## Flujo de Trabajo Recomendado
+
+1.  **Nuevo Ticket/Tarea**:
+    `workmux add feature/nueva-api --prompt "Crear endpoint REST para usuarios"`
+    
+    *Workmux crea el worktree, instala dependencias (si está configurado), abre Tmux, divide la pantalla, e inicia al agente con las instrucciones.*
+
+2.  **Desarrollo**:
+    Trabajas en el entorno aislado. El agente modifica código, tú revisas, el servidor corre en otro panel.
+
+3.  **Context Switching**:
+    Si llega un bug urgente:
+    `workmux add hotfix/crash-prod`
+    
+    *Cambias instantáneamente a un entorno limpio para el hotfix. Tu trabajo en `feature/nueva-api` sigue corriendo intacto en su ventana.*
+
+4.  **Finalización**:
+    En la ventana del hotfix: `workmux merge` (o `gh pr create` y luego `workmux remove`).
+    Vuelves a tu tarea anterior con `workmux open feature/nueva-api`.

@@ -1,0 +1,60 @@
+---
+title: Backgrounds
+description: Wallpapers y rotacion desde el menu de HyDE.
+---
+
+# Backgrounds
+
+En Hydenix los wallpapers se controlan desde el menu de HyDE en Waybar o con
+atajos directos.
+
+## Selector de wallpapers
+
+| Accion | Atajo |
+| --- | --- |
+| Abrir selector de wallpaper | `Super + W` |
+| Siguiente wallpaper global | `Super + .` |
+| Wallpaper global anterior | `Super + Esc` |
+
+## Wallpapers por tema
+
+Cada tema suele tener sus propios fondos en:
+
+```
+~/.config/hyde/themes/<Tema>/wallpapers
+```
+
+Si quieres agregar fondos, puedes copiarlos desde `resources/wallpapers/` hacia
+la carpeta del tema correspondiente. Un ejemplo de esto esta en
+`modules/hm/keybinds.nix`.
+
+## Wallbash
+
+Wallbash cambia el estilo tomando colores del wallpaper actual:
+
+| Accion | Atajo |
+| --- | --- |
+| Selector de modos wallbash | `Super + R` |
+
+## hydectl (wallpapers)
+
+`hydectl` tiene un subcomando dedicado para wallpapers. Estas son las opciones
+disponibles hoy:
+
+| Comando | Que hace |
+| --- | --- |
+| `hydectl wallpaper list` | Lista wallpapers disponibles |
+| `hydectl wallpaper select` | Selector via rofi |
+| `hydectl wallpaper next` | Siguiente wallpaper |
+| `hydectl wallpaper previous` | Wallpaper anterior |
+| `hydectl wallpaper random` | Wallpaper aleatorio |
+| `hydectl wallpaper get` | Ver el wallpaper actual |
+| `hydectl wallpaper set <ruta>` | Establecer wallpaper |
+| `hydectl wallpaper output <ruta>` | Copiar wallpaper actual a un archivo |
+
+Flags utiles:
+
+| Flag | Uso |
+| --- | --- |
+| `--backend swww` | Selecciona el backend de wallpaper |
+| `--global` | Aplica el wallpaper de forma global |

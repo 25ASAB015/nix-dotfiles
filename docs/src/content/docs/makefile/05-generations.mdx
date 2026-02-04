@@ -1,0 +1,190 @@
+---
+title: Generaciones y Rollback
+description: Comandos para gestionar generaciones del sistema y hacer rollback
+---
+
+# Generaciones y Rollback
+
+Módulo: `make/generations.mk`
+
+Comandos para listar, comparar y revertir generaciones del sistema.
+
+## Comandos Disponibles
+
+### `make gen-list`
+Lista todas las generaciones del sistema.
+
+```bash
+make gen-list
+```
+
+**Qué muestra:** Número de generación, fecha de creación y marca de la generación actual.
+
+---
+
+### `make gen-rollback`
+Revierte a la generación anterior del sistema.
+
+```bash
+make gen-rollback
+```
+
+**Qué hace:** Activa la generación anterior inmediatamente. Requiere confirmación `yes`.
+
+**Cuándo usarlo:** Cuando una aplicación de configuración (`sys-apply`) resulta en un sistema inestable.
+
+---
+
+### `make gen-rollback-commit`
+Revierte a un commit específico de Git y reconstruye el sistema desde ese commit.
+
+```bash
+make gen-rollback-commit COMMIT=<hash>
+```
+
+**Ejemplos:**
+```bash
+# Usando hash corto
+make gen-rollback-commit COMMIT=9220122
+
+# Usando hash completo
+make gen-rollback-commit COMMIT=9220122face1b1f71f0cf9b1fcc8536fa0cd2842
+```
+
+**Qué hace:**
+- ✅ Verifica que el commit existe
+- ✅ Muestra información del commit (hash, mensaje, fecha, cambios)
+- ✅ Pide confirmación antes de proceder
+- ✅ Hace checkout al commit especificado
+- ✅ Reconstruye el sistema desde ese commit con `make sys-apply`
+- ✅ Muestra el resultado y próximos pasos
+
+**Cuándo usarlo:**
+- Cuando quieres volver exactamente a un commit específico
+- Cuando necesitas restaurar tanto el sistema como los archivos de configuración
+- Cuando `make gen-rollback` no es suficiente (solo revierte a N-1)
+- Cuando sabes exactamente qué commit funcionaba bien
+
+**Ventajas sobre `gen-rollback`:**
+- ✅ Vuelve a cualquier commit, no solo al anterior
+- ✅ Restaura tanto el sistema como los archivos de configuración
+- ✅ Útil cuando necesitas volver varios commits atrás
+- ✅ Muestra información detallada del commit antes de proceder
+
+**Limitaciones:**
+- ⚠️ Modifica el estado del repositorio git (cambia el HEAD)
+- ⚠️ Requiere que no haya cambios sin commit (usa `git stash` si es necesario)
+- ⚠️ Más lento que `gen-rollback` (reconstruye el sistema completo)
+
+**Ejemplo de uso:**
+```bash
+# 1. Hacer switch con nuevos cambios
+make sys-apply
+
+# 2. Si no te gustan los cambios, volver al commit 9220122
+make gen-rollback-commit COMMIT=9220122
+
+# 3. El sistema se reconstruye desde ese commit
+```
+
+**Nota importante:** Si tienes cambios sin commit, el comando fallará. Guarda tus cambios primero:
+```bash
+# Guardar cambios temporalmente
+git stash
+
+# Hacer rollback
+make gen-rollback-commit COMMIT=9220122
+
+# (Opcional) Recuperar cambios guardados
+git stash pop
+```
+
+---
+
+### `make gen-diff`
+Compara dos generaciones específicas.
+
+```bash
+make gen-diff GEN1=<n> GEN2=<m>
+```
+
+**Ejemplos:**
+```bash
+make gen-diff GEN1=184 GEN2=186
+```
+
+---
+
+### `make gen-diff-current`
+Compara la generación actual con la inmediatamente anterior.
+
+```bash
+make gen-diff-current
+```
+
+**Qué muestra:** Diferencias detalladas de paquetes y versiones entre las dos últimas generaciones.
+
+---
+
+### `make gen-sizes`
+Muestra el tamaño en disco de cada generación almacenada.
+
+```bash
+make gen-sizes
+```
+
+**Cuándo usarlo:** Para identificar qué generaciones están consumiendo más espacio antes de ejecutar una limpieza (`sys-gc`).
+
+---
+
+### `make gen-current`
+Muestra detalles de la generación que está activa actualmente.
+
+```bash
+make gen-current
+```
+
+---
+
+## Workflow Recomendado
+
+### Rollback Rápido
+```bash
+# Si algo se rompió después de un cambio
+make gen-rollback
+```
+
+### Rollback a Commit Específico
+```bash
+# Si necesitas volver a un commit específico conocido
+make gen-rollback-commit COMMIT=9220122
+```
+
+### Investigar Cambios
+```bash
+# Ver qué cambió en la última actualización
+make gen-diff-current
+
+# Comparar con una versión específica más antigua
+make gen-list
+make gen-diff GEN1=150 GEN2=186
+```
+
+### Flujo de Trabajo Seguro
+```bash
+# 1. Aplicar cambios
+make sys-apply
+
+# 2. Si no funciona, rollback rápido
+make gen-rollback
+
+# 3. O rollback a commit específico si sabes cuál funcionaba
+make gen-rollback-commit COMMIT=9220122
+
+# 4. Investigar el problema
+make gen-diff-current
+make sys-debug
+```
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `make rollback`), consulta la [Guía de Aliases](../10-aliases).

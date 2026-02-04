@@ -1,0 +1,9 @@
+{
+    "custom/weather": {
+        "exec": "WEATHER_LOCATION=\"$(cat $HOME/.config/.weather_location 2>/dev/null || echo 'Ilopango')\" hyde-shell weather",
+        "return-type": "json",
+        "interval": 30,
+        "format": "{0}",
+        "tooltip": true
+    }
+}

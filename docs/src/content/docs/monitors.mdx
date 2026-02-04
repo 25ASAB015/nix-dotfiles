@@ -1,0 +1,54 @@
+---
+title: Monitors
+description: Placeholder page.
+---
+
+# Monitors
+
+Esta página detalla la configuración de monitores en el sistema.
+
+## Configuración Física Actual
+
+El sistema está configurado con dos monitores principales:
+
+1.  **Sony TV (HDMI-A-1)**:
+    *   **Posición**: Izquierda (`0x0`).
+    *   **Resolución**: 1920x1080 @ 60Hz.
+    *   **Uso**: Monitor auxiliar.
+
+2.  **Dell P2417H (DP-1)**:
+    *   **Posición**: Derecha (`1920x0`).
+    *   **Resolución**: 1920x1080 @ 60Hz.
+    *   **Uso**: Monitor principal.
+
+## Gestión de Configuración
+
+La configuración de los monitores se gestiona a través del archivo:
+`~/Dotfiles/resources/config/hypr/monitors.conf`
+
+Este archivo es enlazado simbólicamente a `~/.config/hypr/monitors.conf` mediante Home Manager.
+
+### Ejemplos de Configuración
+
+Para cambiar la posición de un monitor, edita el archivo `monitors.conf` y ajusta las coordenadas:
+
+```bash
+# Formato: monitor=ID,resolución@tasa,posición,escala
+monitor=HDMI-A-1,1920x1080@60,0x0,1
+monitor=DP-1,1920x1080@60,1920x0,1
+```
+
+## Monitor Toggle (Simple/Dual Mode)
+
+Se ha implementado una funcionalidad para alternar r&#225;pidamente entre el uso de un solo monitor y dos monitores.
+
+*   **Script**: `~/Dotfiles/resources/scripts/monitor-toggle.sh`
+*   **Atajo de Teclado**: `Super + Control + Z` (previamente `Super + Shift + M`)
+
+### Uso
+Presiona `Super + Control + Z` para alternar:
+1.  **Modo Single**: Desactiva el monitor secundario (**HDMI-A-1**). El monitor principal (**DP-1**) permanece encendido.
+2.  **Modo Dual**: Reactiva el monitor secundario (**HDMI-A-1**) en su posici&#243;n izquierda (`0x0`).
+
+El sistema enviar&#225; una notificaci&#243;n indicando el cambio de estado.
+

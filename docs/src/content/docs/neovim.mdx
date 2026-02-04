@@ -1,0 +1,668 @@
+---
+title: Neovim
+description: Keymaps and configuration for Neovim.
+---
+
+# ⌨️ Keymaps
+
+## General
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<Space>` | Leader key | Normal |
+| `<esc>` | Clear search results | Normal |
+| `<BS>` | Backspace delete | Normal |
+| `Y` | Yank to end of line | Normal |
+| `j` / `k` | Move cursor (display lines) | Normal |
+| `<leader>w` | Save file | Normal |
+| `<leader>W` | Force write | Normal |
+| `<leader>q` | Quit | Normal |
+| `<leader>Q` | Force quit | Normal |
+| `<C-n>` | New file | Normal |
+| `<leader>/` | Toggle comment | Normal/Visual |
+
+## Navigation & Windows
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<C-c>` | Switch to alternate buffer | Normal |
+| `<leader>[` | Focus Left Window | Normal |
+| `<leader>]` | Focus Right Window | Normal |
+| `<leader>.` | Focus Down Window | Normal |
+| `<leader>,` | Focus Up Window | Normal |
+| `<C-Up>` | Resize Window (-2) | Normal |
+| `<C-Down>` | Resize Window (+2) | Normal |
+| `<C-Left>` | Resize Vertical (+2) | Normal |
+| `<C-Right>` | Resize Vertical (-2) | Normal |
+| `<C-[>` | Next Quickfix Item | Normal |
+| `<C-]>` | Previous Quickfix Item | Normal |
+| `\|` | Vertical Split | Normal |
+| `-` | Horizontal Split | Normal |
+
+## 1. AI Assistant (`<leader>a`) 🤖
+
+Keymaps para interactuar con asistentes de IA.
+
+### Avante (`<leader>aa`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>aaa` | Ask | Normal/Visual |
+| `<leader>aan` | New Ask | Normal/Visual |
+| `<leader>aae` | Edit | Normal/Visual |
+| `<leader>aar` | Refresh | Normal/Visual |
+| `<leader>aaf` | Focus | Normal/Visual |
+| `<leader>aaS` | Stop | Normal/Visual |
+| `<leader>aat` | Toggle | Normal/Visual |
+| `<leader>aad` | Toggle Debug | Normal/Visual |
+| `<leader>aah` | Toggle Hint | Normal/Visual |
+| `<leader>aaC` | Toggle Selection | Normal/Visual |
+| `<leader>aas` | Toggle Suggestion | Normal/Visual |
+| `<leader>aaR` | Toggle Repomap | Normal/Visual |
+| `<leader>aa.` | Add Current File | Normal/Visual |
+| `<leader>aaB` | Add All Buffers | Normal/Visual |
+| `<leader>aa?` | Select Model | Normal/Visual |
+| `<leader>aah` | Select History | Normal/Visual |
+| `<leader>aaz` | Zen Mode | Normal/Visual |
+| `<leader>aac` | Clear | Normal |
+
+### Claude Code (`<leader>ac`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>act` | Toggle Claude | Normal |
+| `<leader>acc` | Continue Claude | Normal |
+| `<leader>acr` | Resume Claude | Normal |
+| `<leader>acf` | Focus Claude | Normal |
+| `<leader>acm` | Select Claude model | Normal |
+| `<leader>acb` | Add current buffer | Normal |
+| `<leader>acs` | Send to Claude | Visual |
+| `<leader>aca` | Accept diff | Normal |
+| `<leader>acd` | Deny diff | Normal |
+
+### Copilot Chat (`<leader>aC`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>aCa` | List Available Agents | Normal |
+| `<leader>aCc` | Close Chat | Normal |
+| `<leader>aCl` | Load Chat History | Normal |
+| `<leader>aCm` | List Available Models | Normal |
+| `<leader>aCo` | Open Chat | Normal |
+| `<leader>aCp` | Prompt Actions | Normal |
+| `<leader>aCP` | Select Prompt | Normal |
+| `<leader>aCq` | Quick Chat | Normal |
+| `<leader>aCs` | Stop Chat | Normal |
+| `<leader>aCS` | Save Chat | Normal |
+| `<leader>aCr` | Reset Chat | Normal |
+| `<leader>aCt` | Toggle Chat Window | Normal |
+
+### CodeCompanion (`<leader>ai`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>ait` | Toggle Chat | Normal |
+| `<leader>aic` | New Chat | Normal |
+| `<leader>aia` | Actions | Normal/Visual |
+| `<leader>aie` | Inline Edit | Visual |
+| `<leader>aiq` | Quick Commit Message | Normal |
+| `<leader>air` | Add to Chat | Normal/Visual |
+
+## 2. Buffers (`<leader>b`) 📋
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `[b` / `<leader>b[` / `<S-TAB>` | Previous buffer | Normal |
+| `]b` / `<leader>b]` / `<TAB>` | Next buffer | Normal |
+| `<C-w>` | Close buffer | Normal |
+| `<leader>bc` | Close other buffers | Normal |
+| `<leader>bC` | Close all buffers | Normal |
+| `<leader>bp` | Pick buffer | Normal |
+| `<leader>bP` | Pin buffer toggle | Normal |
+| `<leader>bsd` | Sort by directory | Normal |
+| `<leader>bse` | Sort by extension | Normal |
+| `<leader>bsr` | Sort by relative directory | Normal |
+
+## 3. Code & Comments (`<leader>c`) 💬
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>cb` | Box title | Normal |
+| `<leader>cl` | Simple line | Normal |
+| `<leader>ct` | Titled line | Normal |
+| `<leader>cd` | Delete box | Normal |
+| `<leader>cr` | Rename file | Normal |
+
+## 4. Debug (`<leader>d`) 🐛
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>db` | Toggle breakpoint | Normal |
+| `<leader>dc` | Continue (Start) | Normal |
+| `<leader>dC` | Run to cursor | Normal |
+| `<leader>dg` | Go to line (no execute) | Normal |
+| `<leader>di` | Step into | Normal |
+| `<leader>do` | Step out | Normal |
+| `<leader>dO` | Step over | Normal |
+| `<leader>dj` | Down | Normal |
+| `<leader>dk` | Up | Normal |
+| `<leader>dl` | Run last | Normal |
+| `<leader>dp` | Pause | Normal |
+| `<leader>dr` | Toggle REPL | Normal |
+| `<leader>ds` | Session | Normal |
+| `<leader>dt` | Terminate | Normal |
+| `<leader>du` | Toggle Debugger UI | Normal |
+| `<leader>de` | Evaluate Input | Normal/Visual |
+| `<leader>dh` | Hover | Normal |
+| `<leader>dn` | Neotest Debug | Normal |
+| `<leader>dR` | Rust Debuggables | Normal |
+| `<leader>dL` | nlua Launch | Normal |
+
+## 5. Find (`<leader>f`) 🔍
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader><space>` | Smart Find Files | Normal |
+| `<leader>:` | Command History | Normal |
+| `<leader>fb` | Find Buffers | Normal |
+| `<leader>ff` | Find Files | Normal |
+| `<leader>fFA` | Find All Files (Hidden/Ignored) | Normal |
+| `<leader>fw` | Live Grep | Normal |
+| `<leader>fW` | Live Grep (All Files) | Normal |
+| `<leader>f/` | Fuzzy Find in Buffer | Normal |
+| `<leader>f?` | Fuzzy Find in Open Buffers | Normal |
+| `<leader>f<CR>` | Resume Find | Normal |
+| `<leader>fr` | Find Registers | Normal |
+| `<leader>fk` | Find Keymaps | Normal |
+| `<leader>fh` | Find Help Tags | Normal |
+| `<leader>fc` | Find Commands | Normal |
+| `<leader>fC` | Find Config Files | Normal |
+| `<leader>fp` | Find Projects | Normal |
+| `<leader>fo` | Find Recent Files | Normal |
+| `<leader>fO` | Find Smart (Frecency) | Normal |
+| `<leader>fz` | Find Zoxide | Normal |
+| `<leader>fZ` | Search History | Normal |
+| `<leader>fe` | File Explorer | Normal |
+| `<leader>ft` | Find TODOs | Normal |
+| `<leader>fT` | Find Theme/Colorscheme | Normal |
+| `<leader>fS` | Find Spelling Suggestions | Normal |
+| `<leader>fH` | Find Highlights | Normal |
+| `<leader>fL` | Find Neovim Logs | Normal |
+| `<leader>fm` | Find Man Pages | Normal |
+| `<leader>fa` | Find Autocmds | Normal |
+| `<leader>fj` | Find Jumps | Normal |
+| `<leader>f'` | Find Marks | Normal |
+| `<leader>fu` | Undo History | Normal |
+| `<leader>fq` | Find Quickfix | Normal |
+| `<leader>f,` | Find Icons | Normal |
+| `<leader>fd` | LSP document symbols | Normal |
+| `<leader>fD` | LSP workspace symbols | Normal |
+| `<leader>fl` | LSP locations | Normal |
+
+## 6. Git (`<leader>g`) 🌿
+
+### Git Operations
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>gg` | Lazygit | Normal |
+| `<leader>go` | Open file in browser | Normal/Visual |
+| `<leader>gO` | Open repo in browser | Normal |
+| `<leader>gm` | Open main branch | Normal |
+| `<leader>gM` | Open master branch | Normal |
+| `<leader>gD` | Toggle Diff (Primary) | Normal |
+| `<leader>gdd` | Add file to diff | Normal |
+| `<leader>gdc` | Close diff mode | Normal |
+| `<leader>gdC` | Close diff mode (all windows) | Normal |
+| `<leader>gdv` | Diffview toggle | Normal |
+| `<leader>gdV` | File history | Normal |
+| `<leader>gdg` | Gitsigns Diff This | Normal |
+| `<leader>gdG` | Gitsigns Diff This ~ | Normal |
+| `<leader>gdf` | Jujutsu Diff current buffer | Normal |
+| `<leader>gdF` | Jujutsu Diff current buffer (Split) | Normal |
+| `<leader>gj` | Jujutsu Status picker | Normal |
+
+### Git Picker
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>gff` | Git Files | Normal |
+| `<leader>gfb` | Git Branches | Normal |
+| `<leader>gfc` | Git Commits | Normal |
+| `<leader>gfs` | Git Status | Normal |
+| `<leader>gfh` | Git Stashes | Normal |
+| `<leader>gfd` | Git Diff (Hunks) | Normal |
+| `<leader>gfL` | Git Log Line | Normal |
+| `<leader>gfa` | Git Log File | Normal |
+
+### Gitsigns (Hunks)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `]c` | Next Hunk | Normal |
+| `[c` | Previous Hunk | Normal |
+| `ih` | Select Hunk | Operator/Visual |
+| `<leader>gS` | Stage Buffer | Normal |
+| `<leader>gU` | Unstage Buffer | Normal |
+| `<leader>gR` | Reset Buffer | Normal |
+| `<leader>gb` | Blame Line | Normal |
+| `<leader>ghs` | Stage Hunk | Normal/Visual |
+| `<leader>ghr` | Reset Hunk | Normal/Visual |
+| `<leader>ghu` | Undo Stage Hunk | Normal/Visual |
+| `<leader>ghp` | Preview Hunk | Normal/Visual |
+| `<leader>ghi` | Preview Hunk Inline | Normal |
+| `<leader>ghq` | Set Quickfix List | Normal |
+| `<leader>ghQ` | Set Quickfix List All | Normal |
+
+## 7. Harpoon (`<leader>H`) 🎯
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>Ha` | Add mark | Normal |
+| `<leader>He` | Toggle quick menu | Normal |
+| `<leader>Hj` | Navigate to mark 1 | Normal |
+| `<leader>Hk` | Navigate to mark 2 | Normal |
+| `<leader>Hl` | Navigate to mark 3 | Normal |
+| `<leader>Hm` | Navigate to mark 4 | Normal |
+
+## 8. HTTP (`<leader>h`) 🌐
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>hr` | Run HTTP request under cursor | Normal |
+| `<leader>hR` | Replay last request | Normal |
+| `<leader>hc` | Copy as cURL | Normal |
+| `<leader>hi` | Inspect request | Normal |
+| `<leader>hp` | Jump to previous request | Normal |
+| `<leader>hn` | Jump to next request | Normal |
+| `<leader>ht` | Toggle view (body/headers/both) | Normal |
+| `<leader>hq` | Close response window | Normal |
+| `<leader>hs` | Open scratchpad | Normal |
+| `<leader>hes` | Set selected environment | Normal |
+| `<leader>hei` | Show request statistics | Normal |
+| `<CR>` | Run HTTP request under cursor | Normal (http files) |
+
+## 9. REPL (Iron) (`<leader>i`) 🔥
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>ir` | Open REPL | Normal |
+| `<leader>iR` | Open REPL here | Normal |
+| `<leader>im` | Send motion | Normal |
+| `<leader>iv` | Visual send | Visual |
+| `<leader>if` | Send file | Normal |
+| `<leader>il` | Send line | Normal |
+| `<leader>ip` | Send paragraph | Normal |
+| `<leader>iu` | Send until cursor | Normal |
+| `<leader>is` | Send mark | Normal |
+| `<leader>ic` | Mark motion/visual | Normal/Visual |
+| `<leader>id` | Remove mark | Normal |
+| `<leader>i<CR>` | Send | Normal |
+| `<leader>i<space>` | Interrupt | Normal |
+| `<leader>iq` | Exit | Normal |
+| `<leader>iC` | Clear | Normal |
+
+## 10. Jujutsu (`<leader>j`) ⚡
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>ja` | Abandon | Normal |
+| `<leader>jd` | Describe | Normal |
+| `<leader>je` | Edit | Normal |
+| `<leader>jf` | Fetch | Normal |
+| `<leader>jh` | History picker | Normal |
+| `<leader>jl` | Log | Normal |
+| `<leader>jL` | Log all | Normal |
+| `<leader>jn` | New | Normal |
+| `<leader>jr` | Rebase | Normal |
+| `<leader>jS` | Squash | Normal |
+| `<leader>js` | Status | Normal |
+| `<leader>jt` | Tug | Normal |
+| `<leader>ju` | Undo | Normal |
+| `<leader>jy` | Redo | Normal |
+| `<leader>jbc` | Create bookmark | Normal |
+| `<leader>jbd` | Delete bookmark | Normal |
+| `<leader>jbm` | Move bookmark | Normal |
+| `<leader>jp` | Push | Normal |
+| `<leader>jpr` | Open PR | Normal |
+| `<leader>jpl` | Open PR (List) | Normal |
+
+## 11. LSP (`<leader>l` y `g*`) 🔧
+
+### Go To Navigation
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `gd` | Go to definition | Normal |
+| `gD` | Go to declaration | Normal |
+| `grr` | References | Normal |
+| `gri` | Implementation | Normal |
+| `gy` | Type definition | Normal |
+| `gR` | Start IncRename | Normal |
+| `K` | Hover documentation | Normal |
+
+### LSP Actions
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>la` | Code actions | Normal |
+| `<leader>lf` | Format | Normal/Visual |
+| `<leader>ld` | Goto Definition | Normal |
+| `<leader>lD` | Find References | Normal |
+| `<leader>li` | Goto Implementation | Normal |
+| `<leader>lt` | Goto Type Definition | Normal |
+| `<leader>lh` | LSP Hover | Normal |
+| `<leader>lH` | Diagnostic Hover | Normal |
+| `<leader>lp` | Preview Definition | Normal |
+| `<leader>lP` | Preview Type Definition | Normal |
+| `<leader>lr` | Rename | Normal |
+| `<leader>lw` | Trim trailing whitespace | Normal |
+| `<leader>lj` | Next diagnostic | Normal |
+| `<leader>lk` | Prev diagnostic | Normal |
+| `<leader>ll` | LazyDev | Normal |
+| `<leader>lld` | LazyDev debug | Normal |
+| `<leader>lll` | LazyDev lsp | Normal |
+
+### Glance (`<leader>lg`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>lgd` | Glance definition | Normal |
+| `<leader>lgi` | Glance implementation | Normal |
+| `<leader>lgr` | Glance reference | Normal |
+| `<leader>lgt` | Glance type definition | Normal |
+
+## 12. Multicursor (`<leader>m`) 📍
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>ma` | Add cursor above | Normal/Visual |
+| `<leader>mA` | Skip cursor above | Normal/Visual |
+| `<leader>mb` | Add cursor below | Normal/Visual |
+| `<leader>mB` | Skip cursor below | Normal/Visual |
+| `<leader>mn` | Add cursor by match (next) | Normal/Visual |
+| `<leader>mp` | Add cursor by match (prev) | Normal/Visual |
+| `<leader>ms` | Skip cursor by match (next) | Normal/Visual |
+| `<leader>mS` | Skip cursor by match (prev) | Normal/Visual |
+| `<leader>mt` | Toggle cursor | Normal/Visual |
+| `<c-leftmouse>` | Add cursor with mouse | Normal |
+| `<c-leftdrag>` | Drag cursor with mouse | Normal |
+| `<c-leftrelease>` | Release mouse cursor | Normal |
+
+## 13. Notes (`<leader>n`) 📝
+
+### Scratch Buffers
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>nn` | New scratch buffer | Normal |
+| `<leader>ns` | Select scratch buffer | Normal |
+
+### Neorg
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>nc` | Toggle concealer | Normal |
+| `<leader>nj` | Today's journal | Normal |
+| `<leader>nJ` | Custom date journal | Normal |
+| `<leader>ny` | Yesterday's journal | Normal |
+| `<leader>nt` | Tomorrow's journal | Normal |
+| `<leader>nN` | Neorg | Normal |
+| `<leader>noi` | Open Index | Normal |
+| `<leader>now` | Select Workspace | Normal |
+| `<leader>nor` | Return to Workspace | Normal |
+| `<leader>non` | New Note | Normal |
+| `<leader>nos` | Search Notes | Normal |
+| `<leader>nog` | Grep Notes | Normal |
+
+## 14. Preview (`<leader>p`) 👁️
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>pe` | Patterns explain | Normal |
+| `<leader>pg` | Glow (markdown) | Normal |
+| `<leader>ph` | Patterns hover | Normal |
+| `<leader>pm` | Markdown preview | Normal |
+
+## 15. Refactor (`<leader>r`) ♻️
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>re` | Extract Function | Visual |
+| `<leader>rE` | Extract Function to File | Visual |
+| `<leader>rv` | Extract Variable | Visual |
+| `<leader>ri` | Inline Variable | Normal |
+| `<leader>rI` | Inline Function | Normal |
+| `<leader>rb` | Extract Block | Normal |
+| `<leader>rB` | Extract Block to File | Normal |
+| `<leader>rp` | Debug Printf | Normal/Visual |
+| `<leader>rP` | Debug Print Variable | Normal/Visual |
+| `<leader>rc` | Debug Cleanup | Normal |
+
+## 16. Search & Replace (`<leader>r`) 🔄
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>rg` | Grug-far toggle | Normal |
+| `<leader>rw` | Replace word in buffer | Normal/Visual |
+| `<leader>rW` | Replace word in project | Normal |
+
+## 17. Run (`<leader>R`) ▶️
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>Ra` | Code action (Rust) | Normal |
+| `<leader>RA` | Task action | Normal |
+| `<leader>Rc` | Open Cargo.toml | Normal |
+| `<leader>Rd` | Open docs | Normal |
+| `<leader>Rg` | Crate graph | Normal |
+| `<leader>Rh` | Hover actions (Rust) | Normal |
+| `<leader>Rm` | Expand macro | Normal |
+| `<leader>RM` | Rebuild proc macros | Normal |
+| `<leader>Ro` | Open output | Normal |
+| `<leader>Rp` | Rust runnables | Normal |
+| `<leader>Rr` | Run task | Normal |
+| `<leader>Rs` | Run shell command | Normal |
+| `<leader>Rt` | Toggle output | Normal |
+
+## 18. Search (`<leader>s`) 🔎
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>sw` | Search word (visual/cursor) | Normal/Visual |
+| `<leader>sh` | DevDocs | Normal |
+| `<leader>shd` | Delete DevDoc | Normal |
+| `<leader>shf` | Find DevDocs | Normal |
+| `<leader>shg` | Get DevDocs | Normal |
+| `<leader>shi` | Install DevDocs | Normal |
+
+## 19. Sessions (`<leader>S`) 💾
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>Sl` | Load current directory | Normal |
+| `<leader>SL` | Load last session | Normal |
+| `<leader>Ss` | Select a session to load | Normal |
+| `<leader>SS` | Stop persistence | Normal |
+| `<leader>Sw` | Write current session | Normal |
+| `<leader>Sd` | Delete a session | Normal |
+
+## 20. Testing (`<leader>t`) 🧪
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>tt` | Summary toggle | Normal |
+| `<leader>tr` | Run nearest test | Normal |
+| `<leader>tR` | Run file | Normal |
+| `<leader>ta` | Attach | Normal |
+| `<leader>td` | Debug test | Normal |
+| `<leader>th` | Output | Normal |
+| `<leader>to` | Toggle output panel | Normal |
+| `<leader>ts` | Stop | Normal |
+
+## 21. Trouble (`<leader>x`) ⚠️
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>xx` | Diagnostics toggle | Normal |
+| `<leader>xX` | Buffer diagnostics toggle | Normal |
+| `<leader>xl` | LSP definitions/references toggle | Normal |
+| `<leader>xL` | Location list toggle | Normal |
+| `<leader>xq` | Quickfix list toggle | Normal |
+| `<leader>xQ` | TodoTrouble RETURN | Normal |
+
+## 22. UI Toggles (`<leader>u`) 🎨
+
+### Diagnostics & Debugging (`<leader>ud`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>udd` | Toggle diagnostics (document) | Normal |
+| `<leader>udD` | Toggle diagnostics (global) | Normal |
+
+### Editor Toggles (`<leader>ue`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>ues` | Toggle spell check | Normal |
+| `<leader>uew` | Toggle wrap | Normal |
+| `<leader>uei` | Toggle inlay hints | Normal |
+| `<leader>ueh` | Toggle inlay hints (global) | Normal |
+| `<leader>uen` | Toggle line numbers | Normal |
+| `<leader>ueW` | Toggle trailing whitespace | Normal |
+| `<leader>ueo` | Toggle fold column | Normal |
+| `<leader>uet` | Toggle tabs/spaces | Normal |
+| `<leader>uef` | Toggle buffer autoformatting | Normal |
+| `<leader>ueF` | Toggle global autoformatting | Normal |
+| `<leader>ueu` | Undotree toggle | Normal |
+
+### Appearance (`<leader>ua`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>uaa` | Toggle animations | Normal |
+
+### Git UI (`<leader>ug`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>ugb` | Toggle blame line | Normal |
+| `<leader>ugw` | Toggle word diff | Normal |
+
+### Performance & Profiling (`<leader>up`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>upp` | Toggle profiler | Normal |
+| `<leader>uph` | Toggle profiler highlights | Normal |
+| `<leader>ups` | Profiler scratch | Normal |
+
+### Notifications (`<leader>un`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>un` | Dismiss notifications | Normal |
+| `<leader>uN` | Notification history | Normal |
+
+### Scroll & Screen (`<leader>us`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>uss` | Toggle statusline | Normal |
+| `<leader>usZ` | Toggle zen mode | Normal |
+| `<leader>usz` | Toggle zoom (maximize) | Normal |
+| `<leader>usd` | Toggle dim | Normal |
+| `<leader>us` | Toggle symbols | Normal |
+
+### Treesitter & Syntax (`<leader>ut`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>utt` | Toggle treesitter highlight | Normal |
+| `<leader>utr` | Toggle reference highlighting | Normal |
+| `<leader>ut` | Toggle terminal | Normal |
+
+### Other UI Toggles
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>uZ` | Zen mode | Normal |
+| `<leader>uC` | Color picker | Normal |
+| `<leader>uP` | Color picker | Normal |
+| `<leader>usk` | Toggle showkeys | Normal |
+
+## 23. Vim Training (`<leader>v`) 🎓
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>vn` | Hardtime toggle | Normal |
+| `<leader>vp` | Precognition toggle | Normal |
+| `<leader>vh` | Hardtime toggle | Normal |
+
+## Flash (Motion)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `s` | Flash jump | Normal/Visual/Op |
+| `S` | Flash treesitter | Normal/Visual/Op |
+| `r` | Remote flash | Operator |
+| `R` | Treesitter search | Operator |
+| `gl` | Flash line | Normal/Visual/Op |
+
+## Reference Navigation
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `]]` | Next reference | Normal |
+| `[[` | Previous reference | Normal |
+
+## File Explorer
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>E` | Toggle Neo-tree | Normal |
+| `<leader>fe` | File Explorer (Snacks) | Normal |
+
+## Editing
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<M-j>` | Move line down | Normal |
+| `<M-k>` | Move line up | Normal |
+| `<S-Tab>` / `<` | Unindent | Visual |
+| `<Tab>` / `>` | Indent | Visual |
+| `K` | Move block up | Visual |
+| `J` | Move block down | Visual |
+| `<leader>P` | Paste image from system clipboard | Normal |
+
+## Terminal
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<C-/>` | Toggle terminal | Normal/Term |
+| `<leader>ut` | Toggle terminal | Normal |
+
+## Neoconf (`<leader>C`)
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>Cc` | Select Config | Normal |
+| `<leader>Cl` | Configure Local Settings | Normal |
+| `<leader>Cg` | Configure Global Settings | Normal |
+| `<leader>Cs` | Show Configuration | Normal |
+| `<leader>CL` | Show LSP Configuration | Normal |
+
+## LeetCode
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>L` | Leet code | Normal |
+
+## Profiler
+
+| Key | Description | Mode |
+| --- | --- | --- |
+| `<leader>X` | Toggle Neovim Profiler | Normal |
+| `<leader>upp` | Toggle Profiler | Normal |
+| `<leader>uph` | Toggle Profiler Highlights | Normal |
+| `<leader>ups` | Profiler Scratch | Normal |

@@ -1,0 +1,57 @@
+# Zed Editor - Editor de código moderno y rápido
+# Integrado desde kaku: /home/ravn/Work/kaku/home/editors/zed/default.nix
+# Zed es un editor de código colaborativo escrito en Rust
+# Documentación: https://zed.dev/
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  lspPackages = with pkgs; [
+    # Language Server Protocol
+    astro-language-server
+    biome
+    marksman
+    nil
+    tailwindcss-language-server
+    vue-language-server
+
+    # Formatters
+    alejandra
+    oxfmt
+    shfmt
+  ];
+
+  lspBinPath = pkgs.buildEnv {
+    name = "zed-lsp-env";
+    paths = lspPackages;
+    pathsToLink = ["/bin"];
+  };
+
+  zedWithLSP =
+    pkgs.runCommand "zed-with-lsp" {
+      buildInputs = [pkgs.makeWrapper];
+    } ''
+      mkdir -p $out/bin
+      makeWrapper ${pkgs.zed-editor}/bin/zeditor $out/bin/zeditor \
+        --prefix PATH : ${lspBinPath}/bin
+
+      for bin in ${pkgs.zed-editor}/bin/*; do
+        if [ "$(basename $bin)" != "zeditor" ]; then
+          ln -s $bin $out/bin/$(basename $bin)
+        fi
+      done
+    '';
+in {
+  options.modules.editors.zed = {
+    enable = lib.mkEnableOption "Zed Editor con LSPs integrados";
+  };
+
+  config = lib.mkIf config.modules.editors.zed.enable {
+    home.packages = [
+      zedWithLSP
+    ];
+  };
+}
+

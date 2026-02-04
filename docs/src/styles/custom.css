@@ -1,0 +1,49 @@
+:root {
+  --sl-color-accent: 196 94% 44%;
+  --sl-color-accent-low: 196 80% 90%;
+  --sl-color-accent-high: 196 85% 30%;
+  
+  /* Layout adjustments */
+  --sl-content-width: 75rem;
+  --sl-sidebar-width: 18rem;
+}
+
+:root[data-theme='dark'] {
+  --sl-color-accent: 196 88% 62%;
+  --sl-color-accent-low: 196 60% 20%;
+  --sl-color-accent-high: 196 100% 82%;
+}
+
+/* Subtle page background and card polish */
+body {
+  background:
+    radial-gradient(1200px 800px at 20% -10%, hsl(196 80% 96%), transparent 60%),
+    radial-gradient(800px 600px at 90% 10%, hsl(210 80% 96%), transparent 60%),
+    hsl(0 0% 100%);
+}
+
+:root[data-theme='dark'] body {
+  background:
+    radial-gradient(1200px 800px at 20% -10%, hsl(196 40% 18%), transparent 60%),
+    radial-gradient(800px 600px at 90% 10%, hsl(210 40% 16%), transparent 60%),
+    hsl(220 20% 10%);
+}
+
+/* Tweak code blocks for readability */
+.sl-markdown-content pre {
+  border: 1px solid hsl(0 0% 0% / 0.08);
+  box-shadow: 0 8px 24px hsl(0 0% 0% / 0.08);
+}
+
+:root[data-theme='dark'] .sl-markdown-content pre {
+  border: 1px solid hsl(0 0% 100% / 0.08);
+  box-shadow: 0 8px 24px hsl(0 0% 0% / 0.4);
+}
+
+
+/* Ajustes específicos para pantallas grandes */
+@media (min-width: 72rem) {
+  :root {
+     --sl-content-width: 80rem;
+  }
+}

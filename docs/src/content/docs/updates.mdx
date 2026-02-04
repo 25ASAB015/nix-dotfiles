@@ -1,0 +1,715 @@
+---
+title: Updates
+description: Guía completa para actualizar tu sistema NixOS usando los comandos del Makefile.
+---
+
+# Actualizaciones del Sistema
+
+Esta guía explica cómo mantener tu sistema NixOS actualizado usando los comandos del Makefile. Los comandos de actualización te permiten mantener tus paquetes y configuraciones al día de forma segura y controlada.
+
+## Comandos de Actualización Disponibles
+
+Los comandos principales para actualizar tu sistema son:
+
+- `make upd-all` - Actualiza todos los inputs del flake (actualiza `flake.lock`)
+- `make upd-nixpkgs` - Actualiza solo el repositorio nixpkgs
+- `make upd-hydenix` - Actualiza solo el framework hydenix
+- `make upd-input INPUT=name` - Actualiza un input específico
+- `make upd-ai` - Actualiza OpenCode + Cursor + Antigravity y aplica (todo en uno)
+- `make upd-diff` - Muestra las diferencias en `flake.lock` después de actualizar
+- `make upd-upgrade` - Actualiza todos los inputs y aplica cambios de forma segura
+- `make upd-show` - Muestra la estructura de outputs del flake
+- `make upd-check` - Valida la consistencia y sintaxis del flake
+
+### Nota sobre Compatibilidad
+
+Los comandos antiguos siguen funcionando como aliases por compatibilidad:
+- `make update` → `make upd-all`
+- `make update-nixpkgs` → `make upd-nixpkgs`
+- `make update-hydenix` → `make upd-hydenix`
+- `make update-input` → `make upd-input`
+- `make flake-diff` → `make upd-diff`
+- `make upgrade` → `make upd-upgrade`
+- `make show` → `make upd-show`
+- `make flake-check` → `make upd-check`
+
+Se recomienda usar la nueva nomenclatura con prefijos (`upd-*`) para mayor claridad y consistencia.
+
+---
+
+## `make upd-all`
+
+Actualiza todas las inputs del flake y modifica el archivo `flake.lock` con las últimas versiones disponibles.
+
+```bash
+make upd-all
+```
+
+**Alias:** `make update` (compatibilidad hacia atrás)
+
+### ¿Qué hace?
+
+Este comando ejecuta `nix flake update` que actualiza **todos** los inputs definidos en tu `flake.nix`, incluyendo:
+
+- `nixpkgs` - El repositorio principal de paquetes de NixOS
+- `hydenix` - El framework de configuración
+- `home-manager` - Gestor de configuración de usuario
+- Cualquier otro input que tengas definido
+
+El comando muestra una interfaz visual con colores que indica el progreso de la actualización.
+
+### Cuándo usarlo
+
+- **Rutina semanal**: Para mantener tu sistema actualizado con las últimas versiones
+- **Antes de instalar software nuevo**: Asegura que tienes las versiones más recientes disponibles
+- **Cuando buscas nuevas características**: Las actualizaciones traen nuevas opciones y mejoras
+
+### ⚠️ Importante
+
+Después de ejecutar `make upd-all`, el archivo `flake.lock` se modifica pero **los cambios no se aplican automáticamente**. Debes ejecutar `make sys-apply` para aplicar las actualizaciones al sistema.
+
+### Flujo recomendado
+
+```bash
+# 1. Actualizar los inputs
+make upd-all
+
+# 2. Ver qué cambiaría (opcional pero recomendado)
+make sys-dry-run
+
+# 3. Ver los cambios en flake.lock
+make upd-diff
+
+# 4. Validar la configuración
+make sys-check
+
+# 5. Probar la nueva configuración sin aplicar
+make sys-test
+
+# 6. Si todo está bien, aplicar los cambios
+make sys-apply
+
+# Si algo falla, puedes revertir:
+make gen-rollback
+```
+
+### Ver los cambios
+
+Después de `make upd-all`, puedes ver exactamente qué cambió usando:
+
+```bash
+make upd-diff
+```
+
+Este comando muestra las diferencias en `flake.lock` usando `git diff`. Si no hay cambios sin confirmar, te indicará que puedes ejecutar `make upd-all` para actualizar los inputs.
+
+---
+
+## `make upd-nixpkgs`
+
+Actualiza únicamente el repositorio `nixpkgs`, dejando los demás inputs sin cambios.
+
+```bash
+make upd-nixpkgs
+```
+
+**Alias:** `make update-nixpkgs` (compatibilidad hacia atrás)
+
+### ¿Qué hace?
+
+Ejecuta `nix flake update nixpkgs`, actualizando solo el input de nixpkgs en `flake.lock`.
+
+### Cuándo usarlo
+
+- **Actualización selectiva**: Quieres nuevas versiones de paquetes pero prefieres mantener hydenix en su versión actual
+- **Debugging**: Cuando sospechas que una actualización de hydenix está causando problemas
+- **Control fino**: Necesitas actualizar solo los paquetes del sistema, no el framework
+
+### Ejemplo de uso
+
+```bash
+# Actualizar solo nixpkgs
+make upd-nixpkgs
+
+# Ver qué cambió
+make upd-diff
+
+# Validar configuración
+make sys-check
+
+# Aplicar cambios
+make sys-apply
+```
+
+---
+
+## `make upd-hydenix`
+
+Actualiza únicamente el framework hydenix, dejando nixpkgs y otros inputs sin cambios.
+
+```bash
+make upd-hydenix
+```
+
+**Alias:** `make update-hydenix` (compatibilidad hacia atrás)
+
+### ¿Qué hace?
+
+Ejecuta `nix flake update hydenix`, actualizando solo el input de hydenix en `flake.lock`.
+
+### Cuándo usarlo
+
+- **Nueva versión disponible**: Cuando hay una nueva versión de hydenix con mejoras o correcciones
+- **Nuevas características**: Quieres probar nuevas funcionalidades del framework
+- **Correcciones de bugs**: Hydenix ha publicado fixes que necesitas
+
+### Ejemplo de uso
+
+```bash
+# Actualizar solo hydenix
+make upd-hydenix
+
+# Ver los cambios
+make upd-diff
+
+# Validar configuración
+make sys-check
+
+# Probar antes de aplicar
+make sys-test
+
+# Aplicar si todo está bien
+make sys-apply
+```
+
+---
+
+## `make upd-ai`
+
+Actualiza las herramientas de IA (**OpenCode**, **Cursor** y **Antigravity**) y aplica los cambios en un solo comando.
+
+```bash
+make upd-ai
+```
+
+### ¿Qué hace?
+
+1. Ejecuta `nix flake update opencode nixpkgs-unstable`, actualizando solo esos dos inputs en `flake.lock`.
+2. Ejecuta `make sys-apply` para construir y aplicar la nueva configuración.
+
+No hace falta ejecutar `make sys-apply` después; ya está incluido en `upd-ai`.
+
+### Qué actualiza
+
+- **opencode** → OpenCode (asistente de IA en terminal)
+- **nixpkgs-unstable** → Cursor y Antigravity (editores, vía overlay)
+- **llm-agents** → Colección de agentes de IA (Claude Code, Gemini CLI, etc.)
+
+### Cuándo usarlo
+
+- Cuando quieras las últimas versiones de OpenCode, Cursor y Antigravity sin actualizar el resto del flake.
+- Para aplicar los cambios de esas herramientas en un solo paso.
+
+---
+
+## `make upd-input INPUT=name`
+
+Actualiza un input específico del flake. Útil cuando necesitas control granular sobre qué actualizar.
+
+```bash
+make upd-input INPUT=hydenix
+make upd-input INPUT=nixpkgs
+```
+
+**Alias:** `make update-input` (compatibilidad hacia atrás)
+
+### ¿Qué hace?
+
+Ejecuta `nix flake update <nombre>`, actualizando solo el input especificado. Después puedes usar `make upd-diff` para ver los cambios y `make sys-apply` para aplicarlos.
+
+### Inputs disponibles
+
+Los inputs comunes que puedes actualizar incluyen:
+
+- `nixpkgs` - Repositorio principal de paquetes
+- `hydenix` - Framework de configuración
+- `nixos-hardware` - Configuraciones específicas de hardware
+- `mynixpkgs` - Fork personalizado de nixpkgs (si lo tienes)
+- `opencode` - OpenCode (asistente de IA en terminal)
+- `nixpkgs-unstable` - Cursor y Antigravity (editores, vía overlay)
+- `zen-browser-flake` - Flake del navegador Zen (si lo tienes)
+
+### Cuándo usarlo
+
+- **Actualización específica**: Necesitas actualizar solo un componente específico
+- **Debugging**: Aislar problemas actualizando inputs uno por uno
+- **Control preciso**: Quieres mantener algunos inputs fijos mientras actualizas otros
+
+### Ejemplos
+
+```bash
+# Actualizar solo hydenix
+make upd-input INPUT=hydenix
+
+# Actualizar solo nixpkgs
+make upd-input INPUT=nixpkgs
+
+# Actualizar otro input personalizado
+make upd-input INPUT=zen-browser-flake
+
+# Ver los cambios después
+make upd-diff
+
+# Validar configuración
+make sys-check
+
+# Aplicar cambios
+make sys-apply
+```
+
+### Manejo de errores
+
+Si olvidas especificar el parámetro `INPUT`, el comando te mostrará un mensaje de error con la lista de inputs disponibles:
+
+```bash
+make upd-input
+# Error: Variable INPUT requerida
+# Uso: make upd-input INPUT=<nombre>
+# Inputs conocidos: nixpkgs, hydenix, nixos-hardware, zen-browser-flake
+```
+
+---
+
+## `make upd-diff`
+
+Muestra las diferencias en `flake.lock` después de actualizar inputs. Este comando es inteligente y detecta si hay cambios sin confirmar.
+
+```bash
+make upd-diff
+```
+
+**Alias:** `make flake-diff` (compatibilidad hacia atrás)
+
+### ¿Qué hace?
+
+Este comando analiza el estado de `flake.lock` y muestra:
+
+- Si hay cambios sin confirmar en `flake.lock`, los muestra usando `git diff`
+- Si no hay cambios, te indica que puedes ejecutar `make upd-all` para actualizar
+- Muestra mensajes informativos sobre qué hacer después de ver los cambios
+
+### Cuándo usarlo
+
+- **Después de actualizar**: Para ver exactamente qué inputs cambiaron y sus versiones
+- **Antes de aplicar**: Para revisar los cambios antes de ejecutar `make sys-apply`
+- **Verificación**: Para confirmar que una actualización funcionó correctamente
+
+### Ejemplo de salida
+
+Si hay cambios:
+```
+🔒 Changes in flake.lock (updated inputs):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[git diff output mostrando los cambios]
+```
+
+Si no hay cambios:
+```
+✓ No uncommitted changes in flake.lock
+Tip: Run 'make upd-all' to update flake inputs
+```
+
+---
+
+## `make upd-upgrade`
+
+Comando todo-en-uno que actualiza los inputs y aplica los cambios de forma segura. **Equivalente a `make upd-all` seguido de `make sys-apply-safe`**.
+
+```bash
+make upd-upgrade
+```
+
+**Alias:** `make upgrade` (compatibilidad hacia atrás)
+
+### ¿Qué hace?
+
+Este comando ejecuta automáticamente un flujo seguro de actualización:
+
+1. `make upd-all` - Actualiza todos los inputs del flake
+2. `make sys-apply-safe` - Valida la configuración y luego aplica los cambios
+
+El comando `sys-apply-safe` incluye validación automática antes de aplicar, lo que lo hace más seguro que aplicar directamente.
+
+### ⚠️ Advertencia
+
+Aunque este comando incluye validación, **aplica cambios inmediatamente** después de actualizar. Úsalo con precaución.
+
+### Cuándo usarlo
+
+- **Actualizaciones de rutina**: Cuando confías en que las actualizaciones serán seguras
+- **Sistemas de desarrollo**: En entornos donde puedes permitirte rollback fácil
+- **Actualizaciones menores**: Para cambios pequeños que no requieren revisión exhaustiva
+
+### Cuándo NO usarlo
+
+- **Cambios importantes**: Cuando hay actualizaciones mayores que podrían romper cosas
+- **Sistemas de producción**: En sistemas críticos donde la estabilidad es prioritaria
+- **Primera vez**: Cuando no estás seguro de qué cambios traerán las actualizaciones
+
+### Flujo más seguro (recomendado)
+
+En lugar de `make upd-upgrade`, usa este flujo para mayor control:
+
+```bash
+# 1. Actualizar
+make upd-all
+
+# 2. Ver cambios
+make upd-diff
+
+# 3. Ver qué cambiaría
+make sys-dry-run
+
+# 4. Validar configuración
+make sys-check
+
+# 5. Probar sin aplicar
+make sys-test
+
+# 6. Si todo está bien, aplicar
+make sys-apply
+
+# Si algo falla, revertir
+make gen-rollback
+```
+
+---
+
+## `make upd-show`
+
+Muestra la estructura de outputs y metadatos del flake.
+
+```bash
+make upd-show
+```
+
+**Alias:** `make show` (compatibilidad hacia atrás)
+
+### ¿Qué hace?
+
+Ejecuta `nix flake show` para mostrar todos los outputs disponibles del flake, incluyendo:
+
+- Configuraciones del sistema (`nixosConfigurations`)
+- Paquetes disponibles (`packages`)
+- Módulos de desarrollo (`devShells`)
+- Cualquier otro output definido en tu `flake.nix`
+
+### Cuándo usarlo
+
+- **Explorar el flake**: Para ver qué configuraciones y paquetes están disponibles
+- **Verificar estructura**: Para confirmar que el flake está correctamente configurado
+- **Documentación**: Para entender qué outputs expone tu flake
+
+---
+
+## `make upd-check`
+
+Valida la sintaxis y consistencia del flake sin construir nada.
+
+```bash
+make upd-check
+```
+
+**Alias:** `make flake-check` (compatibilidad hacia atrás)
+
+### ¿Qué hace?
+
+Ejecuta `nix flake check` para validar:
+
+- Sintaxis del flake
+- Estructura de inputs y outputs
+- Referencias a inputs existentes
+- Consistencia general del flake
+
+### Cuándo usarlo
+
+- **Antes de aplicar cambios**: Para asegurar que el flake es válido
+- **Después de editar flake.nix**: Para verificar que no introdujiste errores
+- **Debugging**: Cuando hay problemas con el flake
+
+### Nota
+
+Este comando es parte del flujo de `make sys-check`, que también valida la evaluación de la configuración del sistema.
+
+---
+
+## Comparación de Comandos
+
+| Comando | Actualiza | Aplica cambios | Validación | Uso recomendado |
+|---------|-----------|----------------|------------|------------------|
+| `make upd-all` | Todos los inputs | ❌ No | ❌ No | Rutina semanal |
+| `make upd-nixpkgs` | Solo nixpkgs | ❌ No | ❌ No | Actualización selectiva de paquetes |
+| `make upd-hydenix` | Solo hydenix | ❌ No | ❌ No | Actualización del framework |
+| `make upd-input INPUT=name` | Input específico | ❌ No | ❌ No | Control granular |
+| `make upd-diff` | ❌ No | ❌ No | ❌ No | Ver cambios después de actualizar |
+| `make upd-show` | ❌ No | ❌ No | ❌ No | Explorar estructura del flake |
+| `make upd-check` | ❌ No | ❌ No | ✅ Sí | Validar sintaxis del flake |
+| `make upd-upgrade` | Todos los inputs | ✅ Sí | ✅ Sí | Actualizaciones rápidas con validación |
+
+---
+
+## Flujos de Trabajo Recomendados
+
+### Flujo Seguro (Recomendado para producción)
+
+```bash
+# 1. Actualizar inputs
+make upd-all
+
+# 2. Ver cambios en flake.lock
+make upd-diff
+
+# 3. Validar sintaxis del flake
+make upd-check
+
+# 4. Ver qué se construiría/descargaría
+make sys-dry-run
+
+# 5. Validar configuración completa
+make sys-check
+
+# 6. Probar sin aplicar
+make sys-test
+
+# 7. Si todo está bien, aplicar
+make sys-apply
+
+# Si algo falla:
+make gen-rollback
+```
+
+### Flujo Rápido (Para desarrollo)
+
+```bash
+# Actualización rápida cuando confías en los cambios
+make upd-upgrade
+
+# Si algo falla:
+make gen-rollback
+```
+
+### Flujo Selectivo (Actualizar solo un componente)
+
+```bash
+# Actualizar solo hydenix
+make upd-input INPUT=hydenix
+make upd-diff              # Ver cambios
+make upd-check             # Validar flake
+make sys-check             # Validar configuración
+make sys-test              # Probar
+make sys-apply             # Aplicar
+```
+
+### Flujo Semanal de Mantenimiento
+
+```bash
+# Lunes por la mañana
+make upd-all               # Actualizar inputs
+make upd-diff              # Ver cambios
+make upd-check             # Validar flake
+make sys-dry-run           # Ver qué cambiaría
+make sys-check             # Validar configuración
+make sys-test              # Probar
+make sys-apply             # Aplicar si todo bien
+make sys-gc                # Limpiar espacio (garbage collection)
+```
+
+---
+
+## Ver Cambios Después de Actualizar
+
+Después de ejecutar cualquier comando de actualización, puedes ver qué cambió:
+
+```bash
+# Ver diferencias en flake.lock (comando inteligente)
+make upd-diff
+
+# Ver estructura completa del flake
+make upd-show
+
+# Validar que el flake sigue siendo válido
+make upd-check
+
+# Ver estado de git (incluye cambios en flake.lock)
+make git-status
+```
+
+### Detalles sobre `make upd-diff`
+
+El comando `upd-diff` es inteligente y:
+- Detecta automáticamente si hay cambios sin confirmar en `flake.lock`
+- Muestra las diferencias usando `git diff` si hay cambios
+- Te sugiere ejecutar `make upd-all` si no hay cambios
+- Te recuerda usar `make sys-apply` para aplicar los cambios después de revisarlos
+
+---
+
+## Resolución de Problemas
+
+### Si una actualización rompe algo
+
+```bash
+# Revertir inmediatamente a la generación anterior
+make gen-rollback
+
+# Ver qué generaciones tienes disponibles
+make gen-list
+
+# Comparar generaciones específicas
+make gen-diff GEN1=30 GEN2=32
+
+# Comparar generación actual con la anterior
+make gen-diff-current
+```
+
+### Si quieres ver qué inputs están desactualizados
+
+```bash
+# Ver estructura y outputs del flake
+make upd-show
+
+# Validar sintaxis y consistencia del flake
+make upd-check
+
+# Ver información detallada de inputs
+nix flake metadata
+```
+
+### Si necesitas volver a una versión específica
+
+```bash
+# Ver todas las generaciones con detalles
+make gen-list
+
+# Ver tamaños de las generaciones
+make gen-sizes
+
+# Ver información de la generación actual
+make gen-current
+
+# Revertir a una generación específica (comando directo de nixos-rebuild)
+sudo nixos-rebuild switch --rollback-to-generation <número>
+```
+
+### Si el flake tiene errores de sintaxis
+
+```bash
+# Validar el flake
+make upd-check
+
+# Si hay errores, ver detalles con trace
+nix flake check --show-trace
+```
+
+---
+
+## Mejores Prácticas
+
+1. **Actualiza regularmente**: Ejecuta `make upd-all` al menos una vez por semana
+2. **Revisa los cambios**: Usa `make upd-diff` antes de aplicar para ver qué cambió
+3. **Valida el flake**: Usa `make upd-check` para asegurar que el flake sigue siendo válido
+4. **Valida la configuración**: Usa `make sys-check` para validar antes de aplicar
+5. **Prueba primero**: Usa `make sys-test` antes de `make sys-apply`
+6. **Mantén backups**: Usa Git para versionar tus cambios y commits regulares
+7. **Documenta problemas**: Si encuentras incompatibilidades, documenta qué input las causó
+8. **Usa rollback sin miedo**: Si algo falla, `make gen-rollback` es tu amigo
+9. **Usa dry-run**: Ejecuta `make sys-dry-run` para ver qué se construiría sin aplicar
+10. **Actualizaciones selectivas**: Usa `make upd-input` para actualizar inputs específicos cuando sea necesario
+
+---
+
+## Resumen Rápido
+
+### Comandos de Actualización
+
+```bash
+# Actualizar todo
+make upd-all
+
+# Actualizar solo nixpkgs
+make upd-nixpkgs
+
+# Actualizar solo hydenix
+make upd-hydenix
+
+# Actualizar input específico
+make upd-input INPUT=nombre
+
+# Ver cambios después de actualizar
+make upd-diff
+
+# Ver estructura del flake
+make upd-show
+
+# Validar flake
+make upd-check
+
+# Actualizar y aplicar (todo-en-uno con validación)
+make upd-upgrade
+```
+
+### Comandos de Aplicación
+
+```bash
+# Validar configuración
+make sys-check
+
+# Ver qué se construiría (dry-run)
+make sys-dry-run
+
+# Probar sin aplicar
+make sys-test
+
+# Aplicar cambios
+make sys-apply
+
+# Aplicar con validación previa (recomendado)
+make sys-apply-safe
+
+# Aplicar rápido (omite verificaciones)
+make sys-apply-fast
+```
+
+### Comandos de Rollback
+
+```bash
+# Revertir a generación anterior (rápido)
+make gen-rollback
+
+# Revertir a commit específico (completo)
+make gen-rollback-commit COMMIT=9220122
+
+# Ver todas las generaciones
+make gen-list
+
+# Comparar generaciones
+make gen-diff GEN1=n GEN2=m
+
+# Comparar actual con anterior
+make gen-diff-current
+```
+
+### Nota sobre Aliases
+
+Todos los comandos antiguos siguen funcionando por compatibilidad:
+- `make update` → `make upd-all`
+- `make switch` → `make sys-apply`
+- `make test` → `make sys-test`
+- `make rollback` → `make gen-rollback`
+- Y muchos más...
+
+Consulta `make help-aliases` para ver la lista completa de aliases disponibles.
+
+---
+
+Para más información sobre otros comandos del Makefile, consulta la [documentación completa del Makefile](/docs/makefile).

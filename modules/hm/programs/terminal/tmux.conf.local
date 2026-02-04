@@ -1,0 +1,312 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Oh my tmux! - Custom Local Configuration
+# ══════════════════════════════════════════════════════════════════════════════
+# This file contains personal customizations for Oh my tmux!
+# It is managed by Nix/Home Manager and symlinked to ~/.config/tmux/tmux.conf.local
+#
+# Documentation: https://github.com/gpakosz/.tmux
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────────────────────────────────────────
+# General Settings
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Enable 256 color support
+set -g default-terminal "screen-256color"
+set -ga terminal-overrides ",*256col*:Tc"
+
+# Increase scrollback buffer size
+set -g history-limit 50000
+
+# Enable mouse mode by default (toggle with <prefix> m)
+set -g mouse on
+
+# Start window and pane numbering at 1 (not 0)
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Renumber windows when one is closed
+set -g renumber-windows on
+
+# Enable focus events for better integration with Neovim
+set -g focus-events on
+
+# Reduce escape time for better Vim/Neovim experience
+set -sg escape-time 10
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Display Settings
+# ──────────────────────────────────────────────────────────────────────────────
+
+# RGB 24-bit color support
+set -g default-terminal "${TERM}"
+set -as terminal-overrides ',*:Smulx=\E[4::%p1%dm'  # undercurl support
+set -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colors
+
+# Display tmux messages for 4 seconds
+set -g display-time 4000
+
+# Refresh status line every 5 seconds
+set -g status-interval 5
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Theme Configuration - Powerline Look
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Enable Powerline symbols (requires Nerd Font or Powerline-patched font)
+tmux_conf_theme_left_separator_main='\uE0B0'  # 
+tmux_conf_theme_left_separator_sub='\uE0B1'   # 
+tmux_conf_theme_right_separator_main='\uE0B2' # 
+tmux_conf_theme_right_separator_sub='\uE0B3'  # 
+
+# Window status separator
+tmux_conf_theme_window_status_separator=' '
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Color Scheme - Modern Dark Theme
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Pane border colors
+tmux_conf_theme_pane_border='#3b4252'                   # Nord polar night
+tmux_conf_theme_pane_active_border='#88c0d0'            # Nord frost (cyan)
+
+# Pane indicator colors
+tmux_conf_theme_pane_indicator='#88c0d0'                # Nord frost
+tmux_conf_theme_pane_active_indicator='#88c0d0'         # Nord frost
+
+# Status line colors
+tmux_conf_theme_message_fg='#2e3440'                    # Nord polar night (dark)
+tmux_conf_theme_message_bg='#88c0d0'                    # Nord frost (cyan)
+tmux_conf_theme_message_attr='bold'
+
+# Status line command colors
+tmux_conf_theme_message_command_fg='#2e3440'            # Nord polar night
+tmux_conf_theme_message_command_bg='#88c0d0'            # Nord frost
+tmux_conf_theme_message_command_attr='bold'
+
+# Window mode colors
+tmux_conf_theme_mode_fg='#2e3440'                       # Nord polar night
+tmux_conf_theme_mode_bg='#88c0d0'                       # Nord frost
+tmux_conf_theme_mode_attr='bold'
+
+# Status line style
+tmux_conf_theme_status_fg='#d8dee9'                     # Nord snow storm
+tmux_conf_theme_status_bg='#2e3440'                     # Nord polar night
+tmux_conf_theme_status_attr='none'
+
+# Terminal title
+tmux_conf_theme_terminal_title='#h ❐ #S ● #I #W'
+
+# Window status style
+tmux_conf_theme_window_status_fg='#d8dee9'              # Nord snow storm
+tmux_conf_theme_window_status_bg='#2e3440'              # Nord polar night
+tmux_conf_theme_window_status_attr='none'
+tmux_conf_theme_window_status_format='#I #W'
+
+# Window current status style
+tmux_conf_theme_window_status_current_fg='#2e3440'      # Nord polar night
+tmux_conf_theme_window_status_current_bg='#88c0d0'      # Nord frost
+tmux_conf_theme_window_status_current_attr='bold'
+tmux_conf_theme_window_status_current_format='#I #W'
+
+# Window activity status style
+tmux_conf_theme_window_status_activity_fg='default'
+tmux_conf_theme_window_status_activity_bg='default'
+tmux_conf_theme_window_status_activity_attr='underscore'
+
+# Window bell status style
+tmux_conf_theme_window_status_bell_fg='#bf616a'         # Nord aurora (red)
+tmux_conf_theme_window_status_bell_bg='default'
+tmux_conf_theme_window_status_bell_attr='blink,bold'
+
+# Window last status style
+tmux_conf_theme_window_status_last_fg='#88c0d0'         # Nord frost
+tmux_conf_theme_window_status_last_bg='#2e3440'         # Nord polar night
+tmux_conf_theme_window_status_last_attr='none'
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Status Line Configuration
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Status line - Left side
+# Shows: session name, windows info
+tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} '
+
+# Status line - Right side
+# Shows: prefix indicator, pairing indicator, synchronized indicator, username, hostname, date/time
+tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized} #{?battery_status,🔋 #{battery_percentage} ,}| %H:%M | %d-%b-%Y | #{username}#{root} | #{hostname} '
+
+# Status line alignment
+tmux_conf_theme_status_justify='left'
+
+# Status line - Left style
+tmux_conf_theme_status_left_fg='#2e3440,#d8dee9,#d8dee9'  # Nord colors
+tmux_conf_theme_status_left_bg='#88c0d0,#4c566a,#3b4252'  # Nord colors
+tmux_conf_theme_status_left_attr='bold,none,none'
+
+# Status line - Right style
+tmux_conf_theme_status_right_fg='#d8dee9,#d8dee9,#2e3440'  # Nord colors
+tmux_conf_theme_status_right_bg='#3b4252,#4c566a,#88c0d0'  # Nord colors
+tmux_conf_theme_status_right_attr='none,none,bold'
+
+# Pairing indicator
+tmux_conf_theme_pairing='⚇'                              # U+2687
+tmux_conf_theme_pairing_fg='none'
+tmux_conf_theme_pairing_bg='none'
+tmux_conf_theme_pairing_attr='none'
+
+# Prefix indicator
+tmux_conf_theme_prefix='⌨'                               # U+2328
+tmux_conf_theme_prefix_fg='none'
+tmux_conf_theme_prefix_bg='none'
+tmux_conf_theme_prefix_attr='none'
+
+# Synchronized indicator
+tmux_conf_theme_synchronized='⚏'                         # U+268F
+tmux_conf_theme_synchronized_fg='none'
+tmux_conf_theme_synchronized_bg='none'
+tmux_conf_theme_synchronized_attr='none'
+
+# Root indicator
+tmux_conf_theme_root='!'
+tmux_conf_theme_root_fg='none'
+tmux_conf_theme_root_bg='none'
+tmux_conf_theme_root_attr='bold,blink'
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Clock Configuration
+# ──────────────────────────────────────────────────────────────────────────────
+
+tmux_conf_theme_clock_colour='#88c0d0'  # Nord frost
+tmux_conf_theme_clock_style='24'
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Key Bindings
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Preserve stock bindings (set to false to use only Oh my tmux! bindings)
+tmux_conf_preserve_stock_bindings=false
+
+# Use C-a as prefix (in addition to C-b)
+set -g prefix2 C-a
+bind C-a send-prefix -2
+
+# Reload configuration with prefix + r
+bind r source-file ~/.config/tmux/tmux.conf \; display '  Config reloaded'
+
+# Split panes using | and - (more intuitive than % and ")
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+
+# Vim-style pane navigation
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Vim-style pane resizing
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+# Quick window navigation
+bind -r C-h previous-window
+bind -r C-l next-window
+
+# Sesh integration (Smart session manager)
+# Bind prefix + T to open sesh with fzf in a popup
+bind-key "T" run-shell "sesh connect \"$( \
+  sesh list --icons | fzf-tmux -p 80%,70% \
+    --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
+    --header '  ^a all ^t tmux ^g configs ^x zoxide ^d tmux kill ^f find' \
+    --bind 'tab:down,btab:up' \
+    --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
+    --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
+    --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
+    --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
+    --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
+    --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list --icons)' \
+    --preview-window 'right:55%' \
+    --preview 'sesh preview {}' \
+)\""
+
+# Bind prefix + K to open sesh with gum in a popup (faster/modern feel)
+bind-key "K" display-popup -E -w 40% "sesh connect \"$( \
+  sesh list -i | gum filter --limit 1 --no-sort --fuzzy --placeholder 'Pick a sesh' --height 50 --prompt='⚡' --no-strip-ansi \
+)\""
+
+# Recommended settings for sesh
+set -g detach-on-destroy off
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Copy Mode (Vi-style)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Use vi mode in copy mode
+setw -g mode-keys vi
+
+# Vi-style copy mode bindings
+bind -T copy-mode-vi v send-keys -X begin-selection
+bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
+bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+bind -T copy-mode-vi Escape send-keys -X cancel
+bind -T copy-mode-vi H send-keys -X start-of-line
+bind -T copy-mode-vi L send-keys -X end-of-line
+
+# Copy to system clipboard (requires xclip, xsel, or wl-clipboard)
+# This is handled by Oh my tmux! automatically
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Window and Pane Behavior
+# ──────────────────────────────────────────────────────────────────────────────
+
+# New windows/panes retain current path
+tmux_conf_new_window_retain_current_path=true
+tmux_conf_new_pane_retain_current_path=true
+
+# Prompt for session name when creating a new session
+tmux_conf_new_session_prompt=false
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Integration with Workmux
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Allow automatic window renaming (important for workmux)
+setw -g automatic-rename on
+set -g set-titles on
+set -g set-titles-string '#h ❐ #S ● #I #W'
+
+# Aggressive resize for better multi-client support
+setw -g aggressive-resize on
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Plugin Support (TPM - Tmux Plugin Manager)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Uncomment and add plugins as needed:
+# set -g @plugin 'tmux-plugins/tmux-resurrect'
+# set -g @plugin 'tmux-plugins/tmux-continuum'
+# set -g @plugin 'tmux-plugins/tmux-yank'
+
+# Plugin settings
+# set -g @resurrect-capture-pane-contents 'on'
+# set -g @continuum-restore 'on'
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Additional Customizations
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Monitor window activity
+setw -g monitor-activity on
+set -g visual-activity off
+
+# Don't rename windows automatically after manual rename
+set -g allow-rename off
+
+# Enable clipboard integration
+set -g set-clipboard on
+
+# ══════════════════════════════════════════════════════════════════════════════
+# End of Configuration
+# ══════════════════════════════════════════════════════════════════════════════

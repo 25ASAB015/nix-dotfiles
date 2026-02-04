@@ -1,0 +1,204 @@
+---
+title: Gestión del Sistema
+description: Comandos para compilar, aplicar y validar configuraciones de NixOS
+---
+
+# Gestión del Sistema
+
+Módulo: `make/system.mk`
+
+Comandos para compilar, probar, aplicar y validar configuraciones de NixOS. Estos son los comandos fundamentales para el mantenimiento del sistema.
+
+## Resumen de Comandos (Prefijo `sys-`)
+
+| Comando | Descripción | Acceso Rápido |
+| :--- | :--- | :--- |
+| **`make sys-apply`** | Aplicar configuración (Rebuild + Switch) | `make switch` |
+| **`make sys-deploy`** | Add + Commit + Push + Apply | `make sync` |
+| **`make sys-check`** | Validar sintaxis y flake | `make validate` |
+| **`make sys-status`** | Dashboard de salud del sistema | `make health` |
+
+> [!TIP]
+> Para ver la lista completa de comandos antiguos y su equivalencia, consulta la [Guía de Aliases](../10-aliases).
+
+---
+
+## Comandos Principales
+
+### `make sys-apply`
+**⭐ Comando más usado** - Compila y activa tu nueva configuración.
+
+```bash
+make sys-apply
+```
+
+**Qué hace:**
+1. `make sys-fix-git` - Corrige permisos en el repositorio Git
+2. `git add .` - Prepara todos los cambios para commit
+3. Compila la configuración del Flake
+4. Activa la nueva configuración inmediatamente
+
+---
+
+### `make sys-deploy`
+**🚀 Sincronización Total** - Realiza el flujo completo de respaldo y aplicación.
+
+```bash
+make sys-deploy
+```
+
+**Qué hace:**
+1. **`make sys-doctor`** - Verifica y corrige permisos en `~/.config` y `~/.local`
+2. **`make sys-fix-git`** - Corrige permisos en el repositorio Git
+3. `make git-add` - Prepara todos los cambios
+4. `make git-commit` - Crea respaldo con timestamp (salta si no hay cambios)
+5. `make git-push` - Sube cambios al repositorio remoto
+6. **`make sys-apply-core`** - Aplica la configuración localmente
+
+**Propósito:** Asegurar que tu configuración esté respaldada en la nube y aplicada localmente en un solo paso.
+
+---
+
+### `make sys-apply-safe`
+Valida la configuración y luego aplica los cambios solo si no hay errores.
+
+```bash
+make sys-apply-safe
+```
+
+**Qué hace:** Ejecuta `make sys-check` y, si es exitoso, procede con `make sys-apply`.
+
+---
+
+### `make sys-apply-fast`
+Aplica cambios omitiendo algunas verificaciones internas de NixOS para mayor velocidad.
+
+```bash
+make sys-apply-fast
+```
+
+---
+
+### `make sys-test`
+Prueba tu configuración compilándola y activándola temporalmente. Los cambios se perderán en el próximo reinicio y no se crea una generación de arranque.
+
+```bash
+make sys-test
+```
+
+---
+
+### `make sys-build`
+Compila la configuración sin aplicar cambios reales. Útil para verificar errores antes de un switch.
+
+```bash
+make sys-build
+```
+
+---
+
+### `make sys-check`
+Realiza validaciones profundas (sintaxis, evaluación y linting).
+
+```bash
+make sys-check
+```
+
+**Qué hace:**
+1. Verifica la sintaxis del flake con `nix flake check`
+2. Evalúa la configuración del hostname actual
+3. Ejecuta `statix` para detectar problemas comunes (si está instalado)
+
+> [!NOTE]
+> Este comando fue corregido para evitar errores de sintaxis en el shell cuando `statix` no está instalado.
+
+---
+
+### `make sys-status`
+**🏥 Dashboard de Salud** - Muestra un resumen del estado del sistema, espacio en disco, servicios fallidos y estado de Git.
+
+```bash
+make sys-status
+```
+
+---
+
+### `make sys-doctor`
+Diagnóstico y reparación automática de permisos en directorios de configuración del usuario (`~/.config` y `~/.local`).
+
+```bash
+make sys-doctor
+# o usando el alias:
+make fix-permissions
+```
+
+**Qué hace:**
+1. Verifica permisos en `~/.config`
+2. Verifica permisos en `~/.local`
+3. Corrige automáticamente cualquier problema de propiedad encontrado
+
+> [!NOTE]
+> Este comando se ejecuta automáticamente como parte de `make sys-deploy`. También puedes ejecutarlo directamente si solo necesitas corregir permisos sin hacer deploy completo.
+
+---
+
+### `make sys-fix-git`
+Corrige problemas de permisos en el repositorio Git del directorio del flake.
+
+```bash
+make sys-fix-git
+```
+
+**Qué hace:**
+- Verifica la propiedad de los archivos en `.git/objects`
+- Corrige automáticamente la propiedad si encuentra archivos que no pertenecen al usuario actual
+
+> [!NOTE]
+> Este comando se ejecuta automáticamente como parte de `make sys-apply` y `make sys-deploy`.
+
+---
+
+### `make sys-copy-hw-config`
+Copia la configuración de hardware desde `/etc/nixos` al directorio de Dotfiles.
+
+```bash
+make sys-copy-hw-config
+```
+
+**Qué hace:**
+1. Copia `hardware-configuration.nix` desde `/etc/nixos/` al directorio del flake
+2. Copia `configuration.nix` desde `/etc/nixos/` al directorio del flake
+3. Ajusta los permisos de los archivos copiados al usuario actual
+
+**Cuándo usarlo:** Después de ejecutar `nixos-generate-config` en un sistema nuevo o cuando necesitas actualizar la configuración de hardware manualmente.
+
+---
+
+### `make sys-hw-scan`
+Genera una nueva configuración de hardware para el hostname actual.
+
+```bash
+make sys-hw-scan
+```
+
+**Qué hace:**
+- Ejecuta `nixos-generate-config --show-hardware-config`
+- Guarda el resultado en `hosts/$(HOSTNAME)/hardware-configuration-new.nix`
+- No sobrescribe la configuración existente (usa un nombre diferente para comparar)
+
+**Cuándo usarlo:** Cuando agregas nuevo hardware o cambias componentes del sistema.
+
+---
+
+## Comparación de Operaciones
+
+| Comando | Compila | Activa | Persiste | Generación |
+|---------|---------|--------|----------|------------|
+| `make sys-build` | ✅ | ❌ | N/A | ❌ |
+| `make sys-test` | ✅ | ✅ | Solo sesión | ❌ |
+| `make sys-apply` | ✅ | ✅ | Permanente | ✅ |
+| `make sys-boot` | ✅ | ❌ | Próximo boot | ✅ |
+
+> [!TIP]
+> **Workflow recomendado para cambios seguros:**
+> `make sys-check` → `make sys-test` → `make sys-apply`

@@ -1,0 +1,4093 @@
+---
+title: Makefile - Comandos Actuales
+description: Documentación detallada del Makefile con todos los comandos actuales organizados por módulos
+---
+
+# Makefile: Comandos Actuales
+
+La documentación del Makefile ha sido actualizada para reflejar los comandos actuales organizados en módulos que coinciden con la estructura del código en `make/*.mk`.
+
+**👉 [Ver documentación modular completa del Makefile](/nix-dotfiles/makefile/)**
+
+## Módulos Disponibles y Comandos Actuales
+
+### Ayuda y Documentación
+- [Overview](/nix-dotfiles/makefile/) - Introducción y navegación
+- [Ayuda y Documentación](/nix-dotfiles/makefile/01-docs/) - `help`, `help-examples`, `help-aliases`, `docs-local`, `doc-dev`, `doc-build`, `doc-install`, `doc-clean`
+
+### Gestión del Sistema (Rebuild/Switch)
+- [Gestión del Sistema](/nix-dotfiles/makefile/02-system/) - `sys-apply`, `sys-apply-safe`, `sys-apply-fast`, `sys-test`, `sys-build`, `sys-dry-run`, `sys-boot`, `sys-check`, `sys-debug`, `sys-force`, `sys-fix-git`, `sys-doctor`, `sys-hw-scan`, `sys-copy-hw-config`, `sys-deploy`
+
+### Limpieza y Optimización
+- [Limpieza y Optimización](/nix-dotfiles/makefile/03-cleanup/) - `sys-gc`, `sys-purge`, `sys-optimize`, `sys-clean-result`, `sys-fix-store`
+
+### Actualizaciones y Flakes
+- [Actualizaciones y Flakes](/nix-dotfiles/makefile/04-updates/) - `upd-all`, `upd-nixpkgs`, `upd-hydenix`, `upd-input`, `upd-ai`, `upd-diff`, `upd-upgrade`, `upd-show`, `upd-check`
+
+### Generaciones y Rollback
+- [Generaciones y Rollback](/nix-dotfiles/makefile/05-generations/) - `gen-list`, `gen-rollback`, `gen-rollback-commit`, `gen-diff`, `gen-diff-current`, `gen-sizes`, `gen-current`
+
+### Git y Respaldo
+- [Git y Respaldo](/nix-dotfiles/makefile/06-git/) - `git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `git-log`
+
+### Diagnóstico y Logs
+- [Diagnóstico y Logs](/nix-dotfiles/makefile/07-logs/) - `sys-status`, `log-net`, `log-watch`, `log-boot`, `log-err`, `log-svc`
+
+### Análisis y Desarrollo
+- [Análisis y Desarrollo](/nix-dotfiles/makefile/08-dev/) - `dev-hosts`, `dev-search`, `dev-search-inst`, `dev-repl`, `dev-shell`, `dev-vm`, `dev-size`
+
+### Formato, Linting y Estructura
+- [Formato y Linting](/nix-dotfiles/makefile/09-format/) - `fmt-check`, `fmt-lint`, `fmt-tree`, `fmt-diff`
+
+### Aliases y Compatibilidad
+- [Aliases](/nix-dotfiles/makefile/10-aliases/) - Comandos legacy y sus equivalentes modernos
+
+## Estructura Modular Actual
+
+La documentación ahora está organizada en módulos que coinciden con la estructura del código en `make/*.mk`:
+
+```
+make/
+├── docs.mk          # Ayuda y Documentación
+├── system.mk        # Gestión del Sistema
+├── cleanup.mk       # Limpieza y Optimización
+├── updates.mk       # Actualizaciones y Flakes
+├── generations.mk   # Generaciones y Rollback
+├── git.mk           # Git y Respaldo
+├── logs.mk          # Diagnóstico y Logs
+├── dev.mk           # Análisis y Desarrollo
+├── format.mk        # Formato y Linting
+└── aliases.mk       # Aliases y Compatibilidad
+```
+
+## Ventajas de la Modularización
+
+- ✅ **Navegación mejorada** - Sidebar organizado por categorías
+- ✅ **Sincronización** - Código y documentación con la misma estructura
+- ✅ **Mantenimiento** - Más fácil actualizar documentación específica
+- ✅ **Escalabilidad** - Agregar nuevos módulos es simple
+
+## Inicio Rápido con Comandos Actuales
+
+```bash
+make help                 # Lista todos los comandos
+make help-examples        # Ejemplos de uso
+make help-aliases         # Aliases legacy
+make sys-test             # Prueba sin aplicar
+make sys-apply            # Aplica cambios
+make sys-deploy           # Sincronización total (add+commit+push+apply)
+```
+
+
+El Makefile es la puerta de entrada a nuestros dotfiles. Centraliza todos los comandos que usamos para construir, validar, actualizar, mantener y depurar la configuración. Este manual explica **todos y cada uno** de esos comandos para que el proyecto sea sostenible.
+
+Este documento **preserva íntegramente** el contenido del tutorial original y lo amplía con contexto adicional para la documentación web. Si algo cambia en el Makefile, este manual debe actualizarse también.
+
+## Uso rápido (referencia inmediata)
+
+```bash
+make help            # lista todos los comandos
+make help-examples   # ejemplos de uso con parámetros
+make help-aliases    # aliases legacy
+make sys-test        # prueba sin aplicar permanentemente
+make sys-apply       # aplica cambios
+make gen-rollback    # revierte a la generación anterior
+```
+
+## Contexto y filosofía
+
+- El Makefile elimina comandos largos de NixOS y evita errores tipográficos.
+- Cada target tiene una descripción corta para `make help`.
+- Los workflows están documentados para que cualquier persona pueda ejecutar tareas críticas con seguridad.
+- La documentación es parte del producto: si agregas un comando, agrega su explicación aquí.
+
+## Navegación rápida
+
+- [Índice principal](#indice-principal)
+- [Sistema de ayuda](#sistema-ayuda)
+- [Comandos por categoría](#comandos-por-categoria)
+- [Flujos de trabajo](#flujos-trabajo)
+- [Resolución de problemas](#resolucion-problemas)
+- [Tips y trucos](#tips-trucos)
+- [Resumen de comandos](#resumen-comandos)
+- [Nuevos flujos de trabajo](#nuevos-flujos)
+- [Sistema de ayuda híbrido](#sistema-ayuda-hibrido)
+
+---
+
+# 📚 Tutorial Completo de Makefile para NixOS
+
+**Guía de Usuario - Tu manual esencial para gestionar Hydenix**
+
+---
+
+<a id="indice-principal"></a>
+## 📖 Índice
+
+1. [¿Qué es un Makefile?](#qué-es-un-makefile)
+2. [Conceptos Básicos](#conceptos-básicos)
+3. [Estructura del Makefile de Hydenix](#estructura-del-makefile-de-hydenix)
+4. [Comandos por Categoría](#comandos-por-categoría)
+5. [Flujos de Trabajo Comunes](#flujos-de-trabajo-comunes)
+6. [Resolución de Problemas](#resolución-de-problemas)
+7. [Tips y Trucos](#tips-y-trucos)
+
+---
+
+## ¿Qué es un Makefile?
+
+Un **Makefile** es un archivo que contiene un conjunto de instrucciones (llamadas "reglas" o "targets") que automatizan tareas repetitivas. Originalmente diseñado para compilar programas, se usa ampliamente para cualquier flujo de trabajo que requiera automatización.
+
+### ¿Por qué usar un Makefile en NixOS?
+
+Los comandos de NixOS pueden ser largos y difíciles de recordar:
+
+```bash
+# Sin Makefile (tedioso)
+sudo nixos-rebuild switch --flake .#hydenix --show-trace --verbose
+
+# Con Makefile (simple)
+make sys-debug
+```
+
+**Ventajas:**
+- ✅ Comandos cortos y memorables
+- ✅ Menos errores tipográficos
+- ✅ Consistencia en el equipo
+- ✅ Documentación integrada
+- ✅ Automatización de tareas complejas
+
+---
+
+## Conceptos Básicos
+
+### Sintaxis Fundamental
+
+```makefile
+target: dependencias ## Descripción (se muestra en help)
+	@comando1
+	@comando2
+```
+
+**Componentes:**
+- **target**: nombre del comando (ejemplo: `switch`, `test`)
+- **dependencias**: otros targets que deben ejecutarse primero (opcional)
+- **@**: suprime el echo del comando (sin @ verías el comando antes del resultado)
+- **##**: comentario especial que aparece en `make help`
+
+### Variables en tu Makefile
+
+```makefile
+FLAKE_DIR := .              # Directorio actual (donde está flake.nix)
+HOSTNAME := hydenix         # Nombre de tu máquina
+```
+
+Estas variables se usan con `$(VARIABLE)`:
+```makefile
+sudo nixos-rebuild switch --flake $(FLAKE_DIR)#$(HOSTNAME)
+# Se expande a: sudo nixos-rebuild switch --flake .#hydenix
+```
+
+### Colores en el Output
+
+```makefile
+RED := \033[0;31m
+GREEN := \033[0;32m
+YELLOW := \033[0;33m
+BLUE := \033[0;34m
+PURPLE := \033[0;35m
+CYAN := \033[0;36m
+NC := \033[0m # No Color
+```
+
+Uso: `@printf "$(GREEN)✅ Éxito\n$(NC)"`
+
+---
+
+## Estructura del Makefile de Hydenix
+
+### 1. Declaraciones Iniciales
+
+```makefile
+.PHONY: help switch test ...
+.DEFAULT_GOAL := help
+```
+
+- `.PHONY`: indica que estos targets no son archivos reales
+- `.DEFAULT_GOAL`: si ejecutas solo `make`, corre este target (help)
+
+### 2. Categorías de Comandos
+
+En el **Makefile actual**, los comandos están agrupados así:
+
+1. **Ayuda y Documentación** - help, help-examples, help-aliases, docs-*
+2. **Gestión del Sistema (Rebuild/Switch)** - sys-apply, sys-apply-safe, sys-apply-fast, sys-test, sys-build, sys-dry-run, sys-boot, sys-check, sys-debug, sys-force, sys-fix-git, sys-hw-scan, sys-deploy (includes permission fix via sys-doctor)
+3. **Limpieza y Optimización** - sys-gc, sys-purge, sys-optimize, sys-clean-result, sys-fix-store
+4. **Actualizaciones y Flakes** - upd-all, upd-nixpkgs, upd-hydenix, upd-input, upd-ai, upd-diff, upd-upgrade, upd-show, upd-check
+5. **Generaciones y Rollback** - gen-list, gen-rollback, gen-rollback-commit, gen-diff, gen-diff-current, gen-sizes, gen-current
+6. **Git y Respaldo** - git-add, git-commit, git-push, git-status, git-diff, git-log
+7. **Diagnóstico y Logs** - sys-status, log-net, log-watch, log-boot, log-err, log-svc
+8. **Análisis y Desarrollo** - dev-hosts, dev-search, dev-search-inst, dev-repl, dev-shell, dev-vm, dev-size
+9. **Formato, Linting y Estructura** - fmt-check, fmt-lint, fmt-tree, fmt-diff
+10. **Aliases y Compatibilidad** - Comandos legacy y sus equivalentes modernos
+
+En esta guía, el detalle se organiza por bloques funcionales para facilitar la lectura, pero mantiene la **misma cobertura de comandos**.
+
+---
+
+<a id="sistema-ayuda"></a>
+## 📚 Sistema de Ayuda en Tres Niveles
+
+Tu Makefile tiene un **sistema de ayuda híbrido** con tres niveles para diferentes necesidades:
+
+### Nivel 1: `make help` - Referencia Rápida
+**¿Qué comandos existen?**
+- Lista completa de 69 comandos
+- Descripción de una línea
+- Para escaneo rápido
+
+```bash
+make help
+```
+
+### Nivel 2: `make help-examples` - Ejemplos Prácticos ⭐ NUEVO
+**¿Cómo uso este comando?**
+- Comandos con ejemplos concretos
+- Sintaxis con parámetros
+- Múltiples ejemplos por comando
+- Para aprender la sintaxis correcta
+
+```bash
+make help-examples
+```
+
+### Nivel 3: `make help` - Workflows Completos
+**¿Cómo combino comandos?**
+- Workflows para casos de uso comunes
+- Secuencias de comandos
+- Mejores prácticas
+- Para flujos de trabajo profesionales
+
+```bash
+make help
+```
+
+### 💡 Recomendación de Uso
+
+```bash
+# ¿Olvidaste qué comandos hay?
+make help
+
+# ¿No sabes cómo usar un comando con parámetros?
+make help-examples
+
+# ¿Quieres aprender workflows profesionales?
+make help
+
+# ¿Necesitas documentación completa?
+# Visita la documentación web con: make docs-dev
+```
+
+---
+
+<a id="comandos-por-categoria"></a>
+## Comandos por Categoría
+
+**Mini índice de categorías:**
+- [Building and Switching](#cmd-building-switching)
+- [Validación](#cmd-validation)
+- [Multi-Host](#cmd-multi-host)
+- [Debugging](#cmd-debugging)
+- [Maintenance and Cleanup](#cmd-maintenance)
+- [Updates](#cmd-updates)
+- [Git Integration](#cmd-git)
+- [System Information](#cmd-system-info)
+- [Búsqueda](#cmd-search)
+- [Quick Actions](#cmd-quick-actions)
+- [Hardware](#cmd-hardware)
+- [Monitoring](#cmd-monitoring)
+- [Advanced](#cmd-advanced)
+- [Export/Import](#cmd-export)
+- [Documentación](#cmd-docs)
+- [Templates](#cmd-templates)
+- [Diff Tools](#cmd-diff-tools)
+- [Build Analysis](#cmd-build-analysis)
+- [Quick Fixes](#cmd-quick-fixes)
+- [Utilidades](#cmd-utilities)
+<a id="cmd-building-switching"></a>
+### 🔨 Building and Switching
+
+Estos son los comandos que usarás **más frecuentemente**.
+
+#### `make help`
+Muestra todos los comandos disponibles con descripciones.
+
+```bash
+make help
+# o simplemente:
+make
+```
+
+**Qué muestra:**
+- Lista completa de 69 comandos
+- Descripción breve de cada uno
+- Organizado por sección
+- Vista rápida de referencia
+
+**Cuándo usarlo:** Referencia rápida para ver qué comandos existen.
+
+---
+
+#### `make help-examples` ⭐ NUEVO
+Muestra comandos con ejemplos de uso, especialmente útil para comandos que requieren parámetros.
+
+```bash
+make help-examples
+```
+
+**Qué muestra:**
+```
+═══ 🔍 Search & Discovery ═══
+search PKG=<name>
+  → make dev-search PKG=firefox
+  → make dev-search PKG=neovim
+
+search-installed PKG=<name>
+  → make dev-search-installed PKG=kitty
+
+═══ 📦 Updates ═══
+update-input INPUT=<name>
+  → make upd-all-input INPUT=hydenix
+  → make upd-all-input INPUT=nixpkgs
+
+```
+
+**Perfecto para:**
+- Comandos que requieren parámetros (PKG, INPUT, HOST, etc)
+- Ver ejemplos concretos de uso
+- Aprender la sintaxis correcta
+- Nuevos usuarios del sistema
+
+**Cuándo usarlo:** Cuando necesitas saber **cómo usar** un comando específico.
+
+---
+
+#### `make help`
+Muestra ayuda avanzada con workflows completos y ejemplos.
+
+```bash
+make help
+# Guía de workflows: desarrollo diario, updates seguros, mantenimiento, etc
+```
+
+---
+
+#### `make sys-apply`
+**⭐ Comando más usado** - Compila y activa tu nueva configuración.
+
+```bash
+make sys-apply
+```
+
+**Qué hace:**
+1. `git add .` - Staging de todos los cambios
+2. Compila la configuración
+3. Activa la nueva configuración (disponible inmediatamente)
+4. Crea una nueva generación del sistema
+
+**Cuándo usarlo:**
+- Después de editar `flake.nix`, módulos, o cualquier configuración
+- Cuando quieres aplicar cambios ahora mismo
+- Flujo normal de trabajo
+
+**Ejemplo de flujo:**
+```bash
+# 1. Editas un archivo
+nvim modules/hm/programs/terminal/kitty.nix
+
+# 2. Aplicas cambios
+make sys-apply
+
+# 3. Si algo falla, revierte
+make gen-rollback
+```
+
+---
+
+#### `make sys-test`
+Prueba tu configuración compilándola y activándola temporalmente sin crear una generación permanente.
+
+```bash
+make sys-test
+```
+
+**Qué hace:**
+- ✅ Compila la configuración completa
+- ✅ Activa la configuración **TEMPORALMENTE** en tu sesión actual
+- ⚠️ Los cambios se **PIERDEN al reiniciar** el sistema
+- ❌ **NO crea** una nueva generación permanente
+
+**¿Por qué es útil?**
+- **Testing seguro:** Permite probar configuraciones experimentales sin riesgo
+- **Sin rollback necesario:** Si algo falla, simplemente reinicias y vuelves a la normalidad
+- **Sin generaciones:** Puedes probar múltiples cambios sin llenar de generaciones el sistema
+- **Verificación rápida:** Comprueba que compila y funciona antes de hacer permanente
+
+**Cuándo usarlo:**
+- Probar configuraciones experimentales sin riesgo
+- Verificar que compila antes de commitear cambios importantes
+- Testing de cambios grandes antes de hacerlos permanentes
+- Experimentar con nuevas configuraciones sin consecuencias
+- Probar múltiples variaciones de configuración
+
+**Comparación con otros comandos:**
+
+| Comando | Compila | Activa | Persiste | Generación |
+|---------|---------|--------|----------|------------|
+| `make sys-build` | ✅ | ❌ | N/A | ❌ |
+| `make sys-test` | ✅ | ✅ | Solo sesión | ❌ |
+| `make sys-apply` | ✅ | ✅ | Permanente | ✅ |
+| `make sys-boot` | ✅ | ✅ | Próximo boot | ✅ |
+
+**Flujo recomendado (rápido y seguro):**
+```bash
+# 1. Probar primero (seguro, temporal)
+make sys-test
+
+# 2. Si funciona bien, hacer permanente
+make sys-apply
+
+# 3. Si algo falla, simplemente reinicia
+# Los cambios de 'test' se pierden automáticamente
+```
+
+**Casos de uso reales:**
+
+**Ejemplo 1: Probar nueva configuración de Hyprland**
+```bash
+# Editas la configuración
+nvim modules/hm/programs/hyprland.nix
+
+# Pruebas sin riesgo
+make sys-test
+
+# Si funciona bien:
+make sys-apply     # Hace permanente
+
+# Si falla:
+# Solo reinicia, los cambios se pierden automáticamente
+```
+
+**Ejemplo 2: Verificar antes de commit**
+```bash
+# Haces cambios importantes
+nvim flake.nix
+
+# Verificas que compila y funciona
+make sys-test
+
+# Ahora puedes commitear con confianza
+git commit -m "feat: nueva configuración"
+```
+
+**Ejemplo 3: Probar múltiples configuraciones**
+```bash
+# Prueba configuración A
+make sys-test
+# Reinicia para volver a la normalidad
+
+# Prueba configuración B
+make sys-test
+# Reinicia para volver a la normalidad
+
+# Cuando encuentres la mejor configuración:
+make sys-apply      # Hace permanente
+```
+
+**Ventajas:**
+- ✅ Único comando que activa temporalmente (diferente de `make sys-build`)
+- ✅ Permite experimentar sin riesgo
+- ✅ No requiere rollback manual si algo falla
+- ✅ Parte del flujo de trabajo recomendado
+- ✅ No crea generaciones innecesarias
+
+**Nota importante:** A diferencia de `make sys-build` que solo compila sin activar, `make sys-test` compila **Y activa** temporalmente. Esto te permite probar la configuración en un entorno real pero sin consecuencias permanentes.
+
+---
+
+#### `make sys-build`
+Compila la configuración sin aplicar cambios al sistema e incluye medición de tiempo.
+
+```bash
+make sys-build
+# ════════════════════════════════════════════════════════
+#           🔨 Build Configuration                    
+# ════════════════════════════════════════════════════════
+# 
+# Building configuration without applying changes...
+# This will compile but not activate the new generation.
+# 
+# [build output...]
+# 
+# ════════════════════════════════════════════════════════
+# ✅ Build completed successfully
+# Configuration compiled but not activated.
+# Use 'make sys-apply' to apply changes.
+# 
+# Build Statistics:
+#   Build time: 2m 15s (135s total)
+# ════════════════════════════════════════════════════════
+```
+
+**Cuándo usarlo:**
+- Verificar que no hay errores de compilación antes de aplicar cambios
+- CI/CD pipelines para validar que la configuración compila
+- Debugging: ver errores de build sin afectar el sistema
+- Validación: comprobar cambios antes de hacer `make sys-apply`
+- Medir performance: ver cuánto tiempo tarda el build
+- Comparar tiempos: identificar si cambios afectan el tiempo de build
+
+**Características:**
+- Mide automáticamente el tiempo de build
+- Muestra estadísticas informativas al finalizar
+- No aplica cambios al sistema (solo compila)
+- Preserva el código de salida del build
+
+**Diferencia con otros comandos:**
+- `make sys-test`: Compila y activa temporalmente (se revierte al reiniciar)
+- `make sys-apply`: Compila y activa permanentemente
+- `make sys-build`: Solo compila, no activa nada, incluye medición de tiempo
+
+---
+
+#### `make sys-clean-result`
+Elimina symlinks `result*` que quedan después de builds de Nix.
+
+```bash
+make sys-clean-result
+# ════════════════════════════════════════════════════════
+#           🧹 Clean Result Symlinks                  
+# ════════════════════════════════════════════════════════
+# 
+# Searching for result symlinks...
+# These symlinks are created by Nix builds and can be safely removed.
+# 
+# Found 2 result symlink(s):
+#   ./result → /nix/store/...-nixos-system-hydenix-26.05...
+#   ./result-vm → /nix/store/...-run-nixos-vm
+# 
+# Removing symlinks...
+# ✅ Removed 2 symlink(s)
+# 
+# ════════════════════════════════════════════════════════
+# ✅ Cleanup complete
+# ════════════════════════════════════════════════════════
+```
+
+**Qué hace:**
+- Busca symlinks `result*` en el directorio actual y un nivel de profundidad
+- Muestra qué symlinks encontró y a dónde apuntan
+- Elimina los symlinks de forma segura
+- No afecta el store de Nix (solo elimina los symlinks, no los builds)
+
+**Cuándo usarlo:**
+- Después de builds: limpiar symlinks residuales de `nix build` o `nixos-rebuild build`
+- Mantenimiento: mantener el directorio del proyecto limpio
+- Antes de commits: evitar incluir symlinks en git (aunque deberían estar en .gitignore)
+
+**Relación con `make sys-build`:**
+- `make sys-build` crea symlinks `result*` que apuntan a los builds
+- `make sys-gc-result` elimina estos symlinks después de usarlos
+- Útil para limpiar después de múltiples builds
+
+**Nota:** Estos symlinks son creados por Nix para facilitar el acceso a builds. Eliminarlos no afecta los builds en el store de Nix, solo limpia el directorio del proyecto.
+
+---
+
+#### `make dry-run`
+Muestra qué cambiaría sin hacer cambios reales usando `nixos-rebuild dry-run`.
+
+```bash
+make dry-run
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🔍 Dry Run - Preview Changes             
+════════════════════════════════════════════════════
+
+Showing what would be built/changed without applying...
+
+building the system configuration...
+[detalles de lo que se construiría/cambiaría]
+
+════════════════════════════════════════════════════
+✅ Dry run completed
+════════════════════════════════════════════════════
+```
+
+**¿Por qué es necesario?**
+- **Seguridad:** Ver exactamente qué cambios se aplicarían antes de ejecutarlos
+- **Planificación:** Entender el impacto de actualizaciones o cambios de configuración
+- **Debugging:** Identificar problemas de dependencias o configuraciones incorrectas antes de aplicar
+- **Transparencia:** Saber qué paquetes se construirían o descargarían
+
+**Cuándo usarlo:**
+- Antes de `make sys-apply` en cambios grandes o importantes
+- Después de `make upd-all` para ver qué se actualizaría
+- Cuando sospechas que un cambio puede tener efectos inesperados
+- Para entender el impacto de agregar o remover paquetes
+- Antes de aplicar cambios en producción o sistemas críticos
+
+**Ventajas:**
+- No modifica el sistema, solo muestra qué pasaría
+- Rápido comparado con un rebuild completo
+- Muestra dependencias y paquetes afectados
+- Útil para estimar tiempo de construcción
+
+---
+
+#### `make sys-boot`
+Compila la configuración y la prepara para el próximo arranque sin afectar la sesión actual.
+
+```bash
+make sys-boot
+```
+
+**Qué hace:**
+- ✅ Compila la configuración completa
+- ✅ Configura la nueva generación como predeterminada para el próximo boot
+- ⚠️ **NO afecta** la sesión actual (los cambios se aplican al reiniciar)
+- ✅ Crea una nueva generación del sistema
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🥾 Configurar para Próximo Arranque      
+════════════════════════════════════════════════════
+
+Compilando y configurando para el próximo arranque...
+Los cambios se aplicarán al reiniciar el sistema.
+La sesión actual no se verá afectada.
+
+[output del build...]
+
+════════════════════════════════════════════════════
+✅ Configuración preparada para próximo arranque
+Reinicia el sistema para aplicar los cambios.
+════════════════════════════════════════════════════
+```
+
+**¿Por qué es útil?**
+- **Cambios que requieren reinicio:** Algunas configuraciones solo se aplican al arrancar
+- **Sin interrumpir trabajo:** Puedes seguir trabajando y reiniciar cuando sea conveniente
+- **Seguridad:** Compila antes de aplicar, detectando errores temprano
+- **Planificación:** Permite preparar cambios para aplicar más tarde
+
+**Cuándo usarlo:**
+- Cambios en el kernel o bootloader (requieren reinicio obligatorio)
+- Configuraciones que requieren reinicio para funcionar correctamente
+- Cuando no quieres cerrar sesión ahora pero quieres preparar cambios
+- Cambios importantes que prefieres aplicar en el próximo arranque
+- Cuando estás trabajando y no puedes interrumpir tu sesión
+
+**Comparación con otros comandos:**
+
+| Comando | Afecta sesión actual | Requiere reinicio | Cuándo aplicar |
+|---------|---------------------|-------------------|----------------|
+| `make sys-apply` | ✅ Sí (inmediato) | ❌ No | Ahora mismo |
+| `make sys-boot` | ❌ No | ✅ Sí | Próximo arranque |
+| `make sys-test` | ✅ Sí (temporal) | ❌ No | Solo esta sesión |
+
+**Casos de uso reales:**
+
+**Ejemplo 1: Cambio de kernel**
+```bash
+# Editas la configuración del kernel
+nvim hosts/hydenix/configuration.nix
+
+# Compilas y preparas para próximo boot
+make sys-boot
+
+# Puedes seguir trabajando...
+# Cuando estés listo, reinicias y el nuevo kernel se aplicará
+```
+
+**Ejemplo 2: Cambios en bootloader**
+```bash
+# Modificas configuración de GRUB
+nvim hosts/hydenix/configuration.nix
+
+# Preparas para próximo arranque
+make sys-boot
+
+# Reinicias cuando sea conveniente
+```
+
+**Ejemplo 3: Cambios que requieren reinicio**
+```bash
+# Cambios en servicios críticos que requieren reinicio
+make sys-boot
+
+# Continúas trabajando...
+# Reinicias al final del día
+```
+
+**Ventajas:**
+- ✅ No interrumpe tu trabajo actual
+- ✅ Permite planificar cuándo aplicar cambios
+- ✅ Compila antes de aplicar (detecta errores temprano)
+- ✅ Útil para cambios que requieren reinicio obligatorio
+
+**Nota importante:** Después de `make sys-boot`, debes reiniciar el sistema para que los cambios se apliquen. Si cambias de opinión antes de reiniciar, puedes usar `make sys-apply` para aplicar cambios inmediatamente o `make gen-rollback` si necesitas revertir.
+
+---
+
+<a id="cmd-validation"></a>
+### ✅ Validación
+
+#### `make sys-check`
+Valida la configuración antes de aplicarla mediante tres chequeos: sintaxis del flake, evaluación de configuración y problemas comunes.
+
+```bash
+make sys-check
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🔍 Validation Checks                       
+════════════════════════════════════════════════════
+
+1/3 Checking flake syntax... ✓
+2/3 Checking configuration evaluation... ✓
+3/3 Checking for common issues... ✓
+
+════════════════════════════════════════════════════
+✅ Validation passed
+════════════════════════════════════════════════════
+```
+
+**¿Por qué es necesario?**
+- **Prevención de errores:** Detecta problemas antes de intentar aplicar la configuración
+- **Ahorro de tiempo:** Evita rebuilds que fallarían por errores de sintaxis o evaluación
+- **Calidad del código:** Usa `statix` para detectar problemas comunes en código Nix
+- **Confianza:** Te asegura que la configuración es válida antes de hacer `make sys-apply`
+
+**Qué verifica:**
+1. **Sintaxis del flake:** Valida que `flake.nix` y sus inputs sean correctos
+2. **Evaluación de configuración:** Verifica que la configuración de NixOS se pueda evaluar correctamente
+3. **Problemas comunes:** Usa `statix` para detectar anti-patrones y problemas conocidos
+
+**Cuándo usarlo:**
+- Antes de cada `make sys-apply` para asegurar que la configuración es válida
+- Después de editar archivos `.nix` para verificar que no introdujiste errores
+- Como parte de un workflow de CI/CD para validar cambios
+- Antes de hacer commit de cambios importantes
+- Cuando sospechas que hay un error de sintaxis o configuración
+
+**Ventajas:**
+- Muy rápido comparado con un rebuild completo
+- Detecta errores temprano en el proceso
+- Proporciona feedback claro sobre qué está mal
+- Puede integrarse en scripts automatizados
+
+#### `make sys-apply-safe`
+Valida la configuración y luego aplica los cambios de forma segura. Es la opción más segura para aplicar cambios importantes.
+
+```bash
+make sys-apply-safe
+```
+
+**Qué hace:**
+1. ✅ Ejecuta `make sys-check` primero (3 chequeos):
+   - **1/3:** Verifica sintaxis del flake (`flake.nix`, `flake.lock`)
+   - **2/3:** Verifica evaluación de configuración NixOS
+   - **3/3:** Busca problemas comunes con `statix` (si está instalado)
+
+2. ✅ Si `sys-check` pasa, ejecuta `make sys-apply`:
+   - `git add .` - Staging de cambios
+   - Compila la configuración
+   - Activa permanentemente
+   - Crea nueva generación
+
+3. ⚠️ Si `sys-check` falla:
+   - **NO ejecuta** `sys-apply`
+   - Muestra el error específico
+   - Te ahorra tiempo y problemas
+
+**¿Por qué es útil?**
+- **Seguridad automática:** Valida ANTES de aplicar automáticamente
+- **Prevención de errores:** Detecta problemas antes de compilar
+- **Ahorra tiempo:** Evita builds de minutos que fallarían por errores de sintaxis
+- **Conveniencia:** Todo-en-uno (valida + aplica en un comando)
+- **Mejores prácticas:** Enseña a validar antes de aplicar
+
+**Cuándo usarlo:**
+- Cambios importantes o complejos (módulos nuevos, múltiples archivos)
+- Después de `make upd-all` (cuando hay cambios en `flake.lock`)
+- Cuando no estás 100% seguro de tus cambios
+- Imports nuevos o modificados
+- Modificaciones en archivos críticos del sistema
+
+**Comparación con otros comandos:**
+
+| Comando | Valida | Compila | Activa | Generación |
+|---------|--------|---------|--------|------------|
+| `make sys-check` | ✅ | ❌ | ❌ | ❌ |
+| `make sys-apply` | ❌ | ✅ | ✅ | ✅ |
+| `make sys-apply-safe` | ✅ | ✅ | ✅ | ✅ |
+
+**Diferencias con `make sys-apply`:**
+
+**`make sys-apply`:**
+- ✅ Más rápido (sin validación)
+- ✅ Para cambios pequeños y confiables
+- ❌ Puede fallar después de compilar
+- ❌ Requiere que ejecutes `sys-check` manualmente
+
+**`make sys-apply-safe`:**
+- ✅ Más seguro (valida primero)
+- ✅ Detecta errores antes de compilar
+- ✅ Todo-en-uno (un solo comando)
+- ✅ Perfecto para cambios importantes
+- ⚠️ Un poco más lento (ejecuta `validate` primero)
+
+**Casos de uso reales:**
+
+**Ejemplo 1: Después de actualizar flake inputs**
+```bash
+# Actualizas los inputs del flake
+make upd-all
+
+# Valida cambios + aplica de forma segura
+make sys-apply-safe
+# Si hay incompatibilidades, validate las detecta
+# antes de intentar compilar
+```
+
+**Ejemplo 2: Agregar nuevo módulo completo**
+```bash
+# Creas un nuevo módulo
+nvim modules/hm/programs/nuevo-programa.nix
+
+# Agregas el import en flake.nix
+nvim flake.nix
+
+# Valida sintaxis + aplica
+make sys-apply-safe
+# Detecta si el módulo tiene errores antes de aplicar
+```
+
+**Ejemplo 3: Cambios en múltiples archivos**
+```bash
+# Editas varios archivos relacionados
+nvim flake.nix
+nvim hosts/hydenix/configuration.nix
+nvim modules/hm/default.nix
+
+# Valida que todos los cambios son compatibles + aplica
+make sys-apply-safe
+```
+
+**Ejemplo 4: Cuando no estás seguro**
+```bash
+# Hiciste cambios pero no estás 100% seguro
+make sys-apply-safe
+# Más seguro que switch directo
+# Si hay problemas, validate los detecta primero
+```
+
+**Flujos de trabajo:**
+
+**Flujo 1: Desarrollo Iterativo (más rápido)**
+```bash
+make sys-check    # Validar primero
+make sys-apply      # Aplicar si pasa
+```
+
+**Flujo 2: Cambios Importantes (más seguro) ⭐ RECOMENDADO**
+```bash
+make sys-apply-safe # Todo-en-uno: valida + aplica
+```
+
+**Flujo 3: Testing antes de permanente**
+```bash
+make sys-test        # Probar temporalmente
+make sys-apply-safe # Si funciona, hacer permanente
+```
+
+**Ventajas:**
+- ✅ Seguridad automática sin pasos adicionales
+- ✅ Conveniencia: un solo comando en lugar de dos
+- ✅ Previene errores antes de aplicar cambios
+- ✅ Ahorra tiempo detectando problemas temprano
+- ✅ Sigue mejores prácticas de desarrollo
+- ✅ No aplica si hay errores (fail-safe)
+
+**Recomendación de uso:**
+- **`make sys-apply`** → Para cambios pequeños y frecuentes (desarrollo iterativo)
+- **`make sys-apply-safe`** → Para cambios importantes o cuando no estás seguro
+
+**Ver también:** [Flujo de Trabajo Recomendado](#flujo-recomendado) para más detalles sobre cuándo usar cada comando.
+
+#### `make sys-status`
+
+Muestra un dashboard ultra-rápido con el estado vital del sistema (Vuelo).
+
+```bash
+make sys-status
+```
+
+**Qué verifica:**
+- Estructura y metadatos del Flake
+- Espacio en disco en `/nix`
+- Servicios fallidos detallados
+- Estado de Git y Generaciones
+
+**Cuándo usarlo:** Verificación rápida antes de cambios o Routine Check.
+════════════════════════════════════════════════════
+
+**¿Por qué es necesario?**
+- **Monitoreo preventivo:** Detecta problemas antes de que se vuelvan críticos
+- **Mantenimiento proactivo:** Identifica cuándo necesitas limpiar espacio o servicios
+- **Estado del sistema:** Proporciona una vista rápida del estado general
+- **Debugging inicial:** Primer paso para diagnosticar problemas del sistema
+
+**Qué verifica:**
+1. **Flake validation:** La configuración es válida
+2. **Disk space:** Espacio disponible en `/nix` (crítico para builds)
+3. **Generations count:** Cuántas generaciones tienes (útil para limpieza)
+4. **Boot entries:** Entradas de arranque disponibles
+5. **Failed services:** Servicios systemd que fallaron
+6. **Git status:** Estado del repositorio de dotfiles
+
+**Cuándo usarlo:**
+- Regularmente para monitorear el estado del sistema
+- Antes de hacer cambios importantes
+- Cuando experimentas problemas inesperados
+- Como parte de un mantenimiento rutinario
+- Después de actualizaciones o cambios grandes
+
+**Nota importante:**
+Este comando está optimizado para ser rápido. Eliminamos la verificación del store (`nix-store --verify`) porque puede tardar horas en sistemas grandes. Si necesitas verificar la integridad del store, usa `make fix-store` directamente.
+
+**Ventajas:**
+- Ejecución rápida (segundos, no minutos)
+- Proporciona información útil sin ser invasivo
+- Formato claro y fácil de leer
+- Identifica problemas comunes rápidamente
+
+---
+
+<a id="cmd-multi-host"></a>
+### 🖥️ Multi-Host
+
+#### `make dev-hosts`
+Lista todas las configuraciones de hosts disponibles con información detallada.
+
+```bash
+make dev-hosts
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📋 Available Hosts                         
+════════════════════════════════════════════════════
+
+Total hosts: 3
+Configured: 3
+
+Hosts overview:
+  hydenix         ✓ configured (current)
+  laptop          ✓ configured
+  vm              ✓ configured
+
+Detailed information:
+
+  hydenix (current)
+    Status: ✓ configured
+    Path: hosts/hydenix/
+    Files: 2
+
+  laptop
+    Status: ✓ configured
+    Path: hosts/laptop/
+    Files: 3
+
+  vm
+    Status: ✓ configured
+    Path: hosts/vm/
+    Files: 3
+
+Usage: make sys-apply HOSTNAME=<host>
+Example: make sys-apply HOSTNAME=laptop
+```
+
+**Usar con otros comandos:**
+```bash
+make sys-apply HOSTNAME=laptop  # Deploy a laptop
+make sys-test HOSTNAME=vm        # Probar config de VM
+```
+
+---
+
+<a id="cmd-debugging"></a>
+### 🐛 Debugging
+
+#### `make sys-debug`
+Rebuild con output verbose completo y trace de errores.
+
+```bash
+make sys-debug
+```
+
+**Cuándo usarlo:**
+- Cuando `make sys-apply` falla
+- Errores crípticos
+- Problemas de evaluación de Nix
+
+**Output incluye:**
+- Stack traces completos
+- Valores de variables
+- Camino de evaluación
+
+---
+
+#### `make flake-check`
+Valida la sintaxis del flake sin compilar.
+
+```bash
+make flake-check
+# Equivalente a: nix flake check
+```
+
+**Cuándo usarlo:**
+- Verificación rápida de sintaxis
+- Antes de commits
+- Debugging de errores de parsing
+
+**Output exitoso:**
+```
+✓ checks.x86_64-linux.default
+✓ nixosConfigurations.hydenix
+```
+
+---
+
+#### `make show`
+Muestra la estructura completa de salidas (outputs) del flake, incluyendo todas las configuraciones NixOS y paquetes disponibles.
+
+```bash
+make show
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📄 Flake Outputs Structure                
+════════════════════════════════════════════════════
+
+git+file:///home/ravn/Dotfiles?ref=refs/heads/main&rev=38ee020...
+├───nixosConfigurations
+│   ├───default: NixOS configuration
+│   └───hydenix: NixOS configuration
+└───packages
+    └───x86_64-linux
+        └───vm: package 'nixos-vm'
+```
+
+**¿Para qué sirve?**
+
+1. **Descubrir hosts disponibles:** Ver todas las configuraciones NixOS definidas en tu flake sin tener que leer `flake.nix` manualmente. Útil cuando trabajas con múltiples máquinas o cuando olvidas qué hosts están configurados.
+
+2. **Ver paquetes definidos:** Identificar qué paquetes personalizados están disponibles en el flake (como `vm` en el ejemplo, que genera una máquina virtual NixOS).
+
+3. **Validar estructura del flake:** Verificar rápidamente que el flake está bien estructurado y que todas las salidas esperadas están presentes antes de intentar hacer un `switch` o `build`.
+
+4. **Entender la organización:** Obtener una vista de alto nivel de cómo está organizado tu flake, especialmente útil cuando colaboras con otros o cuando vuelves a un proyecto después de tiempo.
+
+5. **Troubleshooting:** Si un comando como `make sys-apply HOSTNAME=algo` falla, puedes usar `make show` para verificar si ese host realmente existe en el flake.
+
+**Relación con otros comandos:**
+- `make dev-hosts` - Muestra información detallada de cada host (usa `make show` internamente)
+- `make sys-apply HOSTNAME=<host>` - Requiere que el host exista en `nixosConfigurations` (verificable con `make show`)
+- `make flake-check` - Valida la sintaxis, mientras que `make show` valida la estructura
+
+**Cuándo usarlo:**
+- Antes de hacer un `switch` a un host nuevo para verificar que existe
+- Cuando necesitas recordar qué hosts están disponibles
+- Para descubrir qué paquetes personalizados puedes usar
+- Como verificación rápida después de modificar `flake.nix`
+
+---
+
+#### `make log-net`
+Diagnóstico completo de red (DNS, ping, throughput y ruta) con formato visual mejorado.
+
+```bash
+make log-net
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🌐 Network Diagnostics                    
+════════════════════════════════════════════════════
+
+1. DNS status (resolved):
+[estado de DNS]
+
+2. DNS from NetworkManager:
+[configuración DNS]
+
+3. Ping (1.1.1.1):
+[resultados de ping]
+
+...
+
+════════════════════════════════════════════════════
+✅ Network diagnostics complete
+════════════════════════════════════════════════════
+```
+
+**Qué hace:**
+- Verifica DNS activos (systemd-resolved y NetworkManager)
+- Mide latencia a 1.1.1.1 y google.com
+- Mide throughput con Cloudflare (50MB, máximo 20s)
+- Ejecuta speedtest al servidor más cercano
+- Analiza calidad de ruta con mtr (50 probes a 1.1.1.1)
+
+**Características:**
+- Formato visual consistente con otros comandos
+- Encabezado y footer con líneas de separación
+- Pruebas completas de conectividad y rendimiento
+- Manejo de errores cuando herramientas no están disponibles
+
+**Cuándo usarlo:**
+- Navegación lenta o intermitente
+- Verificar rendimiento real del ISP
+- Confirmar que el DNS no está siendo inyectado
+- Diagnosticar problemas de conectividad
+- Medir calidad de conexión antes y después de cambios de red
+
+---
+
+<a id="cmd-maintenance"></a>
+### 🧹 Maintenance and Cleanup
+
+Los comandos de limpieza son **esenciales** para mantener tu sistema NixOS funcionando de manera eficiente. NixOS guarda **TODAS** las versiones antiguas de paquetes y configuraciones, lo que permite rollbacks increíblemente útiles pero consume espacio en disco.
+
+#### ¿Por qué son importantes estos comandos?
+
+1. **Gestión de espacio en disco**: NixOS acumula generaciones y paquetes que pueden ocupar decenas o cientos de GB
+2. **Rendimiento del sistema**: Un store grande puede ralentizar operaciones de búsqueda y construcción
+3. **Mantenimiento preventivo**: Limpieza regular previene problemas de espacio antes de que ocurran
+4. **Optimización**: Los comandos de optimización mejoran el uso del espacio sin perder funcionalidad
+5. **Flexibilidad**: Diferentes niveles de limpieza permiten balancear seguridad vs espacio según necesidades
+
+---
+
+#### `make sys-gc`
+Limpieza estándar - elimina generaciones y paquetes de más de 30 días.
+
+```bash
+make sys-gc
+```
+
+**Qué elimina:**
+- Generaciones del sistema mayores a 30 días
+- Generaciones de usuario mayores a 30 días
+- Paquetes no referenciados por ninguna generación activa
+- Build artifacts antiguos
+
+**Espacio liberado típico:** 5-20 GB (depende del uso del sistema)
+
+**Qué mantiene:**
+- Últimas 30 días de generaciones (permite rollback reciente)
+- Todos los paquetes referenciados por generaciones activas
+
+**Cuándo usarlo:**
+- **Rutina mensual**: Como parte del mantenimiento regular del sistema
+- **Antes de actualizaciones grandes**: Libera espacio para nuevas construcciones
+- **Cuando `/nix/store` está grande**: Verifica con `make sys-status` el tamaño del store
+- **Después de muchas instalaciones**: Limpia paquetes temporales y artefactos
+
+**Flujo recomendado:**
+```bash
+# Ver estado actual
+make sys-status
+
+# Limpiar
+make sys-gc
+
+# Verificar espacio liberado
+make sys-status
+
+# Opcional: optimizar después de limpiar
+make sys-optimize
+```
+
+---
+
+#### `make sys-gc DAYS=n`
+Limpieza personalizada - permite especificar cuántos días de historial mantener.
+
+```bash
+# Mantener solo los últimos 7 días
+make sys-gc DAYS=7
+```
+
+**Parámetros:**
+- `DAYS=n`: Reemplaza `n` con el número de días que deseas conservar.
+
+**Qué hace:**
+- Elimina generaciones y paquetes mayores a `n` días
+- Útil para limpiezas rápidas (`DAYS=3`, `DAYS=7`) o muy seguras (`DAYS=90`, `DAYS=180`).
+- Si no se especifica, el valor por defecto es **30** días.
+
+
+---
+
+**Recomendación:** Si es tu primera vez o buscas máxima seguridad, usa `make sys-gc DAYS=90`.
+
+
+---
+
+#### `make sys-optimize`
+Optimiza el Nix store encontrando archivos duplicados y convirtiéndolos en hardlinks.
+
+```bash
+make sys-optimize
+```
+
+**Qué hace:**
+- Escanea todo el `/nix/store` buscando archivos idénticos
+- Convierte duplicados en hardlinks (mismo archivo, múltiples referencias)
+- **No elimina nada** - solo optimiza el uso del espacio
+- Proceso completamente seguro y reversible
+
+**Espacio ahorrado típico:** 1-5 GB (depende de cuántos paquetes compartan archivos)
+
+**Tiempo de ejecución:** 
+- 5-15 minutos en sistemas pequeños (< 50 GB)
+- 15-30 minutos en sistemas medianos (50-150 GB)
+- 30-60+ minutos en sistemas grandes (> 150 GB)
+
+**Cuándo usarlo:**
+- **Después de muchas instalaciones**: Cuando has instalado muchos paquetes nuevos
+- **Rutina mensual**: Como parte del mantenimiento regular
+- **Complemento de limpieza**: Después de `make sys-gc` para maximizar espacio
+- **Antes de hacer backup**: Optimiza antes de respaldar el store
+
+**Ejemplo de flujo completo:**
+```bash
+# 1. Ver estado inicial
+make sys-status
+
+# 2. Limpiar generaciones antiguas
+make sys-gc
+
+# 3. Optimizar lo que queda
+make sys-optimize
+
+# 4. Verificar espacio final
+make sys-status
+```
+
+**Nota importante:** Este proceso puede tomar tiempo, especialmente en stores grandes. Es seguro ejecutarlo en segundo plano, pero puede ralentizar otras operaciones de Nix mientras se ejecuta.
+
+---
+
+## Comparación de Comandos de Limpieza
+
+| Comando | Parámetro | Días mantenidos | Seguridad |
+|---------|-----------|----------------|-----------|
+| `make sys-gc` | `DAYS=90` | 90 días | ⭐⭐⭐⭐⭐ Máxima |
+| `make sys-gc` | (Default) | 30 días | ⭐⭐⭐⭐ Alta |
+| `make sys-gc` | `DAYS=7` | 7 días | ⭐⭐ Media |
+| `make sys-purge`| N/A | 0 días | ⭐ Mínima |
+| `make sys-optimize` | N/A | N/A | ⭐⭐⭐⭐⭐ Seguro |
+
+---
+
+## Flujos de Trabajo Recomendados
+
+### Flujo de Mantenimiento Mensual (Recomendado)
+
+```bash
+# 1. Verificar estado actual
+make sys-status
+
+# 2. Limpiar generaciones antiguas
+make sys-gc
+
+# 3. Optimizar el store
+make sys-optimize
+
+# 4. Verificar espacio liberado
+make sys-status
+
+# 5. Opcional: Ver generaciones restantes
+make gen-list
+```
+
+### Flujo de Emergencia (Poco Espacio)
+
+```bash
+# 1. Verificar espacio crítico
+make sys-status
+
+# 2. Limpieza agresiva pero segura
+make sys-gc DAYS=7
+
+# 3. Optimizar
+make sys-optimize
+
+# 4. Si aún necesitas más espacio (¡cuidado!)
+# make sys-purge  # Solo si estás 100% seguro
+```
+
+### Flujo Conservador (Máxima Seguridad)
+
+```bash
+# 1. Verificar estado
+make sys-status
+
+# 2. Limpieza conservadora
+make sys-gc DAYS=90
+
+# 3. Optimizar
+make sys-optimize
+
+# 4. Verificar
+make sys-status
+```
+
+---
+
+## Mejores Prácticas
+
+1. **Limpia regularmente**: Ejecuta `make sys-gc` al menos una vez al mes
+2. **Verifica antes y después**: Usa `make sys-status` para ver el impacto
+3. **Combina con optimize**: Después de limpiar, optimiza para maximizar espacio
+4. **Mantén generaciones importantes**: Si sabes que una generación es importante, no la elimines
+5. **Usa Git para historial**: Los comandos de limpieza no afectan tu historial de Git
+6. **Empieza conservador**: Si es tu primera vez, usa `make sys-gc DAYS=90`
+7. **Monitorea el espacio**: Revisa periódicamente con `make sys-status` o `df -h /nix/store`
+
+---
+
+## Resumen Rápido
+
+```bash
+# Limpieza estándar (30 días)
+make sys-gc
+
+# Limpieza semanal (7 días) - más agresiva
+make sys-gc DAYS=7
+
+# Limpieza conservadora (90 días) - más segura
+make sys-gc DAYS=90
+
+# Optimizar store (no elimina, solo optimiza)
+make sys-optimize
+
+# Ver estado del sistema
+make sys-status
+
+# Ver generaciones disponibles
+make gen-list
+```
+
+---
+
+#### `make generation-sizes`
+Muestra el tamaño en disco de cada generación del sistema.
+
+```bash
+make generation-sizes
+# Útil para ver qué generaciones ocupan más espacio
+```
+
+---
+
+<a id="cmd-updates"></a>
+### 📦 Updates
+
+#### `make upd-all`
+Actualiza todas las inputs del flake (nixpkgs, hydenix, home-manager).
+
+```bash
+make upd-all
+```
+
+**Qué actualiza:**
+```nix
+inputs = {
+  nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";  # ← se actualiza
+  hydenix.url = "github:richen604/hydenix";              # ← se actualiza
+  home-manager.url = "github:nix-community/home-manager"; # ← se actualiza
+};
+```
+
+**Cuándo usarlo:**
+- Una vez por semana
+- Para obtener últimas versiones de software
+- Antes de instalar nuevo software
+
+**⚠️ Importante:** Después de update, debes hacer `make sys-apply` para aplicar.
+
+**Flujo recomendado:**
+```bash
+make upd-all           # Actualiza inputs
+make dry-run          # Ve qué cambiaría
+make sys-test             # Prueba la nueva config
+make sys-apply           # Si todo está bien, aplica
+# Si algo falla:
+make gen-rollback         # Vuelve a versión anterior
+```
+
+---
+
+#### `make upd-all-nixpkgs`
+Actualiza solo nixpkgs (repositorio principal de paquetes).
+
+```bash
+make upd-all-nixpkgs
+```
+
+**Cuándo usarlo:**
+- Quieres nuevo software pero no cambiar hydenix
+- Update selectiva
+- Debugging de incompatibilidades
+
+---
+
+#### `make upd-all-hydenix`
+Actualiza solo el framework hydenix.
+
+```bash
+make upd-all-hydenix
+```
+
+**Cuándo usarlo:**
+- Nueva versión de hydenix disponible
+- Nuevas features de hydenix
+- Fixes en hydenix
+
+---
+
+#### `make upd-ai`
+Actualiza las herramientas de IA (**OpenCode**, **Cursor** y **Antigravity**) y aplica los cambios en un solo comando.
+
+```bash
+make upd-ai
+```
+
+**Qué hace:**
+1. Actualiza los inputs `opencode` y `nixpkgs-unstable`.
+2. Ejecuta `make sys-apply` para aplicar la nueva configuración.
+
+**Qué actualiza:**
+- **opencode** → OpenCode (asistente de IA en terminal)
+- **nixpkgs-unstable** → Cursor y Antigravity (editores, vía overlay)
+
+No hace falta ejecutar `make sys-apply` después; ya está incluido.
+
+---
+
+#### `make upd-input INPUT=nombre`
+Actualiza solo un input específico del flake.
+
+```bash
+make upd-input INPUT=hydenix
+# Actualiza solo hydenix, no nixpkgs ni otros
+```
+
+**Inputs disponibles:**
+- nixpkgs
+- hydenix
+- nixos-hardware
+- mynixpkgs
+- opencode
+- nixpkgs-unstable
+- zen-browser-flake
+
+---
+
+
+#### `make upd-diff`
+Muestra cambios en flake.lock después de un update.
+
+```bash
+make upd-all
+make upd-diff
+# Ve qué cambió exactamente
+```
+
+---
+
+#### `make upd-upgrade`
+Combo: actualiza inputs + rebuild. **Comando todo-en-uno**.
+
+```bash
+make upd-upgrade
+# Equivalente a:
+# make upd-all
+# make sys-apply
+```
+
+**⚠️ Cuidado:** Aplica cambios inmediatamente. Mejor usar:
+```bash
+make upd-all && make dry-run && make sys-test && make sys-apply
+```
+
+---
+
+
+#### `make gen-list`
+Lista todas las generaciones del sistema con fechas y resumen.
+
+```bash
+make gen-list
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📋 System Generations                    
+════════════════════════════════════════════════════
+
+Total generations: 33
+Current generation: 33
+
+All generations:
+   1   2026-01-12 07:36:26
+   2   2026-01-12 19:33:50
+   ...
+  33   2026-01-17 23:59:11   (current)
+```
+
+**Cuándo usarlo:**
+- Ver historial de cambios
+- Antes de rollback (para elegir generación)
+- Verificar cuántas generaciones tienes
+
+---
+
+#### `make gen-rollback`
+Revierte el sistema a la generación anterior inmediatamente. Es tu red de seguridad cuando algo sale mal.
+
+```bash
+make gen-rollback
+```
+
+**Qué hace:**
+- ✅ Activa la generación anterior (N-1) inmediatamente
+- ✅ Cambios disponibles de forma instantánea
+- ✅ No elimina la generación "mala" (puedes volver a ella si quieres)
+- ✅ Restaura el estado del sistema que funcionaba antes
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          ⏪ Revertir a Generación Anterior         
+════════════════════════════════════════════════════
+
+Revirtiendo a la generación anterior...
+Esto restaurará la configuración del sistema anterior.
+
+[output del rollback...]
+
+════════════════════════════════════════════════════
+✅ Rollback completado
+El sistema ha vuelto a la generación anterior.
+════════════════════════════════════════════════════
+```
+
+**¿Por qué es útil?**
+- **Recuperación rápida:** Vuelve al estado anterior en segundos
+- **Sin pérdida de datos:** No elimina archivos ni configuraciones de usuario
+- **Seguridad:** Siempre puedes volver si algo sale mal
+- **Sin miedo:** Permite experimentar sabiendo que puedes revertir
+
+**Cuándo usarlo:**
+- Después de `make sys-apply` que rompió algo
+- Sistema no funciona correctamente después de un cambio
+- Quieres deshacer el último cambio aplicado
+- Necesitas volver rápidamente a un estado conocido que funcionaba
+- Después de cambios experimentales que no funcionaron como esperabas
+
+**Casos de uso reales:**
+
+**Ejemplo 1: Recuperación después de cambio problemático**
+```bash
+# Aplicas cambios
+make sys-apply
+
+# Algo se rompe (servicios no inician, errores, etc.)
+# Revierte inmediatamente
+make gen-rollback
+
+# El sistema vuelve a funcionar
+# Ahora investigas qué salió mal
+make sys-debug
+```
+
+**Ejemplo 2: Deshacer cambio experimental**
+```bash
+# Pruebas una configuración nueva
+make sys-apply
+
+# No funciona como esperabas
+make gen-rollback
+
+# Vuelves a la normalidad y puedes intentar otra cosa
+```
+
+**Ejemplo 3: Flujo de trabajo seguro**
+```bash
+# 1. Aplicas cambios
+make sys-apply
+
+# 2. Si algo falla, reviertes
+make gen-rollback
+
+# 3. Investigas el problema
+make sys-debug
+# o
+make sys-check
+
+# 4. Corriges y vuelves a intentar
+make sys-apply
+```
+
+**Ventajas:**
+- ✅ Recuperación instantánea
+- ✅ No pierdes datos ni configuraciones
+- ✅ Permite experimentar con seguridad
+- ✅ No elimina la generación problemática (puedes investigarla después)
+- ✅ Cambios disponibles inmediatamente
+
+**Limitaciones:**
+- ⚠️ Solo revierte a la generación anterior (N-1)
+- ⚠️ Si necesitas volver más atrás, usa `make gen-list` y selecciona en GRUB
+- ⚠️ No restaura archivos de configuración editados manualmente (usa Git para eso)
+
+**Relación con otros comandos:**
+- `make gen-list` - Ver todas las generaciones disponibles
+- `make git-diff-generations` - Comparar generación actual con anterior
+- `make sys-apply` - Aplicar cambios (puedes revertir con rollback)
+- Git - Para restaurar archivos de configuración específicos
+
+**Nota importante:** `make gen-rollback` solo revierte la configuración del sistema. Si editaste archivos de configuración manualmente y quieres restaurarlos, usa Git o `gen-rollback-commit`:
+```bash
+# Opción 1: Restaurar archivo específico con Git
+git checkout HEAD~1 -- path/to/file.nix
+make sys-apply
+
+# Opción 2: Rollback completo a commit específico (recomendado)
+make gen-rollback-commit COMMIT=9220122
+```
+
+---
+
+#### `make gen-rollback-commit`
+Revierte a un commit específico de Git y reconstruye el sistema desde ese commit. Útil cuando necesitas volver exactamente a un estado conocido.
+
+```bash
+make gen-rollback-commit COMMIT=<hash>
+```
+
+**Ejemplos:**
+```bash
+# Usando hash corto
+make gen-rollback-commit COMMIT=9220122
+
+# Usando hash completo
+make gen-rollback-commit COMMIT=9220122face1b1f71f0cf9b1fcc8536fa0cd2842
+```
+
+**Qué hace:**
+1. ✅ Verifica que el commit existe en el repositorio
+2. ✅ Muestra información detallada del commit:
+   - Hash completo y corto
+   - Mensaje del commit
+   - Fecha del commit
+   - Archivos modificados (stat)
+3. ✅ Pide confirmación antes de proceder
+4. ✅ Hace checkout al commit especificado
+5. ✅ Reconstruye el sistema desde ese commit
+6. ✅ Muestra el resultado y próximos pasos
+
+**Output ejemplo:**
+```
+═════════════════════════════════════════════════════════════════════════════════
+        ⏪ Rollback a Commit Específico y Rebuild        
+═════════════════════════════════════════════════════════════════════════════════
+
+Verificando commit: 9220122
+✓ Commit encontrado:
+  Hash completo: 9220122face1b1f71f0cf9b1fcc8536fa0cd2842
+  Hash corto: 9220122
+  Mensaje: fix(fish): mover configuración de starship a shellInit
+  Fecha: 2026-01-24 18:57:16 -0600
+
+Cambios en este commit:
+ modules/hm/programs/terminal/shell/fish.nix     |  6 ++++++
+ modules/hm/programs/terminal/shell/starship.nix | 11 +++--------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
+
+⚠️  ADVERTENCIA:
+  - Esto cambiará el HEAD del repositorio a este commit
+  - Se reconstruirá el sistema desde este commit
+  - Cualquier cambio sin commit se perderá
+  - Si tienes cambios sin guardar, usa 'git stash' primero
+
+Escribe 'yes' para confirmar rollback: 
+```
+
+**Cuándo usarlo:**
+- Cuando sabes exactamente qué commit funcionaba bien
+- Cuando necesitas volver varios commits atrás (no solo N-1)
+- Cuando quieres restaurar tanto el sistema como los archivos de configuración
+- Cuando `make gen-rollback` no es suficiente
+
+**Ventajas:**
+- ✅ Vuelve a cualquier commit, no solo al anterior
+- ✅ Restaura tanto el sistema como los archivos de configuración
+- ✅ Muestra información detallada antes de proceder
+- ✅ Verifica que el commit existe antes de hacer cambios
+- ✅ Permite rollback seguro con confirmación
+
+**Limitaciones:**
+- ⚠️ Modifica el estado del repositorio git (cambia el HEAD)
+- ⚠️ Requiere que no haya cambios sin commit (usa `git stash` primero)
+- ⚠️ Más lento que `gen-rollback` (reconstruye el sistema completo)
+- ⚠️ Si falla la reconstrucción, revierte el checkout automáticamente
+
+**Casos de uso:**
+
+**Ejemplo 1: Volver a commit conocido que funcionaba**
+```bash
+# Aplicas cambios nuevos
+make sys-apply
+
+# No funcionan como esperabas
+# Sabes que el commit 9220122 funcionaba bien
+make gen-rollback-commit COMMIT=9220122
+
+# Sistema reconstruido desde ese commit
+```
+
+**Ejemplo 2: Experimentar con seguridad**
+```bash
+# Crear rama de respaldo
+git checkout -b backup-before-switch
+git push origin backup-before-switch
+
+# Volver a main y aplicar cambios
+git checkout main
+make sys-apply
+
+# Si no funciona, rollback al commit anterior
+make gen-rollback-commit COMMIT=9220122
+```
+
+**Ejemplo 3: Comparar con `gen-rollback`**
+```bash
+# Rollback rápido (solo generación anterior)
+make gen-rollback
+
+# Rollback completo (commit específico + reconstrucción)
+make gen-rollback-commit COMMIT=9220122
+```
+
+**Relación con otros comandos:**
+- `make gen-rollback` - Rollback rápido a generación anterior (N-1)
+- `make gen-list` - Ver todas las generaciones disponibles
+- `make gen-rollback-commit` - Rollback completo a commit específico
+- `git stash` - Guardar cambios antes de rollback
+- `make sys-apply` - Aplicar configuración (puedes revertir con rollback)
+
+**Nota importante:** Si tienes cambios sin commit, guarda tus cambios primero:
+```bash
+# Guardar cambios temporalmente
+git stash
+
+# Hacer rollback
+make gen-rollback-commit COMMIT=9220122
+
+# (Opcional) Recuperar cambios guardados después
+git stash pop
+```
+
+---
+
+#### `make git-diff-generations`
+Compara la generación actual con la generación anterior usando `nix store diff-closures`, mostrando qué paquetes fueron añadidos, eliminados o actualizados.
+
+```bash
+make git-diff-generations
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📊 Comparing Generations                  
+════════════════════════════════════════════════════
+
+Previous → Current
+Comparing: nixos-system-hydenix-26.05.20251229.95e96e8 → nixos-system-hydenix-26.05.20251229.95e96e8
+
+[lista detallada de paquetes añadidos/eliminados/actualizados con tamaños]
+```
+
+**¿Cómo funciona?**
+
+1. **Obtiene rutas del store:** Usa `readlink -f` para obtener las rutas completas del store de Nix de la generación actual y la anterior
+2. **Compara closures:** Usa `nix store diff-closures` para comparar los closures completos de ambas generaciones
+3. **Muestra diferencias:** Lista todos los paquetes que cambiaron, incluyendo:
+   - Paquetes añadidos (aparecen solo en la generación actual)
+   - Paquetes eliminados (aparecen solo en la generación anterior)
+   - Paquetes actualizados (versiones diferentes)
+   - Tamaños de los cambios
+
+**¿Para qué sirve?**
+
+- **Entender cambios:** Ver exactamente qué paquetes cambiaron entre la última generación y la actual
+- **Debugging:** Identificar qué paquetes podrían estar causando problemas después de un rebuild
+- **Auditoría:** Revisar qué se instaló o actualizó en cada cambio de configuración
+- **Optimización:** Identificar paquetes grandes que se agregaron para decidir si son necesarios
+
+**Cuándo usarlo:**
+- Después de hacer `make sys-apply` para ver qué cambió
+- Cuando algo no funciona después de un rebuild y quieres ver qué paquetes cambiaron
+- Para entender el impacto de una actualización antes de aplicarla
+- Como parte del workflow de mantenimiento del sistema
+
+**Notas:**
+- Requiere que `nix store diff-closures` esté disponible (Nix 2.4+)
+- La salida puede ser muy larga si hay muchos cambios
+- Compara los closures completos, no solo los paquetes explícitos
+- Si no hay generación anterior o es la misma que la actual, muestra un mensaje informativo
+
+---
+
+#### `make git-diff-gen GEN1=N GEN2=M`
+Compara dos generaciones específicas usando `nix store diff-closures`, mostrando qué paquetes y archivos cambiaron entre ellas.
+
+```bash
+make git-diff-gen GEN1=32 GEN2=33
+# Compara generación 32 vs 33
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📊 Comparing Generations                  
+════════════════════════════════════════════════════
+
+Generation 32 → Generation 33
+Comparing:  nngjvi4bcyaw3d0jsdi1w62569llz8hi-nixos-system-hydenix-26.05.20251229.95e96e8 → 0hgc735ijn3yngk7cgkad6g6g0fk062f-nixos-system-hydenix-26.05.20251229.95e96e8
+
+hm_config.toml: ∅ → ε
+```
+
+**¿Cómo interpretar la salida?**
+
+La salida de `nix store diff-closures` usa una notación específica:
+
+- **`∅` (vacío)**: No existía o no estaba presente en la generación anterior
+- **`ε` (epsilon)**: Presente o modificado en la generación nueva
+- **Versiones diferentes**: Muestra ambas versiones separadas por `→` (ej: `firefox-120.0 → firefox-121.0`)
+
+**Ejemplos de interpretación:**
+
+- `paquete: ∅ → 1.0` = Paquete fue **agregado** en la generación nueva
+- `paquete: 1.0 → ∅` = Paquete fue **eliminado** en la generación nueva
+- `paquete: 1.0 → 2.0` = Paquete fue **actualizado** de versión 1.0 a 2.0
+- `archivo.toml: ∅ → ε` = Archivo fue **agregado o modificado** (cambio mínimo)
+
+**¿Para qué sirve?**
+
+- **Comparar generaciones específicas:** Útil cuando quieres comparar dos generaciones que no son consecutivas
+- **Debugging histórico:** Ver qué cambió entre una generación que funcionaba y una que no
+- **Auditoría:** Entender qué cambios se hicieron en un momento específico del tiempo
+- **Rollback informado:** Antes de hacer rollback, ver exactamente qué se perderá
+
+**Cuándo usarlo:**
+- Cuando necesitas comparar generaciones que no son consecutivas
+- Para investigar qué cambió entre una generación estable y una problemática
+- Antes de hacer rollback para entender qué se revertirá
+- Para comparar el estado actual con una generación anterior específica
+
+**Relación con otros comandos:**
+- `make git-diff-generations` - Compara automáticamente la generación actual con la anterior
+- `make git-diff-gen GEN1=N GEN2=M` - Compara dos generaciones específicas que tú elijas
+- `make gen-list` - Lista todas las generaciones disponibles para comparar
+
+---
+
+<a id="cmd-git"></a>
+### 🔧 Git Integration
+
+#### `make git-status`
+Muestra estado completo del repositorio y configuración del sistema.
+
+```bash
+make git-status
+```
+
+**Output:**
+- **Configuration**: Hostname, Flake Location, NixOS Version
+- **Git Status**: Repository, Branch, Status
+- **Local changes**: Archivos modificados con formato colorido de git
+- **Recent Changes**: Últimos 3 commits con formato compacto
+
+---
+
+#### `make git-add`
+Stages todos los cambios con formato visual mejorado.
+
+```bash
+make git-add
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+              📝 Staging Changes                   
+════════════════════════════════════════════════════
+
+Adding all changes to staging area...
+✅ Staged 3 file(s)
+
+Changes staged:
+  M Makefile
+  M docs/makefile.mdx
+  A new-file.nix
+```
+
+---
+
+#### `make git-commit`
+Commit rápido con timestamp automático y formato visual mejorado.
+
+```bash
+make git-commit
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+            📝 Committing Changes                  
+════════════════════════════════════════════════════
+
+Staging changes...
+Creating commit: config: update 2026-01-18 10:48:16
+
+✅ Commit created successfully
+Hash: 71d24b4
+Branch: main
+```
+
+**Mejor práctica:** Usa mensajes descriptivos manualmente:
+```bash
+git add .
+git commit -m "feat: add kitty terminal config"
+```
+
+---
+
+#### `make git-push`
+Push al remoto con formato visual mejorado.
+
+```bash
+make git-push
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+              🚀 Pushing to Remote                 
+════════════════════════════════════════════════════
+
+Branch: main
+Remote: 25ASAB015/nix-dotfiles
+
+Pushing changes...
+[output de git push]
+
+✅ Successfully pushed to remote
+```
+
+---
+
+#### `make sys-deploy`
+**Sincronización total:** add + commit + push + rebuild todo en uno con workflow visual.
+
+```bash
+make sys-deploy
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+              🔄 Total Synchronization              
+════════════════════════════════════════════════════
+
+Executing complete workflow:
+  1. Stage changes
+  2. Commit changes
+  3. Push to remote
+  4. Build and switch
+
+[ejecuta cada paso con su formato visual]
+
+════════════════════════════════════════════════════
+✅ Synchronization completed successfully!
+════════════════════════════════════════════════════
+```
+
+**Qué hace:**
+1. `make git-add` - Stage cambios
+2. `make git-commit` - Commit con timestamp
+3. `make git-push` - Push al remoto
+4. `make sys-apply` - Build y switch
+
+**⚠️ Úsalo con cuidado:** Es conveniente pero hace commits automáticos. Mejor para cambios pequeños.
+
+**Mejor práctica:**
+```bash
+# Para cambios pequeños:
+make save
+
+# Para cambios importantes:
+git add .
+git commit -m "feat: descripción clara del cambio"
+git push
+make sys-apply
+```
+
+---
+
+#### `make git-log`
+Muestra los últimos 15 commits en formato compacto y visual.
+
+```bash
+make git-log
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+            📝 Recent Changes                      
+════════════════════════════════════════════════════
+
+  de95dff   refactor: remove make packages command and update docs    3 minutes ago
+  a9a8e70   feat: combine list-hosts and hosts-info, update docs...   7 minutes ago
+  c4dbec9   feat: improve list-generations output format with...  12 minutes ago
+  c6830ae   fix: improve search-installed to find packages in...  17 minutes ago
+```
+
+**Características:**
+- Formato compacto: cada commit en una línea
+- Mensajes truncados a 55 caracteres si son muy largos
+- Columna de tiempo alineada a la derecha
+- Hash en verde, tiempo en azul
+
+**Resumen de comandos Git Integration:**
+- `git-status` - Estado completo del repositorio y sistema
+- `git-add` - Stage cambios
+- `git-commit` - Commit con timestamp
+- `git-push` - Push al remoto
+- `git-diff` - Ver cambios sin commitear en archivos .nix
+- `git-log` - Ver historial de commits (últimos 15)
+- `sync` - Workflow completo: add + commit + push + rebuild
+
+
+<a id="cmd-system-info"></a>
+### 📊 System Information
+
+#### `make sys-status`
+
+Muestra el reporte completo del sistema (NixOS, Hardware y Flake).
+
+```bash
+make sys-status
+```
+
+**Output ejemplo:**
+```
+⏳ Gathering system information, please wait...
+════════════════════════════════════════════════════
+           💻 System Information                    
+════════════════════════════════════════════════════
+
+Hostname:             hydenix
+NixOS Version:        26.05.20251229.95e96e8
+Flake Location:       /home/ravn/Dotfiles
+
+💾 System Info
+Store Size:            71G
+Current Generation:    33 (2026-01-17 23:59:11)
+Total Generations:     33
+Disk Usage (/nix):     47%
+
+🔄 Recent Generations
+    29   2026-01-15 06:38:07
+    30   2026-01-15 08:45:09
+    31   2026-01-15 09:10:08
+    32   2026-01-17 23:37:08
+    33   2026-01-17 23:59:11   (current)
+
+📦 Flake Inputs Versions
+  1768753617
+  1768753617
+  1768135262
+  1768135262
+  1762440070
+```
+
+**Cuándo usarlo:**
+- Verificar tamaño de `/nix/store`
+- Ver información de generaciones del sistema
+- Verificar uso de disco
+- Ver versión de NixOS
+- Debugging general
+
+---
+
+#### `make sys-status`
+Alias de `make git-status` para mantener compatibilidad.
+
+```bash
+make sys-status
+# Equivalente a: make git-status
+```
+
+Muestra la misma información que `make git-status`: configuración del sistema y estado completo del repositorio git.
+
+---
+
+#### `make current-generation`
+Muestra detalles de la generación actual con formato visual mejorado.
+
+```bash
+make current-generation
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+        📍 Current Generation Details              
+════════════════════════════════════════════════════
+
+  33   2026-01-17 23:59:11   (current)
+
+Activation date:  2026-01-18 06:08:36
+Closure size:  40.5G
+```
+
+#### `make hosts-info`
+Alias de `make dev-hosts` para mantener compatibilidad. Muestra la misma información detallada de todos los hosts configurados.
+
+---
+
+
+<a id="cmd-search"></a>
+### 🔍 Búsqueda
+
+#### `make dev-search PKG=nombre`
+Busca paquetes en nixpkgs.
+
+```bash
+make dev-search PKG=firefox
+# Busca firefox en todos los paquetes disponibles
+```
+
+#### `make dev-search-installed PKG=nombre`
+Busca en paquetes ya instalados en tu sistema, incluyendo PATH y perfiles de Home Manager.
+
+```bash
+make dev-search-installed PKG=kitty
+```
+
+**Output ejemplo:**
+```
+🔍 Searching installed packages for: kitty
+════════════════════════════════════════════════════
+
+1. Executable in PATH:
+  ✓ Found: /etc/profiles/per-user/ravn/bin/kitty
+  Store path: /nix/store/abc123-kitty-0.30.1
+
+2. User environment (nix-env):
+  Not found
+
+3. System packages (current-system):
+  /nix/store/abc123-kitty-0.30.1
+
+4. Home Manager profiles:
+  /etc/profiles/per-user/ravn/bin/kitty
+```
+
+**Mejoras:** Ahora busca en múltiples ubicaciones:
+- Ejecutables en PATH
+- Entorno de usuario (nix-env)
+- Paquetes del sistema
+- Perfiles de Home Manager
+
+---
+
+<a id="cmd-quick-actions"></a>
+### ⚡ Quick Actions
+
+Estos comandos están diseñados para situaciones específicas donde los comandos estándar no son suficientes. Cada uno tiene un propósito único y no son redundantes.
+
+---
+
+#### `make sys-apply-fast`
+Rebuild rápido (Switch Fast) omitiendo verificaciones internas de NixOS para acelerar el proceso.
+
+```bash
+make sys-apply-fast
+```
+
+**Qué hace:**
+- Ejecuta `nixos-rebuild switch` con la opción `--fast`
+- Omite verificaciones internas del sistema (compilación más rápida)
+- Aplica cambios directamente
+- Más rápido que `make sys-apply` estándar cuando el sistema ya tiene las dependencias en el store
+
+**⚠️ Advertencias:**
+- No valida la configuración antes de aplicar
+- No muestra qué se construirá antes de hacerlo
+- Puede fallar si hay errores en la configuración
+- Úsalo solo cuando estés 100% seguro de tus cambios
+
+**Cuándo usarlo:**
+- **Desarrollo iterativo rápido**: Cuando estás haciendo cambios pequeños y frecuentes
+- **Ya validaste antes**: Después de `make sys-check` o `make sys-test` exitosos
+- **Cambios triviales**: Modificaciones que sabes que funcionarán (ej: cambiar un color)
+- **Necesitas velocidad**: Cuando el tiempo es crítico y confías en tu configuración
+
+**Cuándo NO usarlo:**
+- Primera vez que modificas algo
+- Cambios complejos o importantes
+- No has probado la configuración antes
+- Sistema de producción
+
+**Comparación con otros comandos:**
+- `make sys-apply` - Incluye verificaciones básicas, más seguro
+- `make sys-apply-safe` - Valida antes de aplicar, más seguro aún
+- `make sys-apply-fast` - Sin verificaciones, más rápido y omite verificaciones internas de nixos-rebuild
+
+**Ejemplo de uso:**
+```bash
+# 1. Validar primero (una vez)
+make sys-check
+
+# 2. Cambio pequeño (ej: ajustar un color)
+# Editar configuración...
+
+# 3. Aplicar rápido (confías que funcionará)
+make sys-apply-fast
+
+# Si algo falla, siempre puedes hacer rollback
+make gen-rollback
+```
+
+---
+
+#### `make emergency`
+Rebuild con máxima verbosidad y debugging para diagnosticar problemas críticos.
+
+```bash
+make emergency
+```
+
+**Qué hace:**
+- Ejecuta `nixos-rebuild switch` con:
+  - `--show-trace` - Muestra trazas completas de evaluación
+  - `--verbose` - Output extremadamente detallado
+  - `--option eval-cache false` - Desactiva caché de evaluación (fuerza reconstrucción completa)
+- Proporciona información máxima para debugging
+- Útil cuando el sistema no arranca o hay problemas críticos
+
+**⚠️ Advertencias:**
+- **Muy lento**: Puede tomar 2-5x más tiempo que un rebuild normal
+- **Output masivo**: Genera muchísima información (puede ser abrumador)
+- **Desactiva caché**: Reconstruye todo desde cero, más lento pero más preciso
+
+**Cuándo usarlo:**
+- **Sistema no arranca**: Cuando el sistema falló al iniciar después de un switch
+- **Errores críticos**: Problemas que `make sys-debug` no pudo resolver
+- **Reportar bugs**: Cuando necesitas información detallada para reportar un problema
+- **Problemas de evaluación**: Cuando sospechas que hay problemas en la evaluación de Nix
+- **Caché corrupta**: Cuando sospechas que el caché está causando problemas
+
+**Cuándo NO usarlo:**
+- Uso diario normal (es demasiado lento)
+- Cambios simples (usa `make sys-apply` o `make sys-apply-fast`)
+- Cuando `make sys-debug` es suficiente
+
+**Comparación con otros comandos:**
+- `make sys-debug` - Verbosidad moderada, útil para la mayoría de casos
+- `make emergency` - Verbosidad máxima, solo para problemas críticos
+- `make sys-apply` - Output normal, uso diario
+
+**Ejemplo de flujo de debugging:**
+```bash
+# 1. Intento normal
+make sys-apply
+# → Falla con error críptico
+
+# 2. Más información
+make sys-debug
+# → Aún no suficiente información
+
+# 3. Modo emergencia (máxima información)
+make emergency
+# → Output masivo con trazas completas
+# → Ahora puedes identificar el problema exacto
+```
+
+---
+
+#### `make sys-purge`
+Limpieza agresiva que elimina **TODAS** las generaciones antiguas. ⚠️ **IRREVERSIBLE**
+
+```bash
+make sys-purge
+# Pedirá confirmación: escribir "yes"
+```
+
+**Qué elimina:**
+- **TODAS** las generaciones del sistema (excepto la actual)
+- **TODAS** las generaciones de usuario
+- **TODOS** los paquetes no referenciados por la generación actual
+- Máxima liberación de espacio posible
+
+**Espacio liberado típico:** 20-100+ GB (depende del tamaño del store)
+
+**⚠️ ADVERTENCIAS CRÍTICAS:**
+- **IRREVERSIBLE**: No podrás hacer rollback a NINGUNA generación anterior
+- **Sin red de seguridad**: Si algo falla después, no hay vuelta atrás
+- **Solo la generación actual**: Solo podrás usar la configuración actual
+
+**Cuándo usarlo:**
+- **Emergencia de espacio**: Disco casi lleno y necesitas espacio inmediatamente
+- **Después de migración exitosa**: Cuando migraste a nuevo sistema y todo funciona perfecto
+- **Sistema funcionando perfectamente**: Configuración estable sin cambios recientes
+- **Último recurso**: Cuando otros comandos de limpieza no liberaron suficiente espacio
+
+**Cuándo NO usarlo:**
+- **Nunca en producción** sin razón crítica
+- Si hiciste cambios recientes importantes
+- Si no estás 100% seguro de que tu configuración actual funciona perfectamente
+- Como rutina de mantenimiento (usa `make sys-gc` en su lugar)
+
+**Comparación con otros comandos de limpieza:**
+- `make sys-gc` - Mantiene 30 días, seguro para uso regular
+- `make sys-gc DAYS=7` - Mantiene 7 días, más agresivo pero seguro
+- `make sys-gc DAYS=90` - Mantiene 90 días, máxima seguridad
+- `make sys-purge` - Elimina TODO, solo para emergencias
+
+**Flujo recomendado antes de usar:**
+```bash
+# 1. Verificar que el sistema funciona perfectamente
+make sys-status
+
+# 2. Intentar limpieza normal primero
+make sys-gc
+# o
+make sys-gc DAYS=7
+
+# 3. Verificar espacio liberado
+make sys-status
+
+# 4. Si aún necesitas más espacio Y estás seguro:
+make sys-purge
+# → Escribe "yes" para confirmar
+```
+
+**Proceso de confirmación:**
+El comando pedirá confirmación escribiendo "yes" exactamente. Esto previene ejecuciones accidentales.
+
+---
+
+
+<a id="cmd-hardware"></a>
+### 🔩 Hardware
+
+#### `make sys-hw-scan`
+Re-detecta hardware y genera nueva configuración.
+
+```bash
+make sys-hw-scan
+```
+
+**Qué hace:**
+- Escanea todo el hardware
+- Genera `hardware-configuration-new.nix`
+- NO sobrescribe el actual
+
+**Cuándo usarlo:**
+- Cambiaste hardware (GPU, disco, etc)
+- Moviste disco a otra máquina
+- Problemas de detección de hardware
+
+**Flujo:**
+```bash
+make sys-hw-scan
+diff hosts/HOSTNAME/hardware-configuration.nix hosts/HOSTNAME/hardware-configuration-new.nix
+# Revisa diferencias
+mv hosts/HOSTNAME/hardware-configuration-new.nix hosts/HOSTNAME/hardware-configuration.nix
+make sys-apply
+```
+
+#### `make sys-copy-hw-config`
+Copia la configuración de hardware generada desde `/etc/nixos` hacia tus Dotfiles.
+
+```bash
+make sys-copy-hw-config
+```
+
+**Qué hace:**
+- ✅ Copia `/etc/nixos/hardware-configuration.nix` al directorio del flake
+- ✅ Copia `/etc/nixos/configuration.nix` al directorio del flake
+- ✅ Asigna permisos de usuario correctos
+
+**Cuándo usarlo:**
+- Inmediatamente después de una instalación fresca de NixOS
+- Cuando has generado una nueva configuración con `nixos-generate-config` manualmente
+
+---
+
+<a id="cmd-monitoring"></a>
+### 📡 Monitoring
+
+#### `make watch-logs`
+Monitorea los logs del sistema en tiempo real usando `journalctl -f` (modo follow).
+
+```bash
+make watch-logs
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📊 Watching System Logs                   
+════════════════════════════════════════════════════
+
+Press Ctrl+C to exit
+
+Jan 18 13:28:32 hydenix hypridle[339158]: Device 'input2::numlock'...
+Jan 18 13:28:46 hydenix hypridle[10122]: [LOG] Resumed: rule 55d4a0439f40
+Jan 18 13:29:23 hydenix ghostty[206074]: info(stream): OSC 1 received...
+```
+
+**¿Para qué sirve?**
+- **Monitoreo en tiempo real:** Ver eventos del sistema conforme ocurren
+- **Debugging activo:** Identificar problemas mientras suceden
+- **Seguimiento durante builds:** Observar logs mientras se ejecuta `make sys-apply` en otra terminal
+- **Análisis de servicios:** Ver cómo responden los servicios a cambios o eventos
+- **Troubleshooting interactivo:** Detectar patrones o errores repetitivos en tiempo real
+
+**Características:**
+- Usa `journalctl -f` (follow mode) para mostrar logs en tiempo real
+- Muestra todos los logs del sistema (kernel, servicios, aplicaciones)
+- Formato consistente con otros comandos de diagnóstico
+- Instrucciones claras para salir (`Ctrl+C`)
+
+**Cuándo usarlo:**
+- Durante un `make sys-apply` para ver qué está pasando
+- Cuando un servicio no funciona correctamente y necesitas ver sus logs en vivo
+- Para monitorear el sistema después de hacer cambios de configuración
+- Cuando sospechas que hay actividad sospechosa o errores recurrentes
+- Para entender el comportamiento del sistema durante operaciones específicas
+
+**Workflow típico:**
+```bash
+# Terminal 1: Monitorear logs
+make watch-logs
+
+# Terminal 2: Ejecutar operación
+make sys-apply
+
+# Los logs aparecerán en tiempo real en Terminal 1
+```
+
+**Salir:** Presiona `Ctrl + C` para detener el monitoreo.
+
+---
+
+#### `make logs-boot`
+Muestra los logs de arranque (errores y alertas) con formato visual mejorado.
+
+```bash
+make logs-boot
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📋 Boot Logs                              
+════════════════════════════════════════════════════
+
+Showing errors and alerts from current boot...
+
+[logs de errores y alertas del boot actual]
+```
+
+**Características:**
+- Formato visual consistente con otros comandos
+- Muestra solo errores y alertas del boot actual
+- Últimos 50 mensajes relevantes
+- Útil para diagnosticar problemas al iniciar el sistema
+
+**Cuándo usarlo:**
+- Cuando el sistema tiene problemas al arrancar
+- Para diagnosticar errores de hardware detectados durante el boot
+- Verificar si hay problemas con servicios que inician al arranque
+
+#### `make logs-errors`
+Muestra los últimos 50 errores del sistema con formato visual mejorado.
+
+```bash
+make logs-errors
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📋 Recent Error Logs                      
+════════════════════════════════════════════════════
+
+Showing last 50 error-level messages
+Found: 50 error message(s)
+
+Jan 18 08:00:27 hydenix kernel: serial 00:01: PM: failed to resume: error -5
+Jan 18 08:00:27 hydenix kernel: usb 1-6: device descriptor read/64, error -71
+...
+```
+
+**Características:**
+- Muestra contador de errores encontrados
+- Formato visual consistente con otros comandos
+- Últimos 50 mensajes de nivel error del sistema
+- Incluye mensaje cuando no hay errores recientes
+
+**Cuándo usarlo:**
+- Para diagnosticar problemas del sistema
+- Después de un error para ver qué pasó
+- Como parte del troubleshooting general
+- Para monitorear errores recurrentes
+
+#### `make logs-service SVC=nombre`
+Muestra logs de un servicio específico con formato visual mejorado y filtrado inteligente por tiempo.
+
+```bash
+make logs-service SVC=sshd
+make logs-service SVC=networkmanager
+make logs-service SVC=docker
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📋 Service Logs                           
+════════════════════════════════════════════════════
+
+Service: sshd
+No recent logs (last hour), showing logs from today...
+
+[logs del servicio de hoy]
+```
+
+**Características:**
+- **Filtrado inteligente por tiempo:**
+  - Primero intenta mostrar logs de la última hora (más relevantes)
+  - Si no hay logs recientes, muestra logs de hoy
+  - Si tampoco hay logs de hoy, muestra los últimos 100 logs sin filtro de tiempo
+- Formato visual consistente con otros comandos
+- Muestra el nombre del servicio destacado
+- Filtra mensajes vacíos de journalctl (`-- No entries --`)
+- Manejo de errores si el servicio no existe
+- Mensajes informativos sobre qué rango de tiempo está mostrando
+
+**Cuándo usarlo:**
+- Para diagnosticar problemas de un servicio específico
+- Ver actividad reciente de un servicio (última hora o hoy)
+- Debugging de servicios que no funcionan correctamente
+- Monitorear actividad de servicios en tiempo real
+
+**Ejemplos:**
+```bash
+make logs-service SVC=sshd              # Logs de SSH
+make logs-service SVC=networkmanager   # Logs de NetworkManager
+make logs-service SVC=docker           # Logs de Docker
+make logs-service SVC=systemd-journald # Logs del journal
+```
+
+**Cuando no se proporciona SVC:**
+Si ejecutas `make logs-service` sin el parámetro `SVC`, verás un mensaje de ayuda útil que incluye:
+- Ejemplos de uso
+- Lista de servicios comunes en ejecución
+- Tip para ver todos los servicios disponibles
+
+**Output cuando falta SVC:**
+```
+════════════════════════════════════════════════════
+          📋 Service Logs                           
+════════════════════════════════════════════════════
+
+❌ Error: SVC variable required
+
+Usage: make logs-service SVC=<service-name>
+
+Examples:
+  make logs-service SVC=sshd
+  make logs-service SVC=networkmanager
+  make logs-service SVC=docker
+
+Common services:
+  dbus-broker.service
+  display-manager.service
+  NetworkManager.service
+  nix-daemon.service
+  sshd.service
+  systemd-journald.service
+  ...
+
+Tip: Use systemctl list-units --type=service to see all services
+```
+
+---
+
+<a id="cmd-advanced"></a>
+### 🧠 Advanced
+
+#### `make dev-repl`
+Abre un REPL interactivo de Nix con tu flake cargado.
+
+```bash
+make dev-repl
+# ════════════════════════════════════════════════════════
+#           🧠 Nix REPL - Interactive Shell           
+# ════════════════════════════════════════════════════════
+# 
+# Starting Nix REPL with flake loaded...
+# Useful commands:
+#   :q or :quit - Exit REPL
+#   outputs - View flake outputs
+#   outputs.nixosConfigurations.hydenix - View configuration
+# 
+# nix-repl> outputs.nixosConfigurations.hydenix.config.services
+# nix-repl> :q
+```
+
+**Qué puedes hacer:**
+```nix
+nix-repl> outputs                              # Ver todos los outputs del flake
+nix-repl> outputs.nixosConfigurations.hydenix  # Ver configuración específica
+nix-repl> outputs.packages.x86_64-linux.vm     # Ver paquetes disponibles
+nix-repl> :q                                   # Salir del REPL
+```
+
+**Cuándo usarlo:**
+- Explorar configuraciones sin editar archivos
+- Testing de expresiones Nix interactivamente
+- Aprender Nix y entender cómo funciona tu configuración
+- Debugging: ver valores de configuraciones en tiempo real
+- Verificar que las expresiones Nix son correctas antes de aplicar
+
+---
+
+#### `make shell`
+Entra a un shell de desarrollo del flake.
+
+```bash
+make shell
+# ════════════════════════════════════════════════════════
+#           🐚 Development Shell                      
+# ════════════════════════════════════════════════════════
+# 
+# Entering development shell...
+# This shell includes development tools from your flake.
+```
+
+**Requisitos:**
+- El flake debe tener `devShells` configurado
+- Si no está configurado, el comando mostrará instrucciones
+
+**Cuándo usarlo:**
+- Desarrollo con herramientas específicas del proyecto
+- Entornos de desarrollo reproducibles
+- Testing con dependencias específicas
+
+**Nota:** Si no tienes `devShells` configurado, el comando mostrará cómo agregarlo.
+
+---
+
+#### `make dev-vm`
+Construye y ejecuta una VM de tu configuración NixOS.
+
+```bash
+make dev-vm
+# ════════════════════════════════════════════════════════
+#           🖥️  NixOS Virtual Machine               
+# ════════════════════════════════════════════════════════
+# 
+# Building VM from current configuration...
+# This may take a few minutes on first build.
+# 
+# ✅ VM built successfully
+# Starting VM...
+# Press Ctrl+Alt+G to release mouse/keyboard
+# Use 'systemctl poweroff' in VM to shutdown
+```
+
+**Útil para:**
+- Testing sin riesgo: probar cambios sin afectar el sistema real
+- Desarrollo: probar configuraciones en un entorno aislado
+- Debugging: reproducir problemas en un entorno limpio
+- Demostraciones: mostrar la configuración sin instalar
+- Experimentación: probar configuraciones nuevas con seguridad
+
+**Controles de la VM:**
+- `Ctrl+Alt+G`: Liberar mouse y teclado
+- `systemctl poweroff`: Apagar la VM desde dentro
+- `Ctrl+C`: Detener la VM (forzado)
+
+**Nota:** La primera construcción puede tardar varios minutos. Construcciones posteriores son más rápidas gracias al caché de Nix.
+
+---
+
+<a id="cmd-export"></a>
+### 📤 Export/Import
+
+
+<a id="cmd-docs"></a>
+### 📚 Documentación
+
+#### `make docs-local`
+Lista toda la documentación local disponible en el repositorio.
+
+```bash
+make docs-local
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📚 Local Documentation                    
+════════════════════════════════════════════════════
+
+  ✓ README.md
+  ✓ docs/
+    ├─ docs/README.md
+
+💡 Tip: Use less <file> or cat <file> to view documentation
+```
+
+**¿Para qué sirve?**
+
+1. **Descubrir documentación disponible:** En lugar de explorar manualmente el repositorio, este comando te muestra rápidamente qué archivos de documentación están disponibles sin tener que navegar por el sistema de archivos.
+
+2. **Verificación rápida:** Útil cuando necesitas recordar qué documentación existe o cuando estás trabajando en un proyecto por primera vez y quieres saber qué recursos de documentación están disponibles.
+
+3. **Navegación eficiente:** Te indica dónde están los archivos de documentación, especialmente útil si hay documentación distribuida en diferentes ubicaciones (raíz del proyecto, directorio `docs/`, `legacydocs/`, etc.).
+
+4. **Workflow de lectura:** Permite acceder rápidamente a la documentación desde la terminal sin necesidad de abrir un navegador o editor.
+
+**Cuándo usarlo:**
+- Cuando necesitas encontrar documentación específica pero no recuerdas dónde está
+- Al explorar el proyecto por primera vez
+- Para verificar qué documentación está disponible antes de hacer cambios
+- Como punto de partida para entender la estructura de documentación del proyecto
+
+**Relación con otros comandos:**
+- `make docs-dev` - Inicia el servidor de desarrollo de la documentación web
+
+---
+
+#### `make docs-dev`
+Inicia el servidor de desarrollo de documentación con Astro con instalación automática de dependencias.
+
+```bash
+make docs-dev
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📘 Servidor de Documentación              
+════════════════════════════════════════════════════
+
+📦 Instalando dependencias primero...
+[output de npm install si es necesario]
+
+Iniciando servidor de desarrollo Astro...
+La documentación estará disponible en http://localhost:4321
+```
+
+**Qué hace:**
+- Verifica automáticamente si las dependencias están instaladas
+- Si no existen `node_modules`, ejecuta `npm install` automáticamente
+- Inicia el servidor de desarrollo de Astro
+- La documentación estará disponible en `http://localhost:4321`
+
+**Cuándo usarlo:**
+- Previsualizar cambios en la documentación antes de publicar
+- Desarrollo de documentación en tiempo real
+- Ver cómo se ve la documentación en el navegador
+- Primera vez que usas la documentación (instala deps automáticamente)
+
+**Ventajas:**
+- ✅ Instalación automática de dependencias si no existen
+- ✅ Hot reload: los cambios se reflejan inmediatamente
+- ✅ No más errores de "command not found"
+- ✅ Funciona incluso después de clonar el repo
+
+---
+
+#### `make docs-build`
+Construye la documentación para producción con instalación automática de dependencias.
+
+```bash
+make docs-build
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📦 Construir Documentación                
+════════════════════════════════════════════════════
+
+Construyendo documentación para producción...
+[output del build de Astro]
+
+════════════════════════════════════════════════════
+✅ Documentación construida exitosamente
+Los archivos están en docs/dist/
+════════════════════════════════════════════════════
+```
+
+**Qué hace:**
+- Verifica automáticamente si las dependencias están instaladas
+- Si no existen `node_modules`, ejecuta `npm install` automáticamente
+- Construye la documentación optimizada para producción
+- Genera archivos estáticos en `docs/dist/`
+
+**Cuándo usarlo:**
+- Antes de deployar la documentación
+- Para generar archivos estáticos optimizados
+- Testing de build en CI/CD
+- Verificar que no hay errores de build
+
+---
+
+#### `make docs-install`
+Instala o actualiza manualmente las dependencias de la documentación.
+
+```bash
+make docs-install
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📦 Instalar Dependencias                  
+════════════════════════════════════════════════════
+
+Instalando dependencias de npm...
+[output de npm install]
+
+════════════════════════════════════════════════════
+✅ Dependencias instaladas
+La documentación está lista para usar.
+════════════════════════════════════════════════════
+```
+
+**Cuándo usarlo:**
+- Actualizar dependencias después de cambios en `package.json`
+- Forzar reinstalación de dependencias
+- Resolver problemas de dependencias corruptas
+- Después de cambiar de rama con diferentes versiones
+
+---
+
+#### `make docs-clean`
+Limpia las dependencias de la documentación (elimina `node_modules`).
+
+```bash
+make docs-clean
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          🧹 Limpiar Dependencias                   
+════════════════════════════════════════════════════
+
+Limpiando dependencias de la documentación...
+
+════════════════════════════════════════════════════
+✅ Dependencias limpiadas
+Se liberó espacio eliminando node_modules/
+════════════════════════════════════════════════════
+```
+
+**Qué hace:**
+- Elimina completamente el directorio `docs/node_modules`
+- Libera espacio en disco
+- Útil para resolver problemas de dependencias
+
+**Cuándo usarlo:**
+- Problemas con dependencias corruptas o conflictivas
+- Liberar espacio en disco
+- Antes de reinstalar dependencias desde cero
+- Resolver errores extraños de npm
+
+**Flujo típico de resolución de problemas:**
+```bash
+make docs-clean      # Limpiar dependencias
+make docs-install    # Reinstalar desde cero
+make docs-dev        # Probar que funciona
+```
+
+---
+
+<a id="cmd-diff-tools"></a>
+### 📊 Diff Tools
+
+#### `make git-diff-flake`
+Muestra cambios en flake.nix y flake.lock.
+
+```bash
+make git-diff-flake
+# Útil después de updates para ver qué cambió
+```
+
+
+<a id="cmd-build-analysis"></a>
+### 🔍 Build Analysis
+
+#### `make closure-size`
+Muestra el tamaño del closure del sistema y los 10 paquetes más grandes.
+
+```bash
+make closure-size
+# ════════════════════════════════════════════════════════
+#           📊 System Closure Size Analysis          
+# ════════════════════════════════════════════════════════
+# 
+# Total system closure size:
+#   40.1 GiB
+#   /nix/store/...-nixos-system-hydenix-26.05...
+# 
+# Top 10 largest packages:
+#   1006.7 MiB  /nix/store/...-ffmpeg-6.1.3-bin
+#   1008.3 MiB  /nix/store/...-security-wrapper-gamescope...
+#   ...
+# 
+# ════════════════════════════════════════════════════════
+# ✅ Analysis complete
+# ════════════════════════════════════════════════════════
+```
+
+**Útil para:**
+- Identificar qué consume más espacio en el sistema
+- Optimizar el closure del sistema
+- Decidir qué paquetes desinstalar o reemplazar
+- Planear limpiezas de espacio en disco
+
+**Cuándo usarlo:**
+- Antes de hacer limpieza del sistema
+- Cuando el disco se está llenando
+- Para entender el tamaño real del sistema
+- Para comparar tamaños entre generaciones
+
+---
+
+<a id="cmd-quick-fixes"></a>
+### 🛠️ Quick Fixes
+
+#### `make sys-doctor`
+Arregla problemas comunes de permisos en `~/.config` y `~/.local`.
+
+```bash
+make sys-doctor
+# ════════════════════════════════════════════════════════
+#           👨‍⚕️ System Doctor (Permissions)        
+# ════════════════════════════════════════════════════════
+# 
+# Fixing common permission issues...
+# This requires sudo privileges.
+# 
+# 1. Checking ~/.config permissions... ✓ OK
+# 2. Checking ~/.local permissions... ✓ OK
+# ✅ Doctor: Permissions fixed
+```
+
+**Cuándo usarlo:**
+- Después de errores de "permission denied"
+- Problemas con aplicaciones que no pueden escribir configs
+- Después de cambiar de usuario
+- Después de ejecutar comandos con `sudo` que afectan permisos
+
+**Qué hace:**
+- Corrige ownership de `~/.config` y `~/.local`
+- Corrige permisos del repositorio git automáticamente
+- Muestra progreso paso a paso
+
+**Nota:** Este comando se ejecuta automáticamente en `make sys-deploy` para prevenir problemas de permisos.
+
+---
+
+#### `make sys-fix-git`
+Corrige permisos de ownership dentro del repositorio git del flake.
+
+```bash
+make sys-fix-git
+#                              🔧 Fix Git Permissions                             
+# ═════════════════════════════════════════════════════════════════════════════════
+#   ✓ Git permissions OK
+# o
+#   Fixing ownership in /home/user/Dotfiles/.git... ✓
+```
+
+**Cuándo usarlo:**
+- Si `git` falla por permisos después de ejecutar comandos con `sudo`
+- Cuando git muestra errores de "permission denied"
+- Después de usar `sudo` en comandos que tocan el repositorio
+
+**Qué hace:**
+- Verifica si hay problemas de ownership en `.git/objects`
+- Solo corrige si es necesario (no hace cambios si todo está bien)
+- Maneja el caso cuando no hay repositorio git
+
+**Nota:** Este comando se ejecuta automáticamente en `make sys-doctor` y `make sys-deploy`.
+
+---
+
+#### `make fix-store`
+Intenta reparar problemas en el Nix store verificando y reparando corrupción.
+
+```bash
+make fix-store
+# ════════════════════════════════════════════════════════
+#           🔧 Repair Nix Store                       
+# ════════════════════════════════════════════════════════
+# 
+# Verifying and repairing Nix store...
+# ⚠️  This may take a long time (minutes to hours) on large systems.
+# The store will be checked for corruption and repaired if needed.
+# 
+# [verification output...]
+# 
+# ════════════════════════════════════════════════════════
+# ✅ Store repair complete
+# All store paths verified and repaired.
+# ════════════════════════════════════════════════════════
+```
+
+**Cuándo usarlo:**
+- Errores de "hash mismatch" al compilar o usar paquetes
+- Corrupción del store detectada
+- Después de apagones o crashes del sistema
+- Problemas extraños al compilar que no tienen otra explicación
+- Cuando `nix-store --verify` reporta problemas
+
+**⚠️ Advertencia importante:**
+- Puede tardar **mucho tiempo** (minutos a horas) en sistemas grandes
+- Verifica cada path en el store, lo cual es muy lento
+- Solo úsalo cuando realmente tengas problemas, no como mantenimiento rutinario
+
+**Qué hace:**
+- Verifica la integridad de todos los paths en el store
+- Repara automáticamente cualquier corrupción encontrada
+- Descarga paths corruptos nuevamente si es necesario
+
+---
+
+<a id="cmd-utilities"></a>
+### 🔧 Utilidades
+
+#### `make fmt-tree`
+Muestra la estructura de directorios de tu configuración usando `eza` (con iconos) o `tree` como fallback.
+
+```bash
+make fmt-tree
+```
+
+**Output ejemplo:**
+```
+════════════════════════════════════════════════════
+          📁 Configuration Structure                 
+════════════════════════════════════════════════════
+
+hosts
+├── default.nix
+├── hydenix
+│   ├── configuration.nix
+│   └── user.nix
+├── laptop
+│   ├── configuration.nix
+│   ├── hardware-configuration.nix
+│   └── user.nix
+└── vm
+    ├── configuration.nix
+    ├── hardware-configuration.nix
+    └── user.nix
+modules
+├── hm
+│   ├── nvim
+│   ├── programs
+│   └── ...
+└── system
+    └── ...
+resources
+├── config
+├── scripts
+└── ...
+```
+
+**¿Para qué sirve?**
+
+1. **Visualizar estructura del proyecto:** Ver rápidamente cómo está organizada tu configuración de NixOS sin tener que navegar manualmente por los directorios.
+
+2. **Entender la organización:** Especialmente útil cuando trabajas con múltiples hosts, módulos complejos, o cuando vuelves a un proyecto después de tiempo.
+
+3. **Navegación rápida:** Te ayuda a encontrar dónde están ubicados los archivos de configuración específicos (hosts, módulos de Home Manager, recursos, etc.).
+
+4. **Documentación visual:** Útil para compartir la estructura del proyecto con otros o para documentar cómo está organizado tu repositorio.
+
+**Características:**
+- Usa `eza --tree` con iconos si está disponible (más moderno y visual)
+- Fallback a `tree` si `eza` no está instalado
+- Muestra solo directorios relevantes: `hosts/`, `modules/`, `resources/`
+- Filtra automáticamente: `.git`, `result`, `node_modules`, `*.tar.gz`
+- Nivel de profundidad limitado a 3 para mantener la salida legible
+
+**Cuándo usarlo:**
+- Al explorar el proyecto por primera vez
+- Cuando necesitas encontrar dónde está un archivo de configuración específico
+- Para entender la estructura antes de hacer cambios
+- Como referencia rápida de la organización del proyecto
+
+---
+
+
+<a id="flujos-trabajo"></a>
+## Flujos de Trabajo Comunes
+
+**Mini índice de flujos:**
+- [Flujo de Trabajo Recomendado](#flujo-recomendado)
+- [Flujo Diario Básico](#flujo-diario)
+- [Flujo Semanal de Mantenimiento](#flujo-semanal)
+- [Flujo de Experimentación](#flujo-experimentacion)
+- [Flujo de Debugging](#flujo-debugging)
+- [Flujo de Instalación de Software](#flujo-instalacion)
+- [Flujo de Contribución Git](#flujo-contribucion)
+- [Flujo de Recuperación de Desastres](#flujo-recuperacion)
+
+<a id="flujo-recomendado"></a>
+### 🎯 Flujo de Trabajo Recomendado (NUEVO)
+
+Elige el flujo según el tipo de cambio que estás haciendo:
+
+#### **Desarrollo Iterativo** (cambios frecuentes y pequeños)
+
+#### **Flujo Pro (Desarrollo Diario)**
+Para cuando estás iterando y quieres asegurar la máxima calidad:
+
+```bash
+# 1. Aplicar formato (estético)
+make fmt-check
+
+# 2. Validar (funcional/sintáctico)
+make sys-check
+
+# 3. Si todo está ok, aplicar
+make sys-apply
+```
+
+
+**Ventajas:**
+- ⚡ Rápido (validate es más rápido que switch-safe)
+- 🔍 Ves exactamente qué validación falla
+- 🎯 Separas validación de aplicación
+
+**Cuándo usarlo:**
+- Cambios de configuración pequeños
+- Ajustes de valores
+- Iteración rápida durante desarrollo
+
+---
+
+#### **Cambios Importantes** (más seguro)
+
+Para cambios que requieren más cuidado:
+
+```bash
+# 1. Hacer cambios
+nano modules/hm/programs/development/nix-tools.nix
+
+# 2. Validar + aplicar en un solo paso
+make sys-apply-safe
+
+# 3. Listo! (o rollback si algo falla)
+```
+
+**Ventajas:**
+- 🛡️ Más seguro (valida antes de aplicar automáticamente)
+- 🎯 Todo-en-uno (un solo comando)
+- ✅ No aplica si hay errores
+
+**Cuándo usarlo:**
+- Módulos nuevos completos
+- Cambios en múltiples archivos
+- Imports nuevos
+- Después de updates
+- Cuando no estás 100% seguro
+
+---
+
+#### **Testing Antes de Producción**
+
+Para experimentar sin riesgo:
+
+```bash
+# 1. Test temporal (no persiste al reboot)
+make sys-test
+
+# 2. Si funciona bien, hacer permanente
+make sys-apply-safe
+```
+
+**Ventajas:**
+- 🔬 Experimentación sin riesgo
+- 🔄 Los cambios se revierten al reiniciar
+- ✅ Pruebas en ambiente "real" pero temporal
+
+**Cuándo usarlo:**
+- Configuraciones experimentales
+- Probar software nuevo
+- Verificar compatibilidad
+- Antes de commits importantes
+
+---
+
+<a id="flujo-recuperacion"></a>
+### 🛠️ Flujo de Recuperación
+Si algo falló o el sistema no se comporta como esperabas:
+
+```bash
+# 1. Listar para saber a dónde volver
+make gen-list
+
+# 2. Ver qué cambió (opcional)
+make git-diff-generations
+
+# 3. Revertir
+make gen-rollback
+```
+
+---
+
+<a id="flujo-mantenimiento"></a>
+### 📅 Flujo de Mantenimiento Semanal
+
+```bash
+# Rutina recomendada para mantener el sistema al día:
+make upd-all              # Actualizar entradas
+make flake-diff          # Ver qué paquetes cambiarán
+make sys-check            # Verificar compatibilidad
+make sys-apply              # Aplicar
+make sys-gc               # Liberar espacio
+make sys-optimize            # Deduplicar store
+```
+
+---
+
+<a id="flujo-experimentacion"></a>
+### 🔬 Flujo de Experimentación
+
+```bash
+# Probar algo nuevo sin riesgo:
+make sys-test                # Solo para esta sesión
+# Prueba tu cambio
+# Si te gusta:
+make sys-apply              # Aplica permanentemente
+# Si no te gusta:
+# Simplemente reinicia (cambios se pierden)
+```
+
+---
+
+<a id="flujo-debugging"></a>
+### 🐛 Flujo de Debugging
+
+```bash
+# Algo no funciona:
+make sys-debug               # Rebuild con verbose
+make watch-logs          # En otra terminal
+# Revisa errores
+make gen-rollback            # Si es grave
+make dev-repl                # Explorar configuración
+```
+
+---
+
+<a id="flujo-instalacion"></a>
+### 📦 Flujo de Instalación de Software
+
+```bash
+# Quieres instalar algo nuevo:
+make upd-all              # Asegura últimas versiones
+# Edita tu config para agregar el paquete
+nvim modules/hm/default.nix
+make dry-run             # Ve qué se instalará
+make sys-apply              # Aplica
+
+# Si el paquete no existe en cache:
+# Puede tardar (compilación)
+```
+
+---
+
+<a id="flujo-contribucion"></a>
+### 🌐 Flujo de Contribución Git
+
+```bash
+# Cambios listos para compartir:
+git add .
+git commit -m "feat: add neovim config"
+make sys-test                # Verifica que funciona
+git push
+# Opcional: crear PR
+gh pr create
+```
+
+---
+
+<a id="flujo-recuperacion"></a>
+### 💾 Flujo de Recuperación de Desastres
+
+```bash
+# Sistema totalmente roto:
+make gen-rollback            # Intenta volver atrás
+
+# Si rollback no funciona:
+make gen-list    # Ve generaciones disponibles
+# Reinicia y en GRUB elige generación anterior
+
+# Si necesitas restaurar una versión anterior:
+make gen-rollback            # Volver a generación anterior
+# O usar git para restaurar archivos específicos
+```
+
+---
+
+<a id="resolucion-problemas"></a>
+## Resolución de Problemas
+
+**Mini índice de problemas:**
+- [cannot build derivation](#err-cannot-build)
+- [file not found](#err-file-not-found)
+- [not a flake](#err-not-a-flake)
+- [flakes no habilitados](#err-flakes)
+- [disk full](#err-disk-full)
+- [permission denied](#err-permission-denied)
+- [rebuild muy lento](#err-rebuild-lento)
+- [cambios no se aplican](#err-no-aplican)
+
+<a id="err-cannot-build"></a>
+### ❌ Error: "cannot build derivation"
+
+**Solución:**
+```bash
+make sys-debug               # Ver error completo
+# Suele ser error de sintaxis en .nix
+make flake-check        # Valida sintaxis
+```
+
+**Causas comunes:**
+- Falta `;` en Nix
+- Paréntesis/corchetes sin cerrar
+- Variable no definida
+
+---
+
+<a id="err-file-not-found"></a>
+### ❌ Error: "file not found"
+
+**Solución:**
+```bash
+# Asegúrate de estar en directorio correcto
+cd ~/dotfiles
+make sys-apply
+
+# Verifica que flake.nix existe
+ls flake.nix
+```
+
+---
+
+<a id="err-not-a-flake"></a>
+### ❌ Error: "not a flake"
+
+**Solución:**
+```bash
+# Asegura que tienes flake.nix válido
+nix flake show .
+
+# Re-agrega a git si es nuevo archivo
+git add flake.nix
+```
+
+---
+
+<a id="err-flakes"></a>
+### ❌ Error: "experimental feature 'flakes' not enabled"
+
+Tu NixOS ya tiene flakes habilitados (en tu config), pero si ves esto:
+
+```bash
+# Agregar a configuration.nix:
+nix.settings.experimental-features = [ "nix-command" "flakes" ];
+```
+
+---
+
+<a id="err-disk-full"></a>
+### ❌ Error: "disk full"
+
+```bash
+make sys-status                # Ver espacio usado
+make sys-gc               # Limpiar
+make sys-optimize            # Optimizar store
+# Si es emergencia:
+make sys-purge          # ⚠️ Borra TODO
+```
+
+---
+
+<a id="err-permission-denied"></a>
+### ❌ Error: "permission denied"
+
+**Causas:**
+1. Comando necesita `sudo` (el Makefile lo maneja)
+2. Archivo sin permisos
+
+```bash
+# Si es un módulo nuevo:
+chmod 644 modules/hm/programs/terminal/nuevo.nix
+```
+
+---
+
+<a id="err-rebuild-lento"></a>
+### ❌ Rebuild muy lento
+
+**Causas y soluciones:**
+1. **Primera build:** siempre es lenta, paciencia
+2. **Compilación:** algunos paquetes compilan
+   ```bash
+   # Ver qué compila:
+   make dry-run
+   ```
+3. **Muchas dependencies:**
+   ```bash
+   # Usa binary cache
+   # Ya configurado en tu sistema
+   ```
+
+---
+
+<a id="err-no-aplican"></a>
+### ❌ Cambios no se aplican
+
+```bash
+# Verifica que guardaste el archivo
+# Verifica que estás editando el archivo correcto
+make sys-debug               # Ve qué módulos se cargan
+```
+
+---
+
+<a id="tips-trucos"></a>
+## Tips y Trucos
+
+**Mini índice de tips:**
+- [Tip 1: Alias](#tip-1)
+- [Tip 2: Testing rápido](#tip-2)
+- [Tip 3: Ver cambios de update](#tip-3)
+- [Tip 4: Búsqueda de paquetes](#tip-4)
+- [Tip 5: Edición rápida](#tip-5)
+- [Tip 6: Commits descriptivos](#tip-6)
+- [Tip 7: Backup automático](#tip-7)
+- [Tip 8: Tamaño de paquetes](#tip-8)
+- [Tip 9: Testing en VM](#tip-9)
+- [Tip 10: Documentar cambios](#tip-10)
+
+<a id="tip-1"></a>
+### 💡 Tip 1: Alias en Fish/Bash
+
+Agrega a tu shell config:
+
+```bash
+# Fish (~/.config/fish/config.fish)
+alias ns="make sys-apply"
+alias nt="make sys-test"
+alias nr="make gen-rollback"
+alias nu="make upd-all"
+
+# Bash/Zsh (~/.bashrc o ~/.zshrc)
+alias ns='make sys-apply'
+alias nt='make sys-test'
+```
+
+---
+
+<a id="tip-2"></a>
+### 💡 Tip 2: Testing Rápido
+
+```bash
+# Antes de commit:
+make flake-check && make dry-run
+# Si ambos pasan, es seguro hacer switch
+```
+
+---
+
+<a id="tip-3"></a>
+### 💡 Tip 3: Ver Cambios de Update
+
+```bash
+# Antes de update:
+nix flake metadata > before.txt
+
+make upd-all
+
+nix flake metadata > after.txt
+diff before.txt after.txt
+```
+
+---
+
+<a id="tip-4"></a>
+### 💡 Tip 4: Búsqueda de Paquetes
+
+```bash
+# Buscar paquete:
+nix search nixpkgs neovim
+
+# Ver versión actual:
+nix eval .#nixosConfigurations.hydenix.pkgs.neovim.version
+```
+
+---
+
+<a id="tip-5"></a>
+### 💡 Tip 5: Edición Rápida
+
+Crea aliases para tus archivos más editados:
+
+```bash
+alias edit-fish="nvim ~/dotfiles/modules/hm/programs/terminal/fish.nix"
+alias edit-hypr="nvim ~/dotfiles/modules/hm/programs/hyprland.nix"
+alias edit-flake="nvim ~/dotfiles/flake.nix"
+```
+
+---
+
+<a id="tip-6"></a>
+### 💡 Tip 6: Commits Descriptivos
+
+En lugar de `make save`, usa commits descriptivos:
+
+```bash
+# Malo (make save hace esto):
+git commit -m "config: update 2026-01-11 14:30:45"
+
+# Bueno:
+git commit -m "feat: add kitty terminal with custom theme"
+git commit -m "fix: resolve fish shell completion issue"
+git commit -m "refactor: organize browser configs"
+```
+
+**Convenciones:**
+- `feat:` - nueva funcionalidad
+- `fix:` - corrección
+- `refactor:` - reorganización
+- `docs:` - documentación
+- `style:` - formateo
+
+---
+
+<a id="tip-7"></a>
+### 💡 Tip 7: Backup Automático
+
+Crea un cronjob o systemd timer:
+
+```bash
+# Backup semanal automático
+# Agregar a crontab: crontab -e
+0 2 * * 1 cd ~/dotfiles && git add . && git commit -m "Weekly backup" && git push
+```
+
+---
+
+<a id="tip-8"></a>
+### 💡 Tip 8: Ver Tamaño de Paquetes
+
+```bash
+# Ver qué consume más espacio:
+nix path-info -Sh /run/current-system | sort -k2 -h
+```
+
+---
+
+<a id="tip-9"></a>
+### 💡 Tip 9: Testing en VM Rápido
+
+```bash
+# En lugar de arriesgar tu sistema:
+make dev-vm
+# Prueba cambios en VM
+# Si funciona, aplica en sistema real
+```
+
+---
+
+<a id="tip-10"></a>
+### 💡 Tip 10: Documentar tus Cambios
+
+Mantén un changelog personal:
+
+```bash
+# Crear CHANGELOG.md
+echo "## $(date +%Y-%m-%d) - Configuración inicial kitty" >> CHANGELOG.md
+```
+
+---
+
+## 📚 Recursos Adicionales
+
+### Documentación Oficial
+- **NixOS Manual:** https://nixos.org/manual/nixos/stable/
+- **Nix Language:** https://nixos.org/manual/nix/stable/language/
+- **Home Manager:** https://nix-community.github.io/home-manager/
+
+### Tu Configuración
+- `README.md` - Overview de tu config
+- `AGENTS.md` - Estado de migración
+- `docs/` - Documentación adicional
+
+### Comandos de Referencia Rápida
+
+```bash
+# Sistema de Ayuda
+make help              # Lista de todos los comandos
+make help-examples     # Comandos con ejemplos de uso ⭐
+make help            # Workflows completos
+
+# Uso Diario
+make sys-apply            # Aplicar cambios
+make sys-test              # Probar sin aplicar
+make gen-rollback          # Deshacer último cambio
+
+# Información
+  make git-status        # Estado completo del repositorio y sistema
+  make sys-status            # Alias de git-status
+make sys-status            # Health check
+
+# Mantenimiento
+make upd-all            # Actualizar paquetes
+make sys-gc             # Limpiar espacio
+make sys-optimize          # Optimizar store
+```
+
+---
+
+## 🎯 Próximos Pasos
+
+1. **Lee el README.md** de tu configuración
+2. **Experimenta** con `make sys-test` (es seguro)
+3. **Usa Git** para versionar cambios importantes
+4. **Usa rollback** sin miedo si algo falla
+5. **Documenta** tus cambios importantes
+6. **Mantén actualizado** con `make upd-all` semanal
+7. **Limpia regularmente** con `make sys-gc`
+
+---
+
+## 🤝 Contribuciones
+
+¿Encontraste un truco útil? ¡Agrégalo aquí!
+
+```bash
+# Edita este tutorial
+nvim MAKEFILE_TUTORIAL.md
+
+# Comparte con la comunidad
+git add MAKEFILE_TUTORIAL.md
+git commit -m "docs: add [tu truco] to tutorial"
+git push
+```
+
+---
+
+**¡Disfruta tu configuración NixOS con Hydenix!** 🎉
+
+Si tienes preguntas, revisa:
+1. Este tutorial
+2. `make help`
+3. `docs/faq.md`
+4. Comunidad de Hydenix
+
+---
+
+### Correcciones Implementadas
+
+Los siguientes comandos fueron corregidos en esta actualización:
+
+1. **`make sys-purge`** - Ahora pide confirmación correctamente
+2. **`make fmt-check`** - Detecta qué formatter tienes instalado (nixpkgs-fmt o alejandra)
+3. **`make fmt-lint`** - Detecta si statix está instalado y da instrucciones claras
+4. **`make dev-vm`** - Corregido para usar `nix build .#vm` (coincide con flake.nix)
+5. **`make hardware-scan`** - Genera archivo en `hosts/$(HOSTNAME)/` en lugar del root
+
+---
+
+### Git Status Mejorado
+
+Los comandos `make git-status` y `make sys-status` (alias) ahora muestran información completa y organizada:
+
+```bash
+make git-status
+# ════════════════════════════════════════════════════
+#            📊 Repository Status                    
+# ════════════════════════════════════════════════════
+# 
+# 📍 Configuration
+# ├─ Host: hydenix
+# ├─ Flake: /home/ravn/Dotfiles
+# └─ NixOS: 26.05.20251229.95e96e8
+#
+# 📦 Git Status
+# ├─ Repository: 25ASAB015/nix-dotfiles
+# ├─ Branch: main
+# ├─ Status: Uncommitted changes
+#
+# Local changes:
+# M Makefile
+#
+# ════════════════════════════════════════════════════
+#             📝 Recent Changes                      
+# ════════════════════════════════════════════════════
+#
+#  241fd57   feat: improve changelog output format...    4 minutes ago
+#  de95dff   refactor: remove make packages command...   11 minutes ago
+#  a9a8e70   feat: combine list-hosts and hosts-info...  15 minutes ago
+```
+
+**Nota:** La información de System Info ahora se muestra de forma organizada en `make sys-status`.
+
+---
+
+### 💡 Flujos de Trabajo Nuevos
+
+**Flujo de Validación Segura:**
+```bash
+make sys-check       # Chequea sintaxis y config
+make sys-test           # Prueba temporalmente  
+make sys-apply-safe    # Valida y aplica
+```
+
+**Flujo de Health Check:**
+```bash
+make sys-status         # Ver estado general
+make generation-sizes  # Ver uso de espacio
+make sys-gc DAYS=7     # Limpiar si es necesario
+```
+
+**Flujo Multi-Host:**
+```bash
+make dev-hosts     # Ver hosts disponibles
+make sys-check HOSTNAME=laptop  # Validar config de laptop
+make sys-apply HOSTNAME=laptop    # Aplicar a laptop
+```
+
+---
+<a id="nuevos-flujos"></a>
+## 🎯 Nuevos Flujos de Trabajo
+
+**Mini índice de flujos:**
+- [Documentación](#flujo-docs)
+- [Logs y Debugging](#flujo-logs)
+- [Git Log y Versiones](#flujo-git-log)
+- [Creación de Nuevo Host](#flujo-nuevo-host)
+- [Desarrollo de Módulos](#flujo-modulos)
+- [Comparación](#flujo-comparacion)
+- [Build Analysis](#flujo-build-analysis)
+- [Troubleshooting Avanzado](#flujo-troubleshooting)
+- [Optimización de Espacio](#flujo-optimizar)
+
+<a id="flujo-docs"></a>
+### Flujo de Documentación
+
+#### Desarrollo de Documentación
+
+```bash
+# 1. Iniciar servidor de desarrollo (instala deps automáticamente)
+make docs-dev
+
+# 2. Editar archivos en docs/src/content/docs/
+# Los cambios se reflejan automáticamente en http://localhost:4321
+
+# 3. Construir para producción
+make docs-build
+```
+
+#### Actualizar Documentación después de Cambios en Makefile
+
+```bash
+# 1. Hacer cambios en el Makefile
+nvim Makefile
+
+# 2. Actualizar la documentación correspondiente
+nvim docs/src/content/docs/makefile.mdx
+
+# 3. Previsualizar cambios
+make docs-dev
+
+# 4. Verificar que el build funciona
+make docs-build
+```
+
+#### Resolver Problemas de Dependencias
+
+```bash
+# Si hay errores con npm o dependencias:
+make docs-clean      # Limpiar node_modules
+make docs-install    # Reinstalar dependencias
+make docs-dev        # Probar que funciona
+```
+
+#### Ver Documentación Local
+
+```bash
+# Ver qué documentación tienes (archivos markdown locales)
+make docs-local
+
+# Ver documentación web interactiva
+make docs-dev
+```
+
+---
+
+<a id="flujo-logs"></a>
+### Flujo de Logs y Debugging
+
+```bash
+# Ver errores recientes
+make logs-errors
+
+# Ver logs de boot
+make logs-boot
+
+# Ver logs de un servicio específico
+make logs-service SVC=docker
+```
+
+---
+
+
+<a id="flujo-git-log"></a>
+### Flujo de Git Log y Versiones
+
+```bash
+# Ver qué has cambiado recientemente
+make git-log
+
+# Ver versión actual del sistema
+  make sys-status
+
+# Ver detalles de generación actual
+make current-generation
+
+# Ver todos los hosts configurados
+make hosts-info
+```
+
+---
+
+
+<a id="flujo-comparacion"></a>
+### Flujo de Comparación
+
+```bash
+# Comparar configuraciones de diferentes hosts
+
+# Ver diferencias en archivos .nix
+make git-diff
+
+# Ver cambios en flake después de update
+make upd-all
+make git-diff-flake
+```
+
+---
+
+<a id="flujo-build-analysis"></a>
+### Flujo de Build Analysis
+
+```bash
+# ¿Por qué tengo este paquete instalado?
+# ¿Qué consume más espacio?
+make closure-size
+
+# Optimizar basado en resultados
+make sys-gc
+```
+
+---
+
+<a id="flujo-troubleshooting"></a>
+### Flujo de Troubleshooting Avanzado
+
+```bash
+# Problemas de permisos
+make fix-permissions
+
+# Diagnóstico de red completo
+make log-net
+
+# Errores extraños en el store
+make fix-store
+
+# Ver errores del sistema
+make logs-errors
+
+# Ver logs de boot si hay problemas al iniciar
+make logs-boot
+
+# Verificar salud general
+make sys-status
+```
+
+---
+
+<a id="flujo-optimizar"></a>
+### Flujo de Optimización de Espacio
+
+```bash
+# 1. Ver qué ocupa más espacio
+make closure-size
+
+# 2. Ver tamaño de generaciones
+make generation-sizes
+
+# 3. Limpiar generaciones antiguas
+make sys-gc DAYS=7
+
+# 4. Optimizar el store
+make sys-optimize
+
+# 5. Verificar resultado
+make sys-status
+```
+
+---
+
+<a id="resumen-comandos"></a>
+## 📊 Resumen: Todos los Comandos Disponibles
+
+## 🧭 Mapa rápido por áreas
+
+Este mapa ofrece una visión compacta de comandos por dominio. Úsalo como acceso rápido antes de ir al detalle.
+
+### Ayuda y Documentación (7)
+`help`, `help-examples`, `docs-local`, `docs-dev`, `docs-build`, `docs-install`, `docs-clean`
+
+### Gestión del Sistema (Rebuild/Switch) (10)
+`switch`, `switch-safe`, `switch-fast`, `test`, `build`, `dry-run`, `boot`, `validate`, `debug`, `emergency`
+
+### Limpieza y Optimización (5)
+`clean`, `deep-clean`, `optimize`, `clean-result`, `fix-store`
+
+### Actualizaciones y Flakes (9)
+`upd-all`, `upd-nixpkgs`, `upd-hydenix`, `upd-input`, `upd-ai`, `upd-diff`, `upd-upgrade`, `upd-show`, `upd-check`
+
+### Generaciones y Rollback (6)
+`list-generations`, `rollback`, `diff-generations`, `diff-gen`, `generation-sizes`, `current-generation`
+
+### Git y Respaldo (7)
+`git-add`, `git-commit`, `git-push`, `git-status`, `git-diff`, `sync`, `git-log`
+
+### Diagnóstico y Logs (7)
+`health`, `test-network`, `status`, `watch-logs`, `logs-boot`, `logs-errors`, `logs-service`
+
+### Análisis y Desarrollo (11)
+`list-hosts`, `hosts-info`, `search`, `search-installed`, `repl`, `shell`, `vm`, `closure-size`
+
+### Formato, Linting y Estructura (4)
+`format`, `lint`, `tree`
+
+### Reportes y Exportación (1)
+`git-log`
+
+### Plantillas y Otros (3)
+`hardware-scan`, `fix-permissions`, `fix-git-permissions`
+
+**Total: 66 comandos disponibles** 🎉
+
+---
+
+## 🏆 Implementación Completa Finalizada
+
+Todas las mejoras planificadas han sido implementadas exitosamente:
+- ✅ **FASE 1:** 5 correcciones críticas
+- ✅ **FASE 2:** 8 mejoras importantes  
+- ✅ **FASE 3:** 14 ampliaciones seleccionadas
+- ✅ **Build Analysis:** 1 comando (closure-size)
+- ✅ **Quick Fixes:** 2 comandos (fix-permissions, fix-store)
+- ✅ **Help System:** Sistema de ayuda híbrido en 3 niveles ⭐ NUEVO
+
+**Total implementado: 32+ mejoras**
+
+---
+
+<a id="sistema-ayuda-hibrido"></a>
+## 🎯 Sistema de Ayuda Híbrido (Tres Niveles)
+
+Tu Makefile ahora incluye un **sistema de ayuda profesional** con tres niveles:
+
+1. **`make help`** - Referencia rápida de todos los comandos
+2. **`make help-examples`** ⭐ - Ejemplos de uso con parámetros
+3. **`make help`** - Workflows y mejores prácticas
+
+Esto te permite encontrar información de diferentes formas según tu necesidad:
+- **¿Qué hay disponible?** → `make help`
+- **¿Cómo lo uso?** → `make help-examples`
+- **¿Cómo combino comandos?** → `make help`
+
+---
+
+*Última actualización: 2026-01-19*  
+*Versión: 5.2 - Comandos de Documentación Mejorados*  
+*Total de comandos: 69*  
+*Sistema de ayuda: 2 niveles (help, help-examples)*
+*Fases completadas: 100% (FASE 1, 2, 3 + extras + docs)*  
+*Mantenedor: ravn*  
+*Nuevos comandos: docs-dev, docs-build, docs-install, docs-clean (con instalación automática)*
+

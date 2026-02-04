@@ -1,0 +1,155 @@
+---
+title: Actualizaciones y Flakes
+description: Comandos para actualizar inputs del flake y gestionar dependencias
+---
+
+# Actualizaciones y Flakes
+
+Módulo: `make/updates.mk`
+
+Comandos para actualizar inputs del flake, gestionar dependencias y ver cambios.
+
+## Comandos Disponibles
+
+### `make upd-all`
+Actualiza todos los inputs del flake.
+
+```bash
+make upd-all
+```
+
+**Qué hace:** Actualiza todos los inputs en `flake.lock` (nixpkgs, hydenix, etc) a sus versiones más recientes.
+
+---
+
+### `make upd-nixpkgs`
+Actualiza solo el input de nixpkgs.
+
+```bash
+make upd-nixpkgs
+```
+
+---
+
+### `make upd-hydenix`
+Actualiza solo el input de hydenix.
+
+```bash
+make upd-hydenix
+```
+
+---
+
+### `make upd-ai`
+Actualiza las herramientas de IA (**OpenCode**, **Cursor** y **Antigravity**) y aplica los cambios en un solo comando.
+
+```bash
+make upd-ai
+```
+
+**Qué hace:**
+1. Actualiza los inputs `opencode`, `nixpkgs-unstable` y `llm-agents` en el flake.
+2. Ejecuta `make sys-apply` para construir y aplicar la nueva configuración.
+
+**Qué actualiza:**
+- **opencode** → OpenCode (asistente de IA en terminal)
+- **nixpkgs-unstable** → Cursor y Antigravity (editores, vía overlay)
+- **llm-agents** → Colección de agentes de IA (Claude Code, Gemini CLI, etc.)
+
+No hace falta ejecutar `make sys-apply` después; ya está incluido en `upd-ai`.
+
+---
+
+### `make upd-input`
+Actualiza un input específico del flake.
+
+```bash
+make upd-input INPUT=<name>
+```
+
+**Ejemplos:**
+```bash
+make upd-input INPUT=hydenix
+make upd-input INPUT=nixpkgs
+make upd-input INPUT=opencode
+make upd-input INPUT=nixpkgs-unstable
+make upd-input INPUT=zen-browser-flake
+```
+
+---
+
+### `make upd-diff`
+Muestra diferencias en el archivo `flake.lock` para ver qué versiones han cambiado.
+
+```bash
+make upd-diff
+```
+
+---
+
+### `make upd-upgrade`
+Flujo de trabajo completo: actualizar y aplicar.
+
+```bash
+make upd-upgrade
+```
+
+**Qué hace:**
+1. `make upd-all` (Actualiza todos los inputs)
+2. `make sys-apply-safe` (Valida y aplica los cambios al sistema)
+
+---
+
+### `make upd-show`
+Muestra los metadatos y outputs definidos en el flake.
+
+```bash
+make upd-show
+```
+
+---
+
+### `make upd-check`
+Verifica la consistencia y sintaxis del flake.
+
+```bash
+make upd-check
+```
+
+---
+
+## Workflow Recomendado
+
+### Update Seguro
+```bash
+# 1. Actualizar inputs
+make upd-all
+
+# 2. Ver qué cambió en las versiones
+make upd-diff
+
+# 3. Validar y aplicar de forma segura
+make sys-apply-safe
+```
+
+### Update Rápido (todo-en-uno)
+```bash
+make upd-upgrade  # update + apply-safe
+```
+
+### Update Selectivo
+```bash
+# Solo actualizar un input específico
+make upd-input INPUT=hydenix
+make sys-test     # Probar
+make sys-apply    # Aplicar
+```
+
+### Update de herramientas AI (OpenCode + Cursor + Antigravity)
+```bash
+make upd-ai   # Actualiza opencode + nixpkgs-unstable y aplica (todo en uno)
+```
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `make update`), consulta la [Guía de Aliases](../10-aliases).
+

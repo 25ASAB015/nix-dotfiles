@@ -1,0 +1,79 @@
+---
+title: Workspaces
+description: Navegación y gestión de escritorios virtuales.
+---
+
+# Workspaces
+
+Corresponde a la sección `Workspaces` en `hypr/keybinds.conf`.
+
+## Asignación Física (Workspace-Monitor)
+
+Para optimizar el flujo de trabajo, los workspaces están asignados permanentemente a monitores específicos:
+
+| Workspaces | Monitor | Descripción |
+| :--- | :--- | :--- |
+| `1-7` | `DP-1` (Dell) | Monitor Principal (Derecha) |
+| `8-10` | `HDMI-A-1` (Sony TV) | Monitor Auxiliar (Izquierda) |
+
+Esta configuración se encuentra documentada en `resources/config/monitors.conf`.
+
+## Navigation (Numbers like Vim)
+
+| Atajo | Función |
+| :--- | :--- |
+| `Super + 1-0` | Ir al workspace 1-10 |
+
+## Navigation (Relative & Vim Style)
+
+| Atajo | Función |
+| :--- | :--- |
+| `Super + Grave` | Last active workspace (previous per monitor) |
+| `Super + Alt + L` | Next active workspace |
+| `Super + Alt + H` | Previous active workspace |
+| `Ctrl + Alt + Arrows` | Navigation through workspaces relative |
+
+## Move Window to Workspace
+
+| Atajo | Función |
+| :--- | :--- |
+| `Super + Shift + 1-0` | Mover ventana al workspace 1-10 |
+
+## Move to Relative Workspace
+
+| Atajo | Función |
+| :--- | :--- |
+| `Super + Shift + N` | Move window to next relative workspace |
+| `Super + Shift + B` | Move window to previous relative workspace |
+| `Super + Alt + Right` | Move window to next relative workspace |
+| `Super + Alt + Left` | Move window to previous relative workspace |
+
+## Move Workspace to Monitor
+
+| Atajo | Función |
+| :--- | :--- |
+| `Super + Shift + Alt + Left` | Move workspace to left monitor |
+| `Super + Shift + Alt + Right` | Move workspace to right monitor |
+| `Super + Shift + Alt + Up` | Move workspace to up monitor |
+| `Super + Shift + Alt + Down` | Move workspace to down monitor |
+
+## Scroll Navigation
+
+| Atajo | Función |
+| :--- | :--- |
+| `Super + Mouse Scroll Down` | Next workspace |
+| `Super + Mouse Scroll Up` | Previous workspace |
+
+## Scratchpad (Special Workspace)
+
+| Atajo | Función |
+| :--- | :--- |
+| `Super + -` | Mover ventana al scratchpad |
+| `Super + Shift + -` | Mover al scratchpad (silencioso) |
+| `Super + =` | Alternar scratchpad |
+
+## Move Window Silently
+
+| Atajo | Función |
+| :--- | :--- |
+| `Super + Alt + 1-0` | Mover ventana al workspace 1-10 (silencioso) |

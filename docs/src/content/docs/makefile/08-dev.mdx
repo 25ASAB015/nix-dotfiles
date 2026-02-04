@@ -1,0 +1,107 @@
+---
+title: Análisis y Desarrollo
+description: Comandos para búsqueda de paquetes, análisis y desarrollo
+---
+
+# Análisis y Desarrollo
+
+Módulo: `make/dev.mk`
+
+Comandos para búsqueda de paquetes, análisis del sistema y herramientas de desarrollo.
+
+## Comandos Disponibles
+
+### `make dev-hosts`
+Lista las configuraciones de hosts (nodos) definidos en el Flake.
+
+```bash
+make dev-hosts
+```
+
+**Qué muestra:** Hosts disponibles en la estructura de carpetas `hosts/` (ej: hydenix, laptop, vm).
+
+---
+
+### `make dev-search`
+Busca paquetes en el repositorio de Nixpkgs.
+
+```bash
+make dev-search PKG=<name>
+```
+
+**Ejemplos:**
+```bash
+make dev-search PKG=firefox
+make dev-search PKG=neovim
+```
+
+**Cuándo usarlo:** Antes de añadir un paquete a tu configuración para verificar su nombre exacto y disponibilidad.
+
+---
+
+### `make dev-search-inst`
+Busca específicamente entre los paquetes que ya tienes instalados en el sistema.
+
+```bash
+make dev-search-inst PKG=<name>
+```
+
+---
+
+### `make dev-repl`
+Inicia un REPL de Nix con el Flake actual precargado.
+
+```bash
+make dev-repl
+```
+
+**Cuándo usarlo:** Para inspeccionar valores de configuración, probar expresiones Nix o verificar atributos del Flake de forma interactiva.
+
+---
+
+### `make dev-shell`
+Entra en un shell temporal con paquetes específicos (ad-hoc).
+
+```bash
+make dev-shell PKGS="htop vim"
+```
+
+---
+
+### `make dev-vm`
+Construye y lanza una máquina virtual QEMU con la configuración del host especificado.
+
+```bash
+make dev-vm HOST=<name>
+```
+
+**Cuándo usarlo:** Para probar cambios drásticos sin afectar tu hardware real.
+
+---
+
+### `make dev-size`
+Muestra el tamaño total de la clausura (todas las dependencias) para un host.
+
+```bash
+make dev-size HOST=<name>
+```
+
+---
+
+## Workflow Recomendado
+
+### Búsqueda e Instalación
+```bash
+make dev-search PKG=firefox  # Buscar
+# ... añadir a hosts/$(HOSTNAME)/configuration.nix ...
+make sys-apply               # Aplicar
+```
+
+### Desarrollo y VM
+```bash
+make dev-hosts               # Ver opciones
+make dev-vm HOST=vm          # Probar en entorno aislado
+```
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `search` o `repl`), consulta la [Guía de Aliases](../10-aliases).

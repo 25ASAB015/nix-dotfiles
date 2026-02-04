@@ -1,0 +1,91 @@
+---
+title: Compatibilidad y Aliases Legacy
+description: Guía de comandos antiguos y su equivalencia con el nuevo estándar
+---
+
+# Compatibilidad y Aliases
+
+Para mejorar la organización y escalabilidad del proyecto, hemos migrado a un sistema de comandos con prefijos (`sys-`, `upd-`, `log-`, etc.). Sin embargo, entendemos que la memoria muscular es fuerte, por lo que hemos centralizado todos los comandos antiguos en un módulo de compatibilidad.
+
+## Por qué el cambio?
+
+El uso de prefijos permite:
+1. **Autocompletado**: Escribe `make sys-` y pulsa `TAB` para ver todas las operaciones de sistema.
+2. **Claridad**: Sabes exactamente qué área afectará cada comando.
+3. **Escalabilidad**: Evitamos colisiones de nombres a medida que el proyecto crece.
+
+---
+
+## Tabla de Equivalencias (Cheat Sheet)
+
+| Categoría | Comando Original (Legacy) | Nuevo Comando Estándar | Acción |
+| :--- | :--- | :--- | :--- |
+| **Sistema** | `make switch` | **`make sys-apply`** | Aplicar configuración |
+| | `make switch-safe` | **`make sys-apply-safe`** | Validar y Aplicar |
+| | `make switch-fast` | **`make sys-apply-fast`** | Aplicar rápido |
+| | `make test` | **`make sys-test`** | Testear config |
+| | `make build` | **`make sys-build`** | Compilar sin aplicar |
+| | `make dry-run` | **`make sys-dry-run`** | Preview cambios |
+| | `make boot` | **`make sys-boot`** | Configurar próximo boot |
+| | `make validate` | **`make sys-check`** | Validar flake |
+| | `make debug` | **`make sys-debug`** | Debug verbose |
+| | `make emergency` | **`make sys-force`** | Rebuild forzado |
+| | `make fix-permissions` | **`make sys-doctor`** | Arreglar permisos |
+| | `make hardware-scan` | **`make sys-hw-scan`** | Escanear hardware |
+| **Deployment**| `make sync` / `deploy` | **`make sys-deploy`** | Respaldo (Git) + Aplicar |
+| **Limpieza** | `make clean` | **`make sys-gc`** | Limpiar basura de Nix |
+| | `make deep-clean` | **`make sys-purge`** | Limpieza profunda |
+| **Update** | `make update` | **`make upd-all`** | Actualizar inputs |
+| | `make update-nixpkgs` | **`make upd-nixpkgs`** | Actualizar nixpkgs |
+| | `make update-hydenix` | **`make upd-hydenix`** | Actualizar hydenix |
+| | `make update-input` | **`make upd-input`** | Actualizar input específico |
+| | `make flake-diff` | **`make upd-diff`** | Ver cambios flake |
+| | `make upgrade` | **`make upd-upgrade`** | Actualizar + Aplicar |
+| | `make show` | **`make upd-show`** | Mostrar inputs |
+| | `make flake-check` | **`make upd-check`** | Chequear lockfile |
+| **Generaciones** | `make generations` | **`make gen-list`** | Listar generaciones |
+| | `make rollback` | **`make gen-rollback`** | Rollback |
+| | `make diff-gens` | **`make gen-diff`** | Diferencia generaciones |
+| | `make diff-current` | **`make gen-diff-current`** | Diferencia vs actual |
+| | `make gen-size` | **`make gen-sizes`** | Tamaño generaciones |
+| **Logs** | `make health` / `status`| **`make sys-status`** | Dashboard de salud |
+| | `make test-network` | **`make log-net`** | Diagnóstico de red |
+| | `make watch-logs` | **`make log-watch`** | Monitor logs |
+| | `make logs-service` | **`make log-svc`** | Logs servicio |
+| | `make boot-logs` | **`make log-boot`** | Logs arranque |
+| | `make error-logs` | **`make log-err`** | Logs errores |
+| **Dev** | `make hosts` | **`make dev-hosts`** | Listar hosts |
+| | `make search` | **`make dev-search`** | Buscar paquete |
+| | `make search-inst` | **`make dev-search-inst`** | Buscar instalado |
+| | `make repl` | **`make dev-repl`** | Nix REPL |
+| | `make shell` | **`make dev-shell`** | Nix Shell |
+| | `make vm` | **`make dev-vm`** | Crear VM |
+| | `make closure-size` | **`make dev-size`** | Tamaño closure |
+| **Formato** | `make format` | **`make fmt-check`** | Verificar formato |
+| | `make lint` | **`make fmt-lint`** | Linting |
+| | `make tree` | **`make fmt-tree`** | Árbol archivos |
+| | `make diff-config` | **`make fmt-diff`** | Ver cambios |
+| **Docs** | `make docs-*` | **`make doc-*`** | Comandos de documentación |
+
+---
+
+## Uso de Aliases
+
+Todos los comandos de la columna **"Comando Original"** siguen funcionando gracias al archivo `make/aliases.mk`. Simplemente llaman internamente a su contraparte moderna.
+
+> [!TIP]
+> Te recomendamos empezar a usar los comandos con prefijo, ya que son los que aparecerán en la ayuda principal de `make help`.
+>
+> Puedes ver la lista completa de aliases en la terminal ejecutando:
+> ```bash
+> make help-aliases
+> ```
+
+---
+
+## Centralización en el Código
+
+En el repositorio, encontrarás todos estos redireccionamientos en:
+- [aliases.mk](file:///home/ravn/Dotfiles/make/aliases.mk)
+
+Este archivo se incluye en el `Makefile` principal para asegurar que el sistema sea siempre compatible con versiones anteriores.

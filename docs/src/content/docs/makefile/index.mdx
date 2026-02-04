@@ -1,0 +1,252 @@
+---
+title: Makefile - Documentación Modular
+description: Guía completa del Makefile modular de Hydenix organizada por categorías
+---
+
+import { Card, CardGrid, LinkCard, Aside, Badge, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+# Makefile: Documentación Modular
+
+El Makefile de Hydenix centraliza todos los comandos para construir, validar, actualizar, mantener y depurar la configuración de NixOS. Esta documentación está organizada en módulos que coinciden con la estructura del código en `make/*.mk`.
+
+<Aside type="tip" title="Inicio Rápido">
+Si es tu primera vez, comienza con estos comandos esenciales:
+```bash
+make help            # Lista todos los comandos disponibles
+make help-aliases    # Muestra comandos antiguos vs nuevos
+make help-examples   # Ejemplos de uso con parámetros
+make sys-test        # Prueba sin aplicar permanentemente
+make sys-apply       # Aplica cambios
+```
+</Aside>
+
+## 📂 Estructura Modular
+
+El Makefile está organizado en módulos activos que coinciden con las categorías de comandos:
+
+<CardGrid>
+  <Card title="📚 docs.mk" icon="document">
+    Ayuda y Documentación
+  </Card>
+  <Card title="🔧 system.mk" icon="setting">
+    Gestión del Sistema
+  </Card>
+  <Card title="🧹 cleanup.mk" icon="approve-check">
+    Limpieza y Optimización
+  </Card>
+  <Card title="📦 updates.mk" icon="rocket">
+    Actualizaciones y Flakes
+  </Card>
+  <Card title="💾 generations.mk" icon="list-format">
+    Generaciones y Rollback
+  </Card>
+  <Card title="🔄 git.mk" icon="github">
+    Git y Respaldo
+  </Card>
+  <Card title="📋 logs.mk" icon="information">
+    Diagnóstico y Logs
+  </Card>
+  <Card title="🔍 dev.mk" icon="magnifier">
+    Análisis y Desarrollo
+  </Card>
+  <Card title="✨ format.mk" icon="star">
+    Formato y Linting
+  </Card>
+</CardGrid>
+
+## 📚 Módulos de Documentación
+
+<CardGrid>
+<LinkCard
+  title="Ayuda y Documentación"
+  description="Obtener ayuda y gestionar la web de docs"
+  href="./01-docs"
+/>
+
+<LinkCard
+  title="Gestión del Sistema"
+  description="Compilar, aplicar y validar configuraciones"
+  href="./02-system"
+/>
+
+<LinkCard
+  title="Limpieza y Optimización"
+  description="Limpiar generaciones y optimizar el store"
+  href="./03-cleanup"
+/>
+
+<LinkCard
+  title="Actualizaciones y Flakes"
+  description="Actualizar inputs y gestionar dependencias"
+  href="./04-updates"
+/>
+
+<LinkCard
+  title="Generaciones y Rollback"
+  description="Gestionar versiones del sistema y revertir"
+  href="./05-generations"
+/>
+
+<LinkCard
+  title="Git y Respaldo"
+  description="Gestionar el repositorio y sincronización"
+  href="./06-git"
+/>
+
+<LinkCard
+  title="Diagnóstico y Logs"
+  description="Salud del sistema y visualización de logs"
+  href="./07-logs"
+/>
+
+<LinkCard
+  title="Análisis y Desarrollo"
+  description="Búsqueda de paquetes y herramientas dev"
+  href="./08-dev"
+/>
+
+<LinkCard
+  title="Formato y Linting"
+  description="Formatear y validar calidad del código code"
+  href="./09-format"
+/>
+
+<LinkCard
+  title="Compatibilidad (Aliases)"
+  description="Guía de comandos antiguos y legacy"
+  href="./10-aliases"
+/>
+</CardGrid>
+
+## 🔄 Workflows Recomendados
+
+<Tabs>
+  <TabItem label="Flujo Pro">
+    <Steps>
+    1. **Formatear** archivos Nix
+       ```bash
+       make fmt-check
+       ```
+    
+    2. **Validar** sintaxis y evaluación
+       ```bash
+       make sys-check
+       ```
+    
+    3. **Aplicar configuración** permanentemente
+       ```bash
+       make sys-apply
+       ```
+    </Steps>
+  </TabItem>
+
+  <TabItem label="Flujo Recuperación">
+    <Steps>
+    1. **Listar** generaciones disponibles
+       ```bash
+       make gen-list
+       ```
+
+    2. **Revertir** a la generación anterior (rápido)
+       ```bash
+       make gen-rollback
+       ```
+
+    3. **O revertir** a commit específico (completo)
+       ```bash
+       make gen-rollback-commit COMMIT=9220122
+       ```
+    </Steps>
+  </TabItem>
+
+  <TabItem label="Updates Seguros">
+    <Steps>
+    1. **Actualizar** inputs del flake
+       ```bash
+       make upd-all
+       ```
+    
+    2. **Ver cambios** en versiones
+       ```bash
+       make upd-diff
+       ```
+    
+    3. **Validar** configuración
+       ```bash
+       make sys-check
+       ```
+    
+    4. **Aplicar** cambios de forma segura
+       ```bash
+       make sys-apply-safe
+       ```
+    </Steps>
+  </TabItem>
+
+  <TabItem label="Mantenimiento">
+    <Steps>
+    1. **Verificar salud** del sistema
+       ```bash
+       make sys-status
+       ```
+    
+    2. **Limpiar** generaciones antiguas
+       ```bash
+       make sys-gc
+       ```
+    
+    3. **Optimizar** nix store
+       ```bash
+       make sys-optimize
+       ```
+    
+    4. **Revisar** tamaños de generaciones
+       ```bash
+       make gen-sizes
+       ```
+    </Steps>
+  </TabItem>
+
+  <TabItem label="Multi-host">
+    <Steps>
+    1. **Listar** hosts disponibles
+       ```bash
+       make dev-hosts
+       ```
+    
+    2. **Aplicar** configuración a un host específico
+       ```bash
+       make sys-apply HOSTNAME=laptop
+       ```
+    </Steps>
+  </TabItem>
+</Tabs>
+
+## 💡 Sistema de Ayuda
+
+<CardGrid stagger>
+  <Card title="make help" icon="open-book">
+    Lista completa de comandos modernos con descripciones categorizadas
+  </Card>
+  <Card title="make help-examples" icon="document">
+    Ejemplos de uso para comandos que requieren parámetros
+  </Card>
+  <Card title="make help-aliases" icon="list-format">
+    [Equivalencias](../10-aliases) para usuarios acostumbrados a comandos clásicos
+  </Card>
+</CardGrid>
+
+## 🎯 Filosofía
+
+<Aside type="note">
+El Makefile de Hydenix está diseñado con estos principios en mente:
+</Aside>
+
+- **Nomenclatura Predictiva** - Prefijos claros (`sys-`, `upd-`, `gen-`, `git-`, `log-`, `dev-`, `fmt-`, `doc-`)
+- **Documentación Centralizada** - Cada módulo `.mk` tiene su contraparte `.mdx`
+- **Compatibilidad Extrema** - Todos los comandos antiguos funcionan como aliases centralizados
+- **Workflows Optimizados** - Secuencias predefinidas para tareas críticas
+
+<Aside type="caution" title="Importante">
+Los comandos clásicos (ej: `make switch`, `make clean`) siguen funcionando pero ya no son los recomendados. Se recomienda la transición a los nuevos estándares con prefijo.
+</Aside>

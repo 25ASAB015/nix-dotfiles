@@ -1,0 +1,107 @@
+---
+title: Limpieza y Optimización
+description: Comandos para limpiar generaciones antiguas y optimizar el sistema
+---
+
+# Limpieza y Optimización
+
+Módulo: `make/cleanup.mk`
+
+Comandos para limpiar generaciones antiguas, optimizar el store de Nix y liberar espacio en disco.
+
+## Comandos Disponibles
+
+### `make sys-gc`
+Limpia build artifacts y generaciones antiguas. Por defecto limpia generaciones de más de 30 días.
+
+```bash
+# Limpieza estándar (30 días)
+make sys-gc
+
+# Limpieza rápida (última semana)
+make sys-gc DAYS=7
+
+# Limpieza conservadora (3 meses)
+make sys-gc DAYS=90
+```
+
+**Parámetros:**
+- `DAYS=n` (opcional) - Número de días de historial que quieres mantener. Por defecto es 30.
+
+**Qué hace:**
+- Elimina generaciones del sistema más antiguas de `n` días
+- Ejecuta garbage collection de Nix
+- Libera espacio en disco de forma segura
+
+**Cuándo usarlo:** Mantenimiento regular para liberar espacio sin perder capacidad de rollback reciente.
+
+---
+
+### `make sys-purge`
+Purga profunda y agresiva - elimina TODAS las generaciones antiguas.
+
+```bash
+make sys-purge
+```
+
+**⚠️ ADVERTENCIA:** Muy agresivo - solo mantiene la generación actual. Esta acción es **IRREVERSIBLE**.
+
+**Cuándo usarlo:** Cuando necesitas liberar el máximo espacio posible y estás seguro de que tu configuración actual es estable.
+
+---
+
+### `make sys-optimize`
+Optimiza el Nix store mediante la creación de hardlinks para archivos idénticos.
+
+```bash
+make sys-optimize
+```
+
+**Qué hace:**
+- Deduplica archivos idénticos en el store
+- Es un proceso seguro que no elimina paquetes
+- Puede liberar varios GB de espacio si no se ha hecho recientemente
+
+**Cuándo usarlo:** Después de grandes actualizaciones de paquetes o instalaciones masivas.
+
+---
+
+### `make sys-clean-result`
+Elimina los symlinks `result*` generados por comandos de construcción de Nix.
+
+```bash
+make sys-clean-result
+```
+
+---
+
+### `make sys-fix-store`
+Intenta reparar el Nix store si se detectan corrupciones.
+
+```bash
+make sys-fix-store
+```
+
+**Cuándo usarlo:** Cuando encuentres errores de "checksum mismatch" o archivos faltantes en el store.
+
+---
+
+## Workflows Recomendados
+
+### Mantenimiento Regular
+```bash
+# Mantenimiento mensual ideal
+make sys-gc        # Limpiar generaciones viejas
+make sys-optimize  # Optimizar espacio
+make gen-sizes     # Verificar estado actual
+```
+
+### Liberar Espacio Urgente
+```bash
+make gen-sizes     # Ver qué consume más
+make sys-gc DAYS=7 # Limpieza agresiva de 1 semana
+make sys-optimize  # Consolidar archivos
+```
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `make clean`), consulta la [Guía de Aliases](../10-aliases).

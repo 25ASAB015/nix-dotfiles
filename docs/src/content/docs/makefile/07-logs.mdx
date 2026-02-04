@@ -1,0 +1,123 @@
+---
+title: Diagnóstico y Logs
+description: Comandos para diagnóstico del sistema, salud y visualización de logs
+---
+
+# Diagnóstico y Logs
+
+Módulo: `make/logs.mk`
+
+Comandos para diagnóstico del sistema, reportes de estado y visualización de logs.
+
+## Comandos Disponibles
+
+### `make sys-status`
+Dashboard y reporte comprehensivo de salud del sistema. Este comando fusiona el anterior `health` con un reporte detallado.
+
+```bash
+make sys-status
+```
+
+**Información mostrada:**
+- **🏥 Dashboard de Salud (Vuelo):** Verificación instantánea de estructura Flake, espacio en `/nix`, servicios fallidos, estado de Git y conteo de generaciones.
+- **📍 Información de Base:** Hostname, Versión de NixOS, ubicación del Flake y tamaño del Nix Store.
+- **💾 Almacenamiento y Generaciones:** Uso detallado de `/nix` y resumen de las últimas 5 generaciones del sistema.
+
+**Cuándo usarlo:** Como primer paso de rutina o cuando necesites un diagnóstico profundo del estado actual de tu sistema.
+
+---
+
+### `make log-net`
+Ejecuta diagnósticos comprehensivos de red.
+
+```bash
+make log-net
+```
+
+**Qué hace:**
+- Prueba conectividad y latencia (ping)
+- Verifica DNS (NM y resolvectl)
+- Mide throughput con Cloudflare
+- Ejecuta speedtest y mtr para calidad de ruta
+
+**Cuándo usarlo:** Cuando notes lentitud o problemas de conexión.
+
+---
+
+### `make log-watch`
+Observa logs del sistema en tiempo real (follow mode).
+
+```bash
+make log-watch
+```
+
+**Qué hace:** Acceso directo a `journalctl -f` para monitoreo en vivo.
+
+---
+
+### `make log-boot`
+Muestra logs del arranque actual centrado en errores.
+
+```bash
+make log-boot
+```
+
+**Cuándo usarlo:** Investigar por qué un componente falló al iniciar el sistema.
+
+---
+
+### `make log-err`
+Muestra los últimos 50 logs de error del sistema.
+
+```bash
+make log-err
+```
+
+**Cuándo usarlo:** Diagnóstico rápido de fallos recientes sin navegar por todo el journal.
+
+---
+
+### `make log-svc`
+Muestra logs de un servicio específico con filtrado inteligente (última hora, hoy, o histórico).
+
+```bash
+make log-svc SVC=<service>
+```
+
+**Ejemplos:**
+```bash
+make log-svc SVC=sshd
+make log-svc SVC=docker
+make log-svc SVC=networkmanager
+```
+
+---
+
+## Workflow Recomendado
+
+### Diagnóstico General
+```bash
+make sys-status      # Dashboard y reporte completo
+```
+
+### Problemas de Red
+```bash
+make log-net         # Diagnóstico completo de red
+```
+
+### Investigar Errores
+```bash
+make log-err         # Ver errores recientes
+make log-boot        # Ver logs de arranque
+make log-watch       # Observar en tiempo real
+```
+
+### Debugging de Servicios
+```bash
+# Ver logs de un servicio específico
+make log-svc SVC=sshd
+make log-svc SVC=networkmanager
+```
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad (como `health` o `watch-logs`), consulta la [Guía de Aliases](../10-aliases).

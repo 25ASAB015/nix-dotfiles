@@ -1,0 +1,97 @@
+---
+title: Git y Respaldo
+description: Comandos para gestionar el repositorio git y hacer respaldos
+---
+
+# Git y Respaldo
+
+Módulo: `make/git.mk`
+
+Comandos para gestionar el repositorio git, asegurar la persistencia de cambios y sincronización remota.
+
+## Comandos Disponibles
+
+### `make git-add`
+Stage todos los cambios para git.
+
+```bash
+make git-add
+```
+
+**Equivalente a:** `git add .`
+
+---
+
+### `make git-commit`
+Quick commit con timestamp automático.
+
+```bash
+make git-commit
+```
+
+---
+
+### `make git-push`
+Sincroniza los cambios locales con el repositorio remoto. Verifica si hay commits pendientes antes de ejecutar.
+
+```bash
+make git-push
+```
+
+---
+
+### `make git-status`
+Muestra el estado del repositorio de forma resumida.
+
+```bash
+make git-status
+```
+
+---
+
+### `make git-diff`
+Muestra cambios pendientes en los archivos de configuración `.nix`.
+
+```bash
+make git-diff
+```
+
+---
+
+### `make git-log`
+Muestra el historial reciente de cambios en el repositorio.
+
+```bash
+make git-log
+```
+
+---
+
+## Despliegue (Deploy)
+
+Aunque el comando de despliegue involucra a Git, se considera una operación de sistema por su impacto.
+
+### `make sys-deploy`
+**🚀 Sincronización Total** - Respalda cambios en Git y los aplica al sistema.
+
+Consulta la sección de [Gestión del Sistema](../02-system) para ver detalles sobre el flujo de despliegue completo.
+
+---
+
+## Workflow Recomendado
+
+### Flujo Manual (Control granular)
+```bash
+make git-diff    # Revisar cambios
+make git-add     # Preparar
+make git-commit  # Guardar local
+make git-push    # Subir a la nube
+```
+
+### Flujo Todo-en-Uno
+```bash
+make sys-deploy  # Respaldo + Aplicación
+```
+
+> [!NOTE]
+> Para ver los aliases antiguos (como `make sync`), consulta la [Guía de Aliases](../10-aliases).

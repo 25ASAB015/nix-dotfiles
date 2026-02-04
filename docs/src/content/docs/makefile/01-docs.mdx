@@ -1,0 +1,118 @@
+---
+title: Ayuda y Documentación
+description: Comandos para obtener ayuda, ver ejemplos y gestionar la documentación web
+---
+
+# Ayuda y Documentación
+
+Módulo: `make/docs.mk`
+
+Este módulo contiene comandos para obtener ayuda sobre el Makefile, ver ejemplos de uso y gestionar la documentación web del proyecto.
+
+## Comandos Disponibles
+
+### `make help`
+Muestra todos los comandos disponibles organizados por categoría.
+
+```bash
+make help
+# o simplemente:
+make
+```
+
+**Qué muestra:**
+- Lista completa de comandos con prefijos (`sys-`, `upd-`, `gen-`, etc.)
+- Descripción breve de cada funcionalidad
+- Agrupación por módulos lógicos
+- Workflows sugeridos al final
+
+---
+
+### `make help-examples`
+Muestra comandos con ejemplos prácticos de uso, ideal para targets que requieren parámetros.
+
+```bash
+make help-examples
+```
+
+**Ejemplos incluidos:**
+```
+═══ 🔨 Build & Deploy ═══
+sys-apply HOSTNAME=<host>
+  → make sys-apply HOSTNAME=laptop
+
+═══ 🔍 Search & Discovery ═══
+dev-search PKG=<name>
+  → make dev-search PKG=firefox
+```
+
+---
+
+### `make doc-dev`
+Inicia el servidor de desarrollo de Astro para visualizar la documentación web.
+
+```bash
+make doc-dev
+```
+
+**Qué hace:**
+1. Instala dependencias (`npm install`) si faltan.
+2. Inicia el servidor de Astro con Hot Module Replacement (HMR).
+3. La documentación estará disponible en `http://localhost:4321`.
+
+---
+
+### `make doc-build`
+Construye la versión estática y optimizada de la documentación para producción.
+
+```bash
+make doc-build
+```
+
+---
+
+### `make doc-install`
+Instala las dependencias necesarias de Node.js para el motor de documentación.
+
+```bash
+make doc-install
+```
+
+---
+
+### `make doc-clean`
+Elimina los artefactos de construcción y el directorio `node_modules` para liberar espacio.
+
+```bash
+make doc-clean
+```
+
+---
+
+### `make docs-local`
+Muestra un resumen de los archivos de documentación MD y MDX disponibles localmente en el repositorio.
+
+```bash
+make docs-local
+```
+
+---
+
+## Workflow Recomendado
+
+### Consulta de Comandos
+```bash
+make help          # Ver qué comandos hay
+make help-examples # Ver cómo usarlos con parámetros
+make help-aliases  # Ver equivalencias de comandos antiguos
+```
+
+### Trabajar en la Documentación
+```bash
+make doc-install   # Instalar (primera vez)
+make doc-dev       # Editar y previsualizar
+make doc-build     # Generar versión final
+```
+
+> [!NOTE]
+> Para ver los comandos antiguos y aliases de compatibilidad, consulta la [Guía de Aliases](../10-aliases).

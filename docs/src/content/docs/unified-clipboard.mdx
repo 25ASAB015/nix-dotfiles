@@ -1,0 +1,38 @@
+---
+title: Unified clipboard
+description: Atajos universales de portapapeles al estilo Omarchy.
+---
+
+# Unified clipboard
+
+Esta configuración replica el comportamiento de Omarchy para copiar/pegar/cortar
+en aplicaciones que no respetan Ctrl+C/V y añade un gestor de historial de portapapeles.
+
+## Implementación
+
+La solución se compone de tres partes:
+1.  **wl-clipboard**: Herramienta de bajo nivel para interactuar con el portapapeles de Wayland.
+2.  **cliphist**: Gestor de historial que guarda todo lo que copias.
+3.  **rofi**: Interfaz gráfica para seleccionar elementos del historial.
+
+## Atajos
+
+| Atajo | Acción | Descripción |
+| :--- | :--- | :--- |
+| `SUPER + C` | Copiar Universal | Envía `Ctrl+Insert`. Funciona en terminales y apps rebeldes. |
+| `SUPER + V` | Pegar Universal | Envía `Shift+Insert`. |
+| `SUPER + X` | Cortar Universal | Envía `Ctrl+X`. |
+| `SUPER + P` | Historial | Abre el menú de historial de portapapeles (Rofi). |
+| `SUPER + Shift + P` | Historial (Alt) | Mismo comportamiento (reservado para variantes). |
+
+## Comandos
+
+El script principal se encuentra en `resources/scripts/cliphist.sh`.
+Usa `rofi` para mostrar la lista y `wl-copy` para poner la selección en el portapapeles actual.
+
+```bash
+# Ver historial
+cliphist.sh
+# Limpiar historial
+cliphist.sh --wipe
+```
