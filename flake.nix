@@ -44,6 +44,16 @@
     };
 
     # ══════════════════════════════════════════════════════════════════════════
+    # SPICETIFY-NIX - Personalización de cliente Spotify
+    # Temas, extensiones y aplicaciones personalizadas para Spotify
+    # Documentación: https://github.com/Gerg-L/spicetify-nix
+    # ══════════════════════════════════════════════════════════════════════════
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # ══════════════════════════════════════════════════════════════════════════
     # KHANELIVIM - Configuración profesional de Neovim con Nixvim
     # Full-featured Neovim setup con LSP, DAP, y más (usado como paquete)
     # Documentación: https://github.com/khaneliman/khanelivim

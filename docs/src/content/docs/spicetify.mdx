@@ -1,0 +1,42 @@
+---
+title: Spicetify
+description: Customization for Spotify client
+---
+
+# Spicetify
+
+Spicetify is a command-line tool to customize the official Spotify client. It supports themes, extensions, and custom apps.
+We use `spicetify-nix` to manage the configuration declaratively with Home Manager.
+
+## Configuration
+
+The configuration is located in `modules/hm/programs/media/spicetify.nix`.
+
+```nix
+modules.media.spicetify.enable = true;
+```
+
+### Features
+
+- **Theme**: Catppuccin (Mocha)
+- **Extensions**:
+  - `adblock`: Blocks audio and banner ads.
+  - `hidePodcasts`: Hides podcasts from the home screen.
+  - `shuffle`: Proper shuffle functionality.
+  - `popupLyrics`: Shows lyrics in a popup window.
+
+## Usage
+
+The configuration is applied automatically when you rebuild the system.
+
+```bash
+nixos-rebuild switch --flake .#hydenix
+```
+
+### Manual Control
+
+Since it is managed by Nix, manual `spicetify` commands might be overwritten on the next build. However, you can still use the CLI for temporary changes or debugging.
+
+```bash
+spicetify apply
+```

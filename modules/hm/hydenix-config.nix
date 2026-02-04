@@ -381,6 +381,7 @@
   # - hypr-obs-mouse-follow: Script Lua para seguir el cursor en Hyprland
   # Documentación: https://obsproject.com/
   modules.media.obs.enable = true;
+  modules.media.spicetify.enable = true;
 
   # Desactivar gestión automática de monitores de Hydenix para usar nuestra propia configuración
   hydenix.hm.hyprland.monitors.enable = false;

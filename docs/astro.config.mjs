@@ -50,6 +50,7 @@ export default defineConfig({
 						{ label: 'TUIs', slug: 'tuis' },
 						{ label: 'GUIs', slug: 'guis' },
 						{ label: 'Commercial GUIs', slug: 'commercial-guis' },
+						{ label: 'Spicetify', slug: 'spicetify' },
 						{ label: 'Filling out PDFs', slug: 'filling-out-pdfs' },
 						{ label: 'Web Apps', slug: 'web-apps' },
 						{ label: 'Gaming', slug: 'gaming' },
