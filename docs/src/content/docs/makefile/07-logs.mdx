@@ -44,6 +44,25 @@ make log-net
 
 ---
 
+### `make log-net-enhanced`
+Ejecuta diagnósticos de red mejorados con verificación automática.
+
+```bash
+make log-net-enhanced
+```
+
+**Qué hace:**
+- Versión mejorada de `log-net`
+- Verifica configuración DNS (systemd-resolved y NetworkManager)
+- Detecta si el ISP está interceptando DNS
+- Comprueba reglas de firewall
+- Mide rendimiento de consultas DNS
+- Estadísticas detalladas de interfaces y optimizaciones TCP (BBR)
+
+**Cuándo usarlo:** Herramienta recomendada para diagnóstico avanzado de problemas de red y DNS.
+
+---
+
 ### `make log-watch`
 Observa logs del sistema en tiempo real (follow mode).
 

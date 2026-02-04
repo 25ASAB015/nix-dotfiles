@@ -18,10 +18,14 @@
 help-aliases: ## Show list of legacy aliases and their modern equivalents
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)      Legacy Aliases & Modern Equivalents          $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(YELLOW)Estos comandos se mantienen por compatibilidad.$(NC)\n"
-	@printf "$(YELLOW)Se recomienda usar la nueva nomenclatura.$(NC)\n\n"
+	@printf "$(CYAN)             📎 Legacy Aliases & Modern Equivalents     \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	
+	@printf "$(BLUE)1. Alias Mapping List:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "$(YELLOW)These commands are kept for compatibility.$(NC)\n"
+	@printf "$(YELLOW)It is recommended to use the new nomenclature.$(NC)\n\n"
 	@printf "$(BLUE)%-20s %-25s %s$(NC)\n" "LEGACY ALIAS" "MODERN COMMAND" "CATEGORY"
 	@printf "$(CYAN)%-20s %-25s %s$(NC)\n" "------------" "--------------" "--------"
 	@printf "%-20s %-25s %s\n" "switch" "sys-apply" "System"
@@ -71,7 +75,14 @@ help-aliases: ## Show list of legacy aliases and their modern equivalents
 	@printf "%-20s %-25s %s\n" "tree" "fmt-tree" "Format"
 	@printf "%-20s %-25s %s\n" "diff-config" "fmt-diff" "Format"
 	@printf "%-20s %-25s %s\n" "docs-*" "doc-*" "Docs"
-	@printf "\n$(BLUE)Tip:$(NC) Run $(GREEN)make help$(NC) to see all modern commands.\n\n"
+	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN) ✅ End of legacy aliases list$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(YELLOW)📋 Quick Actions:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "• View all commands: $(BLUE)make help$(NC)\n"
+	@printf "\n"
 
 # === Sistema (sys-) ===
 switch: sys-apply

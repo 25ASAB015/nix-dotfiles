@@ -13,166 +13,215 @@
 gen-list: ## List all system generations
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)            📜 Generaciones del Sistema            $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)             📜 System Generations                      \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(BLUE)Usa 'make gen-diff' para comparar generaciones\n$(NC)"
-	@printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	
+	@printf "$(BLUE)1. Generations List:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+	
+	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN) ✅ List complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(YELLOW)📋 Quick Actions:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "• Compare generations: $(BLUE)make gen-diff GEN1=n GEN2=m$(NC)\n"
+	@printf "• Rollback:            $(BLUE)make gen-rollback$(NC)\n"
 	@printf "\n"
 
 # Rollback to the previous generation
 gen-rollback: ## Rollback to previous generation
 	@printf "\n"
-	@printf "$(RED)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(RED)            ⏪ Rollback de Configuración           $(NC)"
-	@printf "\n$(RED)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)             ⏪ System Rollback                         \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	@printf "$(YELLOW)¿Estás seguro de que quieres volver a la generación anterior?\n$(NC)"
-	@printf "$(BLUE)Esta acción cambiará la configuración actual inmediatamente.\n$(NC)"
+	
+	@printf "$(BLUE)1. Confirmation:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "$(RED)⚠️  WARNING: You are about to rollback to the previous generation.$(NC)\n"
+	@printf "$(YELLOW)This will apply the previous configuration immediately.$(NC)\n"
 	@printf "\n"
-	@printf "$(RED)Escribe 'yes' para confirmar rollback: $(NC)"; \
+	@printf "$(RED)Are you sure? Type 'yes' to confirm: $(NC)"; \
 	read -r REPLY; \
-	if [ "$REPLY" = "yes" ]; then \
-		printf "\n$(YELLOW)Ejecutando rollback...\n$(NC)\n"; \
+	if [ "$$REPLY" = "yes" ]; then \
+		printf "\n$(YELLOW)Executing rollback...$(NC)\n\n"; \
 		sudo nixos-rebuild rollback $(NIX_OPTS); \
-		printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-		printf "$(GREEN)✅ Rollback completado exitosamente\n$(NC)"; \
-		printf "$(BLUE)Sistema restaurado a la generación anterior.\n$(NC)"; \
-		printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(GREEN) ✅ Rollback completed$(NC)\n"; \
+		printf "$(BLUE)System restored to previous generation.$(NC)\n"; \
+		printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
 		printf "\n"; \
 	else \
-		printf "\n$(BLUE)ℹ️  Rollback cancelado. No se realizaron cambios.\n$(NC)\n"; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(BLUE)ℹ️  Rollback cancelled$(NC)\n"; \
+		printf "$(GREEN)✓ No changes made$(NC)\n"; \
+		printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n"; \
 	fi
 
 # Rollback to a specific commit and rebuild system
 gen-rollback-commit: ## Rollback to specific commit and rebuild (use COMMIT=hash)
 	@if [ -z "$$(COMMIT)" ]; then \
-		printf "\n$(RED)Error: Se requiere el parámetro COMMIT$(NC)\n"; \
-		printf "Uso: make gen-rollback-commit COMMIT=9220122\n"; \
-		printf "     make gen-rollback-commit COMMIT=9220122face1b1f71f0cf9b1fcc8536fa0cd2842\n\n"; \
+		printf "\n"; \
+		printf "$(RED)❌ Error: COMMIT parameter is required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make gen-rollback-commit COMMIT=<hash>$(NC)\n"; \
 		exit 1; \
 	fi
 	@printf "\n"
-	@printf "$(RED)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(RED)        ⏪ Rollback a Commit Específico y Rebuild        $(NC)"
-	@printf "\n$(RED)  ═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)             ⏪ Rollback to Specific Commit             \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	@printf "$(BLUE)Verificando commit: $(YELLOW)$$(COMMIT)$(NC)\n"
+	
+	@printf "$(BLUE)1. Verifying Commit:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "$(BLUE)Checking commit $(YELLOW)$$(COMMIT)$(BLUE)...$(NC)\n"
 	@if ! git rev-parse --verify "$$(COMMIT)" >/dev/null 2>&1; then \
-		printf "$(RED)✗ Error: Commit '$$(COMMIT)' no encontrado$(NC)\n"; \
-		printf "$(YELLOW)Verifica que el commit existe con: git log --oneline | grep $$(COMMIT)$(NC)\n\n"; \
+		printf "$(RED)❌ Commit '$$(COMMIT)' not found$(NC)\n"; \
+		printf "$(YELLOW)Check git log for correct hash.$(NC)\n\n"; \
 		exit 1; \
 	fi
 	@COMMIT_FULL=$$(git rev-parse "$$(COMMIT)"); \
 	COMMIT_SHORT=$$(git rev-parse --short "$$(COMMIT)"); \
 	COMMIT_MSG=$$(git log -1 --format="%s" "$$(COMMIT)"); \
 	COMMIT_DATE=$$(git log -1 --format="%ci" "$$(COMMIT)"); \
-	printf "$(GREEN)✓ Commit encontrado:$(NC)\n"; \
-	printf "  $(CYAN)Hash completo:$(NC) $$COMMIT_FULL\n"; \
-	printf "  $(CYAN)Hash corto:$(NC) $$COMMIT_SHORT\n"; \
-	printf "  $(CYAN)Mensaje:$(NC) $$COMMIT_MSG\n"; \
-	printf "  $(CYAN)Fecha:$(NC) $$COMMIT_DATE\n\n"; \
-	printf "$(YELLOW)Cambios en este commit:$(NC)\n"; \
-	git show --stat "$$(COMMIT)" | head -20; \
-	printf "\n"; \
-	printf "$(RED)⚠️  ADVERTENCIA:$(NC)\n"; \
-	printf "$(YELLOW)  - Esto cambiará el HEAD del repositorio a este commit$(NC)\n"; \
-	printf "$(YELLOW)  - Se reconstruirá el sistema desde este commit$(NC)\n"; \
-	printf "$(YELLOW)  - Cualquier cambio sin commit se perderá$(NC)\n"; \
-	printf "$(YELLOW)  - Si tienes cambios sin guardar, usa 'git stash' primero$(NC)\n\n"; \
-	printf "$(RED)Escribe 'yes' para confirmar rollback: $(NC)"; \
+	printf "$(GREEN)✓ Commit found:$(NC)\n"; \
+	printf "  $(CYAN)Short Hash:$(NC) $$COMMIT_SHORT\n"; \
+	printf "  $(CYAN)Message:   $(NC) $$COMMIT_MSG\n"; \
+	printf "  $(CYAN)Date:      $(NC) $$COMMIT_DATE\n\n"; \
+	
+	@printf "$(BLUE)2. Warning:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "$(RED)⚠️  CRITICAL WARNING:$(NC)\n"
+	@printf "$(YELLOW)  • HEAD will be detached at this commit$(NC)\n"
+	@printf "$(YELLOW)  • System will be rebuilt from this state$(NC)\n"
+	@printf "$(YELLOW)  • Uncommitted changes will be LOST$(NC)\n\n"
+	
+	@printf "$(RED)Type 'yes' to proceed: $(NC)"; \
 	read -r REPLY; \
 	if [ "$$REPLY" = "yes" ]; then \
-		printf "\n$(YELLOW)1/3 Guardando estado actual del repositorio...$(NC)\n"; \
+		printf "\n$(BLUE)3. Executing Rollback:$(NC)\n"; \
+		printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"; \
+		printf "$(YELLOW)Saving current state...$(NC)\n"; \
 		CURRENT_BRANCH=$$(git branch --show-current 2>/dev/null || echo "detached"); \
 		CURRENT_COMMIT=$$(git rev-parse HEAD); \
-		printf "$(BLUE)   Branch actual: $(YELLOW)$$CURRENT_BRANCH$(NC)\n"; \
-		printf "$(BLUE)   Commit actual: $(YELLOW)$$(git rev-parse --short HEAD)$(NC)\n\n"; \
-		printf "$(YELLOW)2/3 Haciendo checkout al commit $$COMMIT_SHORT...$(NC)\n"; \
+		printf "$(YELLOW)Checking out $$COMMIT_SHORT...$(NC)\n"; \
 		if git checkout "$$(COMMIT)" >/dev/null 2>&1; then \
-			printf "$(GREEN)   ✓ Checkout exitoso$(NC)\n\n"; \
-			printf "$(YELLOW)3/3 Reconstruyendo sistema desde este commit...$(NC)\n"; \
+			printf "$(GREEN)✓ Checkout successful$(NC)\n"; \
+			printf "$(YELLOW)Rebuilding system...$(NC)\n"; \
 			if $(MAKE) --no-print-directory sys-apply-core; then \
-				printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-				printf "$(GREEN)✅ Rollback completado exitosamente$(NC)\n"; \
-				printf "$(BLUE)Sistema reconstruido desde commit: $$COMMIT_SHORT$(NC)\n"; \
-				printf "$(BLUE)Mensaje: $$COMMIT_MSG$(NC)\n"; \
-				printf "$(CYAN)════════════════════════════════════════════════════\n$(NC)"; \
-				printf "\n$(YELLOW)Nota:$(NC) El repositorio está ahora en el commit $$COMMIT_SHORT\n"; \
-				printf "$(YELLOW)Para volver a main:$(NC) git checkout main\n"; \
-				printf "$(YELLOW)Para crear una rama:$(NC) git checkout -b rollback-$$COMMIT_SHORT\n\n"; \
+				printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
+				printf "$(GREEN) ✅ Rollback successful$(NC)\n"; \
+				printf "$(BLUE)System rebuilt from commit: $$COMMIT_SHORT$(NC)\n"; \
+				printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
+				printf "\n$(YELLOW)Note:$(NC) Repository is now in detached HEAD state at $$COMMIT_SHORT\n"; \
+				printf "$(YELLOW)To return to main:$(NC) git checkout main\n\n"; \
 			else \
-				printf "\n$(RED)✗ Error al reconstruir el sistema$(NC)\n"; \
-				printf "$(YELLOW)Revirtiendo checkout...$(NC)\n"; \
+				printf "\n$(RED)❌ Rebuild failed$(NC)\n"; \
+				printf "$(YELLOW)Reverting to previous state...$(NC)\n"; \
 				git checkout "$$CURRENT_COMMIT" >/dev/null 2>&1; \
 				if [ "$$CURRENT_BRANCH" != "detached" ]; then \
 					git checkout "$$CURRENT_BRANCH" >/dev/null 2>&1; \
 				fi; \
-				printf "$(BLUE)Repositorio restaurado a estado anterior$(NC)\n\n"; \
+				printf "$(BLUE)Repository restored$(NC)\n\n"; \
 				exit 1; \
 			fi; \
 		else \
-			printf "$(RED)   ✗ Error al hacer checkout$(NC)\n"; \
-			printf "$(YELLOW)Verifica que no hay cambios sin commit: git status$(NC)\n\n"; \
+			printf "$(RED)❌ Checkout failed$(NC)\n"; \
+			printf "$(YELLOW)Check for uncommitted changes (git status)$(NC)\n\n"; \
 			exit 1; \
 		fi; \
 	else \
-		printf "\n$(BLUE)ℹ️  Rollback cancelado. No se realizaron cambios.\n$(NC)\n"; \
+		printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
+		printf "$(BLUE)ℹ️  Rollback cancelled$(NC)\n"; \
+		printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
+		printf "\n"; \
 	fi
 
 # Compare any two generations (requires GEN1 and GEN2 variables)
 gen-diff: ## Compare two generations (use GEN1=n GEN2=m)
 	@if [ -z "$$(GEN1)" ] || [ -z "$$(GEN2)" ]; then \
-		printf "\n$(RED)Error: Se requieren GEN1 y GEN2$(NC)\n"; \
-		printf "Uso: make gen-diff GEN1=101 GEN2=102\n\n"; \
+		printf "\n"; \
+		printf "$(RED)❌ Error: GEN1 and GEN2 parameters required$(NC)\n"; \
+		printf "$(YELLOW)Usage: make gen-diff GEN1=101 GEN2=102$(NC)\n\n"; \
 		exit 1; \
 	fi
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)            📊 Diferencias: Gen $$(GEN1) vs $$(GEN2)      $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n$(BLUE)Calculando diferencias de paquetes...$(NC)\n"
-	nix-diff /nix/var/nix/profiles/system-$(GEN1)-link /nix/var/nix/profiles/system-$(GEN2)-link
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)             📊 Generation Diff (Gen $$(GEN1) vs $$(GEN2))      \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	
+	@printf "$(BLUE)1. Comparing Packages:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@nix-diff /nix/var/nix/profiles/system-$$(GEN1)-link /nix/var/nix/profiles/system-$$(GEN2)-link
+	
+	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN) ✅ Diff complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 # Compare current generation with the previous one
 gen-diff-current: ## Compare current generation with previous
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)            📊 Cambios en la última generación     $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@CURRENT=$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'); \
-	PREVIOUS=$((CURRENT - 1)); \
-	if [ $PREVIOUS -gt 0 ]; then \
-		printf "$(BLUE)Comparando Gen $PREVIOUS (anterior) con Gen $CURRENT (actual)...$(NC)\n\n"; \
-		nix-diff /nix/var/nix/profiles/system-$PREVIOUS-link /nix/var/nix/profiles/system-$CURRENT-link; \
+	@printf "$(CYAN)             📊 Current vs Previous Generation          \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	
+	@printf "$(BLUE)1. Identifying Generations:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@CURRENT=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $$1}'); \
+	PREVIOUS=$$((CURRENT - 1)); \
+	if [ $$PREVIOUS -gt 0 ]; then \
+		printf "$(BLUE)Comparing Gen $$PREVIOUS (previous) vs Gen $$CURRENT (current)...$(NC)\n\n"; \
+		nix-diff /nix/var/nix/profiles/system-$$PREVIOUS-link /nix/var/nix/profiles/system-$$CURRENT-link; \
 	else \
-		printf "$(YELLOW)No hay generación anterior para comparar.$(NC)\n"; \
+		printf "$(YELLOW)No previous generation found.$(NC)\n"; \
 	fi
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	
+	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN) ✅ Diff complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 # Show disk usage for all generations
 gen-sizes: ## Show size of generations
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)            💾 Tamaño de Generaciones              $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)             💾 Generations Size Report                 \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | \
-	awk '{print $1}' | while read -r gen; do \
-		SIZE=$(du -sh /nix/var/nix/profiles/system-$gen-link 2>/dev/null | awk '{print $1}'); \
-		printf "  Gen %-4s: %s\n" "$gen" "$SIZE"; \
+	
+	@printf "$(BLUE)1. Size Analysis:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | \
+	awk '{print $$1}' | while read -r gen; do \
+		SIZE=$$(du -sh /nix/var/nix/profiles/system-$$gen-link 2>/dev/null | awk '{print $$1}'); \
+		printf "  Gen %-4s: %s\n" "$$gen" "$$SIZE"; \
 	done
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	
+	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN) ✅ Report complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
 
 # Show details of the current generation
 gen-current: ## Show current generation info
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)            📌 Generación Actual                   $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)             📌 Current Generation Info                 \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current
-	@printf "\n$(CYAN)════════════════════════════════════════════════════\n$(NC)"
+	
+	@printf "$(BLUE)1. Active Generation:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current
+	
+	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN) ✅ Info complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"

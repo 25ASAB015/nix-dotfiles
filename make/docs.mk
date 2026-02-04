@@ -14,118 +14,121 @@
 help: ## Show this help message
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)      Ayuda Avanzada y Workflows (Makefile)        $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@awk -v GREEN="$(GREEN)" -v BLUE="$(BLUE)" -v NC="$(NC)" 'BEGIN {FS=":.*##"} /^[a-zA-Z0-9_-]+:.*##/ {desc[$$1]=$$2} \
+	@printf "$(CYAN)             📚 System Commands & Documentation         \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	
+	@printf "$(BLUE)1. Command Reference:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@grep -hE '^[a-zA-Z0-9_-]+:.*##' $(MAKEFILE_LIST) | \
+	sort | \
+	awk 'BEGIN {FS=":.*##"} /^[a-zA-Z0-9_-]+:.*##/ {desc[$$1]=$$2} \
 	function print_cat(title, list,    n,i,cmd) { \
 		printf "\n%s%s%s\n", BLUE, title, NC; \
 		n = split(list, arr, " "); \
 		for (i=1; i<=n; i++) { \
 			cmd = arr[i]; \
 			if (cmd in desc) { \
-				printf "  %s%-18s%s %s\n", GREEN, cmd, NC, desc[cmd]; \
-			} else { \
-				printf "  %s%-18s%s %s\n", GREEN, cmd, NC, "(sin descripción)"; \
+				printf "  %s%-25s%s %s\n", GREEN, cmd, NC, desc[cmd]; \
 			} \
 		} \
 	} \
 	END { \
-		print_cat("Ayuda y Documentación", "help help-examples help-aliases docs-local doc-dev doc-build doc-install doc-clean"); \
-		print_cat("Gestión del Sistema (Rebuild/Switch)", "sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-doctor sys-fix-git sys-hw-scan sys-copy-hw-config sys-deploy"); \
-		print_cat("Limpieza y Optimización", "sys-gc sys-purge sys-optimize sys-clean-result sys-fix-store"); \
-		print_cat("Actualizaciones y Flakes", "upd-all upd-nixpkgs upd-hydenix upd-input upd-ai upd-diff upd-upgrade upd-show upd-check"); \
-		print_cat("Generaciones y Rollback", "gen-list gen-rollback gen-rollback-commit gen-diff gen-diff-current gen-sizes gen-current"); \
-		print_cat("Git y Respaldo", "git-add git-commit git-push git-status git-diff git-log"); \
-		print_cat("Diagnóstico y Logs", "sys-status log-net log-watch log-boot log-err log-svc"); \
-		print_cat("Análisis y Desarrollo", "dev-hosts dev-search dev-search-inst dev-repl dev-shell dev-vm dev-size"); \
-		print_cat("Formato, Linting y Estructura", "fmt-check fmt-lint fmt-tree fmt-diff"); \
-		printf "\nWorkflows sugeridos:\n"; \
-		printf "  • Flujo Pro:          make fmt-check → make sys-check → make sys-apply\n"; \
-		printf "  • Updates seguros:    make upd-all → make upd-diff → make sys-check → make sys-apply\n"; \
-		printf "  • Updates AI:         make upd-ai (actualiza OpenCode + Cursor + Antigravity y aplica)\n"; \
-		printf "  • Mantenimiento:      make sys-status → make sys-gc → make sys-optimize\n"; \
-		printf "  • Recuperación:       make gen-list → make gen-rollback (o gen-rollback-commit COMMIT=xxx)\n"; \
-		printf "\nAyuda rápida: make help | make help-examples | make help-aliases | less README.md\n\n"; \
-	}' $(MAKEFILE_LIST)
+		print_cat("Documentation & Help", "help help-examples help-aliases docs-local doc-dev doc-build doc-install doc-clean"); \
+		print_cat("System Maintenance", "sys-apply sys-apply-safe sys-apply-fast sys-test sys-build sys-dry-run sys-boot sys-check sys-debug sys-force sys-doctor sys-fix-git sys-hw-scan sys-copy-hw-config sys-deploy"); \
+		print_cat("Cleanup & Optimization", "sys-gc sys-purge sys-optimize sys-clean-result sys-fix-store"); \
+		print_cat("Updates & Flakes", "upd-all upd-nixpkgs upd-hydenix upd-input upd-ai upd-diff upd-upgrade upd-show upd-check"); \
+		print_cat("Generations & Rollback", "gen-list gen-rollback gen-rollback-commit gen-diff gen-diff-current gen-sizes gen-current"); \
+		print_cat("Git Operations", "git-add git-commit git-push git-status git-diff git-log"); \
+		print_cat("Diagnostics & Logs", "sys-status log-net log-net-enhanced log-watch log-boot log-err log-svc"); \
+		print_cat("Development Tools", "dev-hosts dev-search dev-search-inst dev-repl dev-shell dev-vm dev-size"); \
+		print_cat("Formatting & Linting", "fmt-check fmt-lint fmt-tree fmt-diff"); \
+	}'
+	
+	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN) ✅ End of help$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(YELLOW)📋 Quick Actions:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "• Usage examples:    $(BLUE)make help-examples$(NC)\n"
+	@printf "• Legacy aliases:    $(BLUE)make help-aliases$(NC)\n"
+	@printf "\n"
 
 # Show detailed usage examples for commands that require parameters
 # Organized by category with practical examples
-help-examples: ## Show commands with usage examples
+help-examples: ## Show usage examples for common workflows
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)        NixOS Commands with Usage Examples         $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n$(PURPLE)💡 Tip: Commands without parameters can be run directly$(NC)\n"
-	@printf "$(PURPLE)   Commands with parameters are shown with examples below$(NC)\n\n"
-	@printf "$(GREEN)═══ 🔨 Build & Deploy ═══$(NC)\n"
-	@printf "$(BLUE)sys-apply HOSTNAME=<host>$(NC)\n"
-	@printf "  → make sys-apply HOSTNAME=laptop\n\n"
-	@printf "$(BLUE)sys-deploy$(NC)\n"
-	@printf "  → make sys-deploy\n\n"
-	@printf "$(GREEN)═══ 🔍 Search & Discovery ═══$(NC)\n"
-	@printf "$(BLUE)dev-search PKG=<name>$(NC)\n"
-	@printf "  → make dev-search PKG=firefox\n"
-	@printf "  → make dev-search PKG=neovim\n\n"
-	@printf "$(BLUE)dev-search-inst PKG=<name>$(NC)\n"
-	@printf "  → make dev-search-inst PKG=kitty\n"
-	@printf "  → make dev-search-inst PKG=docker\n\n"
-	@printf "$(GREEN)═══ 📦 Updates ═══$(NC)\n"
-	@printf "$(BLUE)upd-ai$(NC)\n"
-	@printf "  → make upd-ai   # Actualiza OpenCode + Cursor + Antigravity y aplica\n\n"
-	@printf "$(BLUE)upd-input INPUT=<name>$(NC)\n"
-	@printf "  → make upd-input INPUT=hydenix\n"
-	@printf "  → make upd-input INPUT=nixpkgs\n"
-	@printf "  → make upd-input INPUT=zen-browser-flake\n\n"
-	@printf "$(GREEN)═══ 💾 Generations ═══$(NC)\n"
-	@printf "$(BLUE)gen-diff GEN1=<n> GEN2=<m>$(NC)\n"
-	@printf "  → make gen-diff GEN1=184 GEN2=186\n\n"
-	@printf "$(BLUE)gen-rollback-commit COMMIT=<hash>$(NC)\n"
-	@printf "  → make gen-rollback-commit COMMIT=9220122\n"
-	@printf "  → make gen-rollback-commit COMMIT=9220122face1b1f71f0cf9b1fcc8536fa0cd2842\n\n"
-	@printf "$(GREEN)═══ 📋 Logs & Monitoring ═══$(NC)\n"
-	@printf "$(BLUE)log-svc SVC=<service>$(NC)\n"
-	@printf "  → make log-svc SVC=sshd\n"
-	@printf "  → make log-svc SVC=docker\n"
-	@printf "  → make log-svc SVC=networkmanager\n\n"
-	@printf "$(GREEN)═══ 📚 Common Commands (No parameters needed) ═══$(NC)\n"
-	@printf "$(BLUE)Everyday use:$(NC)\n"
-	@printf "  make sys-deploy     → Total sync (add + commit + push + apply)\n"
-	@printf "  make sys-apply      → Apply configuration\n"
-	@printf "  make upd-ai         → Update OpenCode + Cursor + Antigravity y aplicar\n"
-	@printf "  make sys-apply-fast → Fast switch (skip checks)\n"
-	@printf "  make sys-test       → Test without applying\n"
-	@printf "  make gen-rollback   → Undo last change\n"
-	@printf "  make sys-check      → Check config before applying\n\n"
-	@printf "$(BLUE)Information:$(NC)\n"
-	@printf "  make sys-status     → System overview (Dashboard + Report)\n"
-	@printf "  make dev-hosts      → Show available hosts\n"
-	@printf "  make git-log        → Recent changes\n\n"
-	@printf "$(BLUE)Maintenance:$(NC)\n"
-	@printf "  make sys-gc         → Clean old (30 days)\n"
-	@printf "  make sys-optimize   → Optimize store\n"
-	@printf "  make gen-sizes      → Show generation sizes\n"
-	@printf "  make dev-size       → Show what uses space\n\n"
-	@printf "$(BLUE)Troubleshooting:$(NC)\n"
-	@printf "  make sys-debug      → Debug rebuild\n"
-	@printf "  make log-err        → Show errors\n"
-	@printf "  make sys-deploy     → Full deploy (includes permission fix)\n"
-	@printf "  make sys-fix-store  → Repair nix store\n\n"
-	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n"
-	@printf "$(YELLOW)For full command list:$(NC) make help\n"
-	@printf "$(YELLOW)For workflows:$(NC) make help\n"
-	@printf "$(YELLOW)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(NC)\n\n"
+	@printf "$(CYAN)             💡 Common Workflows & Examples             \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+
+	@printf "$(BLUE)1. System Maintenance:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "  $(GREEN)make sys-apply$(NC)           # Apply system configuration (rebuild switch)\n"
+	@printf "  $(GREEN)make sys-apply-fast$(NC)      # Faster apply (skips some checks)\n"
+	@printf "  $(GREEN)make sys-test$(NC)            # Build and test (dry-run) without applying\n"
+	@printf "  $(GREEN)make sys-status$(NC)          # Show system health and status\n"
+
+	@printf "\n$(BLUE)2. Update Management:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "  $(GREEN)make upd-all$(NC)             # Update all flake inputs and apply changes\n"
+	@printf "  $(GREEN)make upd-input PKG=nixpkgs$(NC) # Update specific input (e.g. nixpkgs)\n"
+	@printf "  $(GREEN)make upd-check$(NC)           # Check for updates without applying\n"
+
+	@printf "\n$(BLUE)3. Garbage Collection:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "  $(GREEN)make sys-gc$(NC)              # Standard cleanup (older than 30 days)\n"
+	@printf "  $(GREEN)make sys-gc DAYS=7$(NC)       # Aggressive cleanup (older than 7 days)\n"
+	@printf "  $(GREEN)make sys-optimize$(NC)        # Optimize nix store (deduplication)\n"
+
+	@printf "\n$(BLUE)4. Development Tools:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "  $(GREEN)make dev-shell$(NC)           # Enter development shell\n"
+	@printf "  $(GREEN)make dev-search PKG=git$(NC)  # Search for 'git' in nixpkgs\n"
+	@printf "  $(GREEN)make dev-vm HOST=laptop$(NC)  # Build VM for 'laptop' host\n"
+	
+	@printf "\n$(BLUE)5. Git Operations:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "  $(GREEN)make git-status$(NC)          # Show repository status\n"
+	@printf "  $(GREEN)make git-commit$(NC)          # Commit changes with timestamp\n"
+	@printf "  $(GREEN)make sys-deploy$(NC)          # Full deployment cycle (format, test, commit, push)\n"
+
+	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN) ✅ End of examples$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(YELLOW)📋 Quick Actions:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "• View commands:     $(BLUE)make help$(NC)\n"
+	@printf "\n"
 
 # List all available documentation files in the project
 # Scans for README, tutorials, and docs/ directory
 docs-local: ## Show local documentation files
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)          📚 Local Documentation                   $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(CYAN)             📚 Local Documentation                     \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	@if [ -f "README.md" ]; then printf "  $(GREEN)✓$(NC) $(BLUE)README.md$(NC)\n"; fi
-	@if [ -d "docs/" ]; then printf "  $(GREEN)✓$(NC) $(BLUE)docs/$(NC)\n"; fi
-	@find docs/src/content/docs/makefile/ -name "*.mdx" | sed 's|^|    • |' || true
+	
+	@printf "$(BLUE)1. Documentation Files:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@if [ -d "docs/src/content/docs" ]; then \
+		find docs/src/content/docs -name "*.md*" | sed 's|^docs/src/content/docs/|  📄 |'; \
+	elif [ -d "docs" ]; then \
+		find docs -name "*.md" | sed 's|^docs/|  📄 |'; \
+	else \
+		printf "$(RED)❌ 'docs' directory not found$(NC)\n"; \
+	fi
+	@if [ -f "README.md" ]; then \
+		printf "  📄 README.md\n"; \
+	fi
+	
+	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "$(GREEN) ✅ List complete$(NC)\n"
+	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 
 # Start Astro documentation development server
@@ -133,35 +136,44 @@ docs-local: ## Show local documentation files
 doc-dev: ## Run documentation dev server
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)        Iniciando servidor de desarrollo...        $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(BLUE)Iniciando servidor de desarrollo de docs...$(NC)\n"
+	@printf "$(CYAN)             🛠️  Starting Documentation Server          \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)1. Launching Server:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "$(BLUE)Starting Astro dev server...$(NC)\n"
 	@cd docs && npm run dev
 
 # Build static documentation site
 doc-build: ## Build documentation site
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)        Construyendo documentación estática...     $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(BLUE)Construyendo documentación estática...$(NC)\n"
+	@printf "$(CYAN)             🏗️  Building Documentation                 \n$(NC)"
+	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
+	@printf "\n"
+	@printf "$(BLUE)1. Building Site:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "$(BLUE)Generating static site (Astro build)...$(NC)\n"
 	@cd docs && npm run build
+	@printf "$(GREEN)✓ Build complete$(NC)\n"
+	@printf "\n"
 
 # Install documentation dependencies
 # Run this before using docs-dev or docs-build
 doc-install: ## Install documentation dependencies
 	@printf "\n"
-	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)        Instalando dependencias de docs...         $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(BLUE)Instalando dependencias de docs...$(NC)\n"
+	@printf "$(CYAN)             📥 Installing Documentation Tools          \n$(NC)"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@printf "$(BLUE)Installing Node.js dependencies...$(NC)\n"
 	@cd docs && npm install
+	@printf "$(GREEN)✓ Installation complete$(NC)\n"
+	@printf "\n"
 
 # Clean documentation build artifacts
 doc-clean: ## Clean documentation artifacts
 	@printf "\n"
-	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(CYAN)        Limpiando artefactos de docs...            $(NC)"
-	@printf "\n$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(BLUE)Limpiando artefactos de docs...$(NC)\n"
+	@printf "$(CYAN)             🧹 Cleaning Documentation Artifacts        \n$(NC)"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@rm -rf docs/dist docs/node_modules
+	@printf "$(GREEN)✓ Removed docs/dist and docs/node_modules$(NC)\n"
+	@printf "\n"
