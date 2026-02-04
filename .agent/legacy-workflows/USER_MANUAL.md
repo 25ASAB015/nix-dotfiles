@@ -1,0 +1,147 @@
+---
+title: "Hydenix User Manual"
+version: "0.1"
+status: "draft"
+---
+
+# Hydenix User Manual
+
+This manual is the single source of truth for working with this system. It is written for daily use and ongoing development.
+
+## 1. Quick Start
+
+### Common commands
+
+```bash
+make help
+make test
+make switch
+```
+
+### Recommended flow
+
+```bash
+make test
+make switch
+```
+
+## 2. Repository structure
+
+Top-level layout:
+
+```
+Dotfiles/
+├── flake.nix
+├── hosts/
+├── modules/
+├── resources/
+├── Makefile
+└── manual/
+```
+
+Where to look:
+
+- `hosts/`: machine-specific configuration
+- `modules/`: reusable NixOS and Home Manager modules
+- `resources/`: mutable configs and scripts (edited directly)
+- `manual/`: this manual
+
+## 3. Hosts and machines
+
+Hosts live under `hosts/`. Each host has:
+
+- `configuration.nix`
+- `user.nix`
+- `hardware-configuration.nix` (generated)
+
+Example switch:
+
+```bash
+make switch HOSTNAME=hydenix
+```
+
+## 4. Home Manager and modules
+
+Home Manager is enabled in `hosts/hydenix/user.nix`. Custom modules are in `modules/hm`.
+
+Key entry points:
+
+- `modules/hm/default.nix` (imports all HM modules)
+- `modules/system/` (system modules)
+
+## 5. Mutable files (no rebuild after first apply)
+
+Some configs are intended to be edited directly without rebuild:
+
+- Keybinds: `resources/config/keybinds.conf`
+- Scripts: `resources/scripts/*.sh`
+- Kitty: `resources/config/kitty.conf`
+- Monitors: `resources/config/monitors.conf`
+
+After the first `make switch`, edits in `resources/` take effect immediately (no rebuild).
+
+## 6. Keybinds and scripts
+
+Main keybinds are defined in:
+
+```
+resources/config/keybinds.conf
+```
+
+Script launcher reads from:
+
+```
+resources/scripts/
+```
+
+## 7. Waybar
+
+Waybar is managed by upstream Hydenix/HyDE. Local overrides are intentionally disabled to keep theme integration intact.
+
+## 8. Network diagnostics
+
+Use the built-in diagnostics target:
+
+```bash
+make test-network
+```
+
+## 9. Updating and maintenance
+
+Update inputs:
+
+```bash
+make update
+make test
+make switch
+```
+
+Clean old generations:
+
+```bash
+make clean
+```
+
+## 10. Troubleshooting
+
+Common steps:
+
+```bash
+make logs-errors
+make test-network
+make debug
+```
+
+## 11. Customization checklist
+
+- Edit `resources/config/keybinds.conf`
+- Add scripts in `resources/scripts/`
+- Update terminal settings in `resources/config/kitty.conf`
+- Update monitor layout in `resources/config/monitors.conf`
+
+## 12. Glossary
+
+- **Hydenix**: NixOS framework based on HyDE
+- **HyDE**: upstream dotfiles for Hyprland
+- **HM**: Home Manager
+
