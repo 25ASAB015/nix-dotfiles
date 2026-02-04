@@ -16,12 +16,13 @@ sys-apply: ## Build and switch to new configuration
 	@$(MAKE) --no-print-directory sys-fix-git
 	@$(MAKE) --no-print-directory sys-apply-core
 
-sys-apply-core:
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             🔄 System Apply (Build & Switch)           \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
 	@printf "$(BLUE)1. Staging Configuration:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
@@ -44,12 +45,14 @@ sys-apply-core:
 	
 	@printf "\n$(BLUE)3. Reloading Shell:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
-	hyde-shell reload
+	@hyde-shell reload
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Deployment completed successfully!$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Validate configuration and then apply (recommended safe workflow)
 sys-apply-safe: sys-check sys-apply ## Validate then switch (safest option)
@@ -257,22 +260,29 @@ sys-deploy: ## Total sync (doctor + add + commit + push + apply)
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 	
-	@printf "$(BLUE)1. Pipeline:$(NC)\n"
+	@printf "$(BLUE)1. System Doctor (Permissions):$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
-	@printf "  $(GREEN)1.$(NC) System Doctor    $(BLUE)→$(NC) Checking permissions\n"
-	@printf "  $(GREEN)2.$(NC) Git Fix          $(BLUE)→$(NC) Checking repo ownership\n"
-	@printf "  $(GREEN)3.$(NC) Git Add          $(BLUE)→$(NC) Staging changes\n"
-	@printf "  $(GREEN)4.$(NC) Git Commit       $(BLUE)→$(NC) Creating snapshot\n"
-	@printf "  $(GREEN)5.$(NC) Git Push         $(BLUE)→$(NC) Syncing with remote\n"
-	@printf "  $(GREEN)6.$(NC) System Apply     $(BLUE)→$(NC) Building and switching\n"
-	@printf "\n"
-	
-	@$(MAKE) --no-print-directory sys-doctor
-	@$(MAKE) --no-print-directory sys-fix-git
-	@$(MAKE) --no-print-directory git-add
-	@$(MAKE) --no-print-directory git-commit
-	@$(MAKE) --no-print-directory git-push
-	@$(MAKE) --no-print-directory sys-apply-core
+	@$(MAKE) --no-print-directory sys-doctor EMBEDDED=1
+
+	@printf "\n$(BLUE)2. Git Permissions Fix:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@$(MAKE) --no-print-directory sys-fix-git EMBEDDED=1
+
+	@printf "\n$(BLUE)3. Git Stage Changes:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@$(MAKE) --no-print-directory git-add EMBEDDED=1
+
+	@printf "\n$(BLUE)4. Git Quick Commit:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@$(MAKE) --no-print-directory git-commit EMBEDDED=1
+
+	@printf "\n$(BLUE)5. Git Push to Remote:$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@$(MAKE) --no-print-directory git-push EMBEDDED=1
+
+	@printf "\n$(BLUE)6. System Apply (Build & Switch):$(NC)\n"
+	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+	@$(MAKE) --no-print-directory sys-apply-core EMBEDDED=1
 	
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Full deployment successful$(NC)\n"
@@ -335,6 +345,7 @@ sys-hw-scan: ## Re-scan hardware configuration
 # Fix common permission issues in user directories
 # Internal target: used by sys-deploy, but can be called directly if needed
 sys-doctor: ## Fix common permission issues (doctor)
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             👨‍⚕️ System Doctor (Permissions)             \n$(NC)"
@@ -343,6 +354,7 @@ sys-doctor: ## Fix common permission issues (doctor)
 	
 	@printf "$(BLUE)1. Health Check:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+endif
 	@printf "$(BLUE)Checking ~/.config attributes...$(NC) "
 	@if [ -d ~/.config ]; then \
 		if find ~/.config -maxdepth 1 -not -user $$USER 2>/dev/null | grep -q .; then \
@@ -375,13 +387,16 @@ sys-doctor: ## Fix common permission issues (doctor)
 		printf "$(YELLOW)⚠️  Not found$(NC)\n"; \
 	fi
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Diagnosis complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Fix git repository ownership issues in the flake directory
 sys-fix-git: ## Fix git repo ownership issues in flake dir
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             🔧 Git Permissions Fix                     \n$(NC)"
@@ -390,6 +405,7 @@ sys-fix-git: ## Fix git repo ownership issues in flake dir
 	
 	@printf "$(BLUE)1. Checking Repository:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
+endif
 	@if [ -d "$(FLAKE_DIR)/.git/objects" ]; then \
 		if find "$(FLAKE_DIR)/.git/objects" -maxdepth 2 -type d -not -user $$USER 2>/dev/null | grep -q .; then \
 			printf "$(YELLOW)Fixing ownership in $(FLAKE_DIR)/.git...$(NC) "; \
@@ -405,7 +421,9 @@ sys-fix-git: ## Fix git repo ownership issues in flake dir
 		printf "$(YELLOW)⚠️  No git repository found at $(FLAKE_DIR)$(NC)\n"; \
 	fi
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Fix complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
