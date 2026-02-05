@@ -11,20 +11,24 @@
 
 # List all system generations with details
 gen-list: ## List all system generations
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             📜 System Generations                      \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Generations List:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Generations List:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ List complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	@printf "$(YELLOW)📋 Quick Actions:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "• Compare generations: $(BLUE)make gen-diff GEN1=n GEN2=m$(NC)\n"
@@ -33,13 +37,15 @@ gen-list: ## List all system generations
 
 # Rollback to the previous generation
 gen-rollback: ## Rollback to previous generation
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             ⏪ System Rollback                         \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Confirmation:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Confirmation:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(RED)⚠️  WARNING: You are about to rollback to the previous generation.$(NC)\n"
 	@printf "$(YELLOW)This will apply the previous configuration immediately.$(NC)\n"
@@ -70,13 +76,15 @@ gen-rollback-commit: ## Rollback to specific commit and rebuild (use COMMIT=hash
 		printf "$(YELLOW)Usage: make gen-rollback-commit COMMIT=<hash>$(NC)\n"; \
 		exit 1; \
 	fi
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             ⏪ Rollback to Specific Commit             \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Verifying Commit:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Verifying Commit:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Checking commit $(YELLOW)$$(COMMIT)$(BLUE)...$(NC)\n"
 	@if ! git rev-parse --verify "$$(COMMIT)" >/dev/null 2>&1; then \
@@ -93,7 +101,7 @@ gen-rollback-commit: ## Rollback to specific commit and rebuild (use COMMIT=hash
 	printf "  $(CYAN)Message:   $(NC) $$COMMIT_MSG\n"; \
 	printf "  $(CYAN)Date:      $(NC) $$COMMIT_DATE\n\n"; \
 	
-	@printf "$(BLUE)2. Warning:$(NC)\n"
+	@printf "$(GREEN)2.$(NC) $(BLUE)Warning:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(RED)⚠️  CRITICAL WARNING:$(NC)\n"
 	@printf "$(YELLOW)  • HEAD will be detached at this commit$(NC)\n"
@@ -103,7 +111,7 @@ gen-rollback-commit: ## Rollback to specific commit and rebuild (use COMMIT=hash
 	@printf "$(RED)Type 'yes' to proceed: $(NC)"; \
 	read -r REPLY; \
 	if [ "$$REPLY" = "yes" ]; then \
-		printf "\n$(BLUE)3. Executing Rollback:$(NC)\n"; \
+		printf "\n$(GREEN)3.$(NC) $(BLUE)Executing Rollback:$(NC)\n"; \
 		printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"; \
 		printf "$(YELLOW)Saving current state...$(NC)\n"; \
 		CURRENT_BRANCH=$$(git branch --show-current 2>/dev/null || echo "detached"); \
@@ -149,30 +157,36 @@ gen-diff: ## Compare two generations (use GEN1=n GEN2=m)
 		printf "$(YELLOW)Usage: make gen-diff GEN1=101 GEN2=102$(NC)\n\n"; \
 		exit 1; \
 	fi
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             📊 Generation Diff (Gen $$(GEN1) vs $$(GEN2))      \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Comparing Packages:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Comparing Packages:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@nix-diff /nix/var/nix/profiles/system-$$(GEN1)-link /nix/var/nix/profiles/system-$$(GEN2)-link
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Diff complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Compare current generation with the previous one
 gen-diff-current: ## Compare current generation with previous
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             📊 Current vs Previous Generation          \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Identifying Generations:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Identifying Generations:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@CURRENT=$$(sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $$1}'); \
 	PREVIOUS=$$((CURRENT - 1)); \
@@ -183,20 +197,24 @@ gen-diff-current: ## Compare current generation with previous
 		printf "$(YELLOW)No previous generation found.$(NC)\n"; \
 	fi
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Diff complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Show disk usage for all generations
 gen-sizes: ## Show size of generations
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             💾 Generations Size Report                 \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Size Analysis:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Size Analysis:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | \
 	awk '{print $$1}' | while read -r gen; do \
@@ -204,24 +222,30 @@ gen-sizes: ## Show size of generations
 		printf "  Gen %-4s: %s\n" "$$gen" "$$SIZE"; \
 	done
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Report complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Show details of the current generation
 gen-current: ## Show current generation info
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             📌 Current Generation Info                 \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Active Generation:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Active Generation:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Info complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif

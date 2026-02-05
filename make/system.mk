@@ -13,9 +13,7 @@
 
 # Build and activate new system configuration for the current hostname
 sys-apply: ## Build and switch to new configuration
-	@$(MAKE) --no-print-directory sys-fix-git
-	@$(MAKE) --no-print-directory sys-apply-core
-
+	@$(MAKE) --no-print-directory sys-fix-git EMBEDDED=1
 ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
@@ -23,27 +21,16 @@ ifndef EMBEDDED
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
 endif
-	
-	@printf "$(BLUE)1. Staging Configuration:$(NC)\n"
-	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
-	@if [ "$$(id -u)" -eq 0 ]; then \
-		if [ -n "$$SUDO_USER" ]; then \
-			sudo -u "$$SUDO_USER" git add .; \
-		else \
-			printf "$(RED)❌ Do not run 'make sys-apply' as root (no SUDO_USER)\n$(NC)"; \
-			exit 1; \
-		fi; \
-	else \
-		git add .; \
-	fi
-	@printf "$(GREEN)✓ Changes staged$(NC)\n"
-	
-	@printf "\n$(BLUE)2. Building System:$(NC)\n"
+	@$(MAKE) --no-print-directory sys-apply-core
+
+# Internal target for validationless apply (logic only)
+sys-apply-core:
+	@printf "$(GREEN)1.$(NC) $(BLUE)Building System:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Executing nixos-rebuild switch...$(NC)\n\n"
 	sudo nixos-rebuild switch $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 	
-	@printf "\n$(BLUE)3. Reloading Shell:$(NC)\n"
+	@printf "\n$(GREEN)3.$(NC) $(BLUE)Reloading Shell:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@hyde-shell reload
 	
@@ -59,50 +46,60 @@ sys-apply-safe: sys-check sys-apply ## Validate then switch (safest option)
 
 # Fast rebuild skipping internal nixos-rebuild checks for speed
 sys-apply-fast: ## Quick rebuild (skip checks)
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             ⚡ Fast Rebuild (Skip Checks)              \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Fast Switch:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Fast Switch:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(YELLOW)⚠️  Skipping validation checks (--fast enabled)$(NC)\n"
 	@printf "$(BLUE)Executing rebuild...$(NC)\n\n"
 	sudo nixos-rebuild switch $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME) --fast
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Fast switch complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Build and test configuration without activating it
-sys-test: ## Build and test configuration (no switch)
+sys-test: sys-check ## Build and test configuration (no switch)
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             🧪 Test Configuration (Dry Switch)         \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Testing Build:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Testing Build:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Building system closure...$(NC)\n"
 	sudo nixos-rebuild test $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Test build complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Build configuration without activating it and show build statistics
 sys-build: ## Build configuration without switching
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             🔨 Build Configuration (No Activation)     \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Compilation:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Compilation:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Compiling system derivation...$(NC)\n"
 	@START=$$(date +%s); \
@@ -113,7 +110,7 @@ sys-build: ## Build configuration without switching
 	MINUTES=$$((DURATION / 60)); \
 	SECONDS=$$((DURATION % 60)); \
 	printf "\n" ; \
-	printf "$(BLUE)2. Build Summary:$(NC)\n" ; \
+	printf "$(GREEN)2.$(NC) $(BLUE)Build Summary:$(NC)\n" ; \
 	printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n" ; \
 	if [ $$BUILD_EXIT -eq 0 ]; then \
 		printf "  $(GREEN)Status:$(NC)     $(GREEN)Success$(NC)\n"; \
@@ -122,64 +119,78 @@ sys-build: ## Build configuration without switching
 		else \
 			printf "  $(GREEN)Duration:$(NC)   $(YELLOW)$${SECONDS}s$(NC)\n"; \
 		fi; \
+	if [ -z "$(EMBEDDED)" ]; then \
 		printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
 		printf "$(GREEN) ✅ Build completed$(NC)\n"; \
 		printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
+	fi; \
 	else \
 		printf "  $(RED)Status:$(NC)     $(RED)Failed$(NC)\n"; \
 		printf "  $(RED)Duration:$(NC)   $(YELLOW)$${DURATION}s$(NC)\n"; \
+	if [ -z "$(EMBEDDED)" ]; then \
 		printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
 		printf "$(RED) ❌ Build failed$(NC)\n"; \
 		printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"; \
+	fi; \
 	fi; \
 	printf "\n"; \
 	exit $$BUILD_EXIT
 
 # Preview what would be built or changed without actually building
 sys-dry-run: ## Show what would be built/changed
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             🔍 Dry Run Strategy Preview                \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Analyzing Changes:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Analyzing Changes:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Calculating build plan...$(NC)\n\n"
 	@sudo nixos-rebuild dry-run $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Dry run complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Build configuration and set it as default for next boot
 sys-boot: ## Build and set as boot default (no immediate switch)
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             🥾 Configure Next Boot                     \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Boot Configuration:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Boot Configuration:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Building system and adding to bootloader...$(NC)\n\n"
 	sudo nixos-rebuild boot $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Next boot configured$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Validate flake syntax and configuration before applying changes
 sys-check: ## Validate configuration before applying
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             🔍 System Integrity Check                  \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Validations:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Validations:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Checking flake syntax...              $(NC)"
 	@if nix flake check $(FLAKE_DIR) >/dev/null 2>&1; then \
@@ -208,38 +219,44 @@ sys-check: ## Validate configuration before applying
 		printf "$(YELLOW)⊘ Not installed$(NC)\n"; \
 	fi
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ All checks passed$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Rebuild with maximum verbosity and debug tracing enabled
 sys-debug: ## Rebuild with verbose output and trace
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             🐛 Debug Rebuild (Verbose)                 \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
-	@printf "$(BLUE)1. Starting Debug Build:$(NC)\n"
+endif
+	@printf "$(GREEN)1.$(NC) $(BLUE)Starting Debug Build:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	sudo nixos-rebuild switch $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME) --show-trace --verbose
 
 # Emergency rebuild with maximum debugging and cache disabled
 sys-force: ## Emergency rebuild with maximum verbosity
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(RED)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(RED)             🚨 Emergency System Rebuild                \n$(NC)"
 	@printf "$(RED)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Critical Operation:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Critical Operation:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(RED)⚠️  FORCED REBUILD ACTIVATED$(NC)\n"
 	@printf "$(YELLOW)• Disabling evaluation cache$(NC)\n"
 	@printf "$(YELLOW)• Enabling maximum verbosity$(NC)\n"
 	@printf "$(YELLOW)• Showing full stack trace$(NC)\n\n"
 	
-	@printf "$(BLUE)2. Executing:$(NC)\n"
+	@printf "$(GREEN)2.$(NC) $(BLUE)Executing:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	sudo nixos-rebuild switch \
 		$(NIX_OPTS) \
@@ -247,10 +264,12 @@ sys-force: ## Emergency rebuild with maximum verbosity
 		--flake $(FLAKE_DIR)#$(HOSTNAME) \
 		--show-trace --verbose
 		
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Forced rebuild complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Complete workflow: fix permissions, stage, commit, push, and apply (deploy)
 sys-deploy: ## Total sync (doctor + add + commit + push + apply)
@@ -293,13 +312,15 @@ sys-deploy: ## Total sync (doctor + add + commit + push + apply)
 
 # Copy hardware configuration from /etc/nixos to Dotfiles
 sys-copy-hw-config: ## Copy hardware config to Dotfiles    
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             📋 Hardware Config Backup                  \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Syncing Implementation:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Syncing Implementation:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Copying from /etc/nixos to $(FLAKE_DIR)...$(NC)\n"
 	@sudo cp /etc/nixos/hardware-configuration.nix $(FLAKE_DIR)/hardware-configuration.nix
@@ -311,36 +332,42 @@ sys-copy-hw-config: ## Copy hardware config to Dotfiles
 	@printf "$(GREEN)✓ configuration.nix copied$(NC)\n"
 	@printf "$(GREEN)✓ Ownership set to $$USER$(NC)\n"
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Backup complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 
 # Generate new hardware configuration for the current hostname
 sys-hw-scan: ## Re-scan hardware configuration
+ifndef EMBEDDED
 	@printf "\n"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(CYAN)             🔧 Hardware Scan                           \n$(NC)"
 	@printf "$(CYAN)═════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 	
-	@printf "$(BLUE)1. Detecting Hardware:$(NC)\n"
+	@printf "$(GREEN)1.$(NC) $(BLUE)Detecting Hardware:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Scanning host $(HOSTNAME)...$(NC)\n"
 	@sudo nixos-generate-config --show-hardware-config > hosts/$(HOSTNAME)/hardware-configuration-new.nix
 	
-	@printf "\n$(BLUE)2. Output:$(NC)\n"
+	@printf "\n$(GREEN)2.$(NC) $(BLUE)Output:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(GREEN)✓ New config saved to: host/$(HOSTNAME)/hardware-configuration-new.nix$(NC)\n\n"
 	@printf "$(YELLOW)Action Required:$(NC)\n"
 	@printf "• Diff:  $(BLUE)diff hosts/$(HOSTNAME)/hardware-configuration{.nix,-new.nix}$(NC)\n"
 	@printf "• Apply: $(BLUE)mv hosts/$(HOSTNAME)/hardware-configuration-new.nix hosts/$(HOSTNAME)/hardware-configuration.nix$(NC)\n"
 	
+ifndef EMBEDDED
 	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "$(GREEN) ✅ Scan complete$(NC)\n"
 	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
 	@printf "\n"
+endif
 
 # Fix common permission issues in user directories
 # Internal target: used by sys-deploy, but can be called directly if needed
@@ -387,12 +414,7 @@ endif
 		printf "$(YELLOW)⚠️  Not found$(NC)\n"; \
 	fi
 	
-ifndef EMBEDDED
-	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN) ✅ Diagnosis complete$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-endif
+
 
 # Fix git repository ownership issues in the flake directory
 sys-fix-git: ## Fix git repo ownership issues in flake dir
@@ -421,9 +443,4 @@ endif
 		printf "$(YELLOW)⚠️  No git repository found at $(FLAKE_DIR)$(NC)\n"; \
 	fi
 	
-ifndef EMBEDDED
-	@printf "\n$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "$(GREEN) ✅ Fix complete$(NC)\n"
-	@printf "$(CYAN)════════════════════════════════════════════════════════════════════════════════\n$(NC)"
-	@printf "\n"
-endif
+
