@@ -28,7 +28,7 @@ sys-apply-core:
 	@printf "$(BLUE)Executing nixos-rebuild switch...$(NC)\n\n"
 	sudo nixos-rebuild switch $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 	
-	@printf "\n$(GREEN)3.$(NC) $(BLUE)Next Steps:$(NC)\n"
+	@printf "\n$(BLUE)Next Steps:$(NC)\n"
 	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(YELLOW)To apply shell/theme changes, it is highly recommended to run:$(NC)\n"
 	@printf "  $(BLUE)hyde-shell reload$(NC)\n"
