@@ -25,8 +25,6 @@ endif
 
 # Internal target for validationless apply (logic only)
 sys-apply-core:
-	@printf "$(GREEN)1.$(NC) $(BLUE)Building System:$(NC)\n"
-	@printf "$(CYAN)────────────────────────────────────────────────────────────────────────────────$(NC)\n"
 	@printf "$(BLUE)Executing nixos-rebuild switch...$(NC)\n\n"
 	sudo nixos-rebuild switch $(NIX_OPTS) --flake $(FLAKE_DIR)#$(HOSTNAME)
 	
